@@ -28,11 +28,6 @@ var router = new Router({
         /* 门店管理Begin */
         {path: '/store/list', component: _import('store/index'), name: 'store', meta: {title: '门店列表', keepAlive: false}},
         /* 门店管理End */
-        /* 药品管理Begin */
-        {path: '/mlist/index', component: _import('mlist/index'), name: 'mlist', meta: {title: '药品管理', keepAlive: false}},
-        {path: '/msort/index', component: _import('msort/index'), name: 'msort', meta: {title: '药品分类', keepAlive: false}},
-        {path: '/mstock/index', component: _import('mstock/index'), name: 'mstock', meta: {title: '库存', keepAlive: false}}
-        /* 药品管理End */
       ]
     },
     {path: '*', name: 'error401', component: _import('errorPage401/error401')}
