@@ -9,6 +9,10 @@ Vue.use(Vueydui)
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import Ajax from '../node_modules/vue-resource/dist/vue-resource.esm'
+Vue.use(Ajax)
+// import axios from '../node_modules/axios/index'
+
 import VueCookie from 'vue-cookie'
 import '../theme/index.css'
 import '@/element-ui'
@@ -19,6 +23,7 @@ import { isAuth } from '@/utils'
 Vue.use(VueCookie)
 Vue.config.productionTip = false
 Vue.prototype.isAuth = isAuth // 挂载权限方法
+
 new Vue({
   el: '#app',
   router,

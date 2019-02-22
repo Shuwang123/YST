@@ -11,7 +11,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/proxyApi': {
-        target: 'http://192.168.1.101:8080/mall',//http://joewee.mynatapp.cc
+        // target: 'http://192.168.1.101:8080/mall',//http://joewee.mynatapp.cc
+        target: 'http://api.slzzyy.com:8080',//http://joewee.mynatapp.cc
         changeOrigin: true,
         pathRewrite: {'^/proxyApi' : ''},
         onProxyReq (proxyReq, req, res) {
