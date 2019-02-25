@@ -24,7 +24,6 @@
           </el-form-item>
         </el-form>
       </div>
-      <!--<div class="main-footer">重百电器 版权所有©2018-2018 技术支持电话：000-00000000</div>-->
     </div>
   </div>
 </template>

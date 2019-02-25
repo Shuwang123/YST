@@ -4,7 +4,8 @@ import requestParam from '../requestParam'
 // 新增权限点
 export function add (params) {
   return request({
-    url: requestUrl('/mobilereport/admin/permission/add'),
+    // url: requestUrl('/mobilereport/admin/permission/add'),
+    url: requestUrl('/proxyApi/YstApiMenu/LoadData'),
     method: 'POST',
     data: requestParam(params)
   })
@@ -13,7 +14,8 @@ export function add (params) {
 // 修改权限点
 export function edit (params) {
   return request({
-    url: requestUrl('/mobilereport/admin/permission/edit'),
+    // url: requestUrl('/mobilereport/admin/permission/edit'),
+    url: requestUrl('/proxyApi/YstApiMenu/Create'),
     method: 'post',
     data: requestParam(params)
   })

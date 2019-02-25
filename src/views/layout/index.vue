@@ -22,56 +22,56 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-  import API  from '@/api'
-  import Topbar from './topbar'
-  import Sidebar from './sidebar'
-  import ContentTabs from './content-tabs'
-  import { mapMutations,mapGetters } from 'vuex'
-  import { getStore} from '@/utils'
-  export default {
-    components: {
-      Topbar,
-      Sidebar,
-      ContentTabs
-    },
-    data(){
-      return{
-        loading:false
-      }
-    },
-    mounted(){
+import API  from '@/api'
+import Topbar from './topbar'
+import Sidebar from './sidebar'
+import ContentTabs from './content-tabs'
+import { mapMutations,mapGetters } from 'vuex'
+import { getStore} from '@/utils'
+export default {
+  components: {
+    Topbar,
+    Sidebar,
+    ContentTabs
+  },
+  data(){
+    return{
+      loading:false
+    }
+  },
+  mounted(){
+    this.resetDocumentClientHeight()
+    window.onresize = () => {
       this.resetDocumentClientHeight()
-      window.onresize = () => {
-        this.resetDocumentClientHeight()
-      };
-      var userInfo= JSON.parse( getStore('userInfo'));
-      var users=userInfo.account;
-      this.UPDATE_USER_NAME({'name':users.username});
-      this.UPDATE_USER_ID({'id':users.id});
+    };
+    var userInfo= JSON.parse( getStore('userInfo'));
+    var users=userInfo.account;
+    this.UPDATE_USER_NAME({'name':users.username});
+    this.UPDATE_USER_ID({'id':users.id});
+  },
+  computed: {
+    siteWarpperClasses () {
+      return [
+        { 'site-sidebar--collapse': this.$store.state.sidebarCollapse }
+      ]
     },
-    computed: {
-      siteWarpperClasses () {
-        return [
-          { 'site-sidebar--collapse': this.$store.state.sidebarCollapse }
-        ]
-      },
-      siteContentWarpperStyles () {
-        if(this.$store.state.contentAcitveTab.type=='iframe'){
-          return [{ 'height': this.$store.state.documentClientHeight + 'px' }]
-        }else{
-          return [{ 'minHeight': this.$store.state.documentClientHeight + 'px' }]
-        }
+    siteContentWarpperStyles () {
+      if(this.$store.state.contentAcitveTab.type=='iframe'){
+        return [{ 'height': this.$store.state.documentClientHeight + 'px' }]
+      }else{
+        return [{ 'minHeight': this.$store.state.documentClientHeight + 'px' }]
       }
+    }
+  },
+  methods:{
+    // 重置窗口可视高度
+    resetDocumentClientHeight () {
+      this.UPDATE_DOCUMENT_CLIENT_HEIGHT({ height: document.documentElement['clientHeight']-10 })
+      var iframeHight=document.documentElement['clientHeight']-240;
+      this.$store.dispatch('setUPDATE_DOCUMENT_CLIENT_IFRAME',iframeHight);
+      this.UPDATE_DOCUMENT_CLIENT_IFRAME({ height: (document.documentElement['clientHeight']-240)})
     },
-    methods:{
-      // 重置窗口可视高度
-      resetDocumentClientHeight () {
-        this.UPDATE_DOCUMENT_CLIENT_HEIGHT({ height: document.documentElement['clientHeight']-10 })
-        var iframeHight=document.documentElement['clientHeight']-240;
-        this.$store.dispatch('setUPDATE_DOCUMENT_CLIENT_IFRAME',iframeHight);
-        this.UPDATE_DOCUMENT_CLIENT_IFRAME({ height: (document.documentElement['clientHeight']-240)})
-      },
-      ...mapMutations(['UPDATE_DOCUMENT_CLIENT_HEIGHT','UPDATE_DOCUMENT_CLIENT_IFRAME','UPDATE_USER_NAME','UPDATE_USER_ID'])
-    },
-  }
+    ...mapMutations(['UPDATE_DOCUMENT_CLIENT_HEIGHT','UPDATE_DOCUMENT_CLIENT_IFRAME','UPDATE_USER_NAME','UPDATE_USER_ID'])
+  },
+}
 </script>

@@ -17,39 +17,39 @@
 </template>
 
 <script>
-  import treeTable from './custom'
-  import treeToArray from './customEval'
-  import axios from 'axios'
-  export default {
-    name: 'customTreeTableDemo',
-    components: { treeTable },
-    data() {
-      return {
-        func: treeToArray,
-        expandAll: false,
-        data: [],
-        args: [null, null, 'timeLine'],
-        dataForm: {
-          categoryCode: ''
-        }
+import treeTable from './custom'
+import treeToArray from './customEval'
+import axios from 'axios'
+export default {
+  name: 'customTreeTableDemo',
+  components: { treeTable },
+  data() {
+    return {
+      func: treeToArray,
+      expandAll: false,
+      data: [],
+      args: [null, null, 'timeLine'],
+      dataForm: {
+        categoryCode: ''
       }
-    },
-    mounted () {
-      this.getDataList()
-    },
-    methods: {
-      getDataList () {
-        axios.get('https://easy-mock.com/mock/5b3d6f6ee40bed4edc62fea9/tree').then(response => {
-          console.log(response)
-          this.data = response.data.config
-          console.log(this.data)
-        })
-      },
-      message (row) {
-        this.id = row.id
-        console.log(this.id)
-        this.$message.info(row.label)
-      },
     }
+  },
+  mounted () {
+    this.getDataList()
+  },
+  methods: {
+    getDataList () {
+      axios.get('https://easy-mock.com/mock/5b3d6f6ee40bed4edc62fea9/tree').then(response => {
+        console.log(response)
+        this.data = response.data.config
+        console.log(this.data)
+      })
+    },
+    message (row) {
+      this.id = row.id
+      console.log(this.id)
+      this.$message.info(row.label)
+    },
   }
+}
 </script>

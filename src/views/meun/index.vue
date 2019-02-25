@@ -1,55 +1,18 @@
 <template>
   <div class="mod-meun">
-    <!--头部查询 搭配 新增按钮-->
+
+    <!--头部查询 搭配 新增-->
     <el-form :inline="true" :model="dataForm">
       <el-form-item>
         <el-button type="primary" icon="el-icon-plus" @click="addOrUpdateHandle()">新增菜单</el-button>
       </el-form-item>
       <el-form-item>
-        <el-input placeholder="ID/菜单名字" v-model="input4" clearable>
-          <template slot="append">搜索</template>
-          <!--<el-button type="success">搜索</el-button>-->
+        <el-input placeholder="菜单名称" v-model="input4" clearable prefix-icon="el-icon-search" @keyup.enter.native="searchMenu">
+          <el-button slot="append" @click="searchMenu">查询</el-button>
         </el-input>
       </el-form-item>
     </el-form>
-    <!--<el-table-->
-      <!--:data="dataList"-->
-      <!--border-->
-      <!--v-loading="dataListLoading"-->
-      <!--:height="$store.state.documentClientIFRMAE"-->
-      <!--style="width: 100%;">-->
-      <!--<el-table-column prop="id" header-align="center" align="center" width="80" label="ID"></el-table-column>-->
-      <!--<el-table-column label="名称" width="150">-->
-        <!--<template slot-scope="scope">-->
-          <!--<span @click.prevent="toggleHandle(scope.$index, scope.row)" :style="childStyles(scope.row)">-->
-          <!--<i :class="iconClasses(scope.row)" :style="iconStyles(scope.row)"></i>-->
-          <!--{{ scope.row.name }}-->
-          <!--</span>-->
-        <!--</template>-->
-      <!--</el-table-column>-->
-      <!--<el-table-column prop="parentName" header-align="center" align="center" width="120" label="上级菜单"></el-table-column>-->
-      <!--<el-table-column prop="icon" header-align="center" align="center" label="图标">-->
-        <!--<template slot-scope="scope">-->
-          <!--<i :class="['fa-lg', scope.row.icon]"></i>-->
-        <!--</template>-->
-      <!--</el-table-column>-->
-      <!--<el-table-column prop="type" header-align="center" align="center" label="类型">-->
-        <!--<template slot-scope="scope">-->
-          <!--<el-tag v-if="scope.row.type === 0" size="small">目录</el-tag>-->
-          <!--<el-tag v-else-if="scope.row.type === 1" size="small" type="success">菜单</el-tag>-->
-          <!--<el-tag v-else-if="scope.row.type === 2" size="small" type="info">按钮</el-tag>-->
-        <!--</template>-->
-      <!--</el-table-column>-->
-      <!--<el-table-column prop="showOrder" header-align="center" align="center" label="排序号"></el-table-column>-->
-      <!--<el-table-column prop="menuUrl" header-align="center" align="center" width="150" :show-overflow-tooltip="true" label="菜单URL"></el-table-column>-->
-      <!--<el-table-column prop="perms" header-align="center" align="center" width="150" :show-overflow-tooltip="true" label="授权标识"></el-table-column>-->
-      <!--<el-table-column header-align="center" align="center" width="200" label="操作">-->
-        <!--<template slot-scope="scope">-->
-          <!--<el-button  type="primary" size="small" @click="addOrUpdateHandle(scope.row)">修改</el-button>-->
-          <!--<el-button  type="danger" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>-->
-        <!--</template>-->
-      <!--</el-table-column>-->
-    <!--</el-table>-->
+
     <!--中间数据展示-->
     <el-table :data="dataMenu"
               stripe border
@@ -57,35 +20,35 @@
               :height="$store.state.documentClientIFRMAE"
               style="width: 100%;text-align: center">
       <el-table-column prop="Id" label="ID" width="100" header-align="center"></el-table-column>
-      <!--<el-table-column prop="" label="" width="100">-->
-        <!--<template slot-scope="scope">-->
-          <!--<el-checkbox v-model="checked">复选框</el-checkbox>-->
-        <!--</template>-->
-      <!--</el-table-column>-->
       <el-table-column prop="Name" label="菜单名字" width="100" align="center"></el-table-column>
       <el-table-column prop="Url" label="菜单链接" min-width="100" align="center" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Icon" label="图标" width="100" align="center"></el-table-column>
+      <el-table-column prop="Icon" label="图标" width="100" align="center">
+      </el-table-column>
       <el-table-column prop="ParentId" label="父级ID" width="100" header-align="center"></el-table-column>
       <el-table-column prop="DisplayOrder" label="排序" width="100" header-align="center"></el-table-column>
       <el-table-column prop="UrlType" label="1表示菜单2表示按钮" width="150" header-align="center"></el-table-column>
       <el-table-column prop="" label="操作" width="200" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain icon="el-icon-edit"
-                     @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+                     @click="handleEdit(scope.$index, scope.row)">编辑
+          </el-button>
           <el-button type="danger" size="mini" plain icon="el-icon-delete"
-                     @click="handleEdit(scope.$index, scope.row)">删除</el-button>
+                     @click="handleEdit(scope.$index, scope.row)">删除
+          </el-button>
         </template>
       </el-table-column>
-      <el-table-column prop="" label="index自动" width="100" type="index" header-align="center"></el-table-column>
     </el-table>
+
     <!--底部分页器-->
     <div class="slz-footer">
       <el-pagination background :total="allMenus"
-        :page-size="pageSize" :page-sizes="[1,2,10,20,30,100]" @size-change="getNewPageSizes"
+        :page-size="pageSize" :page-sizes="[1,2,3,10,20,30,100]" @size-change="getNewPageSizes"
         :current-page="pageIndex" @current-change="getNewMenuList"
         layout="prev,pager,next,jumper,sizes,total">
       </el-pagination>
     </div>
+
+    <!--子组件弹窗-->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
 </template>
@@ -108,18 +71,27 @@ export default {
       dataListLoading: false,
       dataForm: {},
       menuList: [],
+
       dataList: [],
+
       dataMenu: [],
       checked: false,
-      input4: "",
+
+      // 查询菜单列表功能
+      input4: '',
+
       // 分页功能
       allMenus: 10,   // 表中数据总量
       pageIndex: 1,   // 当前页的索引
-      pageSize: 1   // 每页的行数
+      pageSize: 3,   // 每页的行数
+      obj: {
+        name: this.input4,
+        PageIndex:this.pageIndex,
+        PageSize:this.pageSize,
+        IsPaging:true
+      }
 
     }
-  },
-  created () {
   },
   mounted () {
     this.getDataList();
@@ -127,33 +99,41 @@ export default {
     this.getNewMenuList();
   },
   methods: {
-    // 根据页标pageIndex改变，而请求新的菜单数据
-    getNewMenuList (val=1) {
-      this.pageIndex = val;
-      this.$http.post('/proxyApi/YstApiMenu/LoadData',{
-        PageIndex:val,
-        PageSize:this.pageSize,
-        IsPaging:true
-      },{emulateJSON:true}).then(result => {
+    // 公用的请求方法(顶部查询，底部分页pageIndex、pageSize调用)
+    postMenu () {
+      // this.$http.post('/proxyApi/YstApiMenu/LoadData',{
+      //   name: this.input4,
+      //   PageIndex:this.pageIndex,
+      //   PageSize:this.pageSize,
+      //   IsPaging:true
+      // },{emulateJSON:true}).then(result => {
+      API.permission.add(this.obj).then(result => {
         if (result.body.code == '0000') {
           this.allMenus = result.body.total;
           this.dataMenu = result.body.data;
         }
       });
     },
-    // 根据页码pageSize改变，请求新的菜单数据，这个函数应该很少触发
+    // 顶部查询菜单功能
+    searchMenu () {
+      if (this.input4.trim() == '') {
+        this.$message({
+          message: '查询关键字不能为空',
+          type: 'warning',
+          duration: 1000
+        });
+      }
+      this.postMenu();
+    },
+    // 根据页标pageIndex改变请求新的菜单数据
+    getNewMenuList (val=1) {
+      this.pageIndex = val;
+      this.postMenu();
+    },
+    // 根据页码pageSize改变请求新的菜单数据，这个函数应该很少触发
     getNewPageSizes (val) {
       this.pageSize = val;
-      this.$http.post('/proxyApi/YstApiMenu/LoadData',{
-        PageIndex:this.pageIndex,
-        PageSize:val,
-        IsPaging:true
-      },{emulateJSON:true}).then(result => {
-        if (result.body.code == '0000') {
-          this.allMenus = result.body.total;
-          this.dataMenu = result.body.data;
-        }
-      });
+      this.postMenu();
     },
 
     getDataMenu () {
@@ -165,16 +145,16 @@ export default {
       })
     },
     getDataList () {
-      this.dataList = []
-      API.permission.list().then(data => {
-        console.log(data)
-        if (data.data) {
-          var tempdataList = treeDataTranslate(data.data.permissionList, 'id')
+      this.dataMenu = []
+      API.permission.list().then(result => {
+        console.log(result)
+        if (result.data) {
+          var tempdataList = treeDataTranslate(result.data.permissionList, 'id')
           console.log(tempdataList)
           tempdataList.sort((a, b) => {
             return a.showOrder - b.showOrder
           })
-          this.dataList.push(...tempdataList)
+          this.dataMenu.push(...tempdataList)
         }
       })
     },
