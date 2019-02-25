@@ -5,7 +5,7 @@ import requestParam from '../requestParam'
 export function add (params) {
   return request({
     // url: requestUrl('/mobilereport/admin/permission/add'),
-    url: requestUrl('/proxyApi/YstApiMenu/LoadData'),
+    url: requestUrl('/YstApiMenu/Create'),
     method: 'POST',
     data: requestParam(params)
   })

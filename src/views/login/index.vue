@@ -32,6 +32,7 @@
 import API from '@/api'
 import md5 from 'js-md5'
 import {setStore} from '@/utils'
+import axios from 'axios'
 export default {
   data() {
     return {
@@ -55,8 +56,9 @@ export default {
         if (valid) {
           var passMd5 = md5(this.ruleForm.pass)
           console.log(passMd5)
-            API.common.login({username: this.ruleForm.name, password: passMd5}).then(data => {
-                if(data.code === '0000') {
+          //API.common.login({username: this.ruleForm.name, password: passMd5}).then(data => {
+          axios.get('../static/data/data.json').then(data => {
+                if(true) {
                   setStore('userInfo', data.data)
                   this.$router.push({name: 'dashboard'})
                 } else {
