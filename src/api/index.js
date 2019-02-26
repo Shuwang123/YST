@@ -8,11 +8,15 @@ import * as role from './modules/role' // 角色管理
 import * as permission from './modules/permission' // 权限管理
 import * as adminUser from './modules/adminUser' // 用户管理
 
+import * as menu from './SLZmodules/menu/menu' // 菜单管理（cx）
+
 export default {
   // 手机盘点及相关接口
   common,
   store,
   role,
   permission,
-  adminUser
+  adminUser,
+
+  menu
 }

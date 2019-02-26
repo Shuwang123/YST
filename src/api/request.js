@@ -12,7 +12,8 @@ const service = axios.create({
   headers: {
     'Content-Type': 'application/json; charset=utf-8'
   },
-  // baseURL: process.env.NODE_ENV !== 'production' && process.env.OPEN_PROXY ? '/proxyApi/' :  process.env.API_URL,
+  // baseURL: process.env.NODE_ENV !== 'production' && process.env.OPEN_PROXY ? '/proxyApi/' :  process.env.API_URL
+  // 为什么一直报错：POST https://www.easy-mock.com/mock/5c6a25ab218aad2259a06bc7/example/YstApiMenu/LoadData 404 (Not Found)
   baseURL: '/proxyApi'
 })
 // request拦截器

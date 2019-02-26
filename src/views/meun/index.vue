@@ -7,7 +7,7 @@
         <el-button type="primary" icon="el-icon-plus" @click="addOrUpdateHandle()">新增菜单</el-button>
       </el-form-item>
       <el-form-item>
-        <el-input placeholder="菜单名称" v-model="input4" clearable prefix-icon="el-icon-search" @keyup.enter.native="searchMenu">
+        <el-input placeholder="菜单名称" v-model="objMenu.name" clearable prefix-icon="el-icon-search" @keyup.enter.native="searchMenu">
           <el-button slot="append" @click="searchMenu">查询</el-button>
         </el-input>
       </el-form-item>
@@ -42,8 +42,8 @@
     <!--底部分页器-->
     <div class="slz-footer">
       <el-pagination background :total="allMenus"
-        :page-size="pageSize" :page-sizes="[1,2,3,10,20,30,100]" @size-change="getNewPageSizes"
-        :current-page="pageIndex" @current-change="getNewMenuList"
+        :current-page="objMenu.pageIndex" @current-change="getNewMenuList"
+        :page-size="objMenu.pageSize" :page-sizes="[10,20,30,100]" @size-change="getNewPageSizes"
         layout="prev,pager,next,jumper,sizes,total">
       </el-pagination>
     </div>
@@ -70,92 +70,58 @@ export default {
       addOrUpdateVisible: false,
       dataListLoading: false,
       dataForm: {},
-      menuList: [],
 
-      dataList: [],
-
-      dataMenu: [],
+      dataMenu: [],  // 中间表格返回数据
       checked: false,
-
-      // 查询菜单列表功能
-      input4: '',
-
-      // 分页功能
-      allMenus: 10,   // 表中数据总量
-      pageIndex: 1,   // 当前页的索引
-      pageSize: 10,   // 每页的行数
-      obj: {
-        name: this.input4,
-        PageIndex:this.pageIndex,
-        PageSize:this.pageSize,
-        IsPaging:true
-      }
-
+      input4: '', // 查询菜单列表功能
+      objMenu: {
+        name: '',
+        pageIndex: 1, // 当前页索引
+        pageSize: 10, // 页码大小10 20 30 100
+        IsPaging: true // 后端需求的数据，是否分页
+      },
+      allMenus: 0   // 分页功能 // 表中数据总量
     }
   },
   mounted () {
-    this.getDataList();
-    // this.getDataMenu();
-    this.getNewMenuList();
+    // this.getDataList()
+    this.getNewMenuList()
   },
   methods: {
-    // 公用的请求方法(顶部查询，底部分页pageIndex、pageSize调用)
+    // 公用post请求方法(查询、底部分页请求pageIndex、pageSize)
     postMenu () {
-      // this.$http.post('/proxyApi/YstApiMenu/LoadData',{
-      //   name: this.input4,
-      //   PageIndex:this.pageIndex,
-      //   PageSize:this.pageSize,
-      //   IsPaging:true
-      // },{emulateJSON:true}).then(result => {
-      // API.permission.add(this.obj).then(result => {
-      API.permission.add({
-        name: this.input4,
-        PageIndex: this.pageIndex,
-        PageSize: this.pageSize,
-        IsPaging: true
-      }).then(result => {
-        console.log(result.code)
+      API.menu.search(this.objMenu).then(result => {
         if (result.code === '0000') {
-          this.allMenus = result.total
-          this.dataMenu = result.data
-          // console.log(result.total)
-          // console.log(result.data)
-          // console.log(result.message)
-        }
-      });
-    },
-    // 顶部查询菜单功能
-    searchMenu () {
-      if (this.input4.trim() == '') {
-        this.$message({
-          message: '查询关键字不能为空',
-          type: 'warning',
-          duration: 1000
-        });
-      }
-      this.postMenu();
-    },
-    // 根据页标pageIndex改变请求新的菜单数据
-    getNewMenuList (val=1) {
-      this.pageIndex = val;
-      this.postMenu();
-    },
-    // 根据页码pageSize改变请求新的菜单数据，这个函数应该很少触发
-    getNewPageSizes (val) {
-      this.pageSize = val;
-      this.postMenu();
-    },
-
-    getDataMenu () {
-      this.$http.get('/proxyApi/YstApiMenu/LoadMenu').then(result => {
-        if (result.body.message == "success") {
-          this.dataMenu = result.body.data;
-          console.log(this.dataMenu);
+          this.allMenus = result.total  // 表中总条数
+          this.dataMenu = result.data   // 返回的查询结果数据
         }
       })
     },
+    // 顶部查询菜单功能
+    searchMenu () {
+      if (this.objMenu.name.trim() === '') {
+        this.$message({
+          message: '查询关键字不能为空',
+          type: 'warning',
+          duration: 1500
+        })
+      }
+      this.postMenu()
+    },
+    // 根据页标pageIndex请求
+    getNewMenuList (val = 1) {
+      this.objMenu.pageIndex = val
+      this.postMenu()
+    },
+    // 根据页码pageSize请求，很少触发
+    getNewPageSizes (val) {
+      this.objMenu.pageSize = val
+      this.postMenu()
+    },
+
     getDataList () {
       this.dataMenu = []
+      this.postMenu()
       // API.permission.list().then(result => {
       // API.permission.add({
       //   name: this.input4,
@@ -173,7 +139,6 @@ export default {
       //     this.dataMenu.push(...tempdataList)
       //   }
       // })
-      this.postMenu()
     },
     // 切换处理
     toggleHandle (index, row) {
