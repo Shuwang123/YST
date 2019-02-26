@@ -2,7 +2,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import router from '@/router'
 import NProgress from 'nprogress' // Progress 进度条
-import { Message } from 'element-ui';
+import { Message } from 'element-ui'
 import {removeStore} from '@/utils'
 import 'nprogress/nprogress.css'// Progress 进度条样式
 // 创建axios实例
@@ -12,7 +12,8 @@ const service = axios.create({
   headers: {
     'Content-Type': 'application/json; charset=utf-8'
   },
-  baseURL: process.env.NODE_ENV !== 'production' && process.env.OPEN_PROXY ? '/proxyApi/' :  process.env.API_URL,
+  // baseURL: process.env.NODE_ENV !== 'production' && process.env.OPEN_PROXY ? '/proxyApi/' :  process.env.API_URL,
+  baseURL: '/proxyApi'
 })
 // request拦截器
 service.interceptors.request.use(config => {

@@ -56,21 +56,22 @@ export default {
         if (valid) {
           var passMd5 = md5(this.ruleForm.pass)
           console.log(passMd5)
-          //API.common.login({username: this.ruleForm.name, password: passMd5}).then(data => {
-          axios.get('../static/data/data.json').then(data => {
-                if(true) {
-                  setStore('userInfo', data.data)
-                  this.$router.push({name: 'dashboard'})
-                } else {
-                  this.$message.error('账号或者密码错误，请重新登录！')
-                }
-            })
+          // API.common.login({username: this.ruleForm.name, password: passMd5}).then(data => {
+          this.$ios.get('../static/data/data.json').then(result => {
+            if (true) {
+            // if (data.code === '0000') {
+              setStore('userInfo', result.data)
+              this.$router.push({name: 'dashboard'})
+            } else {
+              this.$message.error('账号或者密码错误，请重新登录！')
+            }
+          })
         } else {
           return false
         }
       })
     },
-    resetForm(formName) {
+    resetForm (formName) {
       this.$refs[formName].resetFields()
     }
   }

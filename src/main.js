@@ -9,9 +9,9 @@ Vue.use(Vueydui)
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import Ajax from '../node_modules/vue-resource/dist/vue-resource.esm'
-Vue.use(Ajax)
-// import axios from '../node_modules/axios/index'
+
+import axios from '../node_modules/axios/index'
+Vue.prototype.$ios = axios
 
 import VueCookie from 'vue-cookie'
 import '../theme/index.css'

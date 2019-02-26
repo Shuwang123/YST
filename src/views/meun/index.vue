@@ -22,7 +22,7 @@
       <el-table-column prop="Id" label="ID" width="100" header-align="center"></el-table-column>
       <el-table-column prop="Name" label="菜单名字" width="100" align="center"></el-table-column>
       <el-table-column prop="Url" label="菜单链接" min-width="100" align="center" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Icon" label="图标" width="100" align="center">
+      <el-table-column prop="Icon" label="图标" :show-overflow-tooltip="true" width="100" align="center">
       </el-table-column>
       <el-table-column prop="ParentId" label="父级ID" width="100" header-align="center"></el-table-column>
       <el-table-column prop="DisplayOrder" label="排序" width="100" header-align="center"></el-table-column>
@@ -83,7 +83,7 @@ export default {
       // 分页功能
       allMenus: 10,   // 表中数据总量
       pageIndex: 1,   // 当前页的索引
-      pageSize: 3,   // 每页的行数
+      pageSize: 10,   // 每页的行数
       obj: {
         name: this.input4,
         PageIndex:this.pageIndex,
@@ -107,10 +107,20 @@ export default {
       //   PageSize:this.pageSize,
       //   IsPaging:true
       // },{emulateJSON:true}).then(result => {
-      API.permission.add(this.obj).then(result => {
-        if (result.body.code == '0000') {
-          this.allMenus = result.body.total;
-          this.dataMenu = result.body.data;
+      // API.permission.add(this.obj).then(result => {
+      API.permission.add({
+        name: this.input4,
+        PageIndex: this.pageIndex,
+        PageSize: this.pageSize,
+        IsPaging: true
+      }).then(result => {
+        console.log(result.code)
+        if (result.code === '0000') {
+          this.allMenus = result.total
+          this.dataMenu = result.data
+          // console.log(result.total)
+          // console.log(result.data)
+          // console.log(result.message)
         }
       });
     },
@@ -146,17 +156,24 @@ export default {
     },
     getDataList () {
       this.dataMenu = []
-      API.permission.list().then(result => {
-        console.log(result)
-        if (result.data) {
-          var tempdataList = treeDataTranslate(result.data.permissionList, 'id')
-          console.log(tempdataList)
-          tempdataList.sort((a, b) => {
-            return a.showOrder - b.showOrder
-          })
-          this.dataMenu.push(...tempdataList)
-        }
-      })
+      // API.permission.list().then(result => {
+      // API.permission.add({
+      //   name: this.input4,
+      //   PageIndex: this.pageIndex,
+      //   PageSize: this.pageSize,
+      //   IsPaging: true
+      // }).then(result => {
+      //   console.log(result)
+      //   if (result.data) {
+      //     var tempdataList = treeDataTranslate(result.data.permissionList, 'id')
+      //     console.log(tempdataList)
+      //     tempdataList.sort((a, b) => {
+      //       return a.showOrder - b.showOrder
+      //     })
+      //     this.dataMenu.push(...tempdataList)
+      //   }
+      // })
+      this.postMenu()
     },
     // 切换处理
     toggleHandle (index, row) {

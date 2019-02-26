@@ -152,7 +152,7 @@ export default {
         type: 1,
         name: '',
         parentId: 0,
-        parentName: '',
+        parentName: '陈希',
         menuUrl: '',
         url: '',
         showOrder: 0,
@@ -205,7 +205,7 @@ export default {
           if (this.dataForm.parentId === -9999) {
             this.dataForm.parentId = null
           }
-          var tick = !this.dataForm.id ? API.permission.add(this.dataForm) : API.permission.edit(this.dataForm)
+          var tick = !this.dataForm.id ? API.permission.add0(this.dataForm) : API.permission.edit(this.dataForm)
           console.log("陈工0：这儿能执行");
 
           // this.$http.post('/proxyApi/YstApiMenu/Create',{
@@ -217,8 +217,7 @@ export default {
           //   UrlType: this.dataForm.type
           // },{emulateJSON:true}).then(response => {
           tick.then(response => {
-            console.log("陈1");
-            console.log(response.body.code)
+            console.log(response.code)
             if(response.code === '0000') {
               console.log("陈3");
               this.$message({
