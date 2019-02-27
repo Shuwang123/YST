@@ -4,8 +4,8 @@
     :close-on-click-modal="false" :visible.sync="visible"
     @close="handleClose">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="类型：" prop="type">
-        <el-radio-group v-model="dataForm.type">
+      <el-form-item label="类型：" prop="UrlType">
+        <el-radio-group v-model="dataForm.urlType">
           <el-radio :label="0">目录</el-radio>
           <el-radio :label="1">菜单</el-radio>
           <el-radio :label="2">按钮</el-radio>
@@ -23,7 +23,7 @@
             <el-tree
                     :data="menuList"
                     :props="defaultProps"
-                    node-key="Key"
+                    node-key="key"
                     ref="menuListTree"
                     @current-change="menuListTreeCurrentChangeHandle"
                     :default-expand-all="true"
@@ -37,27 +37,26 @@
         <el-input v-model="dataForm.parentName" v-popover:menuListPopover :readonly="true" placeholder="点击选择上级菜单"></el-input>
       </el-form-item>
 
-      <el-form-item v-if="dataForm.type === 1" label="菜单URL" prop="menuUrl">
-        <el-input v-model="dataForm.menuUrl" placeholder="菜单URL"></el-input>
+      <el-form-item v-if="dataForm.urlType === 1" label="菜单URL" prop="url">
+        <el-input v-model="dataForm.url" placeholder="菜单URL"></el-input>
       </el-form-item>
 
-      <el-form-item v-if="dataForm.type === 2" label="对应接口" prop="url">
-        <el-input v-model="dataForm.url" placeholder="多个用逗号分隔, 如: /api/adminuser/add,/api/role/select/add"></el-input>
+      <el-form-item v-if="dataForm.urlType === 2" label="对应接口" prop="menuUrl">
+        <el-input v-model="dataForm.menuUrl" placeholder="多个用逗号分隔, 如: /api/adminuser/add,/api/role/select/add"></el-input>
       </el-form-item>
-      <el-form-item v-if="dataForm.type === 2" label="授权标识" prop="identifier">
+      <el-form-item v-if="dataForm.urlType === 2" label="授权标识" prop="identifier">
         <el-input v-model="dataForm.identifier" placeholder="如: user_list"></el-input>
       </el-form-item>
 
-      <el-form-item v-if="dataForm.type !== 2" label="排序号" prop="showOrder">
-        <el-input-number v-model="dataForm.showOrder" controls-position="right" :min="1" label="排序号"></el-input-number>
+      <el-form-item v-if="dataForm.urlType !== 2" label="排序号" prop="showOrder">
+        <el-input-number v-model="dataForm.displayOrder" controls-position="right" :min="1" label="排序号"></el-input-number>
       </el-form-item>
-      <el-form-item v-if="dataForm.type !== 2" label="菜单图标" prop="icon">
+      <el-form-item v-if="dataForm.urlType !== 2" label="菜单图标" prop="icon">
         <el-input v-model="dataForm.icon" placeholder="菜单图标"></el-input>
       </el-form-item>
-
-      <el-form-item label="菜单描述" prop="description">
-        <el-input v-model="dataForm.description" placeholder="菜单描述"></el-input>
-      </el-form-item>
+      <!--<el-form-item label="菜单描述" prop="description">-->
+        <!--<el-input v-model="dataForm.description" placeholder="菜单描述"></el-input>-->
+      <!--</el-form-item>-->
     </el-form>
 
     <span slot="footer" class="dialog-footer">
@@ -85,18 +84,27 @@ export default {
       elPopoverElTreeVisible: false, // 控制弹出框的显隐，单击v-popover可以切换这个值
 
       dataForm: {
+        // id: 0,
+        // type: 1, // type: 1菜单、2 按钮
+        // name: '',
+        // parentId: 0,
+        // parentName: '',
+        // menuUrl: '',
+        // url: '',
+        // showOrder: 0,
+        // icon: '',
+        // description: '',
+        // identifier: ''
         id: 0,
-        type: 1,
-        // type: 1菜单、2 按钮
         name: '',
-        parentId: 0,
-        parentName: '',
-        menuUrl: '',
+        parentId: 3,
         url: '',
-        showOrder: 0,
         icon: '',
-        description: '',
-        identifier: ''
+        displayOrder: 0,
+        urlType: 1,
+
+        type: 1,
+        parentName: ''
       },
       dataRule: {
         name: [
@@ -110,26 +118,26 @@ export default {
         ]
       },
       menuList: [{
-        id: 0,
+        key: 0,
         label: '一级 1',
         children: [{
-          id: 11,
+          key: 11,
           label: '二级 1-1',
           children: [{
-            id: 111,
+            key: 111,
             label: '三级 1-1-1'
           },{
-            id: 112,
+            key: 112,
             label: '三级 1-1-2'
           }]
         },{
-          id: 21,
+          key: 21,
           label: '二级 2-1',
           children: [{
-            id: 211,
+            key: 211,
             label: '三级 1-2-1'
           },{
-            id: 212,
+            key: 212,
             label: '三级 1-2-2'
           }]
         }]
@@ -144,16 +152,15 @@ export default {
     handleClose () {
       this.dataForm = {
         id: 0,
-        type: 1,
         name: '',
-        parentId: 0,
-        parentName: '',
-        menuUrl: '',
+        parentId: 3,
         url: '',
-        showOrder: 0,
         icon: '',
-        identifier: '',
-        description: ''
+        displayOrder: 0,
+        urlType: 1,
+
+        type: 1,
+        parentName: ''
       }
       this.$refs['dataForm'].resetFields()  //  整个表单重置,不加s单个
     },
@@ -164,16 +171,16 @@ export default {
       if (item) {
         var obj = {
           id: item.Id,
-          type: item.UrlType, // 1菜单、2 按钮
           name: item.Name,
           parentId: item.ParentId,
-          parentName: '',
-          menuUrl: item.Url,
-          url: '', // 接口的路径
-          showOrder: '',
+          url: item.Url,
           icon: item.Icon,
-          description: '',
-          identifier: ''
+          displayOrder: item.DisplayOrder,
+          urlType: item.UrlType,
+
+          // 这三个后台都不调用
+          type: item.UrlType,
+          parentName: ''
         }
         this.dataForm = obj
         if (!this.dataForm.parentId) {
@@ -187,10 +194,9 @@ export default {
           // var alltree = treeDataTranslate(response.data, 'id')
           // var toptree = {'parentId': -1, 'id': -9999, 'name': '顶级目录', 'type': 0, children: alltree}
           // this.menuList = [toptree] // 这儿就是el-tree那个数据的规范结构嘛，外层一个数组，数组的值就直接通过字面量的方式就传入了一个对象作为值
-          this.menuList = response.data
+          this.menuList = JSON.parse(JSON.stringify(response.data).toLowerCase()) // 把后端的那个坑货的大写字母转小写，转换后方便前端直接使用
           // console.log(toptree)
           // console.log(alltree)
-          console.log(this.menuList)
         }
         // 因为改变了数据并且重新渲染了dom，所以this.$nextTick(()=>{})等待渲染结束后立马调用新的代码
         this.$nextTick(() => {
@@ -200,15 +206,15 @@ export default {
     },
     // 菜单树选中  参数：当前节点数据，当前节点Node对象span cx
     menuListTreeCurrentChangeHandle (data, node) {
-      this.dataForm.parentId = data.Key
-      this.dataForm.parentName = data.Label
-      console.log(`${data.Key}~${data.Label}`) // 都能获得当前选中节点的text
+      this.dataForm.parentId = data.key
+      this.dataForm.parentName = data.label
+      console.log(`${data.key}~${data.label}`) // 都能获得当前选中节点的text
       this.elPopoverElTreeVisible = false
     },
     // 菜单树设置当前选中节点
     menuListTreeSetCurrentNode () {
       this.$refs.menuListTree.setCurrentKey(this.dataForm.parentId)
-      this.dataForm.parentName = (this.$refs.menuListTree.getCurrentNode() || {})['Label']
+      this.dataForm.parentName = (this.$refs.menuListTree.getCurrentNode(this.dataForm.parentId) || {})['label']
       // 通过 key 设置某个节点的当前选中状态，使用此方法必须设置 node-key 属性
       // 获取当前被选中节点的 data，若没有节点被选中则返回 null
     },

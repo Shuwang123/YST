@@ -182,7 +182,6 @@ export default {
     },
     addOrUpdateHandle (item) {
       this.addOrUpdateVisible = true
-      console.log(item)
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(item)
       })
