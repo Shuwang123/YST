@@ -23,7 +23,7 @@
             <el-tree
                     :data="menuList"
                     :props="defaultProps"
-                    node-key="id"
+                    node-key="Key"
                     ref="menuListTree"
                     @current-change="menuListTreeCurrentChangeHandle"
                     :default-expand-all="true"
@@ -86,7 +86,7 @@ export default {
 
       dataForm: {
         id: 0,
-        urlType: 1,
+        type: 1,
         // type: 1菜单、2 按钮
         name: '',
         parentId: 0,
@@ -159,22 +159,40 @@ export default {
     },
     // 这个init怎么在父组件中被调用的，看不懂this.$refs.addOrUpdate.init(item)?
     init (item) {
+      // 如果item不为undefined表示‘编辑’，那dataForm就应该有一个初始值来调用；如果为‘添加’，那dataForm就用默认的初始空值
       this.visible = true
       if (item) {
-        this.dataForm = item
+        var obj = {
+          id: item.Id,
+          type: item.UrlType, // 1菜单、2 按钮
+          name: item.Name,
+          parentId: item.ParentId,
+          parentName: '',
+          menuUrl: item.Url,
+          url: '', // 接口的路径
+          showOrder: '',
+          icon: item.Icon,
+          description: '',
+          identifier: ''
+        }
+        this.dataForm = obj
         if (!this.dataForm.parentId) {
           this.dataForm.parentId = -9999
         }
       }
-      API.permission.addlist().then(response => {
-        console.log(response)
+      // 请求el-tree的节点内容，并填充这个el-tree
+      API.menu.getTree().then(response => {
         if (response.data) {
-          var alltree = treeDataTranslate(response.data.permissionList, 'id')
-          console.log(alltree)
-          var toptree = {'parentId': -1, 'id': -9999, 'name': '顶级目录', 'type': 0, children: alltree}
-          console.log(toptree)
-          this.menuList = [toptree]
+          // var alltree = treeDataTranslate(response.data.permissionList, 'id')
+          // var alltree = treeDataTranslate(response.data, 'id')
+          // var toptree = {'parentId': -1, 'id': -9999, 'name': '顶级目录', 'type': 0, children: alltree}
+          // this.menuList = [toptree] // 这儿就是el-tree那个数据的规范结构嘛，外层一个数组，数组的值就直接通过字面量的方式就传入了一个对象作为值
+          this.menuList = response.data
+          // console.log(toptree)
+          // console.log(alltree)
+          console.log(this.menuList)
         }
+        // 因为改变了数据并且重新渲染了dom，所以this.$nextTick(()=>{})等待渲染结束后立马调用新的代码
         this.$nextTick(() => {
           this.menuListTreeSetCurrentNode()
         })
@@ -182,19 +200,18 @@ export default {
     },
     // 菜单树选中  参数：当前节点数据，当前节点Node对象span cx
     menuListTreeCurrentChangeHandle (data, node) {
-      this.dataForm.parentId = data.id
-      this.dataForm.parentName = data.label
-      // console.log(`${data.id}~${node.label}`) // 都能获得当前选中节点的text
-      console.log(`${data.id}~${data.label}`) // 都能获得当前选中节点的text
+      this.dataForm.parentId = data.Key
+      this.dataForm.parentName = data.Label
+      console.log(`${data.Key}~${data.Label}`) // 都能获得当前选中节点的text
       this.elPopoverElTreeVisible = false
     },
     // 菜单树设置当前选中节点
     menuListTreeSetCurrentNode () {
       this.$refs.menuListTree.setCurrentKey(this.dataForm.parentId)
-      this.dataForm.parentName = (this.$refs.menuListTree.getCurrentNode() || {})['name']
+      this.dataForm.parentName = (this.$refs.menuListTree.getCurrentNode() || {})['Label']
+      // 通过 key 设置某个节点的当前选中状态，使用此方法必须设置 node-key 属性
+      // 获取当前被选中节点的 data，若没有节点被选中则返回 null
     },
-
-
 
     // 表单提交
     dataFormSubmit () {
@@ -203,21 +220,19 @@ export default {
           if (this.dataForm.parentId === -9999) {
             this.dataForm.parentId = null
           }
-          var tick = !this.dataForm.id ? API.menu.add(this.dataForm) : API.permission.edit(this.dataForm)
-          console.log("陈工0：这儿能执行");
+          var tick = !this.dataForm.id ? API.menu.add(this.dataForm) : API.menu.edit(this.dataForm)
           tick.then(response => {
-            console.log(response.code)
-            if(response.code === '0000') {
-              console.log("陈3");
+            if (response.code === '0000') {
               this.$message({
                 message: `${this.dataForm.id ? '修改成功' : '新增成功'}`,
                 type: 'success',
-                duration: 1500,
+                duration: 3000,
                 onClose: () => {
                   this.visible = false
                   this.$emit('refreshDataList')
                 }
               })
+              console.log(this.dataForm.menuUrl)
             }
           })
         }

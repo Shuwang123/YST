@@ -16,6 +16,7 @@ const service = axios.create({
   // 为什么一直报错：POST https://www.easy-mock.com/mock/5c6a25ab218aad2259a06bc7/example/YstApiMenu/LoadData 404 (Not Found)
   baseURL: '/proxyApi'
 })
+
 // request拦截器
 service.interceptors.request.use(config => {
   NProgress.start()
@@ -23,15 +24,15 @@ service.interceptors.request.use(config => {
 }, error => {
   return Promise.reject(error)
 })
+
 // response拦截器
 service.interceptors.response.use(response => {
-  /*console.log(response);*/
-    if (JSON.stringify(response.headers)=='{"content-type":"application/vnd.ms-excel;charset=UTF-8"}'){
-      NProgress.done();
-      return response;
-    }
+  if (JSON.stringify(response.headers)=='{"content-type":"application/vnd.ms-excel;charset=UTF-8"}'){
+    NProgress.done()
+    return response
+  }
   if (response.data && response.data.code === 403) { // 未登录
-    removeStore('userInfo');
+    removeStore('userInfo')
     router.push({ name: 'login' })
   } else if (response.data && response.data.code === 401) {
     Message.error({message: '您没有权限进行相关操作' })
@@ -43,7 +44,11 @@ service.interceptors.response.use(response => {
         Message.error({message: message})
       })
     } else {
-      Message.success({message: response.data.message})
+      Message.success({
+        message: '该改改改该改改',
+        duration: 1000
+      })
+      // Message.success({message: response.data.message})
     }
   }
 

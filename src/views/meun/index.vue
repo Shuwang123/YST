@@ -19,6 +19,7 @@
               v-loading="dataListLoading"
               :height="$store.state.documentClientIFRMAE"
               style="width: 100%;text-align: center">
+      <el-table-column type="index" label="默认排序" width="100" header-align="center"></el-table-column>
       <el-table-column prop="Id" label="ID" width="100" header-align="center"></el-table-column>
       <el-table-column prop="Name" label="菜单名字" width="100" align="center"></el-table-column>
       <el-table-column prop="Url" label="菜单链接" min-width="100" align="center" :show-overflow-tooltip="true"></el-table-column>
@@ -30,10 +31,10 @@
       <el-table-column prop="" label="操作" width="200" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain icon="el-icon-edit"
-                     @click="handleEdit(scope.$index, scope.row)">编辑
+                     @click="addOrUpdateHandle(scope.row)">编辑
           </el-button>
           <el-button type="danger" size="mini" plain icon="el-icon-delete"
-                     @click="handleEdit(scope.$index, scope.row)">删除
+                     @click="handelDelete(scope.$index, scope.row)">删除
           </el-button>
         </template>
       </el-table-column>
@@ -90,7 +91,7 @@ export default {
   methods: {
     // 公用post请求方法(查询、底部分页请求pageIndex、pageSize)
     postMenu () {
-      API.menu.search(this.objMenu).then(result => {
+      API.menu.getMenu(this.objMenu).then(result => {
         if (result.code === '0000') {
           this.allMenus = result.total  // 表中总条数
           this.dataMenu = result.data   // 返回的查询结果数据
@@ -181,21 +182,23 @@ export default {
     },
     addOrUpdateHandle (item) {
       this.addOrUpdateVisible = true
+      console.log(item)
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(item)
       })
     },
-    deleteHandle (id) {
-      var ids = id ? [id] : this.dataListSelections.map(function (item) {
-        return item.id
-      })
-      var dataJSON = {'id': ids.join(',')}
-      this.$confirm(`确定对[id=${ids.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+    handelDelete (index,data) {
+      // var ids = id ? [id] : this.dataListSelections.map(function (item) {
+      //   return item.id
+      // })
+      var ids = [data.Id]
+      var dataJSON = {'ids': ids.join(',')}
+      this.$confirm(`确定对[id=${ids.join(',')}]进行[${data ? '删除' : '批量删除'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        API.permission.deletes(dataJSON).then(response => {
+        API.menu.deletes(dataJSON).then(response => {
           if (response.code === '0000') {
             this.$message({
               type: 'success',

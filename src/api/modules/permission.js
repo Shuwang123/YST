@@ -15,7 +15,7 @@ export function add (params) {
 export function edit (params) {
   return request({
     // url: requestUrl('/mobilereport/admin/permission/edit'),
-    url: requestUrl('/proxyApi/YstApiMenu/Create'),
+    url: requestUrl('/YstApiMenu/Edit'),
     method: 'post',
     data: requestParam(params)
   })
