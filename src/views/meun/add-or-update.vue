@@ -171,8 +171,8 @@ export default {
         console.log(Id)
         var o = {'id': Id}
         console.log(o) // 这行执行了
-        API.menu.getEdit(o).then(result => {  // 这个API请求未执行
-          console.log("123123")
+        API.menu.getEdit(o).then(result => { // 这个API请求未执行
+          console.log(result + '123123')
           if (result.code === '0000') {
             var obj = {
               id: result.data.Id,

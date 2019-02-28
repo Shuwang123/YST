@@ -22,8 +22,8 @@ export function edit (params) {
 // 菜单编辑前新鲜的row单行查询数据??????????????????????????????
 export function getEdit (params) {
   return request({
-    url: requestUrl('/YstApiMenu/Edit'),
-    method: 'get',
+    url: requestUrl('/YstApiMenu/GetEdit'),
+    method: 'post',
     data: requestParam(params, 'get')
   })
 }
@@ -70,5 +70,3 @@ export function getTree () {
 //     params: requestParam(params, 'get')
 //   })
 // }
-
-
