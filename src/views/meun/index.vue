@@ -180,10 +180,11 @@ export default {
     iconClasses (row) {
       return [ !row._expanded ? 'el-icon-caret-right' : 'el-icon-caret-bottom' ]
     },
-    addOrUpdateHandle (item) {
+    addOrUpdateHandle (data) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(item)
+        var Id = data === undefined ? null : data.Id
+        this.$refs.addOrUpdate.init(Id)
       })
     },
     handelDelete (index,data) {

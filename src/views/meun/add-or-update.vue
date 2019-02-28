@@ -6,7 +6,7 @@
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="类型：" prop="UrlType">
         <el-radio-group v-model="dataForm.urlType">
-          <el-radio :label="0">目录</el-radio>
+          <!--<el-radio :label="0">目录</el-radio>-->
           <el-radio :label="1">菜单</el-radio>
           <el-radio :label="2">按钮</el-radio>
         </el-radio-group>
@@ -162,27 +162,33 @@ export default {
         type: 1,
         parentName: ''
       }
-      this.$refs['dataForm'].resetFields()  //  整个表单重置,不加s单个
+      this.$refs['dataForm'].resetFields() // 不加s单个，加s整个表单重置
     },
-    // 这个init怎么在父组件中被调用的，看不懂this.$refs.addOrUpdate.init(item)?
-    init (item) {
+    init (Id) {
       // 如果item不为undefined表示‘编辑’，那dataForm就应该有一个初始值来调用；如果为‘添加’，那dataForm就用默认的初始空值
       this.visible = true
-      if (item) {
-        var obj = {
-          id: item.Id,
-          name: item.Name,
-          parentId: item.ParentId,
-          url: item.Url,
-          icon: item.Icon,
-          displayOrder: item.DisplayOrder,
-          urlType: item.UrlType,
-
-          // 这三个后台都不调用
-          type: item.UrlType,
-          parentName: ''
-        }
-        this.dataForm = obj
+      if (Id) {
+        console.log(Id)
+        var o = {'id': Id}
+        console.log(o) // 这行执行了
+        API.menu.getEdit(o).then(result => {  // 这个API请求未执行
+          console.log("123123")
+          if (result.code === '0000') {
+            var obj = {
+              id: result.data.Id,
+              name: result.data.Name,
+              parentId: result.data.ParentId,
+              url: result.data.Url,
+              icon: result.data.Icon,
+              displayOrder: result.data.DisplayOrder,
+              urlType: result.data.UrlType,
+              type: result.data.UrlType, // 这两个后台并不使用
+              parentName: ''
+            }
+            this.dataForm = obj
+            console.log(obj)
+          }
+        })
         if (!this.dataForm.parentId) {
           this.dataForm.parentId = -9999
         }
@@ -190,19 +196,15 @@ export default {
       // 请求el-tree的节点内容，并填充这个el-tree
       API.menu.getTree().then(response => {
         if (response.data) {
-          // var alltree = treeDataTranslate(response.data.permissionList, 'id')
-          // var alltree = treeDataTranslate(response.data, 'id')
           // var toptree = {'parentId': -1, 'id': -9999, 'name': '顶级目录', 'type': 0, children: alltree}
-          // this.menuList = [toptree] // 这儿就是el-tree那个数据的规范结构嘛，外层一个数组，数组的值就直接通过字面量的方式就传入了一个对象作为值
-          this.menuList = JSON.parse(JSON.stringify(response.data).toLowerCase()) // 把后端的那个坑货的大写字母转小写，转换后方便前端直接使用
-          // console.log(toptree)
-          // console.log(alltree)
+          // this.menuList = [toptree]
+          this.menuList = JSON.parse(JSON.stringify(response.data).toLowerCase()) // 把后端的那个坑货的大写字母转小写方便直接用
         }
-        // 因为改变了数据并且重新渲染了dom，所以this.$nextTick(()=>{})等待渲染结束后立马调用新的代码
         this.$nextTick(() => {
           this.menuListTreeSetCurrentNode()
         })
-      });
+      })
+      console.log("怎么弄")
     },
     // 菜单树选中  参数：当前节点数据，当前节点Node对象span cx
     menuListTreeCurrentChangeHandle (data, node) {
@@ -213,9 +215,8 @@ export default {
     },
     // 菜单树设置当前选中节点
     menuListTreeSetCurrentNode () {
-      this.$refs.menuListTree.setCurrentKey(this.dataForm.parentId)
+      this.$refs.menuListTree.setCurrentKey(this.dataForm.parentId) // 通过 key 设置对应节点激活为选中状态，此方法必须搭配 node-key 属性
       this.dataForm.parentName = (this.$refs.menuListTree.getCurrentNode(this.dataForm.parentId) || {})['label']
-      // 通过 key 设置某个节点的当前选中状态，使用此方法必须设置 node-key 属性
       // 获取当前被选中节点的 data，若没有节点被选中则返回 null
     },
 

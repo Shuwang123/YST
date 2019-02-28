@@ -2,7 +2,7 @@ import request from '../../request'
 import requestUrl from '../../requestUrl'
 import requestParam from '../../requestParam'
 
-// 新增权限点 // post菜单列表--分页接口 yes
+// 菜单添加
 export function add (params) {
   return request({
     url: requestUrl('/YstApiMenu/Create'),
@@ -10,17 +10,25 @@ export function add (params) {
     data: requestParam(params)
   })
 }
-// 修改权限点
+// 菜单编辑
 export function edit (params) {
   return request({
-    // url: requestUrl('/mobilereport/admin/permission/edit'),
     url: requestUrl('/YstApiMenu/Edit'),
     method: 'post',
     data: requestParam(params)
   })
 }
 
-// 删除权限
+// 菜单编辑前新鲜的row单行查询数据??????????????????????????????
+export function getEdit (params) {
+  return request({
+    url: requestUrl('/YstApiMenu/Edit'),
+    method: 'get',
+    data: requestParam(params, 'get')
+  })
+}
+
+// 菜单删除
 export function deletes (params) {
   return request({
     url: requestUrl('/YstApiMenu/Delete'),
@@ -28,7 +36,7 @@ export function deletes (params) {
     params: requestParam(params, 'get')
   })
 }
-//
+// 获取菜单数据，查询，分页
 export function getMenu (params) {
   return request({
     url: requestUrl('/YstApiMenu/LoadData'),
@@ -37,7 +45,7 @@ export function getMenu (params) {
   })
 }
 
-// 获取tree树的内容text
+// 获取菜单tree树结构text 后端已把数据格式处理好
 export function getTree () {
   return request({
     url: requestUrl('/YstApiMenu/LoadMenuTree'), // /api/permission/list
@@ -46,21 +54,21 @@ export function getTree () {
   })
 }
 
-// 获取所有权限
-export function list (params) {
-  return request({
-    url: requestUrl('/mobilereport/admin/permission/list'), // /api/permission/list
-    method: 'get',
-    params: requestParam(params, 'get')
-  })
-}
-// 新增时获取权限
-export function addlist (params) {
-  return request({
-    url: requestUrl('/mobilereport/admin/permission/list'), // /api/permission/list/add
-    method: 'get',
-    params: requestParam(params, 'get')
-  })
-}
+// // 获取所有权限
+// export function list (params) {
+//   return request({
+//     url: requestUrl('/mobilereport/admin/permission/list'), // /api/permission/list
+//     method: 'get',
+//     params: requestParam(params, 'get')
+//   })
+// }
+// // 新增时获取权限
+// export function addlist (params) {
+//   return request({
+//     url: requestUrl('/mobilereport/admin/permission/list'), // /api/permission/list/add
+//     method: 'get',
+//     params: requestParam(params, 'get')
+//   })
+// }
 
 
