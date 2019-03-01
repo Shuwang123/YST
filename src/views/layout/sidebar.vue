@@ -8,7 +8,7 @@
         background-color="#545c64"
         text-color="#fff"
         active-text-color="#ffd04b">
-        <sub-menu-nav v-if="menuNav.menuId !== 18 && menuNav.menuId !== 25 && menuNav.menuId !== 31"
+        <sub-menu-nav
           v-for="menuNav in $store.state.menuNavList"
           :key="menuNav.menuId"
           :menu-nav="menuNav">

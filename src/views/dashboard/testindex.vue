@@ -20,12 +20,12 @@ export default {
     getList () {
       /* const that = this */
       axios.get('../static/data/data.json').then((response) => {
-        console.log(response)
+        //console.log(response)
         this.dataList = response.data.menuList
-        console.log(this.dataList)
+        //console.log(response)
         if (this.dataList) {
           var data = this.dataList
-          console.log(data)
+          //console.log(data)
           function toTree (data) {
             // 删除所有children,以防止多次调用
             data.forEach(function (item) {

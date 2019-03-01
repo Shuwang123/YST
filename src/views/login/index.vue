@@ -37,8 +37,8 @@ export default {
   data() {
     return {
       ruleForm: {
-        name: '',
-        pass: ''
+        name: 'superman',
+        pass: 'admin'
       },
       rules: {
         name: [
@@ -56,11 +56,11 @@ export default {
         if (valid) {
           var passMd5 = md5(this.ruleForm.pass)
           console.log(passMd5)
-          // API.common.login({username: this.ruleForm.name, password: passMd5}).then(data => {
-          this.$ios.get('../static/data/data.json').then(result => {
-            if (true) {
-            // if (data.code === '0000') {
-              setStore('userInfo', result.data)
+          API.common.login({userName: this.ruleForm.name, password: this.ruleForm.pass,remmberMe: false,}).then(data => {
+          // this.$ios.get('../static/data/data.json').then(result => {
+            if (data.code === '0000') {
+              setStore('userInfo', data.data)
+              console.log(data)
               this.$router.push({name: 'dashboard'})
             } else {
               this.$message.error('账号或者密码错误，请重新登录！')
