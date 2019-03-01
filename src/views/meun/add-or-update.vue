@@ -23,8 +23,9 @@
             <el-tree
                     :data="menuList"
                     :props="defaultProps"
-                    node-key="key"
                     ref="menuListTree"
+
+                    node-key="key"
                     @current-change="menuListTreeCurrentChangeHandle"
                     :default-expand-all="true"
                     :highlight-current="true"
@@ -168,12 +169,14 @@ export default {
       // 如果item不为undefined表示‘编辑’，那dataForm就应该有一个初始值来调用；如果为‘添加’，那dataForm就用默认的初始空值
       this.visible = true
       if (Id) {
-        console.log(Id)
+        // console.log(Id)
         var o = {'id': Id}
         console.log(o) // 这行执行了
         API.menu.getEdit(o).then(result => { // 这个API请求未执行
-          console.log(result + '123123')
+          console.log('123123')
           if (result.code === '0000') {
+            console.log("测过")
+
             var obj = {
               id: result.data.Id,
               name: result.data.Name,
@@ -186,7 +189,7 @@ export default {
               parentName: ''
             }
             this.dataForm = obj
-            console.log(obj)
+            // console.log(obj)
           }
         })
         if (!this.dataForm.parentId) {

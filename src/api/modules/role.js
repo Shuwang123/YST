@@ -4,7 +4,7 @@ import requestParam from '../requestParam'
 // 角色新增
 export function roleAdd (params) {
   return request({
-    url: requestUrl('/mobilereport/admin/role/add'),
+    url: requestUrl('/YstApiRole/Create'),
     method: 'post',
     params: requestParam(params, 'get')
   })
@@ -12,15 +12,15 @@ export function roleAdd (params) {
 // 角色删除
 export function roleDelete (params) {
   return request({
-    url: requestUrl('/mobilereport/admin/role/delete'),
-    method: 'post',
+    url: requestUrl('/YstApiRole/Delete'),
+    method: 'get',
     params: requestParam(params, 'get')
   })
 }
 // 角色编辑
 export function roleEdit (params) {
   return request({
-    url: requestUrl('/mobilereport/admin/role/update'),
+    url: requestUrl('/YstApiRole/Edit'),
     method: 'post',
     params: requestParam(params, 'get')
   })
@@ -28,7 +28,7 @@ export function roleEdit (params) {
 // 角色管理列表
 export function jueseList (params) {
   return request({
-    url: requestUrl('/mobilereport/admin/role/list'),
+    url: requestUrl('/YstApiRole/LoadData'),
     method: 'post',
     data: requestParam(params)
   })
@@ -37,7 +37,7 @@ export function jueseList (params) {
 // 角色详情
 export function roleDetail (params) {
   return request({
-    url: requestUrl('/mobilereport/admin/role/detail'),
+    url: requestUrl('/YstApiRole/GetEdit'),
     method: 'get',
     params: requestParam(params, 'get')
   })

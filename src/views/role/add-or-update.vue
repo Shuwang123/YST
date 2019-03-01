@@ -6,22 +6,28 @@
     :visible.sync="visible" @close="handleClose">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm"  label-width="80px">
       <el-form-item label="角色编码" prop="roleCode">
-        <el-input v-model="dataForm.code" placeholder="角色编码"></el-input>
+        <el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="dataForm.Id == 0"></el-input>
       </el-form-item>
-      <el-form-item label="角色名称" prop="name">
-        <el-input v-model="dataForm.name" placeholder="角色名称"></el-input>
+      <el-form-item label="角色名称" prop="Name">
+        <el-input v-model="dataForm.Name" placeholder="角色名称Name"></el-input>
       </el-form-item>
       <el-form-item label="备注" prop="description">
-        <el-input v-model="dataForm.description" placeholder="备注"></el-input>
+        <el-input v-model="dataForm.Description" placeholder="描述"></el-input>
       </el-form-item>
       <el-form-item size="mini" label="授权">
         <el-tree
-          ref="menuListTree"
-          :data="data2"
           show-checkbox
-          node-key="id"
+
+          :data="dataTree"
+          :props="defaultProps"
+          ref="menuListTree"
+
+          node-key="key"
           :default-expand-all="true"
-          :props="defaultProps">
+
+          :default-expanded-keys="[1,2,3]"
+          :default-checked-keys="checkedKey"
+          >
         </el-tree>
       </el-form-item>
     </el-form>
@@ -33,17 +39,21 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import {treeDataTranslate} from '@/utils'
+// import {treeDataTranslate} from '@/utils'
 export default {
   data () {
     return {
+      siEdit: true,
       nodes: [],
-      data2: [],
+
+      dataTree: [], // 菜单树
+      checkedKey: [],
       defaultProps: {
         children: 'children',
-        label: 'name',
-        value: 'id'
+        label: 'label',
+        key: 'key'
       },
+
       visible: false,
       menuList: [],
       menuListTreeProps: {
@@ -52,11 +62,12 @@ export default {
       },
       dataForm: {
         code: '', // 角色编码
-        id: 0,
-        roleId: '',
-        name: '',
-        description: '',
-        roleType: ''
+        RoleType: '',
+        RoleId: '',
+
+        Id: 0,
+        Name: '',
+        Description: ''
       },
       dataRule: {
         name: [
@@ -67,60 +78,77 @@ export default {
   },
   methods: {
     init (id) {
-      this.dataForm.roleId = id || 0
+      // 先获取整棵 最完整的：菜单树 转换后全小写key label children
+      API.menu.getTree().then(result => {
+        if (result.code === '0000') {
+          this.dataTree = JSON.parse(JSON.stringify(result.data).toLowerCase())
+        }
+      })
+      this.dataForm.Id = id || 0
       this.visible = true
-      if (this.dataForm.roleId) {
-        API.role.roleDetail({'roleId': id}).then(response => {
-          console.log(response)
-          if (response.code === '0000') {
-            this.dataForm.name = response.data.roleMap.role.name
-            this.dataForm.description = response.data.roleMap.role.description
-            this.dataForm.code = response.data.roleMap.role.code
-            if (response.data.roleMap.permissions.length > 0) {
-              var permissions = treeDataTranslate(response.data.roleMap.permissions, 'id')
-              this.getNodes(permissions)
-              this.$refs.menuListTree.setCheckedKeys(this.nodes)
+      // console.log(id)
+      this.$nextTick(() => {
+        if (this.dataForm.Id) {
+          // this.isEdit = false
+          // 根据角色的id获取那个角色的单独的：固定Id Name Desctiption 并且返回Items（其中有这个角色以前的权限：RoleId+MenuId）
+          API.role.roleDetail({id: id}).then(result => {
+            console.log(result)
+            if (result.code === '0000') {
+              this.dataForm.Name = result.data.Name
+              this.dataForm.Description = result.data.Description
+              this.dataForm.Id = result.data.Id
+              var arr = []
+              if (result.data.Items.length > 0) { // 有权限的才处理初始选中
+                for (var i = 0; i < result.data.Items.length; i++) {
+                  arr.push(result.data.Items[i].MenuId)
+                }
+                console.log(arr.join())
+                // this.checkedKey = arr
+                this.$refs.menuListTree.setCheckedKeys(arr) // 上面那个思路貌似同理，但实际上好像不稳定，有时候出不来
+              }
             }
-          }
-          if (response.code === '0000' && response.data && response.data.permissionList) {
-            this.data2 = treeDataTranslate(response.data.permissionList, 'id')
-            console.log(this.data2)
-          }
-        })
-      } else {
-        API.role.rolePermissonList().then(response => {
-          console.log(response)
-          if (response.code === '0000' && response.data.permissionList) {
-            this.data2 = treeDataTranslate(response.data.permissionList, 'id')
-            console.log(this.data2)
-          }
-        })
-      }
+            // if (response.code === '0000' && response.data && response.data.permissionList) {
+            //   this.data2 = treeDataTranslate(response.data.permissionList, 'id')
+            //   console.log(this.data2)
+            // }
+          })
+        } else {
+          // API.role.rolePermissonList().then(response => {
+          //   console.log(response)
+          //   if (response.code === '0000' && response.data.permissionList) {
+          //     this.data2 = treeDataTranslate(response.data.permissionList, 'id')
+          //     console.log(this.data2)
+          //   }
+          // })
+        }
+      })
     },
     handleClose () {
-      this.nodes = []
+      // this.checkedKey = []
       this.$refs['dataForm'].resetFields()
       this.$refs.menuListTree.setCheckedKeys([])
-      this.dataForm.code = ''
+      this.dataForm.Id = ''
+      this.dataForm.Description = '' // 上面的清空表单，这个貌似没被清掉，不知道为啥子
+      // this.isEdit = true
     },
     // 表单提交
     dataFormSubmit () {
-      var checkedKeys = this.$refs.menuListTree.getCheckedKeys()
-      var halfpermissions = this.$refs.menuListTree.getHalfCheckedKeys()
-      var checkpermissions = checkedKeys.concat(halfpermissions)
+      this.checkedKey = this.$refs.menuListTree.getCheckedKeys()
+      // var halfpermissions = this.$refs.menuListTree.getHalfCheckedKeys() // 半选中？
+      // var checkpermissions = checkedKeys.concat(halfpermissions)
+      console.log(this.checkedKey)
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var params = {
-            permissionIds: checkpermissions.join(','),
-            code: this.dataForm.code,
-            roleName: this.dataForm.name,
-            description: this.dataForm.description,
-            roleId: this.dataForm.roleId
+            id: 0, // 空 这个后端貌似不用  传递0后端自动生成了一个id，挨个排序的
+            Name: this.dataForm.Name,
+            Description: this.dataForm.Description,
+            MenuIds: this.checkedKey.join()
           }
-          if (this.dataForm.roleId) {
-            params.roleId = this.dataForm.roleId
+          if (this.dataForm.Id) {
+            params.id = this.dataForm.Id
           }
-          var tick = !this.dataForm.roleId ? API.role.roleAdd(params) : API.role.roleEdit(params)
+          var tick = !this.dataForm.Id ? API.role.roleAdd(params) : API.role.roleEdit(params)
           tick.then((data) => {
             if (data.code === '0000') {
               this.$message({

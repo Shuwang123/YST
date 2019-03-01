@@ -45,7 +45,7 @@ service.interceptors.response.use(response => {
       })
     } else {
       Message.success({
-        message: '该改改改该改改',
+        message: '响应成功！1000',
         duration: 1000
       })
       // Message.success({message: response.data.message})
