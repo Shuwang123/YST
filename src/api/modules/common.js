@@ -8,17 +8,16 @@ export function captcha (uuid) {
 // 登录
 export function login (params) {
   return request({
-    url: requestUrl('/mobilereport/admin/login'), // /admin/login
-    method: 'post',
+    url: requestUrl('/YstApiAccount/LoginOn'), // /admin/login
+    method: 'POST',
     params: requestParam(params, 'get')
   })
 }
-
 // 退出
 export function logout () {
   return request({
-    url: requestUrl('/mobilereport/admin/logout'), // /admin/logout
-    method: 'post',
+    url: requestUrl('/YstApiAccount/LogOut'), // /admin/logout
+    method: 'POST',
     data: requestParam()
   })
 }
