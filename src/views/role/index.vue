@@ -2,7 +2,7 @@
   <div class="mod-role">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.roleName" placeholder="角色名称" clearable></el-input>
+        <el-input v-model="dataForm.Name" placeholder="角色名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
@@ -19,16 +19,17 @@
       style="width: 100%;">
       <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
       <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
-      <el-table-column prop="id" header-align="center" :align="$store.state.common.align" width="80" label="ID"></el-table-column>
-      <el-table-column prop="name" header-align="center" :align="$store.state.common.align" label="角色名称"></el-table-column>
-      <el-table-column prop="description" header-align="center" :align="$store.state.common.align" label="备注"></el-table-column>
-      <el-table-column header-align="center" :align="$store.state.common.align" width="180" label="创建时间">
+      <el-table-column prop="Name" header-align="center" :align="$store.state.common.align" label="角色名称" width="300"></el-table-column>
+      <el-table-column prop="Description" header-align="center" :align="$store.state.common.align" label="备注"></el-table-column>
+      <!-- 这里显示创建时间，里面的方法只是用来处理时间格式化 -->
+      <!-- <el-table-column header-align="center" :align="$store.state.common.align" width="180" label="创建时间">
         <template slot-scope="scope">
           <span>
              {{ scope.row.createdOn |formatDate}}
           </span>
         </template>
-      </el-table-column>
+      </el-table-column> -->
+      <el-table-column prop="rolecheckList" header-align="center" :align="$store.state.common.align" label="权限"></el-table-column>
       <el-table-column header-align="center" :align="$store.state.common.align" width="200px" label="操作">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
@@ -62,19 +63,10 @@ export default {
       pageIndex: 1,
       totalPage: 1,
       dataForm: {
-        roleName: ''
+        Name: ''
       },
       dataList: [],
       dataListSelections: []
-    }
-  },
-  filters: {
-    formatDate (time) {
-      if (!time) {
-        return ''
-      }
-      var date = new Date(time)
-      return formatDate(date, 'yyyy-MM-dd hh:mm')
     }
   },
   components: {
@@ -89,21 +81,24 @@ export default {
     selectionChangeHandle (val) {
       this.dataListSelections = val
     },
-    // 获取数据
     getDataList () {
-      var parmet = {pageIndex: this.pageIndex, pageSize: this.pageSize, 'roleName': String(this.dataForm.roleName)}
+      var parmet = {pageIndex: this.pageIndex, pageSize: this.pageSize, 'Name': String(this.dataForm.Name)}
       this.dataListLoading = true
       API.role.jueseList(parmet).then(response => {
-        console.log(response)
+        console.log(1111);
+        console.log(response);
+        console.log(2222);
         if (response.code === '0000') {
-          if (response.data.roleList) {
-            this.dataList = response.data.roleList
+          console.log('response.code等于0000');
+          if (response.data) {
+            this.dataList = response.data;
+            console.log(3333);
             console.log(this.dataList)
+            console.log(4444);
           }
-          /* this.$message.success('数据加载成功！') */
-          this.totalPage = response.paging.totalCount
+          this.totalPage = response.total
         } else {
-          this.$message.error(response.message)
+          this.$message.error(response.message);
         }
         this.dataListLoading = false
       })
