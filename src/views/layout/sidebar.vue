@@ -5,15 +5,18 @@
         :default-active="menuNavActive"
         :collapse="$store.state.sidebarCollapse"
         class="site-sidebar__menu"
-        background-color="#545c64"
+        background-color="rgba(0,0,0,0)"
         text-color="#fff"
         active-text-color="#ffd04b">
+        <!--background-color="#545c64"-->
         <sub-menu-nav
           v-for="menuNav in $store.state.menuNavList"
           :key="menuNav.menuId"
           :menu-nav="menuNav">
         </sub-menu-nav>
       </el-menu>
+    </div>
+    <div class="sy">
     </div>
   </aside>
 </template>
@@ -121,13 +124,28 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .dashboard {
-    &-container {
-      margin: 30px;
-    }
-    &-text {
-      font-size: 30px;
-      line-height: 46px;
-    }
+.dashboard {
+  &-container {
+    margin: 30px;
   }
+  &-text {
+    font-size: 30px;
+    line-height: 46px;
+  }
+}
+.site-sidebar {
+  /*height: 100%;*/
+  overflow: hidden;
+  & .site-sidebar__inner {
+    background-color: rgba(0,0,0,0.8);
+  }
+  & .sy {
+    position: absolute;
+    top: 0;bottom: 0;right: 0;left: 0;
+    background-image: url("./bg.png");
+    filter: blur(20px);
+    z-index: -1;
+  }
+}
+
 </style>
