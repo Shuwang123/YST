@@ -11,10 +11,11 @@
         <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
       </el-form-item>
     </el-form>
+
     <el-table
       :height="$store.state.documentClientIFRMAE"
       :data="dataList"
-      border
+      border stripe=""
       v-loading="dataListLoading"
       style="width: 100%;">
       <el-table-column type="index" label="序号" align="center" width="100px"></el-table-column>
@@ -22,13 +23,14 @@
       <el-table-column prop="name" header-align="center" align="center" label="门店名称"></el-table-column>
       <el-table-column prop="phone" header-align="center" align="center" label="电话号码"></el-table-column>
       <el-table-column header-align="center" align="center" label="创建时间">
-        <template slot-scope="scope">
-          <span>
-          {{ scope.row.createdOn |formatDate}}
-          </span>
-        </template>
+        <!--<template slot-scope="scope">-->
+          <!--<span>-->
+          <!--{{ scope.row.createdOn |formatDate}}-->
+          <!--</span>-->
+        <!--</template>-->
       </el-table-column>
     </el-table>
+
     <el-pagination
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
@@ -36,7 +38,7 @@
       :page-sizes="[10, 20, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
+      layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
   </div>
 </template>
@@ -110,7 +112,7 @@ export default {
     margin: 10px;
     .el-pagination {
       margin-top: 15px;
-      text-align: right;
+      text-align: left;
     }
     .nav{
       position: absolute;

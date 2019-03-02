@@ -10,7 +10,7 @@
     </el-form>
     <el-table
       :data="dataList"
-      border
+      border stripe=""
       :height="$store.state.documentClientIFRMAE"
       v-loading="dataListLoading"
       style="width: 100%;">
@@ -39,7 +39,7 @@
       :page-sizes="[10, 20, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
-      layout="total, sizes, prev, pager, next, jumper">
+      layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
   </div>
@@ -118,7 +118,7 @@ export default {
     margin: 10px;
     .el-pagination {
       margin-top: 15px;
-      text-align: right;
+      text-align: left;
     }
   }
 }

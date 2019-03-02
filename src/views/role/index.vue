@@ -6,14 +6,14 @@
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
-        <el-button  type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus">新增角色</el-button>
-        <el-button  type="danger" @click="deleteHandle()" icon="el-icon-delete" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus">新增角色</el-button>
+        <el-button type="danger" @click="deleteHandle()" icon="el-icon-delete" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
 
     <el-table
       :data="dataList"
-      border
+      border stripe
       :height="$store.state.documentClientIFRMAE"
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
