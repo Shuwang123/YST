@@ -6,7 +6,8 @@
     :visible.sync="visible" @close="handleClose">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm"  label-width="80px">
       <el-form-item label="角色编码" prop="roleCode">
-        <el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="dataForm.Id == 0"></el-input>
+        <el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="true"></el-input>
+        <!--<el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="dataForm.Id == 0"></el-input>-->
       </el-form-item>
       <el-form-item label="角色名称" prop="Name">
         <el-input v-model="dataForm.Name" placeholder="角色名称Name"></el-input>
@@ -102,7 +103,7 @@ export default {
                 for (var i = 0; i < result.data.Items.length; i++) {
                   arr.push(result.data.Items[i].MenuId)
                 }
-                console.log(arr.join())
+                // console.log(arr.join())
                 // this.checkedKey = arr
                 this.$refs.menuListTree.setCheckedKeys(arr) // 上面那个思路貌似同理，但实际上好像不稳定，有时候出不来
               }

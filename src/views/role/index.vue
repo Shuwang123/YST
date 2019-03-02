@@ -29,7 +29,7 @@
              <!--{{ scope.row.createdOn |formatDate}}-->
           <!--</span>-->
         <!--</template>-->
-      </el-table-column> -->
+      </el-table-column>
       <el-table-column prop="rolecheckList" header-align="center" :align="$store.state.common.align" label="权限"></el-table-column>
       <el-table-column header-align="center" :align="$store.state.common.align" width="200px" label="操作">
         <template slot-scope="scope">
@@ -64,13 +64,15 @@ export default {
   data () {
     return {
       addOrUpdateVisible: false,
-      dataListLoading: false, // 加载
+      dataListLoading: false, // 加载v-loading
+
       pageSize: 10,
       pageIndex: 1,
       totalPage: 1,
       dataForm: {
         Name: ''
       },
+
       dataList: [],
       dataListSelections: []
     }
@@ -86,19 +88,17 @@ export default {
   methods: {
     selectionChangeHandle (val) {
       this.dataListSelections = val
-      console.log(this.dataListSelections)
+      // console.log(val) // 自动就是个数组
+      // console.log(this.dataListSelections)
     },
     getDataList () {
       var parmet = {pageIndex: this.pageIndex, pageSize: this.pageSize, 'Name': String(this.dataForm.Name), isPaging: true}
       this.dataListLoading = true
       API.role.jueseList(parmet).then(response => {
-        // console.log(response)
         if (response.code === '0000') {
           if (response.data) {
             this.dataList = response.data
-            // console.log(this.dataList)
           }
-          /* this.$message.success('数据加载成功！') */
           this.totalPage = response.total
         } else {
           this.$message.error(response.message) // ??????
@@ -108,8 +108,7 @@ export default {
     },
     // 每页数
     sizeChangeHandle (val) {
-      this.pageSize = val
-      // this.pageIndex = 1
+      this.pageSize = val // this.pageIndex = 1
       this.getDataList()
     },
     // 当前页
@@ -129,7 +128,8 @@ export default {
         return item.Id
       })
       var dataJSON = {ids: ids.join()}
-      this.$confirm(`确定对[ids=${ids.join()}]进行[${this.dataListSelections.length > 0 ? '批量删除' : '删除'}]操作?`, '提示', {
+      // this.$confirm(`确定对[ids=${ids.join()}]进行[${this.dataListSelections.length > 0 ? '批量删除' : '删除'}]操作?`, '提示', {
+      this.$confirm(`确定对[ids=${ids.join()}]进行[${id === undefined ? '批量删除' : '删除'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

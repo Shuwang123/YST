@@ -34,7 +34,7 @@ import md5 from 'js-md5'
 import {setStore} from '@/utils'
 import axios from 'axios'
 export default {
-  data() {
+  data () {
     return {
       ruleForm: {
         name: 'superman',
@@ -56,7 +56,7 @@ export default {
         if (valid) {
           var passMd5 = md5(this.ruleForm.pass)
           console.log(passMd5)
-          API.common.login({userName: this.ruleForm.name, password: this.ruleForm.pass,remmberMe: false,}).then(data => {
+          API.common.login({userName: this.ruleForm.name, password: this.ruleForm.pass, remmberMe: false}).then(data => {
           // this.$ios.get('../static/data/data.json').then(result => {
             if (data.code === '0000') {
               setStore('userInfo', data.data)

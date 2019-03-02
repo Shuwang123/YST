@@ -85,17 +85,18 @@ export default {
     }
   },
   mounted () {
-    // this.getDataList()
     this.getNewMenuList()
   },
   methods: {
     // 公用post请求方法(查询、底部分页请求pageIndex、pageSize)
     postMenu () {
+      this.dataListLoading = true
       API.menu.getMenu(this.objMenu).then(result => {
         if (result.code === '0000') {
           this.allMenus = result.total  // 表中总条数
           this.dataMenu = result.data   // 返回的查询结果数据
         }
+        this.dataListLoading = false
       })
     },
     // 顶部查询菜单功能
@@ -125,15 +126,9 @@ export default {
       this.postMenu()
       // API.permission.list().then(result => {
       // API.permission.add({
-      //   name: this.input4,
-      //   PageIndex: this.pageIndex,
-      //   PageSize: this.pageSize,
-      //   IsPaging: true
       // }).then(result => {
-      //   console.log(result)
       //   if (result.data) {
       //     var tempdataList = treeDataTranslate(result.data.permissionList, 'id')
-      //     console.log(tempdataList)
       //     tempdataList.sort((a, b) => {
       //       return a.showOrder - b.showOrder
       //     })
@@ -188,9 +183,6 @@ export default {
       })
     },
     handelDelete (index,data) {
-      // var ids = id ? [id] : this.dataListSelections.map(function (item) {
-      //   return item.id
-      // })
       var ids = [data.Id]
       var dataJSON = {'ids': ids.join(',')}
       this.$confirm(`确定对[id=${ids.join(',')}]进行[${data ? '删除' : '批量删除'}]操作?`, '提示', {

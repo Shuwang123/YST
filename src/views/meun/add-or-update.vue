@@ -8,7 +8,7 @@
         <el-radio-group v-model="dataForm.urlType">
           <!--<el-radio :label="0">目录</el-radio>-->
           <el-radio :label="1">菜单</el-radio>
-          <el-radio :label="2">按钮</el-radio>
+          <!--<el-radio :label="2">按钮</el-radio>-->
         </el-radio-group>
       </el-form-item>
       <el-form-item label="菜单名称" prop="name">
@@ -68,7 +68,7 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import { treeDataTranslate } from '@/utils'
+// import { treeDataTranslate } from '@/utils'
 export default {
   data () {
     // 这个是卅，有点看不懂
@@ -81,24 +81,13 @@ export default {
     }
     return {
       // menuList: [],
-      visible: false, // 整个 ‘新增、编辑’ 对话框的显隐
+      visible: false,
       elPopoverElTreeVisible: false, // 控制弹出框的显隐，单击v-popover可以切换这个值
 
       dataForm: {
-        // id: 0,
-        // type: 1, // type: 1菜单、2 按钮
-        // name: '',
-        // parentId: 0,
-        // parentName: '',
-        // menuUrl: '',
-        // url: '',
-        // showOrder: 0,
-        // icon: '',
-        // description: '',
-        // identifier: ''
         id: 0,
         name: '',
-        parentId: 3,
+        parentId: -9999,
         url: '',
         icon: '',
         displayOrder: 0,
@@ -118,34 +107,11 @@ export default {
           { validator: validateUrl, trigger: 'blur' }
         ]
       },
-      menuList: [{
-        key: 0,
-        label: '一级 1',
-        children: [{
-          key: 11,
-          label: '二级 1-1',
-          children: [{
-            key: 111,
-            label: '三级 1-1-1'
-          },{
-            key: 112,
-            label: '三级 1-1-2'
-          }]
-        },{
-          key: 21,
-          label: '二级 2-1',
-          children: [{
-            key: 211,
-            label: '三级 1-2-1'
-          },{
-            key: 212,
-            label: '三级 1-2-2'
-          }]
-        }]
-      }],
+      menuList: [],
       defaultProps: {
         children: 'children',
-        label: 'label'
+        label: 'label',
+        key: 'key'
       }
     }
   },
@@ -154,7 +120,7 @@ export default {
       this.dataForm = {
         id: 0,
         name: '',
-        parentId: 3,
+        parentId: -9999,
         url: '',
         icon: '',
         displayOrder: 0,
@@ -165,18 +131,20 @@ export default {
       }
       this.$refs['dataForm'].resetFields() // 不加s单个，加s整个表单重置
     },
-    init (Id) {
-      // 如果item不为undefined表示‘编辑’，那dataForm就应该有一个初始值来调用；如果为‘添加’，那dataForm就用默认的初始空值
-      this.visible = true
-      if (Id) {
-        // console.log(Id)
-        var o = {'id': Id}
-        console.log(o) // 这行执行了
-        API.menu.getEdit(o).then(result => { // 这个API请求未执行
-          console.log('123123')
-          if (result.code === '0000') {
-            console.log("测过")
 
+    // undefined时‘添加’就用默认dataForm值，传值表示‘编辑’
+    init (Id) {
+      this.visible = true
+      function getOneRow () {
+        return API.menu.getEdit({id: Id})
+      }
+      function getMenuTree () {
+        return API.menu.getTree() // 这个API请求未执行(百度到底咋回事，以前访问失败)
+      }
+      if (Id) {
+        this.$ios.all([getOneRow(),getMenuTree()]).then(this.$ios.spread((result,response) => {
+          if (result.code === '0000' && response.code === '0000') {
+            // 请求对应单行的数据! 作为编辑弹窗的初始值（为什么弄并发请求呢? 因为程序自动选择菜单树那步可能会在完整的菜单树渲染完毕之前执行，导致此时菜单节点为空根本就无法选中）
             var obj = {
               id: result.data.Id,
               name: result.data.Name,
@@ -189,40 +157,46 @@ export default {
               parentName: ''
             }
             this.dataForm = obj
-            // console.log(obj)
+            // 请求完整的菜单树
+            this.menuList = JSON.parse(JSON.stringify(response.data).toLowerCase()) // 把后端的那个坑货的大写字母转小写方便直接用
+            this.$nextTick(() => {
+              this.menuListTreeSetCurrentNode()
+            })
+          }
+        }))
+      } else {
+        API.menu.getTree().then(response => {
+          if (response.data) {
+            // var toptree = {'parentId': -1, 'id': -9999, 'name': '顶级目录', 'type': 0, children: alltree}
+            // this.menuList = [toptree]
+            this.menuList = JSON.parse(JSON.stringify(response.data).toLowerCase()) // 把后端的那个坑货的大写字母转小写方便直接用
+            // this.$nextTick(() => {
+            //   this.menuListTreeSetCurrentNode()
+            // })
           }
         })
-        if (!this.dataForm.parentId) {
-          this.dataForm.parentId = -9999
-        }
       }
-      // 请求el-tree的节点内容，并填充这个el-tree
-      API.menu.getTree().then(response => {
-        if (response.data) {
-          // var toptree = {'parentId': -1, 'id': -9999, 'name': '顶级目录', 'type': 0, children: alltree}
-          // this.menuList = [toptree]
-          this.menuList = JSON.parse(JSON.stringify(response.data).toLowerCase()) // 把后端的那个坑货的大写字母转小写方便直接用
-        }
-        this.$nextTick(() => {
-          this.menuListTreeSetCurrentNode()
-        })
-      })
-      console.log("怎么弄")
     },
-    // 菜单树选中  参数：当前节点数据，当前节点Node对象span cx
-    menuListTreeCurrentChangeHandle (data, node) {
-      this.dataForm.parentId = data.key
-      this.dataForm.parentName = data.label
-      console.log(`${data.key}~${data.label}`) // 都能获得当前选中节点的text
-      this.elPopoverElTreeVisible = false
-    },
-    // 菜单树设置当前选中节点
     menuListTreeSetCurrentNode () {
-      this.$refs.menuListTree.setCurrentKey(this.dataForm.parentId) // 通过 key 设置对应节点激活为选中状态，此方法必须搭配 node-key 属性
-      this.dataForm.parentName = (this.$refs.menuListTree.getCurrentNode(this.dataForm.parentId) || {})['label']
-      // 获取当前被选中节点的 data，若没有节点被选中则返回 null
+      this.$refs.menuListTree.setCurrentKey(this.dataForm.parentId)
+      this.dataForm.parentName = (this.$refs.menuListTree.getCurrentNode(this.dataForm.parentId) || {})['label'] // 获取当前被选中的节点的 data，若没有节点被选中则返回 null
     },
 
+    // 菜单树选中  参数：当前节点的数据 和 当前节点的Node对象span
+    menuListTreeCurrentChangeHandle (data, node) {
+      this.dataForm.parentId = Number(data.key) // 这data.key得到的1是字符串，影响下面===判断；小技巧：console.log控制台打印的蓝色亮色是数值，暗色是字符串
+      this.dataForm.parentName = data.label
+      if (this.dataForm.id === this.dataForm.parentId) {
+        this.dataForm.parentId = -9999
+        this.dataForm.parentName = ''
+        this.$message({
+          type: 'warning',
+          message: '您的操作有问题!'
+        })
+      }
+      this.elPopoverElTreeVisible = false
+      // console.log(`${data.key}~${data.label}`) // 都能获得当前选中节点的text
+    },
     // 表单提交
     dataFormSubmit () {
       this.$refs['dataForm'].validate((valid) => {
@@ -231,6 +205,7 @@ export default {
             this.dataForm.parentId = null
           }
           var tick = !this.dataForm.id ? API.menu.add(this.dataForm) : API.menu.edit(this.dataForm)
+          this.visible = false
           tick.then(response => {
             if (response.code === '0000') {
               this.$message({
@@ -238,11 +213,10 @@ export default {
                 type: 'success',
                 duration: 3000,
                 onClose: () => {
-                  this.visible = false
                   this.$emit('refreshDataList')
                 }
               })
-              console.log(this.dataForm.menuUrl)
+              // console.log(this.dataForm.menuUrl)
             }
           })
         }

@@ -21,7 +21,7 @@
 import SubMenuNav from '@/components/sub-menu-nav'
 import {mapMutations} from 'vuex'
 import isEmpty from 'lodash/isEmpty'
-import {getStore,treeDataTranslate} from '@/utils'
+import {getStore, treeDataTranslate} from '@/utils'
 import API from '@/api'
 export default {
   components: {
@@ -44,80 +44,80 @@ export default {
         'icon': 'icon-custom-shouye',
         'orderNum': 0,
         'open': null,
-         'children': []
+        'children': []
       },
-      menuList: [],
+      menuList: []
     }
-    },
-    created () {
-    },
-    mounted(){
-      var userInfo =JSON.parse(getStore('userInfo'));
-      this.menuList=treeDataTranslate(userInfo.menuList,'menuId');
-      console.log(this.menuList)
-      this.menuList.sort((a,b) =>{
-          return a.orderNum - b.orderNum;
-      });
-      this.menuList.forEach(item =>{
-        if  (item.children&&item.children.length>0){
-            item.children.sort((a,b) =>{
-              return a.orderNum - b.orderNum;
-            })
-        }
-      })
-      this.menuList.unshift(this.menudash);
-      this.UPDATE_MENU_NAV_LIST(this.menuList);
-      this.routeHandle(this.$route);
-    },
-    methods: {
-      // 路由操作
-      routeHandle (route) {
-        if (route.path) {
-          var tab = this.$store.state.contentTabs.filter(item => item.name === route.name)[0];
+  },
+  created () {
+  },
+  mounted () {
+    var userInfo = JSON.parse(getStore('userInfo'))
+    this.menuList = treeDataTranslate(userInfo.menuList, 'menuId')
+    console.log(this.menuList)
+    this.menuList.sort((a, b) => {
+      return a.orderNum - b.orderNum
+    })
+    this.menuList.forEach(item => {
+      if (item.children && item.children.length > 0) {
+        item.children.sort((a, b) => {
+          return a.orderNum - b.orderNum
+        })
+      }
+    })
+    this.menuList.unshift(this.menudash)
+    this.UPDATE_MENU_NAV_LIST(this.menuList)
+    this.routeHandle(this.$route)
+  },
+  methods: {
+    // 路由操作
+    routeHandle (route) {
+      if (route.path) {
+        var tab = this.$store.state.contentTabs.filter(item => item.name === route.name)[0]
 
-          // tab不存在, 先添加
-          if (isEmpty(tab)) {
-            var menuNav = this.getMenuNavByRouteName(route.path, this.$store.state.menuNavList);
-            if (!isEmpty(menuNav)) {
-              tab = {
-                id: menuNav.menuId,
-                name: route.name,
-                isNew:true,
-                title: menuNav.name,
-                type:menuNav.type==1?'module':'iframe',
-                url: menuNav.url,
-                iframurl:menuNav.iframurl,
-              }
-              this.ADD_CONTENT_TAB(tab)
+        // tab不存在, 先添加
+        if (isEmpty(tab)) {
+          var menuNav = this.getMenuNavByRouteName(route.path, this.$store.state.menuNavList)
+          if (!isEmpty(menuNav)) {
+            tab = {
+              id: menuNav.menuId,
+              name: route.name,
+              isNew: true,
+              title: menuNav.name,
+              type: menuNav.type === 1 ? 'module' : 'iframe',
+              url: menuNav.url,
+              iframurl: menuNav.iframurl
             }
-          }else{
-            tab=Object.assign({}, tab);
-            tab.isNew=false;
+            this.ADD_CONTENT_TAB(tab)
           }
-          this.menuNavActive = tab.id + '';
-          this.UPDATE_CONTENT_TABS_ACTIVE_NAME({ name: route.name });
-          this.UPDATE_CONTENT_TABS_ACTIVE(tab);
+        } else {
+          tab = Object.assign({}, tab)
+          tab.isNew = false
         }
-      },
-      // 获取菜单导航, 根据路由名称
-      getMenuNavByRouteName (name, menuNavList) {
-        for (var i = 0; i < menuNavList.length; i++) {
-          if (menuNavList[i].children && menuNavList[i].children.length >= 1) {
-              for (var j=0 ;j< menuNavList[i].children.length ;j++){
-                  if (menuNavList[i].children[j].url ===name){
-                    return menuNavList[i].children[j];
-                  }
-              }
-          } else {
-            if (menuNavList[i].url === name) {
-              return menuNavList[i];
+        this.menuNavActive = tab.id + ''
+        this.UPDATE_CONTENT_TABS_ACTIVE_NAME({ name: route.name })
+        this.UPDATE_CONTENT_TABS_ACTIVE(tab)
+      }
+    },
+    // 获取菜单导航, 根据路由名称
+    getMenuNavByRouteName (name, menuNavList) {
+      for (var i = 0; i < menuNavList.length; i++) {
+        if (menuNavList[i].children && menuNavList[i].children.length >= 1) {
+          for (var j = 0; j < menuNavList[i].children.length; j++) {
+            if (menuNavList[i].children[j].url === name) {
+              return menuNavList[i].children[j]
             }
           }
+        } else {
+          if (menuNavList[i].url === name) {
+            return menuNavList[i]
+          }
         }
-      },
-      ...mapMutations(['UPDATE_MENU_NAV_LIST','ADD_CONTENT_TAB', 'UPDATE_CONTENT_TABS_ACTIVE_NAME','UPDATE_CONTENT_TABS_ACTIVE'])
+      }
+    },
+    ...mapMutations(['UPDATE_MENU_NAV_LIST', 'ADD_CONTENT_TAB', 'UPDATE_CONTENT_TABS_ACTIVE_NAME', 'UPDATE_CONTENT_TABS_ACTIVE'])
   }
-  }
+}
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

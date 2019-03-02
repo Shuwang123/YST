@@ -24,24 +24,24 @@
 </template>
 
 <script>
-  import SubMenuNav from '../sub-menu-nav'
-  export default {
-    name: 'sub-menu-nav',
-    props: {
-      menuNav: Object,
-      required: true
-    },
-    components: {
-      SubMenuNav
-    },
-    methods: {
-      // 跳转到菜单导航对应路由
-      gotoRouteHandle (url) {
-        console.log(this.menuNav.name);
-        if (/\S/.test(url)) {
-          this.$router.push({ path: url })
-        }
+import SubMenuNav from '../sub-menu-nav'
+export default {
+  name: 'sub-menu-nav',
+  props: {
+    menuNav: Object,
+    required: true
+  },
+  components: {
+    SubMenuNav
+  },
+  methods: {
+    // 跳转到菜单导航对应路由
+    gotoRouteHandle (url) {
+      console.log(this.menuNav.name)
+      if (/\S/.test(url)) {
+        this.$router.push({ path: url })
       }
     }
   }
+}
 </script>
