@@ -10,7 +10,7 @@
       <el-form-item>
         <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
         <el-button type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus">新增角色</el-button>
-        <el-button type="danger" @click="deleteHandle()" icon="el-icon-delete" :disabled="dataListSelections.length <= 0">批量删除</el-button>
+        <el-button type="danger" @click="handelDelete()" icon="el-icon-delete" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
 
@@ -22,19 +22,33 @@
       v-loading="dataListLoading"
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
-      <el-table-column type="index" label="序号" align="center" width="100px"></el-table-column>
+      <el-table-column type="index" label="序号" align="center" width="50"></el-table-column>
+      <el-table-column prop="FullName" header-align="center" align="center" label="城市" width="100"></el-table-column>
+      <el-table-column prop="Id" header-align="center" align="center" label="ID" width="100"></el-table-column>
       <el-table-column prop="Code" header-align="center" align="center" width="100px" label="门店编码"></el-table-column>
-      <el-table-column prop="Name" header-align="center" align="center" label="门店名称"></el-table-column>
-      <el-table-column prop="Address" header-align="center" align="center" label="门店地址"></el-table-column>
-      <el-table-column prop="Contact" header-align="center" align="center" label="联系人"></el-table-column>
-      <el-table-column prop="Phone" header-align="center" align="center" label="电话号码"></el-table-column>
-      <el-table-column prop="FullName" header-align="center" align="center" label="城市"></el-table-column>
-      <el-table-column header-align="center" align="center" label="创建时间">
+      <el-table-column prop="Name" header-align="center" align="left" label="门店名称" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Address" header-align="center" align="left" label="门店地址" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Contact" header-align="center" align="center" label="联系人" width="100"></el-table-column>
+      <el-table-column prop="Phone" header-align="center" align="center" label="电话号码" width="150"></el-table-column>
+      <el-table-column header-align="center" align="center" label="创建时间" width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.CreatedOn |formatDate}}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="" label="操作" width="190" header-align="center" align="center">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" plain icon="el-icon-edit"
+                     @click="addOrUpdateHandle(scope.row.Id)">编辑
+          </el-button>
+          <el-button type="danger" size="mini" plain icon="el-icon-delete"
+                     @click="handelDelete(scope.row.Id)">删除
+          </el-button>
+        </template>
+      </el-table-column>
     </el-table>
+    <!--"LicenseCode": null,-->
+    <!--"NickName": null,-->
+    <!--"IsSettingLicenseCode": "空"   这三个返回的不知道干啥的，没有使用-->
 
     <el-pagination
       @size-change="sizeChangeHandle"
@@ -96,7 +110,6 @@ export default {
       var parmet = {name: this.dataForm.storeName, code: this.dataForm.storeCode, pageIndex: this.pageIndex, pageSize: this.pageSize, isPaging: true}
       _this.dataListLoading = true
       API.store.storeAll(parmet).then(response => {
-        console.log("觉得辣椒粉")
         if (response.code === '0000') {
           _this.dataList = response.data
           _this.totalPage = response.total
@@ -121,6 +134,35 @@ export default {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id)
+      })
+    },
+    // 删除
+    handelDelete (id) {
+      var ids = id ? [id] : this.dataListSelections.map(function (item) {
+        return item.Id
+      })
+      var dataJSON = {ids: ids.join()}
+      this.$confirm(`确定对[ids=${ids.join()}]进行[${id === undefined ? '批量删除' : '删除'}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log(dataJSON.ids)
+        API.store.deleteSubmit(dataJSON).then((result) => {
+          if (result.code === '0000') {
+            this.$message({
+              type: 'success',
+              message: '删除成功!',
+              duration: 1000,
+              onClose: () => {
+                this.getDataList()
+              }
+            })
+          } else {
+            this.$message.error(result.message)
+            console.log("???")
+          }
+        })
       })
     }
   }

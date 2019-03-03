@@ -4,12 +4,11 @@
     <!--头部查询 搭配 新增-->
     <el-form :inline="true" :model="dataForm">
       <el-form-item>
-        <el-button type="primary" icon="el-icon-plus" @click="addOrUpdateHandle()">新增菜单</el-button>
+        <el-input v-model="objMenu.name" placeholder="菜单名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input placeholder="菜单名称" v-model="objMenu.name" clearable prefix-icon="el-icon-search" @keyup.enter.native="searchMenu">
-          <el-button slot="append" @click="searchMenu">查询</el-button>
-        </el-input>
+        <el-button icon="el-icon-search" @click="searchMenu">查询</el-button>
+        <el-button type="primary" icon="el-icon-plus" @click="addOrUpdateHandle()">新增菜单</el-button>
       </el-form-item>
     </el-form>
 
@@ -19,8 +18,8 @@
               v-loading="dataListLoading"
               :height="$store.state.documentClientIFRMAE"
               style="width: 100%;text-align: center">
-      <el-table-column type="index" label="默认排序" width="100" header-align="center"></el-table-column>
-      <el-table-column prop="Id" label="ID" width="100" header-align="center"></el-table-column>
+      <el-table-column type="index" label="序号" width="50" header-align="center"></el-table-column>
+      <el-table-column prop="Id" label="ID" width="50" header-align="center"></el-table-column>
       <el-table-column prop="Name" label="菜单名字" width="100" align="center"></el-table-column>
       <el-table-column prop="Url" label="菜单链接" min-width="100" align="center" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Icon" label="图标" :show-overflow-tooltip="true" width="100" align="center">
@@ -28,7 +27,7 @@
       <el-table-column prop="ParentId" label="父级ID" width="100" header-align="center"></el-table-column>
       <el-table-column prop="DisplayOrder" label="排序" width="100" header-align="center"></el-table-column>
       <el-table-column prop="UrlType" label="1表示菜单2表示按钮" width="150" header-align="center"></el-table-column>
-      <el-table-column prop="" label="操作" width="200" header-align="center" align="center">
+      <el-table-column prop="" label="操作" width="190" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain icon="el-icon-edit"
                      @click="addOrUpdateHandle(scope.row)">编辑

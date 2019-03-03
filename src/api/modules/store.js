@@ -1,7 +1,7 @@
 import request from '../request'
 import requestUrl from '../requestUrl'
 import requestParam from '../requestParam'
-// 获取所有门店信息
+// 获取和查询门店信息
 export function storeAll (params) {
   return request({
     url: requestUrl('/YstApiStore/LoadData'), // /admin/store/all
@@ -18,10 +18,49 @@ export function quanxianStore (params) {
   })
 }
 
+
+
+
+// 获取所有地址初始化级联组件
 export function getAddress () {
   return request({
-    url: requestUrl('/YstApiStore/LoadStore'), // /admin/store/all
+    url: requestUrl('/YstApiStore/LoadStore'),
     method: 'get',
     data: requestParam('get')
+  })
+}
+
+// 新增提交
+export function addSubmit (params) {
+  return request({
+    url: requestUrl('/YstApiStore/Create'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 编辑门店前先get获取单行数据
+export function getStoreRow () {
+  return request({
+    url: requestUrl('/YstApiStore/GetEdit'),
+    method: 'get',
+    data: requestParam('get')
+  })
+}
+// 编辑提交
+export function editSubmit (params) {
+  return request({
+    url: requestUrl('/YstApiStore/Edit'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 删除提交
+export function deleteSubmit (params) {
+  return request({
+    url: requestUrl('/YstApiStore/Delete'),
+    method: 'post',
+    data: requestParam(params)
   })
 }

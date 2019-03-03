@@ -31,7 +31,7 @@
         <!--</template>-->
       </el-table-column>
       <el-table-column prop="rolecheckList" header-align="center" :align="$store.state.common.align" label="权限"></el-table-column>
-      <el-table-column header-align="center" :align="$store.state.common.align" width="200px" label="操作">
+      <el-table-column header-align="center" :align="$store.state.common.align" width="190" label="操作">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain icon="el-icon-edit"
                      @click="addOrUpdateHandle(scope.row.Id)">编辑
