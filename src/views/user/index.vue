@@ -10,14 +10,14 @@
     </el-form>
     <el-table
       :data="dataList"
-      border stripe=""
+      border stripe
       :height="$store.state.documentClientIFRMAE"
       v-loading="dataListLoading"
       style="width: 100%;">
-      <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
+      <el-table-column type="index" label="序号" :align="$store.state.common.align" width="50px"></el-table-column>
       <!--<el-table-column prop="code" header-align="center" :align="$store.state.common.align" width="80" label="用户编码"></el-table-column>-->
-      <el-table-column prop="username" header-align="center" :align="$store.state.common.align" label="用户名"></el-table-column>
-      <el-table-column prop="realname" header-align="center" :align="$store.state.common.align" label="真实姓名"></el-table-column>
+      <el-table-column prop="Name" header-align="center" :align="$store.state.common.align" label="用户名"></el-table-column>
+      <el-table-column prop="Description" header-align="center" :align="$store.state.common.align" label="真实姓名"></el-table-column>
       <el-table-column header-align="center" :align="$store.state.common.align" label="角色">
         <template slot-scope="scope">
            <span v-for="(item, index) in scope.row.roles" :key="index">
@@ -29,6 +29,17 @@
       <el-table-column header-align="center" :align="$store.state.common.align" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="primary" size="small" @click="addOrUpdateHandle(scope.row.id)">角色分配</el-button>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="" label="操作" width="190" header-align="center" align="center">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" plain icon="el-icon-edit"
+                     @click="addOrUpdateHandle(scope.row.Id)">编辑
+          </el-button>
+          <el-button type="danger" size="mini" plain icon="el-icon-delete"
+                     @click="handelDelete(scope.row.Id)">删除
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -81,16 +92,24 @@ export default {
     },
     // 获取数据信息
     getDataList () {
-      var parmet = {username: this.dataForm.username, pageIndex: this.pageIndex, pageSize: this.pageSize}
+      var parmet = {
+        userName: this.dataForm.Name,
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize,
+        isPaging: true,
+        nickName: '', // 别名
+        id: '', // 账号id
+        storeId: '600' // 名店id
+      }
       this.dataListLoading = true
       API.adminUser.adminUserList(parmet).then(response => {
         console.log(response)
         if (response.code === '0000') {
-          if (response.data && response.data.accountList) {
-            this.dataList = response.data.accountList
+          if (response.data) {
+            this.dataList = response.data
             console.log(this.dataList)
           }
-          this.totalPage = response.paging.totalCount
+          this.totalPage = response.total
         } else {
           this.$message.error(response.message)
         }

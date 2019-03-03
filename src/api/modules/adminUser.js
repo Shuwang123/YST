@@ -34,10 +34,10 @@ export function adminUserEdit (params) {
     params: requestParam(params, 'get')
   })
 }
-// 获取用户列表
+// 获取用户列表 ？？？
 export function adminUserList (params) {
   return request({
-    url: requestUrl('/mobilereport/admin/account/list'),
+    url: requestUrl('/YstApiAccount/LoadData'),
     method: 'post',
     data: requestParam(params)
   })

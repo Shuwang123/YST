@@ -107,7 +107,7 @@ export default {
       this.$nextTick(() => {
         if (this.dataForm.Id) {
           API.store.getStoreRow({id: this.dataForm.Id}).then(result => {
-            console.log(result)  // 方法调用返回110？？？
+            console.log(result) // 方法调用返回110？？？
             console.log('陈工')
             if (result.code === '0000') {
               this.dataForm.Name = result.data // ???

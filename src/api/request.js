@@ -27,7 +27,7 @@ service.interceptors.request.use(config => {
 
 // response拦截器
 service.interceptors.response.use(response => {
-  if (JSON.stringify(response.headers)=='{"content-type":"application/vnd.ms-excel;charset=UTF-8"}'){
+  if (JSON.stringify(response.headers) == '{"content-type":"application/vnd.ms-excel;charset=UTF-8"}'){
     NProgress.done()
     return response
   }
@@ -35,8 +35,9 @@ service.interceptors.response.use(response => {
     removeStore('userInfo')
     router.push({ name: 'login' })
   } else if (response.data && response.data.code === 401) {
-    Message.error({message: '您没有权限进行相关操作' })
+    Message.error({ message: '您没有权限进行相关操作' })
   }
+
   // 添加返回码409的处理
   else if (response.data.code !== '200' && response.data.code !== 409) {
     if (typeof response.data.data === 'object' && response.data.data === Array) {
@@ -55,20 +56,19 @@ service.interceptors.response.use(response => {
   NProgress.done()
   return response.data
 }, error => {
-  NProgress.done();
-  if (error.response &&error.response.data&&error.response.data.status==403){
-    removeStore('userInfo');
+  NProgress.done()
+  if (error.response && error.response.data && error.response.data.status === 403) {
+    removeStore('userInfo')
     router.push({ name: 'login' })
-    Message.error({message:'请重新登录'});
-  }else if(error.response &&error.response.data&&error.response.data.status==401){
+    Message.error({message: '请重新登录'})
+  } else if (error.response && error.response.data && error.response.data.status === 401) {
     router.push({ name: 'error401' })
-    Message.error({message:'您没有权限进行相关操作'});
-  }else if(error.response &&error.response.data&&error.response.data.status==404){
+    Message.error({message: '您没有权限进行相关操作'})
+  } else if (error.response && error.response.data && error.response.data.status === 404) {
     router.push({ name: 'error404' })
-    Message.error({message:'您没有权限进行相关操作'});
-  }
-  else {
-    Message.error({message:error.message});
+    Message.error({message: '您没有权限进行相关操作'})
+  } else {
+    Message.error({message: error.message})
   }
   return Promise.reject(error)
 })

@@ -26,7 +26,7 @@ var router = new Router({
         {path: '/tree/index', component: _import('tree/index'), name: 'tree', meta: {title: '自定义树', keepAlive: false}},
         /* 自定义树End */
         /* 门店管理Begin */
-        {path: '/store/list', component: _import('store/index'), name: 'store', meta: {title: '门店列表', keepAlive: false}},
+        {path: '/store/list', component: _import('store/index'), name: 'store', meta: {title: '门店列表', keepAlive: false}}
         /* 门店管理End */
       ]
     },
