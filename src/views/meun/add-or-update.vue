@@ -142,7 +142,7 @@ export default {
         return API.menu.getTree() // 这个API请求未执行(百度到底咋回事，以前访问失败)
       }
       if (Id) {
-        this.$ios.all([getOneRow(),getMenuTree()]).then(this.$ios.spread((result,response) => {
+        this.$ios.all([getOneRow(), getMenuTree()]).then(this.$ios.spread((result, response) => {
           if (result.code === '0000' && response.code === '0000') {
             // 请求对应单行的数据! 作为编辑弹窗的初始值（为什么弄并发请求呢? 因为程序自动选择菜单树那步可能会在完整的菜单树渲染完毕之前执行，导致此时菜单节点为空根本就无法选中）
             var obj = {

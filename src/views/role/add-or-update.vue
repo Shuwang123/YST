@@ -147,7 +147,7 @@ export default {
             MenuIds: this.checkedKey.join()
           }
           if (this.dataForm.Id) {
-            params.id = this.dataForm.Id
+            params.id = this.dataForm.Id // 如何正确编辑对应行，这儿传递了本行的id的哟
           }
           var tick = !this.dataForm.Id ? API.role.roleAdd(params) : API.role.roleEdit(params)
           tick.then((data) => {

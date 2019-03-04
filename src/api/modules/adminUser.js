@@ -34,11 +34,11 @@ export function adminUserEdit (params) {
     params: requestParam(params, 'get')
   })
 }
-// 获取用户列表 ？？？
+// 获取用户列表
 export function adminUserList (params) {
   return request({
     url: requestUrl('/YstApiAccount/LoadData'),
-    method: 'post',
+    method: 'POST',
     data: requestParam(params)
   })
 }

@@ -1,5 +1,16 @@
 <template>
   <aside class="site-sidebar">
+    <div class="logo">
+      <div class="over">
+        <div class="logo_background"></div>
+      </div>
+      <div class="logo_child">
+        <div class="logo_text">
+          <img src="./bg.png" width="70" height="70" style="border-radius: 100%">
+          <p>善郎中</p>
+        </div>
+      </div>
+    </div>
     <div class="site-sidebar__inner">
       <el-menu
         :default-active="menuNavActive"
@@ -134,7 +145,7 @@ export default {
   }
 }
 .site-sidebar {
-  /*height: 100%;*/
+  /*height: 100%;
   overflow: hidden;
   & .site-sidebar__inner {
     background-color: rgba(0,0,0,0.8);
@@ -145,6 +156,33 @@ export default {
     background-image: url("./bg.png");
     filter: blur(20px);
     z-index: -1;
+  }*/
+  & .logo {
+    height: 170px;
+    & .over{
+      overflow: hidden;
+      height: 160px;
+      .logo_background {
+        float: left;
+        width: 230px; height: 160px;
+        background-image: url("./bg.png");
+        filter: blur(9px);
+        z-index: -1;
+      }
+    }
+    & .logo_child {
+      position: absolute;
+      left: 0;top: 0;
+      width: 230px; height: 160px;
+      background-color: rgba(84,92,100,.9);
+      & .logo_text {
+        padding-top: 30px;
+        text-align: center;
+        color: #fff;
+        font-size: 16px;
+        & p {padding-top: 10px}
+      }
+    }
   }
 }
 

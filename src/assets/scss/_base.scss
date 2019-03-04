@@ -103,16 +103,17 @@ i.site-sidebar__menu-icon,
   top: 0;
   right: 0;
   left: 0;
-  z-index: 1030;
+  z-index: 1010;
+  //z-index: 1030;陈希
   height: 50px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, .08);
   background-color: #3e8ef7;
 }
-.site-topbar__header {
-  float: left;
-  width: 230px;
-  height: 50px;
-}
+//.site-topbar__header {
+//  float: left;
+//  width: 230px;
+//  height: 50px;
+//}
 .site-logo {
   display: table-cell;
   vertical-align: middle;
@@ -154,6 +155,7 @@ i.site-sidebar__menu-icon,
 .site-topbar__body {
   position: relative;
   margin-left: 230px;
+  //margin-left: 230px;陈希
   padding-right: 15px;
   background-color: #fff;
 }
@@ -176,19 +178,21 @@ i.site-sidebar__menu-icon,
 /* site-sidebar */
 .site-sidebar {
   position: fixed;
-  top: 50px;
+  top: 0px;
+  //top: 50px;陈希
   left: 0;
   bottom: 0;
   z-index: 1020;
   width: 230px;
-  background-color: #545c64;
+  //background-color: #545c64;
+  background-color: rgba(84,92,100,.8);
   overflow: hidden;
 }
 .site-sidebar__inner {
   position: relative;
   z-index: 1;
   width: 250px;
-  height: 100%;
+  //height: 100%;
   padding-bottom: 15px;
   overflow-y: scroll;
 }
