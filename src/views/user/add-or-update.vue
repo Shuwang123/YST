@@ -1,50 +1,57 @@
 <template>
-  <el-dialog v-dialogDrag ref="dialog__wrapper" title="账户管理" :close-on-click-modal="false" :visible.sync="visible" @close="handleClose" id='add-or-update'>
+  <el-dialog v-dialogDrag ref="dialog__wrapper" :title="id === 0 ? '申请账号' : '编辑账号'" :close-on-click-modal="false" :visible.sync="visible" @close="handleClose" id='add-or-update'>
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="用户名" prop="username">
-        <el-input v-model="dataForm.UserName" placeholder="请填写用户名（编辑时不可改）"></el-input>
+      <el-form-item label="用户名" prop="UserName" v-if="!id">
+        <el-input v-model="dataForm.UserName" placeholder="请填写用户名（算登陆账号，数字或字母以后不可更改）"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="pwd">
+      <el-form-item label="密码" prop="Password" v-if="!id">
         <el-input v-model="dataForm.Password" placeholder="填写密码或修改密码"></el-input>
       </el-form-item>
       <el-form-item label="别名" prop="NickName">
-        <el-input v-model="dataForm.NickName" placeholder="请填别名"></el-input>
+        <el-input v-model="dataForm.NickName" placeholder="请填别名（汉字昵称）"></el-input>
       </el-form-item>
       <el-form-item label="电话" prop="Phone">
         <el-input v-model="dataForm.Phone" placeholder="请填写电话（编辑时不可改）"></el-input>
       </el-form-item>
 
-      <el-form-item label="门店ID" prop="storeId">
-        <el-select v-model="dataForm.StoreId" multiple placeholder="门店ID，选择B999为全门店" filterable collapse-tags style="width: 400px" @change="mendian(dataForm.StoreId)">
-          <el-option v-for="item in mdoptions"
-            :key="item.code"
-            :label="'['+item.code+']'+item.name"
-            :value="item.code">
+      <el-form-item label="门店ID" prop="StoreId">
+        <el-select v-model="dataForm.StoreId" placeholder="门店ID，选择B999为全门店"
+          filterable collapse-tags style="width: 400px" @change="mendian(dataForm.StoreId)">
+          <el-option v-for="item in mdoptions" :key="item.value"
+                     :value="item.value" :label="'['+item.value+'] '+item.label">
           </el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="角色ID" prop="RoleId">
-        <el-input v-model="dataForm.RoleId" placeholder="此账号的角色ID"></el-input>
-      </el-form-item>
-      <!--<el-form-item size="mini" label="角色">
-       <el-checkbox-group v-model="roleList">
-         <el-checkbox :label="item.id" v-for="(item,index) in allroleList" :key="index">{{item.name}}</el-checkbox>
-       </el-checkbox-group>
-       &lt;!&ndash;<el-radio-group v-model="roleList">
-         <el-radio v-for="(item,index) in allroleList" :key="index" :label="item.id">{{item.id}}</el-radio>
-       </el-radio-group>&ndash;&gt;
-      </el-form-item>-->
-
-      <el-form-item label="能查看的门店">
-        <el-select v-model="dataForm.CanViewStores" multiple placeholder="查看名店值多选" filterable collapse-tags style="width: 400px" @change="mendian(dataForm.StoreId)">
-          <el-option v-for="item in mdoptions"
-                     :key="item.code"
-                     :label="'['+item.code+']'+item.name"
-                     :value="item.code">
+        <el-select v-model="dataForm.RoleId" placeholder="此账号的角色ID（一个账号只能对应一个角色）"
+          filterable collapse-tags style="width: 400px" @change="juese(dataForm.RoleId)">
+          <el-option v-for="item in jsoptions" :key="item.value"
+                     :value="item.value" :label="'['+item.value+'] '+item.label">
           </el-option>
         </el-select>
       </el-form-item>
+
+      <el-form-item label="可看门店">
+        <el-select v-model="dataForm.CanViewStores" multiple placeholder="查看名店值多选"
+          filterable style="width: 400px" @change="mendianview(dataForm.CanViewStores)">
+          <!--collapse-tags -->
+          <el-option v-for="item in mdoptions"
+                     :key="item.value"
+                     :label="'['+item.value+']'+item.label"
+                     :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <!--<el-form-item size="mini" label="角色">
+        <el-checkbox-group v-model="roleList">
+          <el-checkbox :label="item.id" v-for="(item,index) in allroleList" :key="index">{{item.name}}</el-checkbox>
+        </el-checkbox-group>
+        &lt;!&ndash;<el-radio-group v-model="roleList">
+          <el-radio v-for="(item,index) in allroleList" :key="index" :label="item.id">{{item.id}}</el-radio>
+        </el-radio-group>&ndash;&gt;
+      </el-form-item>-->
     </el-form>
+
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
       <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
@@ -66,38 +73,44 @@ export default {
     }
     return {
       visible: false,
+      id: '',
       dataForm: {
         UserName: '',
         Password: '',
-        Phone: '',
         NickName: '',
+        Phone: '',
 
-        StoreId: '',
-        RoleId: '',
-        CanViewStores: '',
+        RoleId: 0, // 0
+        StoreId: 0, // 0
+        CanViewStores: [] // '' 1,2,3
 
-        id: '' // 系统默认生成
+        // id: 0 // 系统默认生成
       },
       dataRule: {
-        username: [
+        UserName: [
           { required: true, message: '账户名称不能为空', trigger: 'blur' }
         ],
-        pwd: [
+        Password: [
           { required: true, message: '密码不能为空', trigger: 'blur' }
+        ],
+        NickName: [
+          { required: true, message: '账户名称不能为空', trigger: 'blur' }
         ],
         Phone: [
           { validator: checkPhone, trigger: 'blur' }
         ],
-        storeId: [
+        StoreId: [
           { required: true, message: '门店ID不能为空', trigger: 'blur' }
         ],
         RoleId: [
           { required: true, message: '角色ID不能为空', trigger: 'blur' }
         ]
       },
+      mdoptions: [], // 门店options
+      jsoptions: [], // 角色options
+
       allroleList: [],
       roleList: [], // 角色列表
-      mdoptions: [], // 门店列表
       mdoptionsList: []
     }
   },
@@ -107,18 +120,42 @@ export default {
   },
   methods: {
     mendian (data) {
-      console.log(data)
+      // console.log(data) 获得的是门店的id值
+      this.dataForm.storeId = data
+      console.log(this.dataForm.storeId) // [看起来输入框的东西是文字，实际值传递的1，2，3]
     },
-    gangwei (data) {
+    juese (data) {
+      this.dataForm.RoleId = data
+      console.log(this.dataForm.RoleId)
+    },
+    mendianview (data) {
       console.log(data)
+      this.dataForm.CanViewStores = data
+      console.log(this.dataForm.CanViewStores)
     },
     getStore () {
-      API.store.storeAll({}).then(response => {
-        if (response.data && response.data.storeList.length > 0) {
-          this.mdoptions = response.data.storeList
+      var parmet0 = {pageIndex: 1, pageSize: 100, isPaging: false} // 请求门店的
+      var parmet1 = {pageIndex: 1, pageSize: 100, isPaging: false} // 请求角色的
+      function getStore () { return API.store.storeAll(parmet0) }
+      function getRole () { return API.role.jueseList(parmet1) }
+      this.$ios.all([getStore(), getRole()]).then(this.$ios.spread((result0, result1) => {
+        if (result0.code === '0000' && result1.code === '0000') {
+          // 存门店的options
+          var arr0 = []
+          result0.data.forEach(item => {
+            arr0.unshift({value: item.Id, label: item.Name})
+          })
+          this.mdoptions = arr0
           console.log(this.mdoptions)
+
+          // 存角色的options
+          var arr1 = []
+          result1.data.forEach(item => {
+            arr1.unshift({value: item.Id, label: item.Name})
+          })
+          this.jsoptions = arr1
         }
-      })
+      }))
     },
     /* getRole () {
       API.role.roleListAdd().then(response => {
@@ -133,64 +170,76 @@ export default {
       this.allroleList = []
       this.roleList = []
       this.mdoptionsList = []
+
+      this.dataForm = {
+        UserName: '',
+        Password: '',
+        NickName: '',
+        Phone: '',
+        RoleId: 0, // 0
+        StoreId: 0, // 0
+        CanViewStores: [] // '' 1,2,3
+      }
+      this.id = ''
     },
     init (id) {
-      this.dataForm.id = id || 0
+      this.id = id || 0
       this.visible = true
-      API.adminUser.roleListAdd({}).then(data => {
-        if (data.data && data.data.roleList.length > 0) {
-          this.allroleList = data.data.roleList
-        }
-        if (this.dataForm.id) {
-          API.adminUser.adminUserDetail({'id': id}).then(data => {
-            console.log(data)
-            if (data.data) {
-              this.dataForm.UserName = data.data.account.username
-              this.dataForm.Password = data.data.account.phone
-              this.dataForm.Phone = data.data.account.description
-              this.dataForm.NickName = data.data.account.description
-              this.dataForm.StoreId = data.data.account.description
-              this.dataForm.RoleId = data.data.account.description
-              this.dataForm.CanViewStores = data.data.account.description
-
-              this.dataForm.id = data.data.account.description
-            }
-
-            if (data.data.accountRoleList && data.data.accountRoleList.length > 0) {
-              var ids = data.data.accountRoleList.map(function (item) {
-                return item.roleId
-              })
-              this.roleList = ids
-              console.log(this.roleList)
-            }
-            if (data.data.accountStoreList && data.data.accountStoreList.length > 0) {
-              var idss = data.data.accountStoreList.map(function (item1) {
-                return item1.storeCode
-              })
-              this.mdoptionsList = idss
-              console.log(this.mdoptionsList)
-            }
-          })
-        }
-      })
+      if (this.id) {
+        var obj = {id: this.id}
+        console.log(obj)
+        API.adminUser.adminUserDetail(obj).then(result => {
+          if (result.code === '0000') {
+            console.log("觉得垃圾的煎熬了")
+            this.id = result.data.Id
+            // this.dataForm.UserName = result.data.UserName
+            // this.dataForm.Password = result.data.Password
+            this.dataForm.NickName = result.data.NickName
+            this.dataForm.Phone = result.data.Phone
+            this.dataForm.StoreId = result.data.StoreId
+            this.dataForm.RoleId = result.data.RoleId
+            this.dataForm.CanViewStores = result.data.CanViewStores
+            console.log(this.dataForm.CanViewStores)
+            this.dataForm.CanViewStores = result.data.CanViewStores.split(',').map(item => {
+              return Number(item)
+            })
+            console.log(this.dataForm.CanViewStores)
+          }
+        })
+      }
     },
-
     // 表单提交
     dataFormSubmit () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          var params = {
-
+          var obj = {
+            UserName: this.dataForm.UserName,
+            Password: this.dataForm.Password,
+            NickName: this.dataForm.NickName,
+            RoleId: this.dataForm.RoleId,
+            StoreId: this.dataForm.StoreId,
+            CanViewStores: this.dataForm.CanViewStores.join(),
+            Phone: this.dataForm.Phone,
+            id: this.id
           }
-          if (this.dataForm.id) {
-            params.id = this.dataForm.id
+          console.log(obj)
+          var objEdit = {
+            // UserName: this.dataForm.UserName,
+            // Password: this.dataForm.Password,
+            NickName: this.dataForm.NickName,
+            RoleId: this.dataForm.RoleId,
+            StoreId: this.dataForm.StoreId,
+            CanViewStores: this.dataForm.CanViewStores.join(),
+            Phone: this.dataForm.Phone,
+            Id: this.id
           }
-          var tick = !this.dataForm.id ? API.adminUser.adminUserAdd(params) : API.adminUser.adminUserEdit(params)
+          // API.adminUser.adminUserAdd(obj).then(data => {
+          var tick = this.id ? API.adminUser.adminUserEdit(objEdit) : API.adminUser.adminUserAdd(obj)
           tick.then(data => {
             console.log(data)
-            if (data.code === '200') {
+            if (data.code === '0000') {
               this.$message({
-                message: `${this.dataForm.id ? '保存成功' : '新增成功'}`,
+                message: `${this.id ? '修改成功' : '新增成功'}`,
                 type: 'success',
                 duration: 1500,
                 onClose: () => {
@@ -201,6 +250,7 @@ export default {
             } else {
               this.$message.error(data.message)
             }
+            this.visible = false
           })
         }
       })

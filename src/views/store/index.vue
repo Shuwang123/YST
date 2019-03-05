@@ -9,7 +9,7 @@
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
-        <el-button type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus">新增角色</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus">新增门店</el-button>
         <el-button type="danger" @click="handelDelete()" icon="el-icon-delete" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
@@ -23,8 +23,8 @@
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column type="index" label="序号" align="center" width="50"></el-table-column>
+      <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50"></el-table-column>
       <el-table-column prop="FullName" header-align="center" align="center" label="城市" width="100"></el-table-column>
-      <el-table-column prop="Id" header-align="center" align="center" label="ID" width="100"></el-table-column>
       <el-table-column prop="Code" header-align="center" align="center" width="100px" label="门店编码"></el-table-column>
       <el-table-column prop="Name" header-align="center" align="left" label="门店名称" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Address" header-align="center" align="left" label="门店地址" :show-overflow-tooltip="true"></el-table-column>
@@ -32,7 +32,7 @@
       <el-table-column prop="Phone" header-align="center" align="center" label="电话号码" width="150"></el-table-column>
       <el-table-column header-align="center" align="center" label="创建时间" width="150">
         <template slot-scope="scope">
-          <span>{{ scope.row.CreatedOn |formatDate}}</span>
+          <span>{{ scope.row.CreatedOn | formatDate}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="" label="操作" width="190" header-align="center" align="center">

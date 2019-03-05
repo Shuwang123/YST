@@ -6,9 +6,12 @@
       </div>
       <div class="logo_child">
         <div class="logo_text">
-          <img src="./bg.png" width="70" height="70" style="border-radius: 100%">
-          <p>善郎中</p>
+          <div>
+            <img src="./bglogo.png" width="70" height="70"
+                 style="border-radius: 100%;background-color: rgba(84,92,100,.85);vertical-align: bottom">
+          </div>
         </div>
+        <p>善郎中</p>
       </div>
     </div>
     <div class="site-sidebar__inner">
@@ -16,10 +19,10 @@
         :default-active="menuNavActive"
         :collapse="$store.state.sidebarCollapse"
         class="site-sidebar__menu"
-        background-color="rgba(0,0,0,0)"
+        background-color="#545c64"
         text-color="#fff"
         active-text-color="#ffd04b">
-        <!--background-color="#545c64"-->
+        <!--background-color="rgba(84,92,100,.9) 545c64 646B72"-->
         <sub-menu-nav
           v-for="menuNav in $store.state.menuNavList"
           :key="menuNav.menuId"
@@ -144,45 +147,47 @@ export default {
     line-height: 46px;
   }
 }
+
+// 陈希
 .site-sidebar {
-  /*height: 100%;
-  overflow: hidden;
-  & .site-sidebar__inner {
-    background-color: rgba(0,0,0,0.8);
-  }
-  & .sy {
-    position: absolute;
-    top: 0;bottom: 0;right: 0;left: 0;
-    background-image: url("./bg.png");
-    filter: blur(20px);
-    z-index: -1;
-  }*/
   & .logo {
-    height: 170px;
-    & .over{
+    transition: all .3s;
+    height: 160px;
+    /*width: 64px;*/
+    & .over {
       overflow: hidden;
-      height: 160px;
+      height: 100%;
+
       .logo_background {
         float: left;
-        width: 230px; height: 160px;
+        width: 100%;
+        height: 160px;
         background-image: url("./bg.png");
-        filter: blur(9px);
+        filter: blur(10px);
         z-index: -1;
       }
     }
-    & .logo_child {
-      position: absolute;
-      left: 0;top: 0;
-      width: 230px; height: 160px;
-      background-color: rgba(84,92,100,.9);
-      & .logo_text {
-        padding-top: 30px;
-        text-align: center;
-        color: #fff;
-        font-size: 16px;
-        & p {padding-top: 10px}
+  }
+
+  & .logo_child {
+    position: absolute;
+    left: 0;top: 0;
+    width: 230px; height: 160px;
+    background-color: rgba(84,92,100,.85);
+    /*background-color: red;*/
+    border-bottom: 1px solid #233646;
+    & .logo_text {
+      padding-top: 30px;
+      text-align: center;
+      div {
+        background-color: #fff;
+        width: 74px; height: 74px;
+        line-height: 72px;
+        border-radius: 100%;
+        margin: 0 auto;
       }
     }
+    & p {color: #fff;font-size: 16px;padding-top: 10px;text-align: center;}
   }
 }
 

@@ -20,17 +20,17 @@
       style="width: 100%;">
       <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
       <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
-      <el-table-column prop="Id" header-align="center" :align="$store.state.common.align" width="80" label="ID"></el-table-column>
+      <el-table-column prop="Id" header-align="center" :align="$store.state.common.align" width="50" label="ID"></el-table-column>
       <el-table-column prop="Name" header-align="center" :align="$store.state.common.align" label="角色名称"></el-table-column>
       <el-table-column prop="Description" header-align="center" :align="$store.state.common.align" label="备注"></el-table-column>
-      <el-table-column header-align="center" :align="$store.state.common.align" width="180" label="创建时间">
-        <!--<template slot-scope="scope">-->
-          <!--<span>-->
-             <!--{{ scope.row.createdOn |formatDate}}-->
-          <!--</span>-->
-        <!--</template>-->
-      </el-table-column>
-      <el-table-column prop="rolecheckList" header-align="center" :align="$store.state.common.align" label="权限"></el-table-column>
+      <!--<el-table-column header-align="center" :align="$store.state.common.align" width="180" label="创建时间">-->
+        <!--&lt;!&ndash;<template slot-scope="scope">&ndash;&gt;-->
+          <!--&lt;!&ndash;<span>&ndash;&gt;-->
+             <!--&lt;!&ndash;{{ scope.row.createdOn |formatDate}}&ndash;&gt;-->
+          <!--&lt;!&ndash;</span>&ndash;&gt;-->
+        <!--&lt;!&ndash;</template>&ndash;&gt;-->
+      <!--</el-table-column>-->
+      <!--<el-table-column prop="rolecheckList" header-align="center" :align="$store.state.common.align" label="权限"></el-table-column>-->
       <el-table-column header-align="center" :align="$store.state.common.align" width="190" label="操作">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain icon="el-icon-edit"

@@ -18,6 +18,7 @@
               v-loading="dataListLoading"
               :height="$store.state.documentClientIFRMAE"
               style="width: 100%;text-align: center">
+      <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column type="index" label="序号" width="50" header-align="center"></el-table-column>
       <el-table-column prop="Id" label="ID" width="50" header-align="center"></el-table-column>
       <el-table-column prop="Name" label="菜单名字" width="100" align="center"></el-table-column>

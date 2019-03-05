@@ -20,11 +20,10 @@ export function quanxianStore (params) {
 
 
 
-
 // 获取所有地址初始化级联组件
 export function getAddress () {
   return request({
-    url: requestUrl('/YstApiStore/LoadStore'),
+    url: requestUrl('/YstApiStore/LoadChildArea'),
     method: 'get',
     data: requestParam('get')
   })

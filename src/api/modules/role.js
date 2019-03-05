@@ -25,7 +25,7 @@ export function roleEdit (params) {
     params: requestParam(params, 'get')
   })
 }
-// 角色管理列表
+// 角色管理列表 分页查询等
 export function jueseList (params) {
   return request({
     url: requestUrl('/YstApiRole/LoadData'),

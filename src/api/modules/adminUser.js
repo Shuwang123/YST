@@ -4,32 +4,40 @@ import requestParam from '../requestParam'
 // 新增用户
 export function adminUserAdd (params) {
   return request({
-    url: requestUrl('/mobilereport/admin/account/update'),
+    url: requestUrl('/YstApiAccount/Create'),
+    method: 'POST',
+    data: requestParam(params)
+  })
+}
+// 禁用用户
+export function adminUserDelete (params) {
+  return request({
+    url: requestUrl('/YstApiAccount/Disabled'),
     method: 'post',
     params: requestParam(params, 'get')
   })
 }
-/* // 删除用户
-export function adminUserDelete (params) {
+// 启用账号
+export function adminUserStart (params) {
   return request({
-    url: requestUrl('/api/adminuser/delete'),
+    url: requestUrl('/YstApiAccount/Actived'),
     method: 'post',
     params: requestParam(params, 'get')
   })
-} */
+}
 // 用户详情
 export function adminUserDetail (params) {
   return request({
-    url: requestUrl('/mobilereport/admin/account/info'),
-    method: 'GET',
-    params: requestParam(params, 'get')
+    url: requestUrl('/YstApiAccount/GetEdit'),
+    method: 'POST',
+    data: requestParam(params)
   })
 }
 
 // 修改用户信息
 export function adminUserEdit (params) {
   return request({
-    url: requestUrl('/mobilereport/admin/account/update'),
+    url: requestUrl('/YstApiAccount/Edit'),
     method: 'post',
     params: requestParam(params, 'get')
   })

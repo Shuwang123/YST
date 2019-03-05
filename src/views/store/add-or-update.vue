@@ -117,11 +117,51 @@ export default {
         //  添加，就啥也不做只打开窗口无初始值
         }
       })
+
+      // 获得哥给的未排版地址 list，全部都是同层的
       API.store.getAddress().then(result => {
         if (result.code === '0000') {
-          var data = JSON.parse(JSON.stringify(result.data).replace(/name/ig, 'label').replace(/id/ig, 'value'))
-          this.allAddress = data
-          // console.log(this.allAddress)
+          // var data = JSON.parse(JSON.stringify(result.data).replace(/name/ig, 'label').replace(/id/ig, 'value').replace())
+          var arr = []
+          result.data.forEach(item => {
+            if (item.pId === null) {
+              arr.push({value: item.id, label: item.name.slice(9), children: []})
+            }
+          })
+          // setTimeout(function () {
+          result.data.forEach(item => {
+            if (item.pId !== null) {
+              arr.forEach(i => {
+                if (i.value === item.pId) {
+                  i.children.push({value: item.id, label: item.name.slice(9), children: []})
+                  return false
+                }
+              })
+            }
+          })
+          console.log(arr)
+          // }, 3000)
+          // setTimeout(function () {
+          result.data.forEach(item => {
+            if (item.pId !== null) {
+              arr.forEach(i => {
+                i.children.forEach(j => {
+                  if (j.value === item.pId) {
+                    j.children.push({value: item.id, label: item.name.slice(9)})
+                    return false
+                  }
+                })
+              })
+            }
+          })
+          console.log(arr)
+          // }, 10000)
+          // console.log(result.data)
+          console.log(arr)
+          this.allAddress = arr
+          setTimeout(() => {
+            this.allAddress = arr
+          }, 11000)
         }
       })
     },
