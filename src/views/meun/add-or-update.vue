@@ -87,7 +87,7 @@ export default {
       dataForm: {
         id: 0,
         name: '',
-        parentId: -9999,
+        parentId: 0,
         url: '',
         icon: '',
         displayOrder: 0,
@@ -101,7 +101,7 @@ export default {
           { required: true, message: '菜单名称不能为空', trigger: 'blur' }
         ],
         parentName: [
-          { required: true, message: '上级菜单不能为空', trigger: 'change' }
+          { required: false, message: '上级菜单不能为空', trigger: 'change' }
         ],
         menuUrl: [
           { validator: validateUrl, trigger: 'blur' }
@@ -120,7 +120,7 @@ export default {
       this.dataForm = {
         id: 0,
         name: '',
-        parentId: -9999,
+        parentId: 0,
         url: '',
         icon: '',
         displayOrder: 0,
@@ -153,6 +153,7 @@ export default {
               icon: result.data.Icon,
               displayOrder: result.data.DisplayOrder,
               urlType: result.data.UrlType,
+
               type: result.data.UrlType, // 这两个后台并不使用
               parentName: ''
             }
@@ -184,14 +185,15 @@ export default {
 
     // 菜单树选中  参数：当前节点的数据 和 当前节点的Node对象span
     menuListTreeCurrentChangeHandle (data, node) {
+      // var oldId = this.dataForm.parentId
       this.dataForm.parentId = Number(data.key) // 这data.key得到的1是字符串，影响下面===判断；小技巧：console.log控制台打印的蓝色亮色是数值，暗色是字符串
       this.dataForm.parentName = data.label
       if (this.dataForm.id === this.dataForm.parentId) {
-        this.dataForm.parentId = -9999
+        this.dataForm.parentId = 0
         this.dataForm.parentName = ''
         this.$message({
           type: 'warning',
-          message: '您的操作有问题!'
+          message: '此操作将把本级菜单设为顶级菜单'
         })
       }
       this.elPopoverElTreeVisible = false
@@ -201,9 +203,9 @@ export default {
     dataFormSubmit () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          if (this.dataForm.parentId === -9999) {
-            this.dataForm.parentId = null
-          }
+          // if (this.dataForm.parentId === -9999) {
+          //   this.dataForm.parentId = null
+          // }
           var tick = !this.dataForm.id ? API.menu.add(this.dataForm) : API.menu.edit(this.dataForm)
           this.visible = false
           tick.then(response => {

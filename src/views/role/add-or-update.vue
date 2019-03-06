@@ -5,10 +5,10 @@
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm"  label-width="80px">
-      <el-form-item label="角色编码" prop="roleCode">
-        <el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="true"></el-input>
-        <!--<el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="dataForm.Id == 0"></el-input>-->
-      </el-form-item>
+      <!--<el-form-item label="角色编码" prop="roleCode">-->
+        <!--<el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="true"></el-input>-->
+        <!--&lt;!&ndash;<el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="dataForm.Id == 0"></el-input>&ndash;&gt;-->
+      <!--</el-form-item>-->
       <el-form-item label="角色名称" prop="Name">
         <el-input v-model="dataForm.Name" placeholder="角色名称Name"></el-input>
       </el-form-item>
@@ -18,14 +18,11 @@
       <el-form-item size="mini" label="授权">
         <el-tree
           show-checkbox
-
           :data="dataTree"
           :props="defaultProps"
           ref="menuListTree"
-
           node-key="key"
           :default-expand-all="true"
-
           :default-expanded-keys="[1,2,3]"
           :default-checked-keys="checkedKey"
           >
@@ -62,13 +59,10 @@ export default {
         children: 'children'
       },
       dataForm: {
-        code: '', // 角色编码
-        RoleType: '',
-        RoleId: '',
-
         Id: 0,
         Name: '',
-        Description: ''
+        Description: '',
+        MenuIds: ''
       },
       dataRule: {
         name: [
@@ -141,13 +135,13 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var params = {
-            id: 0, // 空 这个后端貌似不用  传递0后端自动生成了一个id，挨个排序的
+            id: 0, // 传递0后端自动生成了一个id，挨个排序的
             Name: this.dataForm.Name,
             Description: this.dataForm.Description,
             MenuIds: this.checkedKey.join()
           }
           if (this.dataForm.Id) {
-            params.id = this.dataForm.Id // 如何正确编辑对应行，这儿传递了本行的id的哟
+            params.id = this.dataForm.Id // 传递了本行的id的哟
           }
           var tick = !this.dataForm.Id ? API.role.roleAdd(params) : API.role.roleEdit(params)
           tick.then((data) => {

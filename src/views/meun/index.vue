@@ -21,9 +21,9 @@
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column type="index" label="序号" width="50" header-align="center"></el-table-column>
       <el-table-column prop="Id" label="ID" width="50" header-align="center"></el-table-column>
-      <el-table-column prop="Name" label="菜单名字" width="100" align="center"></el-table-column>
+      <el-table-column prop="Name" label="菜单名字" align="center"></el-table-column>
       <el-table-column prop="Url" label="菜单链接" min-width="100" align="center" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Icon" label="图标" :show-overflow-tooltip="true" width="100" align="center">
+      <el-table-column prop="Icon" label="图标" :show-overflow-tooltip="true" align="center">
       </el-table-column>
       <el-table-column prop="ParentId" label="父级ID" width="100" header-align="center"></el-table-column>
       <el-table-column prop="DisplayOrder" label="排序" width="100" header-align="center"></el-table-column>
@@ -182,7 +182,7 @@ export default {
         this.$refs.addOrUpdate.init(Id)
       })
     },
-    handelDelete (index,data) {
+    handelDelete (index, data) {
       var ids = [data.Id]
       var dataJSON = {'ids': ids.join(',')}
       this.$confirm(`确定对[id=${ids.join(',')}]进行[${data ? '删除' : '批量删除'}]操作?`, '提示', {
@@ -206,7 +206,7 @@ export default {
         })
       })
     }
-  },
+  }
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>

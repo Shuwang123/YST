@@ -38,12 +38,13 @@ export function addSubmit (params) {
   })
 }
 
-// 编辑门店前先get获取单行数据
-export function getStoreRow () {
+// 编辑门店前先获取此行门店详情info
+export function getStoreRow (params) {
   return request({
     url: requestUrl('/YstApiStore/GetEdit'),
     method: 'get',
-    data: requestParam('get')
+    // data: requestParam('get')
+    params: requestParam(params, 'get')
   })
 }
 // 编辑提交

@@ -11,10 +11,14 @@
         <el-input v-model="dataForm.id" placeholder="账号ID(系统自动生成的不可控)" clearable style="width: 100px"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.roleId" placeholder="门店ID 1:1(必填)" clearable style="width: 150px"></el-input>
+        <el-select v-model="dataForm.storeId" placeholder="请选择门店ID">
+          <el-option v-for="item in storeArr" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.storeId" placeholder="角色ID 1:1" clearable style="width: 100px"></el-input>
+        <el-select v-model="dataForm.roleId" placeholder="请选择角色ID">
+          <el-option v-for="item in roleArr" :key="item.id" :label="item.name" :value="item.id"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
@@ -49,17 +53,18 @@
       </el-table-column>
       <el-table-column prop="StatusName" header-align="center" :align="$store.state.common.align" label="状态" width="100"></el-table-column>
       <el-table-column prop="Status" header-align="center" :align="$store.state.common.align" label="1,3" width="100"></el-table-column>
-      <el-table-column label="操作" width="330" header-align="center" align="center">
+      <el-table-column label="操作" width="230" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain icon="el-icon-edit"
                      @click="addOrUpdateHandle(scope.row.Id)">编辑
           </el-button>
-          <el-button type="success" size="mini" plain
-                     @click="handelStart(scope.row.Id)">启
+          <el-button :type="scope.row.Status === 1 ? 'danger' : 'success'" size="mini" plain icon="el-icon-sort"
+                     @click="scope.row.Status === 1 ? handelDelete(scope.row.Id) : handelStart(scope.row.Id)">
+            {{scope.row.Status === 1 ? '禁用' : '启用'}}
           </el-button>
-          <el-button type="danger" size="mini" plain
-                     @click="handelDelete(scope.row.Id)">禁
-          </el-button>
+          <!--<el-button type="danger" size="mini" plain-->
+                     <!--@click="handelDelete(scope.row.Id)">禁-->
+          <!--</el-button>-->
           <!--<el-button type="danger" size="mini" plain-->
                      <!--@click="handelUpdatePwd(scope.row.Id)">修改密码-->
           <!--</el-button>-->
@@ -119,13 +124,32 @@ export default {
         storeId: '', // 名店id ※
         roleId: ''// 角色id
       },
+      storeArr: [],
+      roleArr: [],
       dataList: []
     }
   },
   mounted () {
     this.getDataList()
+    this.initID()
   },
   methods: {
+    initID () {
+      API.store.storeAll({PageIndex: 1, PageSize: 1000, IsPaging: true}).then(result => {
+        if (result.code === '0000') {
+          result.data.forEach(item => {
+            this.storeArr.push({name: item.Name, id: item.Id})
+          })
+        }
+      })
+      API.role.jueseList({PageIndex: 1, PageSize: 1000, IsPaging: true}).then(result => {
+        if (result.code === '0000') {
+          result.data.forEach(item => {
+            this.roleArr.push({name: item.Name, id: item.Id})
+          })
+        }
+      })
+    },
     // 创建编辑账户
     addOrUpdateHandle (id) {
       this.addOrUpdateVisible = true
