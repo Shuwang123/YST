@@ -11,12 +11,12 @@
         <el-input v-model="dataForm.id" placeholder="账号ID(系统自动生成的不可控)" clearable style="width: 100px"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-select v-model="dataForm.storeId" placeholder="请选择门店ID">
+        <el-select v-model="dataForm.storeId" placeholder="请选择门店ID" clearable>
           <el-option v-for="item in storeArr" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-select v-model="dataForm.roleId" placeholder="请选择角色ID">
+        <el-select v-model="dataForm.roleId" placeholder="请选择角色ID" clearable>
           <el-option v-for="item in roleArr" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
@@ -172,7 +172,7 @@ export default {
       console.log(parmet)
       this.dataListLoading = true
       API.adminUser.adminUserList(parmet).then(response => {
-        console.log(response)
+        // console.log(response)
         if (response.code === '0000') {
           if (response.data) {
             this.dataList = response.data

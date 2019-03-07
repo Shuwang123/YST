@@ -85,8 +85,13 @@ img {
   i.site-sidebar__menu-icon {
     margin-right: 0;
     font-size: 20px;
-    display: none; // 陈希
+    //display: none; // 陈希
   }
+  .el-submenu__title {
+    & i.el-submenu__icon-arrow { display: none }
+    & span { display: none }
+  }
+
   .site-content--tabs > .el-tabs .el-tabs__header {
     left: 64px;
   }
@@ -98,6 +103,7 @@ img {
     & .over {height: 64px !important;}
     & .logo_background {height: 64px !important;}
     & .logo_child {
+      transition: all .3s;
       width: 64px !important;
       height: 64px !important;
       & .logo_text {

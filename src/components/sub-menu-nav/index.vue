@@ -50,7 +50,7 @@ export default {
 <style type="text/css" lang="scss" scoped>
 .cx{
   & /deep/ .el-submenu__icon-arrow {
-    color: lawngreen;
+    color: #ddd;
   }
 }
 </style>

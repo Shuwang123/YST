@@ -7,7 +7,7 @@
       <div class="logo_child">
         <div class="logo_text">
           <div>
-            <img src="./bglogo.png" width="70" height="70"
+            <img src="./logo.png" width="70" height="70"
                  style="border-radius: 100%;background-color: rgba(84,92,100,.85);vertical-align: bottom">
           </div>
         </div>
@@ -162,8 +162,8 @@ export default {
         float: left;
         width: 100%;
         height: 160px;
-        background-image: url("./bg.png");
-        filter: blur(10px);
+        background-image: url("./bg.jpg");
+        filter: blur(20px);
         z-index: -1;
       }
     }
@@ -187,7 +187,7 @@ export default {
         margin: 0 auto;
       }
     }
-    & p {color: #fff;font-size: 16px;padding-top: 10px;text-align: center;}
+    & p {color: #fff;font-size: 16px;padding-top: 10px;text-align: center}
   }
 }
 
