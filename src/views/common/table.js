@@ -1,7 +1,8 @@
 const comObj = {}
 comObj.tableHeaderStyle = function () {
   return {
-    'fontWeight': 600
+    'fontWeight': 600,
+    'color': '#676A6C'
   }
 }
 comObj.tableRowClassName = function ({row, rowIndex}) {
