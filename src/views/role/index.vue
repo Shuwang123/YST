@@ -17,6 +17,7 @@
       :height="$store.state.documentClientIFRMAE"
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
+      :header-cell-style="$cxObj.tableHeaderStyle"
       style="width: 100%;">
       <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
       <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>

@@ -1,0 +1,10 @@
+.el-table {
+  & /deep/ .warning-row {
+    color: #606266;
+    & td {padding: 0;}
+    & td .cell{
+      height: 49px;
+      line-height: 49px;
+    }
+  }
+}

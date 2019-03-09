@@ -33,7 +33,6 @@ export function adminUserDetail (params) {
     data: requestParam(params)
   })
 }
-
 // 修改用户信息
 export function adminUserEdit (params) {
   return request({
@@ -47,7 +46,7 @@ export function adminUserList (params) {
   return request({
     url: requestUrl('/YstApiAccount/LoadData'),
     method: 'POST',
-    data: requestParam(params)
+    data: requestParam(params, 'get')
   })
 }
 /* // 重置密码

@@ -38,6 +38,7 @@
       border stripe
       :height="$store.state.documentClientIFRMAE"
       v-loading="dataListLoading"
+      :header-cell-style="$cxObj.tableHeaderStyle"
       style="width: 100%;">
       <el-table-column type="index" label="序号" :align="$store.state.common.align" width="50px"></el-table-column>
       <!--<el-table-column prop="Id" header-align="center" :align="$store.state.common.align" label="ID" width="50"></el-table-column>-->
@@ -58,8 +59,10 @@
           <el-button type="primary" size="mini" plain icon="el-icon-edit"
                      @click="addOrUpdateHandle(scope.row.Id)">编辑
           </el-button>
-          <el-button :type="scope.row.Status === 1 ? 'danger' : 'success'" size="mini" plain icon="el-icon-sort"
-                     @click="scope.row.Status === 1 ? handelDelete(scope.row.Id) : handelStart(scope.row.Id)">
+          <el-button
+            :type="scope.row.Status === 1 ? 'danger' : 'success'"
+            size="mini" plain icon="el-icon-sort"
+            @click="scope.row.Status === 1 ? handelDelete(scope.row.Id) : handelStart(scope.row.Id)">
             {{scope.row.Status === 1 ? '禁用' : '启用'}}
           </el-button>
           <!--<el-button type="danger" size="mini" plain-->
@@ -203,8 +206,7 @@ export default {
             type: 'success',
             message: '禁用成功',
             duration: 1500
-            // onClose: () => {
-            // }
+            // onClose: () => { // }
           })
           this.getDataList()
         }
@@ -217,8 +219,7 @@ export default {
             type: 'success',
             message: '激活成功',
             duration: 1500
-            // onClose: () => {
-            // }
+            // onClose: () => { // }
           })
           this.getDataList()
         }

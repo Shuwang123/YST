@@ -13,10 +13,11 @@
     </el-form>
 
     <!--中间数据展示-->
-    <el-table :data="dataMenu"
+    <el-table :data="dataMenu" :row-class-name="$cxObj.tableRowClassName"
               stripe border
               v-loading="dataListLoading"
               :height="$store.state.documentClientIFRMAE"
+              :header-cell-style="$cxObj.tableHeaderStyle"
               style="width: 100%;text-align: center">
       <el-table-column type="selection" header-align="center" align="center" width="50"></el-table-column>
       <el-table-column type="index" label="序号" width="50" header-align="center"></el-table-column>

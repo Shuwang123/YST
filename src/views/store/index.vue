@@ -20,6 +20,7 @@
       :data="dataList"
       border stripe
       v-loading="dataListLoading"
+      :header-cell-style="$cxObj.tableHeaderStyle"
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column type="index" label="序号" align="center" width="50"></el-table-column>
