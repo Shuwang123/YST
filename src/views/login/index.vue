@@ -11,18 +11,20 @@
         <div class="main-right-title">
           <p class="main-right-title-p">一善堂</p>
         </div>
+
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm" @keyup.enter.native="submitForm('ruleForm')">
           <el-form-item label="账号" prop="name">
-            <el-input v-model="ruleForm.name" clearable></el-input>
+            <el-input v-model="ruleForm.name" placeholder="请输入登陆账号" clearable></el-input>
           </el-form-item>
           <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="ruleForm.pass" clearable></el-input>
+            <el-input type="password" v-model="ruleForm.pass" placeholder="请输入登陆密码" clearable></el-input>
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
             <el-button @click="resetForm('ruleForm')">重置</el-button>
           </el-form-item>
         </el-form>
+
       </div>
     </div>
   </div>
@@ -38,7 +40,7 @@ export default {
     return {
       ruleForm: {
         name: 'superman',
-        pass: 'admin'
+        pass: ''
       },
       rules: {
         name: [

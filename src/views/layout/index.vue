@@ -56,7 +56,7 @@ export default {
       ]
     },
     siteContentWarpperStyles () {
-      if (this.$store.state.contentAcitveTab.type == 'iframe') {
+      if (this.$store.state.contentAcitveTab.type === 'iframe') {
         return [{ 'height': this.$store.state.documentClientHeight + 'px' }]
       } else {
         return [{ 'minHeight': this.$store.state.documentClientHeight + 'px' }]

@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="!dataForm.Id ? '新增' : '修改'"
+    :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm"  label-width="80px">
@@ -115,19 +115,19 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var params = {
-            id: this.dataForm.Id,
+            id: this.dataForm.id,
             Name: this.dataForm.Name,
             AreaId: this.dataForm.AreaId,
             Address: this.dataForm.Address,
             Contact: this.dataForm.Contact,
             Phone: this.dataForm.Phone
           }
-          var tick = !this.dataForm.Id ? API.store.addSubmit(params) : API.store.editSubmit(params)
+          var tick = !this.dataForm.id ? API.store.addSubmit(params) : API.store.editSubmit(params)
           console.log(params)
           tick.then((data) => {
             if (data.code === '0000') {
               this.$message({
-                message: `${this.dataForm.Id ? '编辑成功' : '新增成功'}`,
+                message: `${this.dataForm.id ? '编辑成功' : '新增成功'}`,
                 type: 'success',
                 duration: 1500,
                 onClose: () => {

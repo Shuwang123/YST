@@ -1,29 +1,29 @@
 /**
  * 是否有权限
- * @param {*} key
+ * @param {*} key    陈希登陆退出等问题，一下四个方法
  */
 export function isAuth (key) {
-  if(sessionStorage.getItem('userInfo')){
-    var userInfo= JSON.parse(sessionStorage.getItem('userInfo'));
-    return userInfo.permissions.indexOf(key) !== -1 ||false
-  }else{
-    return false;
+  if (sessionStorage.getItem('userInfo')) {
+    var userInfo = JSON.parse(sessionStorage.getItem('userInfo'))
+    return userInfo.permissions.indexOf(key) !== -1 || false
+  } else {
+    return false
   }
 }
-export function setStore(name,content) {
-  if (!name) return;
+export function setStore (name, content) {
+  if (!name) return
   if (typeof content !== 'string') {
-    content = JSON.stringify(content);
+    content = JSON.stringify(content)
   }
-  window.sessionStorage.setItem(name, content);
+  window.sessionStorage.setItem(name, content)
 }
-export function getStore(name) {
-  if (!name) return;
-  var getStr=window.sessionStorage.getItem(name)!=undefined?window.sessionStorage.getItem(name):'';
-  return getStr;
+export function getStore (name) {
+  if (!name) return
+  var getStr = window.sessionStorage.getItem(name) !== undefined ? window.sessionStorage.getItem(name) : ''
+  return getStr
 }
-export  function removeStore(name) {
-  if (!name) return;
+export function removeStore (name) {
+  if (!name) return
   window.sessionStorage.removeItem(name)
 }
 
@@ -82,104 +82,84 @@ export function getUUID () {
   })
 }
 
-
-
 // 遍历单个节点
-function traverseNode(node,list){
-  list.push(node);
+function traverseNode (node, list) {
+  list.push(node)
 }
+
 // 递归遍历树
-export function traverseTree(node,list){
+export function traverseTree (node, list) {
   if (!node) {
-    return;
+    return
   }
-  traverseNode(node,list);
+  traverseNode(node, list)
   if (node.children && node.children.length > 0) {
-    for (var  i = 0; i < node.children.length; i++) {
-      traverseTree(node.children[i],list);
+    for (var i = 0; i < node.children.length; i++) {
+      traverseTree(node.children[i], list)
     }
   }
 }
-//异步加载图片
-export function fileToBase64(file,callback) {
-  var reader = new FileReader();
-  reader.readAsDataURL(file);
-  reader.onloadend =  () =>{
-    if(callback)callback(reader.result)
+
+// 异步加载图片
+export function fileToBase64 (file, callback) {
+  var reader = new FileReader()
+  reader.readAsDataURL(file)
+  reader.onloadend = () => {
+    if (callback) callback(reader.result)
   }
 }
 
+// 笛卡儿积组合
+export function descartes (list) {
+  var point = {}
+  var result = []
+  var pIndex = null
+  var tempCount = 0
+  var temp = []
 
-
-//笛卡儿积组合
-export function descartes(list)
-{
-  var point  = {};
-  var result = [];
-  var pIndex = null;
-  var tempCount = 0;
-  var temp   = [];
-
-  //根据参数列生成指针对象
-  for(var index in list)
-  {
-    if(typeof list[index] == 'object')
-    {
-      point[index] = {'parent':pIndex,'count':0}
-      pIndex = index;
+  // 根据参数列生成指针对象
+  for (var index in list) {
+    if (typeof list[index] === 'object') {
+      point[index] = {'parent': pIndex, 'count': 0}
+      pIndex = index
     }
   }
-
-  //单维度数据结构直接返回
-  if(pIndex == null)
-  {
-    return list;
+  // 单维度数据结构直接返回
+  if (pIndex == null) {
+    return list
   }
 
-  //动态生成笛卡尔积
-  while(true)
-  {
-    for(var index in list)
-    {
-      tempCount = point[index]['count'];
-      temp.push(list[index][tempCount]);
+  // 动态生成笛卡尔积
+  while (true) {
+    for (var index in list) {
+      tempCount = point[index]['count']
+      temp.push(list[index][tempCount])
     }
-
-    //压入结果数组
-    result.push(temp);
-    temp = [];
-
-    //检查指针最大值问题
-    while(true)
-    {
-      if(point[index]['count']+1 >= list[index].length)
-      {
-        point[index]['count'] = 0;
-        pIndex = point[index]['parent'];
-        if(pIndex == null)
-        {
-          return result;
-        }
-
-        //赋值parent进行再次检查
-        index = pIndex;
+    result.push(temp) // 压入结果数组
+    temp = [] // 检查指针最大值问题
+    while (true) {
+      if (point[index]['count'] + 1 >= list[index].length) {
+        point[index]['count'] = 0
+        pIndex = point[index]['parent']
+        if (pIndex == null) { return result }
+        index = pIndex// 赋值parent进行再次检查
+      } else {
+        point[index]['count']++
+        break
       }
-      else
-      {
-        point[index]['count']++;
-        break;
-      }removeStore
+      removeStore
     }
   }
 }
-export function fileToPushDeal(file,callback){
-  var reader = new FileReader();
+
+export function fileToPushDeal (file, callback) {
+  var reader = new FileReader()
   if (file.raw) {
-    reader.readAsDataURL(file.raw); // 读出 base64
-    reader.onloadend =  () =>{
-      callback(reader.result);
+    reader.readAsDataURL(file.raw) // 读出 base64
+    reader.onloadend = () => {
+      callback(reader.result)
     }
-  }else{
-    callback(file.url);
+  } else {
+    callback(file.url)
   }
 }

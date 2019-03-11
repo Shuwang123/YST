@@ -16,15 +16,19 @@ var router = new Router({
       component: _import('layout/index'),
       redirect: {name: 'dashboard'},
       children: [
+        /* 挡泥板 */
         {path: '/dashboard', component: _import('dashboard/testindex'), name: 'dashboard', meta: {title: '商城管理', keepAlive: false}},
+
         /* 菜单管理Begin */
         {path: '/system/role', component: _import('role/index'), name: 'role', meta: {title: '角色管理', keepAlive: false}},
         {path: '/system/meun', component: _import('meun/index'), name: 'meun', meta: {title: '菜单管理', keepAlive: false}},
         {path: '/system/user', component: _import('user/index'), name: 'user', meta: {title: '管理员列表', keepAlive: false}},
         /* 菜单管理End */
+
         /* 自定义树Begin */
         {path: '/tree/index', component: _import('tree/index'), name: 'tree', meta: {title: '自定义树', keepAlive: false}},
         /* 自定义树End */
+
         /* 门店管理Begin */
         {path: '/store/list', component: _import('store/index'), name: 'store', meta: {title: '门店列表', keepAlive: false}}
         /* 门店管理End */

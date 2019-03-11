@@ -30,7 +30,10 @@ export default {
       API.store.getAddress().then(result => {
         if (result.code === '0000') {
           var arr = []
-          result.data.forEach(item => {
+          var addr = JSON.parse(result.data)
+          console.log(addr)
+
+          addr.forEach(item => {
             console.log(this.lastCode)
             if (this.lastCode === item.id) {
               this.init.unshift(item.id)
@@ -38,11 +41,11 @@ export default {
             }
             if (item.pId === null) { arr.push({value: item.id, label: item.name.slice(9), children: []}) }
           })
-          result.data.forEach(item => {
+          addr.forEach(item => {
             if (this.init[0] === item.id) { this.init.unshift(item.pId) }
           })
           console.log(this.init)
-          result.data.forEach(item => {
+          addr.forEach(item => {
             if (item.pId !== null) {
               arr.forEach(i => {
                 if (i.value === item.pId) {
@@ -53,7 +56,7 @@ export default {
             }
           })
           console.log(arr)
-          result.data.forEach(item => {
+          addr.forEach(item => {
             if (item.pId !== null) {
               arr.forEach(i => {
                 i.children.forEach(j => {

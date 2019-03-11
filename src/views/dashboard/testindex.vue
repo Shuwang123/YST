@@ -1,5 +1,6 @@
 <template>
   <div class="site-content">
+    挡泥板
   </div>
 </template>
 <script type="text/ecmascript-6">

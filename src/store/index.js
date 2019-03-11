@@ -18,9 +18,9 @@ const state = {
   menuNavList: [],
   // 内容区域tabs标签页
   contentTabs: [],
-  contentAcitveTab:'',//当前活跃的Tab
+  contentAcitveTab: '', // 当前活跃的Tab
   contentTabsActiveName: '',
-  documentClientIFRMAE:document.documentElement['clientHeight']-240
+  documentClientIFRMAE: document.documentElement['clientHeight'] - 240
 }
 
 const store = new Vuex.Store({

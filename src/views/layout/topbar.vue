@@ -7,6 +7,7 @@
       <!--</h1>-->
     <!--</div>-->
     <div class="site-topbar__body clearfix">
+
       <el-menu
         class="site-topbar__menu"
         mode="horizontal">
@@ -14,6 +15,7 @@
           <i class="icon-custom-nav"></i>
         </el-menu-item>
       </el-menu>
+
       <el-menu
         class="site-topbar__menu site-topbar__menu--right"
         mode="horizontal">
@@ -23,30 +25,31 @@
               <img src="~@/assets/img/avatar.png" :alt="$store.state.user.name" class="zhuanzhuanzhuan">{{$store.state.user.name}}
             </span>
             <el-dropdown-menu slot="dropdown">
-              <!--<el-dropdown-item @click.native="updatePasswordHandle()">修改密码</el-dropdown-item>-->
+              <el-dropdown-item @click.native="updatePasswordHandle()">修改密码</el-dropdown-item>
               <el-dropdown-item @click.native="logoutHandle()">退出</el-dropdown-item>
             </el-dropdown-menu>
           </el-dropdown>
         </el-menu-item>
       </el-menu>
+
     </div>
-    <!--&lt;!&ndash; 弹窗, 修改密码 &ndash;&gt;
-    <update-password v-if="updatePassowrdVisible" ref="updatePassowrd"></update-password>-->
+     <!--弹窗, 修改密码-->
+    <update-password v-if="updatePassowrdVisible" ref="updatePassowrd"></update-password>
   </header>
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-// import UpdatePassword from './update-password'
+import UpdatePassword from './update-password'
 import { mapMutations } from 'vuex'
 import {removeStore} from '@/utils'
 export default {
   data () {
     return {
-      // updatePassowrdVisible: false
+      updatePassowrdVisible: false
     }
   },
   components: {
-    // UpdatePassword
+    UpdatePassword
   },
   methods: {
     // 切换侧边栏, 水平折叠收起状态
@@ -54,12 +57,12 @@ export default {
       this.SWITCH_SIDEBAR_COLLAPSE({ collapse: !this.$store.state.sidebarCollapse })
     },
     // 修改密码
-    // updatePasswordHandle () {
-    //   this.updatePassowrdVisible = true
-    //   this.$nextTick(() => {
-    //     this.$refs.updatePassowrd.init()
-    //   })
-    // },
+    updatePasswordHandle () {
+      this.updatePassowrdVisible = true
+      this.$nextTick(() => {
+        this.$refs.updatePassowrd.init()
+      })
+    },
     // 退出
     logoutHandle () {
       this.$confirm(`确定进行[退出]操作?`, '提示', {
@@ -68,7 +71,7 @@ export default {
         type: 'warning'
       }).then(() => {
         API.common.logout().then((data) => {
-          if (data && data.code === '200') {
+          if (data.code === '0000') {
             this.DELETE_CONTENT_TABS([])
             removeStore('userInfo')
             this.$router.replace({ name: 'login' })

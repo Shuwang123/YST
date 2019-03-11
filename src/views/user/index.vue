@@ -54,14 +54,15 @@
       </el-table-column>
       <el-table-column prop="StatusName" header-align="center" :align="$store.state.common.align" label="状态" width="100"></el-table-column>
       <el-table-column prop="Status" header-align="center" :align="$store.state.common.align" label="1,3" width="100"></el-table-column>
-      <el-table-column label="操作" width="230" header-align="center" align="center">
+      <el-table-column label="操作" width="260" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain icon="el-icon-edit"
                      @click="addOrUpdateHandle(scope.row.Id)">编辑
           </el-button>
+          <el-button type="primary" size="mini" plain @click="resetHandle(scope.row)">重置</el-button>
           <el-button
-            :type="scope.row.Status === 1 ? 'danger' : 'success'"
-            size="mini" plain icon="el-icon-sort"
+            :type="scope.row.Status === 1 ? 'success' : 'danger'"
+            size="mini" plain icon=""
             @click="scope.row.Status === 1 ? handelDelete(scope.row.Id) : handelStart(scope.row.Id)">
             {{scope.row.Status === 1 ? '禁用' : '启用'}}
           </el-button>
@@ -158,6 +159,28 @@ export default {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id)
+      })
+    },
+    resetHandle (row) {
+      this.$confirm(`确定对[id=${row.Id}][账号名=${row.UserName}]的账户进行密码重置操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        API.role.resetPassword({id: row.Id}).then((result) => {
+          if (result.code === '0000') {
+            this.$message({
+              type: 'success',
+              message: '重置密码成功!',
+              duration: 1000,
+              onClose: () => {
+                this.getDataList()
+              }
+            })
+          } else {
+            this.$message.error(result.message)
+          }
+        })
       })
     },
     // 获取所有账户信息列表，或分页

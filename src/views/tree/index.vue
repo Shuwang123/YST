@@ -23,7 +23,7 @@ import axios from 'axios'
 export default {
   name: 'customTreeTableDemo',
   components: { treeTable },
-  data() {
+  data () {
     return {
       func: treeToArray,
       expandAll: false,

@@ -66,13 +66,22 @@ export function rolePermissonListAdd (params) {
     method: 'get',
     params: requestParam(params, 'get')
   })
-}
+} */
 
 // 修改密码
-export function updatePassword (params) {
+export function changePassword (params) {
   return request({
-    url: requestUrl('/api/adminuser/updatePassword'),
-    method: 'get',
+    url: requestUrl('/YstApiAccount/ChangePassword'),
+    method: 'post',
     params: requestParam(params, 'get')
   })
-} */
+}
+
+// reset密码
+export function resetPassword (params) {
+  return request({
+    url: requestUrl('/YstApiAccount/ResetPassword'),
+    method: 'post',
+    params: requestParam(params, 'get')
+  })
+}

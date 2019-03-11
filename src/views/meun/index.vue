@@ -2,9 +2,9 @@
   <div class="mod-meun">
 
     <!--头部查询 搭配 新增-->
-    <el-form :inline="true" :model="dataForm">
+    <el-form :inline="true" :model="dataForm" @submit.native.prevent="searchMenu">
       <el-form-item>
-        <el-input v-model="objMenu.name" placeholder="菜单名称" clearable></el-input>
+        <el-input v-model="objMenu.name" placeholder="菜单名称" clearable @keyup.prevent="searchMenu"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" @click="searchMenu">查询</el-button>

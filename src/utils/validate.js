@@ -25,16 +25,16 @@ export function isPhone (s) {
  * 金额判断
  * @param {*} s
  */
-export function isMoney(s) {
-  var isNum=/^(([0-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/;
+export function isMoney (s) {
+  var isNum = /^(([0-9][0-9]*)|(([0]\.\d{1,2}|[1-9][0-9]*\.\d{1,2})))$/;
   return isNum.test(s)
 }
 /**
  * 正整数判断
  * @param {*} s
  */
-export  function isNum(s) {
-  var reg=/^([1-9]\d*|[0]{1,1})$/
+export function isNum (s) {
+  var reg = /^([1-9]\d*|[0]{1,1})$/
   return reg.test(s)
 }
 /**
@@ -43,7 +43,7 @@ export  function isNum(s) {
  */
 export function formatDate (date, fmt) {
   if (/(y+)/.test(fmt)) {
-    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length));
+    fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
   }
   let o = {
     'M+': date.getMonth() + 1,
@@ -51,16 +51,16 @@ export function formatDate (date, fmt) {
     'h+': date.getHours(),
     'm+': date.getMinutes(),
     's+': date.getSeconds()
-  };
+  }
   for (let k in o) {
     if (new RegExp(`(${k})`).test(fmt)) {
-      let str = o[k] + '';
-      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : padLeftZero(str));
+      let str = o[k] + ''
+      fmt = fmt.replace(RegExp.$1, (RegExp.$1.length === 1) ? str : padLeftZero(str))
     }
   }
-  return fmt;
-};
+  return fmt
+}
 
 function padLeftZero (str) {
-  return ('00' + str).substr(str.length);
-};
+  return ('00' + str).substr(str.length)
+}
