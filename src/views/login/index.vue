@@ -61,9 +61,18 @@ export default {
           API.common.login({userName: this.ruleForm.name, password: this.ruleForm.pass, remmberMe: false}).then(data => {
           // this.$ios.get('../static/data/data.json').then(result => {
             if (data.code === '0000') {
-              setStore('userInfo', data.data)
-              console.log(data)
-              this.$router.push({name: 'dashboard'})
+              API.common.leftMenuTreeList().then(response=>{
+                if(response.code==='0000')
+                {
+                  setStore('userInfo', response.data)
+                  console.log(response)
+                  this.$router.push({name: 'dashboard'})
+                }
+                else
+                {
+                  this.$message.error('获取菜单失败')
+                }
+              })
             } else {
               this.$message.error('账号或者密码错误，请重新登录！')
             }

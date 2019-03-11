@@ -13,6 +13,13 @@ export function login (params) {
     params: requestParam(params, 'get')
   })
 }
+export function leftMenuTreeList (params) {
+  return request({
+    url: requestUrl('/YstApiAccount/LeftMenuTreeList'),
+    method: 'POST',
+    params: requestParam(params, 'get')
+  })
+}
 // 退出
 export function logout () {
   return request({
