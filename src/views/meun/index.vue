@@ -73,7 +73,7 @@ export default {
       dataListLoading: false,
       dataForm: {},
 
-      dataMenu: [],  // 中间表格返回数据
+      dataMenu: [], // 中间表格返回数据
       checked: false,
       input4: '', // 查询菜单列表功能
       objMenu: {
@@ -82,7 +82,7 @@ export default {
         pageSize: 10, // 页码大小10 20 30 100
         IsPaging: true // 后端需求的数据，是否分页
       },
-      allMenus: 0   // 分页功能 // 表中数据总量
+      allMenus: 0 // 分页功能 // 表中数据总量
     }
   },
   mounted () {
@@ -94,8 +94,8 @@ export default {
       this.dataListLoading = true
       API.menu.getMenu(this.objMenu).then(result => {
         if (result.code === '0000') {
-          this.allMenus = result.total  // 表中总条数
-          this.dataMenu = result.data   // 返回的查询结果数据
+          this.allMenus = result.total // 表中总条数
+          this.dataMenu = result.data // 返回的查询结果数据
         }
         this.dataListLoading = false
       })

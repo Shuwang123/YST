@@ -61,9 +61,8 @@ export default {
           API.common.login({userName: this.ruleForm.name, password: this.ruleForm.pass, remmberMe: false}).then(data => {
           // this.$ios.get('../static/data/data.json').then(result => {
             if (data.code === '0000') {
-              API.common.leftMenuTreeList().then(response=>{
-                if(response.code==='0000')
-                {
+              API.common.leftMenuTreeList().then(response => {
+                if (response.code === '0000') {
                   setStore('userInfo', response.data)
                   console.log(response)
                   this.$router.push({name: 'dashboard'})

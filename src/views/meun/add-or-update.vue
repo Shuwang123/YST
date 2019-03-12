@@ -21,16 +21,19 @@
                 trigger="click" v-model="elPopoverElTreeVisible">
           <div style="overflow-y:auto; width:200px; height:200px;">
             <el-tree
-                    :data="menuList"
-                    :props="defaultProps"
-                    ref="menuListTree"
+              :data="menuList"
+              :props="defaultProps"
+              node-key="key"
+              show-checkbox
+              :check-strictly="true"
+              ref="menuListTree"
 
-                    node-key="key"
-                    @current-change="menuListTreeCurrentChangeHandle"
-                    :default-expand-all="true"
-                    :highlight-current="true"
-                    :expand-on-click-node="false">
-                    <!--配置选项、唯一标识、当前选中节点变化时触发（共两个参数：当前节点数据，当前节点Node对象）
+              :default-expand-all="true"
+              :highlight-current="true"
+              :expand-on-click-node="false"
+
+              @check-change="handleCheckClick">
+                    <!-- @check="daye" @node-click="handleNodeClick" 配置选项、唯一标识、当前选中节点变化时触发（共两个参数：当前节点数据，当前节点Node对象）
                     是否默认展开所有节点、是否高亮当前选中节点、是否在点击节点的时候展开或者收缩节-->
             </el-tree>
           </div>
@@ -71,7 +74,7 @@ import API from '@/api'
 // import { treeDataTranslate } from '@/utils'
 export default {
   data () {
-    // 这个是卅，有点看不懂
+    // 自定义验证
     var validateUrl = (rule, value, callback) => {
       if (this.dataForm.type === 1 && !/\S/.test(value)) {
         callback(new Error('菜单URL不能为空'))
@@ -112,7 +115,9 @@ export default {
         children: 'children',
         label: 'label',
         key: 'key'
-      }
+      },
+      isParentNode: false,
+      oldNodeKey: ''
     }
   },
   methods: {
@@ -130,8 +135,55 @@ export default {
         parentName: ''
       }
       this.$refs['dataForm'].resetFields() // 不加s单个，加s整个表单重置
+      this.menuList = []
     },
-
+    // 下面这个方法，绕圈指数9星，请做好心里准备
+    handleCheckClick (data, checked, childchecked) {
+      if (checked === true) {
+        this.$refs.menuListTree.setCheckedNodes([data])
+        this.dataForm.parentId = Number(data.key) // data.key是字符串1影响===判断
+        this.dataForm.parentName = data.label
+        if (this.dataForm.id === this.dataForm.parentId) {
+          this.dataForm.parentId = 0
+          this.dataForm.parentName = ''
+          this.$message({
+            type: 'warning',
+            message: '此操作将把本级菜单设为顶级菜单'
+          })
+        }
+        // data.children是个对象，判断当前节点有没有子节点（有子节点的那种节点getCheckedKey(true）得不到值! 就算处于选中状态)
+        if (data.children.length !== 0) {
+          this.isParentNode = true
+        } else {
+          this.isParentNode = false
+        }
+        this.oldNodeKey = data.key // this.elPopoverElTreeVisible = false // console.log(`${data.key}~${data.label}`)
+      } else {
+        // console.log(this.$refs.menuListTree.getCheckedKeys(true)) 得到是是一个key组成的数组，但无法返回有子节点的那种节点的key
+        if (this.$refs.menuListTree.getCheckedKeys(true).length === 1 || this.isParentNode) {
+          if (this.oldNodeKey === data.key) { // 啥也不改变噻
+            this.dataForm.parentId = 0
+            this.dataForm.parentName = ''
+          }
+        } else {
+          this.dataForm.parentId = 0
+          this.dataForm.parentName = ''
+        }
+      }
+      // console.log(this.dataForm.parentId)
+      // console.log(this.dataForm.parentName)
+    },
+    disabledTree (arr) {
+      arr.forEach(item => {
+        if (Number(item.key) === this.dataForm.id) {
+          var str = JSON.parse(JSON.stringify(item.children).replace(/"label"/g, '"disabled":true,"label"'))
+          item.children = str
+          return false
+        } else {
+          this.disabledTree(item.children)
+        }
+      })
+    },
     // undefined时‘添加’就用默认dataForm值，传值表示‘编辑’
     init (Id) {
       this.visible = true
@@ -158,8 +210,12 @@ export default {
               parentName: ''
             }
             this.dataForm = obj
+
             // 请求完整的菜单树
-            this.menuList = JSON.parse(JSON.stringify(response.data).toLowerCase()) // 把后端的那个坑货的大写字母转小写方便直接用
+            this.menuList = JSON.parse(JSON.stringify(response.data).toLowerCase()) // 把后端的那个坑货的大写字母转小写方便直接用 key label children
+            // 如果是编辑，还要禁用相应的菜单之下的子节点
+            this.disabledTree(this.menuList)
+
             this.$nextTick(() => {
               this.menuListTreeSetCurrentNode()
             })
@@ -179,26 +235,10 @@ export default {
       }
     },
     menuListTreeSetCurrentNode () {
-      this.$refs.menuListTree.setCurrentKey(this.dataForm.parentId)
+      this.$refs.menuListTree.setCheckedKeys([this.dataForm.parentId])
       this.dataForm.parentName = (this.$refs.menuListTree.getCurrentNode(this.dataForm.parentId) || {})['label'] // 获取当前被选中的节点的 data，若没有节点被选中则返回 null
     },
 
-    // 菜单树选中  参数：当前节点的数据 和 当前节点的Node对象span
-    menuListTreeCurrentChangeHandle (data, node) {
-      // var oldId = this.dataForm.parentId
-      this.dataForm.parentId = Number(data.key) // 这data.key得到的1是字符串，影响下面===判断；小技巧：console.log控制台打印的蓝色亮色是数值，暗色是字符串
-      this.dataForm.parentName = data.label
-      if (this.dataForm.id === this.dataForm.parentId) {
-        this.dataForm.parentId = 0
-        this.dataForm.parentName = ''
-        this.$message({
-          type: 'warning',
-          message: '此操作将把本级菜单设为顶级菜单'
-        })
-      }
-      this.elPopoverElTreeVisible = false
-      // console.log(`${data.key}~${data.label}`) // 都能获得当前选中节点的text
-    },
     // 表单提交
     dataFormSubmit () {
       this.$refs['dataForm'].validate((valid) => {
