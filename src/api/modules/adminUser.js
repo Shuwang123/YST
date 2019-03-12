@@ -14,7 +14,7 @@ export function adminUserDelete (params) {
   return request({
     url: requestUrl('/YstApiAccount/Disabled'),
     method: 'post',
-    params: requestParam(params, 'get')
+    data: requestParam(params)
   })
 }
 // 启用账号
@@ -22,7 +22,7 @@ export function adminUserStart (params) {
   return request({
     url: requestUrl('/YstApiAccount/Actived'),
     method: 'post',
-    params: requestParam(params, 'get')
+    data: requestParam(params)
   })
 }
 // 用户详情

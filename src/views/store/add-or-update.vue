@@ -81,6 +81,7 @@ export default {
       this.visible = true
       this.dataForm.id = id || 0
       this.$nextTick(() => {
+
         if (this.dataForm.id) {
           API.store.getStoreRow({id: this.dataForm.id}).then(result => {
             if (result.code === '0000') {
@@ -93,9 +94,12 @@ export default {
                 Phone: result.data.Phone
               }
             }
-            this.$refs.comAddress.getAddress() // 调用自定义的全国统一地址子组件
+            this.$refs.comAddress.getAddress(this.dataForm.AreaId) // 调用自定义的全国统一地址子组件，上面有nextTick别看漏了
           })
-        } else { this.$refs.comAddress.getAddress() }
+        } else {
+          this.$refs.comAddress.getAddress()
+        }
+
       })
     },
 

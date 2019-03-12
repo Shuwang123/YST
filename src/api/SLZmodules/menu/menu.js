@@ -23,8 +23,8 @@ export function edit (params) {
 export function getEdit (params) {
   return request({
     url: requestUrl('/YstApiMenu/GetEdit'),
-    method: 'post',
-    data: requestParam(params, 'get')
+    method: 'get',
+    params: requestParam(params, 'get')
   })
 }
 
@@ -32,7 +32,7 @@ export function getEdit (params) {
 export function deletes (params) {
   return request({
     url: requestUrl('/YstApiMenu/Delete'),
-    method: 'post',
+    method: 'get',
     params: requestParam(params, 'get')
   })
 }
@@ -50,7 +50,7 @@ export function getTree () {
   return request({
     url: requestUrl('/YstApiMenu/LoadMenuTree'), // /api/permission/list
     method: 'get',
-    params: requestParam('get')
+    params: requestParam()
   })
 }
 
