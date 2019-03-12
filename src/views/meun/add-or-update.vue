@@ -235,8 +235,10 @@ export default {
       }
     },
     menuListTreeSetCurrentNode () {
-      this.$refs.menuListTree.setCheckedKeys([this.dataForm.parentId])
-      this.dataForm.parentName = (this.$refs.menuListTree.getCurrentNode(this.dataForm.parentId) || {})['label'] // 获取当前被选中的节点的 data，若没有节点被选中则返回 null
+//      this.$refs.menuListTree.setCheckedKeys([this.dataForm.parentId])
+      this.$refs.menuListTree.setChecked(this.dataForm.parentId, true)
+//      this.dataForm.parentName = (this.$refs.menuListTree.getCurrentNode() || {})['label'] // 获取当前被选中的节点的 data，若没有节点被选中则返回 null
+      this.dataForm.parentName = (this.$refs.menuListTree.getNode(this.dataForm.parentId) || {})['label']
     },
 
     // 表单提交
