@@ -162,7 +162,7 @@ export default {
       })
     },
     resetHandle (row) {
-      this.$confirm(`确定对[id=${row.Id}][账号名=${row.UserName}]的账户进行密码重置操作?`, '提示', {
+      this.$confirm(`确定将[id=${row.Id}][账号名=${row.UserName}]的账户的密码重置为123456吗?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

@@ -1,10 +1,14 @@
+/* 设置35的table行高，针对进销存药品太多时，提升页面视觉效果 */
 .el-table {
   & /deep/ .warning-row {
     color: #606266;
     & td {padding: 0;}
     & td .cell{
-      height: 49px;
-      line-height: 49px;
+      height: 35px;
+      line-height: 35px;
     }
   }
 }
+/* 全局设置所有的el-dialog‘对话框’ 标题文字加粗，和颜色 */
+.el-dialog__header /deep/ .el-dialog__title {font-weight: 600;color: #606266;}
+

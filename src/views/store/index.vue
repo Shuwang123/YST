@@ -27,7 +27,7 @@
       <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50"></el-table-column>
       <el-table-column prop="Code" header-align="center" align="center" width="100px" label="门店编码"></el-table-column>
       <el-table-column prop="Name" header-align="center" align="center" label="门店名称" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="FullName" header-align="center" align="center" label="统一地区" width="100"></el-table-column>
+      <el-table-column prop="FullName" header-align="center" align="center" label="统一地区" width="100"  :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Address" header-align="center" align="center" label="详细地址" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Contact" header-align="center" align="center" label="联系人" width="100"></el-table-column>
       <el-table-column prop="Phone" header-align="center" align="center" label="电话号码" width="150"></el-table-column>

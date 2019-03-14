@@ -13,7 +13,7 @@
     </el-form>
 
     <!--中间数据展示-->
-    <el-table :data="dataMenu" :row-class-name="$cxObj.tableRowClassName"
+    <el-table :data="dataMenu"
               stripe border
               v-loading="dataListLoading"
               :height="$store.state.documentClientIFRMAE"
