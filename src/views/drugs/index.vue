@@ -4,6 +4,7 @@
       <el-tab-pane label="中草药品" name="first">
         <first-tab></first-tab>
       </el-tab-pane>
+      <!--<el-tab-pane label="成品药品" name="second" disabled="true">-->
       <el-tab-pane label="成品药品" name="second">
         成品药品
         <br>
@@ -13,6 +14,7 @@
         <br>
       </el-tab-pane>
       <el-tab-pane label="其他商品" name="third">
+      <!--<el-tab-pane label="其他商品" name="third" disabled="true">-->
         其他商品
         <br>
         <br>

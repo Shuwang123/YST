@@ -101,6 +101,7 @@ export default {
       visible: false,
       drugsCategoryList: [], // 初始化药品种类
 
+      Id: '',
       dataForm: {
         Name: '', // 药典名
         CategoryId: '1001',
@@ -136,41 +137,36 @@ export default {
       API.drugs.getDrugsCategory().then(result => {
         if (result.code === '0000') {
           this.drugsCategoryList = result.data
+          this.$nextTick(() => {
+            if (id) {
+              API.drugs.getEdit({id: id}).then(result => {
+                if (result.code === '0000') {
+                  this.dataForm = {
+                    Name: result.data.Name, // 药典名
+                    CategoryId: result.data.CategoryId,
+                    CategoryName: result.data.CategoryName,
+
+                    ShowName: result.data.ShowName, // 自己药库的名
+                    SpellName: result.data.SpellName,
+                    Unit: result.data.Unit,
+                    Specification: result.data.Specification,
+                    SalePrice: result.data.SalePrice,
+                    RedLine: result.data.RedLine,
+                    Keywords: result.data.Keywords.split(',') // 别名
+                  }
+                  this.Id = result.data.Id
+                }
+                console.log(this.dataForm)
+              })
+            }
+          })
         }
-      })
-      this.dataForm.id = id || 0
-      this.$nextTick(() => {
-        // if (this.dataForm.id) {
-        //   API.store.getStoreRow({id: this.dataForm.id}).then(result => {
-        //     if (result.code === '0000') {
-        //       this.dataForm = {
-        //         // id: result.data.Id,
-        //         // Name: result.data.Name,
-        //         // AreaId: result.data.AreaId,
-        //         // Address: result.data.Address,
-        //         // Contact: result.data.Contact,
-        //         // Phone: result.data.Phone
-        //         Name: '', // 药典名
-        //         CategoryId: '1001',
-        //         CategoryName: '饮片',
-        //         ShowName: '', // 自己药库的名
-        //         SpellName: '',
-        //         Unit: '',
-        //         Specification: '',
-        //         SalePrice: '',
-        //         RedLine: '',
-        //         Keywords: '' // 别名
-        //       }
-        //     }
-        //   })
-        // } else {
-        //
-        // }
       })
     },
 
     handleClose () {
       this.$refs['dataForm'].resetFields()
+      this.Id = ''
       this.dataForm = {
         Name: '', // 药典名
         CategoryId: '1001',
@@ -197,13 +193,13 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var params = {
+            Id: this.Id,
             Name: this.dataForm.Name, // 药典名
             CategoryId: this.dataForm.CategoryId,
             CategoryName: this.dataForm.CategoryName,
 
             ShowName: this.dataForm.ShowName,
             SpellName: this.dataForm.SpellName,
-
             Unit: this.dataForm.Unit,
             Specification: this.dataForm.Specification,
             SalePrice: this.dataForm.SalePrice,
@@ -211,11 +207,11 @@ export default {
             Keywords: this.dataForm.Keywords.join()
           }
           console.log(params)
-          var tick = !this.dataForm.id ? API.drugs.createDrugs(params) : API.store.editSubmit(params)
+          var tick = !this.Id ? API.drugs.createDrugs(params) : API.drugs.submitEdit(params)
           tick.then((data) => {
             if (data.code === '0000') {
               this.$message({
-                message: `${this.dataForm.id ? '编辑成功' : '新增成功'}`,
+                message: `${this.id ? '编辑成功' : '新增成功'}`,
                 type: 'success',
                 duration: 1500,
                 onClose: () => {

@@ -2,42 +2,50 @@
   <div class="first-tab">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.drugsName" placeholder="药名" clearable></el-input>
+        <el-input v-model="dataForm.drugsName" placeholder="药名" clearable style="width: 150px"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.drugsSpell" placeholder="拼音" clearable></el-input>
+        <el-input v-model="dataForm.drugsSpell" placeholder="拼音" clearable style="width: 150px"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-select v-model="dataForm.CategoryId" placeholder="药品种类" clearable>
+        <el-select v-model="dataForm.CategoryId" placeholder="药品种类" clearable style="width: 110px">
           <el-option v-for="item in drugsCategoryList" :key="item.id" :label="item.text" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
         <el-button type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus">新建药品</el-button>
+        <el-button type="danger" @click="handelShelfOff()">批量下架</el-button>
+        <el-button type="success" @click="handelShelfOn()">批量上架</el-button>
       </el-form-item>
     </el-form>
 
     <!-- chenxiHeight命名法 -->
     <el-table
+      @selection-change="selectionChangeHandle"
       :height="chenxiHeight"
       :data="dataList"
-      border stripe :row-class-name="$cxObj.tableRowClassName"
+      border stripe
       v-loading="dataListLoading"
+      :row-class-name="ownTableRowClassName"
+      :row-style="drugsOff"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
+      :cell-class-name="ownColumnStyle"
       style="width: 100%;">
+      <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column type="index" label="排序" align="center" width="50"></el-table-column>
       <el-table-column prop="CategoryName" header-align="center" align="center" label="种类" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Code" header-align="center" align="center" label="编码" width="100" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Id" header-align="center" align="center" label="ID" width="50"></el-table-column>-->
       <el-table-column header-align="center" align="center" label="药典" width="100" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <span style="color: #409EFF;text-decoration: underline">{{scope.row.Name}}</span>
+          <span style="text-decoration: underline">{{scope.row.Name}}</span>
         </template>
       </el-table-column>
       <el-table-column header-align="center" align="center" label="库存" width="100" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <span style="color: #409EFF;text-decoration: underline">{{scope.row.ShowName}}</span>
+          <span style="text-decoration: underline">{{scope.row.ShowName}}</span>
+          <!--<span v-if="scope.row.WebStatus === 2" style="color: #ccc;text-decoration: underline">{{scope.row.ShowName}}</span>color: #409EFF;-->
         </template>
       </el-table-column>
       <el-table-column prop="SpellName" header-align="center" align="center" width="80" label="拼音"></el-table-column>
@@ -51,12 +59,17 @@
       <!--<el-table-column prop="StoreName" header-align="center" align="center" label="仓库" width="80" :show-overflow-tooltip="true"></el-table-column>-->
       <!--<el-table-column prop="ContractPrice" header-align="center" align="center" label="合同价" width="80" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="RedLine" header-align="center" align="center" label="预警量" :show-overflow-tooltip="true"></el-table-column>
-      <!--<el-table-column prop="WebStatus" header-align="center" align="center" label="状态" width="100" :show-overflow-tooltip="true"></el-table-column>-->
+      <el-table-column prop="WebStatus" header-align="center" align="center" label="状态" width="100" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="WebStatusName" header-align="center" align="center" label="状态" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
-          <span style="padding-right: 6px;border-right: 1px solid #ccc"><el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">编辑</el-button></span>
-          <span><el-button type="text" @click="handelShelf(scope.row.Id)">下架</el-button></span>
+          <span style="padding-right: 12px;border-right: 1px solid #ccc;cursor: pointer">
+            <span type="text" @click="addOrUpdateHandle(scope.row.Id)">编辑</span>
+          </span>
+          <span style="padding-left: 6px;cursor: pointer">
+            <span v-if="scope.row.WebStatus === 1" type="text" @click="handelShelfOff(scope.row.Id)">下架</span>
+            <span v-else-if="scope.row.WebStatus === 2" @click="handelShelfOn(scope.row.Id)">上架</span>
+          </span>
         </template>
       </el-table-column>
     </el-table>
@@ -96,7 +109,8 @@ export default {
         drugsSpell: '',
         CategoryId: '' // 中草药全部、只饮片、只颗粒、只精品
       },
-      dataList: []
+      dataList: [],
+      dataListSelections: []
     }
   },
   components: { FirstTabAddOrUpdate },
@@ -108,7 +122,11 @@ export default {
     }
   },
   methods: {
+    selectionChangeHandle (val) {
+      this.dataListSelections = val
+      console.log(this.dataListSelections)
 
+    },
     // 先请求药品种类提供给下拉列表
     getDrugsCategory () {
       API.drugs.getDrugsCategory().then(result => {
@@ -155,39 +173,106 @@ export default {
       })
     },
 
-
-
-
-
-    // 删除
-    handelShelf (id) {
-      // var dataJSON = {ids: ids.join()}
-      // this.$confirm(`确定对[ids=${ids.join()}]进行[${id === undefined ? '批量删除' : '删除'}]操作?`, '提示', {
-      //   confirmButtonText: '确定',
-      //   cancelButtonText: '取消',
-      //   type: 'warning'
-      // }).then(() => {
-      //   console.log(dataJSON.ids)
-      //   API.store.deleteSubmit(dataJSON).then((result) => {
-      //     if (result.code === '0000') {
-      //       this.$message({
-      //         type: 'success',
-      //         message: '删除成功!',
-      //         duration: 1000,
-      //         onClose: () => {
-      //           this.getDataList()
-      //         }
-      //       })
-      //     } else {
-      //       this.$message.error(result.message)
-      //     }
-      //   })
-      // })
+    // 下架 批量下架
+    handelShelfOff (id) {
+      var ids = id ? [id] : this.dataListSelections.map(item => item.Id)
+      var dataJSON = {ids: ids.join()}
+      console.log(dataJSON)
+      this.$confirm(`确定对[ids=${ids.join()}]进行[${id === undefined ? '批量下架' : '下架'}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log(dataJSON.ids)
+        API.drugs.drugsOff(dataJSON).then((result) => {
+          if (result.code === '0000') {
+            this.$message({
+              type: 'success',
+              message: '下架成功!',
+              duration: 1000,
+              onClose: () => {
+                this.getDataList()
+              }
+            })
+          } else {
+            this.$message.error(result.message)
+          }
+        })
+      })
+    },
+    // 下架 批量下架
+    handelShelfOn (id) {
+      var ids = id ? [id] : this.dataListSelections.map(item => item.Id)
+      var dataJSON = {ids: ids.join()}
+      this.$confirm(`确定对[ids=${ids.join()}]进行[${id === undefined ? '批量上架' : '上架'}]操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log(dataJSON.ids)
+        API.drugs.drugsOn(dataJSON).then((result) => {
+          if (result.code === '0000') {
+            this.$message({
+              type: 'success',
+              message: '上架成功!',
+              duration: 1000,
+              onClose: () => {
+                this.getDataList()
+              }
+            })
+          } else {
+            this.$message.error(result.message)
+          }
+        })
+      })
+    },
+    ownTableRowClassName ({row, rowIndex}) {
+      if (rowIndex >= 0 && row.WebStatus === 1) {
+        return 'all-row'
+      } else if (rowIndex >= 0 && row.WebStatus === 2) {
+        return 'off-row'
+      } else {
+        return ''
+      }
+    },
+    drugsOff ({row, rowIndex}) {
+      if (row.WebStatus === 2) {
+        return {
+          color: '#ccc'
+        }
+      }
+    },
+    ownColumnStyle ({row, column, rowIndex, columnIndex}) { // 0123开始columnIndex
+      if ((columnIndex === 4 || columnIndex === 5 || columnIndex === 15) && row.WebStatus === 1) {
+        return 'highlightColumn'
+      }
+      if ((columnIndex === 4 || columnIndex === 5 || columnIndex === 15) && row.WebStatus === 2) {
+        return 'dimColumn'
+      }
     }
   }
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-
+.el-table {
+  & /deep/ .all-row {
+    color: #606266;
+    & td {padding: 0;}
+    & td .cell{
+      height: 35px;
+      line-height: 35px;
+    }
+  }
+  & /deep/ .off-row {
+    color: #ccc;
+    & td {padding: 0;}
+    & td .cell{
+      height: 35px;
+      line-height: 35px;
+    }
+  }
+  & /deep/ .highlightColumn, & /deep/ .dimColumn {  }
+  & /deep/ .highlightColumn { color: #409EFF }
+}
 </style>

@@ -105,6 +105,7 @@ export default {
   methods: {
     selectionChangeHandle (val) {
       this.dataListSelections = val
+      // console.log(this.dataListSelections) 传递一个数组，数组中元素为选中的行的row信息
     },
     getDataList () {
       const _this = this

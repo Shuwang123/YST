@@ -16,8 +16,9 @@ comObj.tableHeaderStyle40px = function () {
   }
 }
 comObj.tableRowClassName = function ({row, rowIndex}) {
+  // 这是通用的35px行高表体
   if (rowIndex >= 0) {
-    return 'warning-row'
+    return 'all-row'
   } else {
     return ''
   }
