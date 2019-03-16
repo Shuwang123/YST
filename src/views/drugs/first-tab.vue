@@ -15,8 +15,8 @@
       <el-form-item>
         <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
         <el-button type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus">新建药品</el-button>
-        <el-button type="danger" @click="handelShelfOff()">批量下架</el-button>
-        <el-button type="success" @click="handelShelfOn()">批量上架</el-button>
+        <el-button type="danger" @click="handelShelfOff()" :disabled="this.dataListSelections.length <= 0">批量下架</el-button>
+        <el-button type="success" @click="handelShelfOn()" :disabled="this.dataListSelections.length <= 0">批量上架</el-button>
       </el-form-item>
     </el-form>
 
@@ -28,7 +28,6 @@
       border stripe
       v-loading="dataListLoading"
       :row-class-name="ownTableRowClassName"
-      :row-style="drugsOff"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       :cell-class-name="ownColumnStyle"
       style="width: 100%;">
@@ -124,8 +123,7 @@ export default {
   methods: {
     selectionChangeHandle (val) {
       this.dataListSelections = val
-      console.log(this.dataListSelections)
-
+      // console.log(this.dataListSelections)
     },
     // 先请求药品种类提供给下拉列表
     getDrugsCategory () {
@@ -177,7 +175,7 @@ export default {
     handelShelfOff (id) {
       var ids = id ? [id] : this.dataListSelections.map(item => item.Id)
       var dataJSON = {ids: ids.join()}
-      console.log(dataJSON)
+      // console.log(dataJSON)
       this.$confirm(`确定对[ids=${ids.join()}]进行[${id === undefined ? '批量下架' : '下架'}]操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -200,7 +198,7 @@ export default {
         })
       })
     },
-    // 下架 批量下架
+    // 上架 批量上架
     handelShelfOn (id) {
       var ids = id ? [id] : this.dataListSelections.map(item => item.Id)
       var dataJSON = {ids: ids.join()}
@@ -226,28 +224,24 @@ export default {
         })
       })
     },
+    // 根据'未上架'状态，判断每行是高亮还是暗色
     ownTableRowClassName ({row, rowIndex}) {
       if (rowIndex >= 0 && row.WebStatus === 1) {
-        return 'all-row'
+        return 'on-row'
       } else if (rowIndex >= 0 && row.WebStatus === 2) {
         return 'off-row'
       } else {
         return ''
       }
     },
-    drugsOff ({row, rowIndex}) {
-      if (row.WebStatus === 2) {
-        return {
-          color: '#ccc'
-        }
-      }
-    },
+    // 根据'未上架'状态和‘列标’，‘判断此列中的对应单元格’高亮还是暗色（返回的class是加载td上的，所以是一个一个的往td上加的就能控制，不像上面的行直接加给的tr，看清细节）
     ownColumnStyle ({row, column, rowIndex, columnIndex}) { // 0123开始columnIndex
-      if ((columnIndex === 4 || columnIndex === 5 || columnIndex === 15) && row.WebStatus === 1) {
-        return 'highlightColumn'
-      }
-      if ((columnIndex === 4 || columnIndex === 5 || columnIndex === 15) && row.WebStatus === 2) {
-        return 'dimColumn'
+      if (columnIndex === 4 || columnIndex === 5 || columnIndex === 15) {
+        if (row.WebStatus === 1) {
+          return 'highlightColumn'
+        } else if (row.WebStatus === 2) {
+          return 'dimColumn'
+        }
       }
     }
   }
@@ -256,7 +250,7 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .el-table {
-  & /deep/ .all-row {
+  & /deep/ .on-row {
     color: #606266;
     & td {padding: 0;}
     & td .cell{
@@ -272,7 +266,6 @@ export default {
       line-height: 35px;
     }
   }
-  & /deep/ .highlightColumn, & /deep/ .dimColumn {  }
-  & /deep/ .highlightColumn { color: #409EFF }
+  & /deep/ .highlightColumn { color: #409EFF } /*这儿只管上架状态的列的样式，‘未上架的列的样式’ 干脆跟着 ‘未上架的行的样式’ 混*/
 }
 </style>

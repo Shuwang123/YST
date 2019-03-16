@@ -11,7 +11,7 @@
         <el-input v-model="dataForm.NickName" placeholder="请填别名（汉字昵称）"></el-input>
       </el-form-item>
       <el-form-item label="电话" prop="Phone">
-        <el-input v-model="dataForm.Phone" placeholder="请填写电话（编辑时不可改）"></el-input>
+        <el-input v-model="dataForm.Phone" placeholder="请填写电话"></el-input>
       </el-form-item>
 
       <el-form-item label="门店ID" prop="StoreId">
@@ -60,17 +60,10 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
+import {Currency, Phone} from '../../utils/validate'
+
 export default {
   data () {
-    var checkPhone = (rule, value, callback) => {
-      if (String(value).trim() === '') {
-        return callback(new Error('电话不能为空'))
-      } else if (!/^1[3456789]\d{9}$/.test(value)) {
-        return callback(new Error('电话号码格式不对'))
-      } else {
-        callback()
-      }
-    }
     return {
       visible: false,
       id: '',
@@ -87,24 +80,12 @@ export default {
         // id: 0 // 系统默认生成
       },
       dataRule: {
-        UserName: [
-          { required: true, message: '账户名称不能为空', trigger: 'blur' }
-        ],
-        Password: [
-          { required: true, message: '密码不能为空', trigger: 'blur' }
-        ],
-        NickName: [
-          { required: true, message: '账户名称不能为空', trigger: 'blur' }
-        ],
-        Phone: [
-          { validator: checkPhone, trigger: 'blur' }
-        ],
-        StoreId: [
-          { required: true, message: '门店ID不能为空', trigger: 'blur' }
-        ],
-        RoleId: [
-          { required: true, message: '角色ID不能为空', trigger: 'blur' }
-        ]
+        UserName: Currency('账号不能为空'),
+        Password: Currency('密码不能为空'),
+        NickName: Currency('别名必填'),
+        Phone: Phone(1)
+        // ,StoreId: Currency('门店必选'),
+        // RoleId: Currency('角色必选')
       },
       mdoptions: [], // 门店options
       jsoptions: [], // 角色options
@@ -190,7 +171,6 @@ export default {
         console.log(obj)
         API.adminUser.adminUserDetail(obj).then(result => {
           if (result.code === '0000') {
-            console.log("觉得垃圾的煎熬了")
             this.id = result.data.Id
             // this.dataForm.UserName = result.data.UserName
             // this.dataForm.Password = result.data.Password

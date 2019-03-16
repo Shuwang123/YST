@@ -6,8 +6,8 @@
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="类型：" prop="UrlType">
         <el-radio-group v-model="dataForm.urlType">
-          <!--<el-radio :label="0">目录</el-radio>-->
           <el-radio :label="1">菜单</el-radio>
+          <!--<el-radio :label="0">目录</el-radio>-->
           <!--<el-radio :label="2">按钮</el-radio>-->
         </el-radio-group>
       </el-form-item>
@@ -72,16 +72,17 @@
 <script type="text/ecmascript-6">
 import API from '@/api'
 // import { treeDataTranslate } from '@/utils'
+import {Currency} from '../../utils/validate'
 export default {
   data () {
     // 自定义验证
-    var validateUrl = (rule, value, callback) => {
-      if (this.dataForm.type === 1 && !/\S/.test(value)) {
-        callback(new Error('菜单URL不能为空'))
-      } else {
-        callback()
-      }
-    }
+    // var validateUrl = (rule, value, callback) => {
+    //   if (this.dataForm.type === 1 && !/\S/.test(value)) {
+    //     callback(new Error('菜单URL不能为空'))
+    //   } else {
+    //     callback()
+    //   }
+    // }
     return {
       // menuList: [],
       visible: false,
@@ -100,15 +101,11 @@ export default {
         parentName: ''
       },
       dataRule: {
-        name: [
-          { required: true, message: '菜单名称不能为空', trigger: 'blur' }
-        ],
-        parentName: [
-          { required: false, message: '上级菜单不能为空', trigger: 'change' }
-        ],
-        menuUrl: [
-          { validator: validateUrl, trigger: 'blur' }
-        ]
+        name: Currency('菜单名不能为空'),
+        url: Currency('如果没有路径请填写#号')
+        // ,menuUrl: [
+        //   { validator: validateUrl, trigger: 'blur' }
+        // ]
       },
       menuList: [],
       defaultProps: {
@@ -235,9 +232,9 @@ export default {
       }
     },
     menuListTreeSetCurrentNode () {
-//      this.$refs.menuListTree.setCheckedKeys([this.dataForm.parentId])
+      // this.$refs.menuListTree.setCheckedKeys([this.dataForm.parentId])
       this.$refs.menuListTree.setChecked(this.dataForm.parentId, true)
-//      this.dataForm.parentName = (this.$refs.menuListTree.getCurrentNode() || {})['label'] // 获取当前被选中的节点的 data，若没有节点被选中则返回 null
+      // this.dataForm.parentName = (this.$refs.menuListTree.getCurrentNode() || {})['label'] // 获取当前被选中的节点的 data，若没有节点被选中则返回 null
       this.dataForm.parentName = (this.$refs.menuListTree.getNode(this.dataForm.parentId) || {})['label']
     },
 

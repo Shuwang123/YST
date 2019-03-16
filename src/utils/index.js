@@ -1,6 +1,6 @@
 /**
  * 是否有权限
- * @param {*} key    陈希登陆退出等问题，一下四个方法
+ * @param {*} key    陈希登陆退出等问题，以下四个方法
  */
 export function isAuth (key) {
   if (sessionStorage.getItem('userInfo')) {

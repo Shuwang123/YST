@@ -38,6 +38,7 @@
 <script type="text/ecmascript-6">
 import API from '@/api'
 // import {treeDataTranslate} from '@/utils'
+import {Currency} from '../../utils/validate'
 export default {
   data () {
     return {
@@ -65,9 +66,7 @@ export default {
         MenuIds: ''
       },
       dataRule: {
-        name: [
-          { required: true, message: '角色名称不能为空', trigger: 'blur' }
-        ]
+        Name: Currency('角色名不能为空')
       }
     }
   },

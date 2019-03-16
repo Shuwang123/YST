@@ -11,8 +11,8 @@
 
       <Address :lastCode="dataForm.AreaId" ref="comAddress" @chenxi="updataAddress"></Address>
 
-      <el-form-item label="详细地址" prop="Address">
-        <el-input v-model="dataForm.Address" placeholder="详细address"></el-input>
+      <el-form-item label="详细地址" prop="AddressInfo">
+        <el-input v-model="dataForm.AddressInfo" placeholder="详细AddressInfo"></el-input>
       </el-form-item>
       <el-form-item label="联系人" prop="Contact">
         <el-input v-model="dataForm.Contact" placeholder="联系人"></el-input>
@@ -32,20 +32,13 @@
 import API from '@/api'
 import Address from '../common/address'
 // import {treeDataTranslate} from '@/utils'
+import {Currency, Phone} from '../../utils/validate'
+
 export default {
   components: {
     Address
   },
   data () {
-    var checkPhone = (rule, value, callback) => {
-      if (String(value).trim() === '') {
-        return callback(new Error('电话不能为空'))
-      } else if (!/^1[3456789]\d{9}$/.test(value)) {
-        return callback(new Error('电话号码格式不对'))
-      } else {
-        callback()
-      }
-    }
     return {
       nodes: [],
       visible: false,
@@ -53,20 +46,15 @@ export default {
         id: 0,
         Name: '',
         AreaId: '', // 最后一层的区域id
-        Address: '',
+        AddressInfo: '',
         Contact: '',
         Phone: ''
       },
       dataRule: {
-        Name: [
-          { required: true, message: '门店名称不能为空', trigger: 'blur' }
-        ],
-        Address: [
-          { required: true, message: '门店地址不能为空', trigger: 'blur' }
-        ],
-        Phone: [
-          { validator: checkPhone, trigger: 'blur' }
-        ]
+        Name: Currency('名称必填'),
+        // Address: Currency('区级地址必填'),
+        AddressInfo: Currency('详细地址必填'),
+        Phone: Phone()
       }
     }
   },
@@ -89,7 +77,7 @@ export default {
                 id: result.data.Id,
                 Name: result.data.Name,
                 AreaId: result.data.AreaId,
-                Address: result.data.Address,
+                AddressInfo: result.data.Address,
                 Contact: result.data.Contact,
                 Phone: result.data.Phone
               }
@@ -109,7 +97,7 @@ export default {
         id: 0,
         Name: '',
         AreaId: '',
-        Address: '',
+        AddressInfo: '',
         Contact: '',
         Phone: ''
       }
@@ -122,7 +110,7 @@ export default {
             id: this.dataForm.id,
             Name: this.dataForm.Name,
             AreaId: this.dataForm.AreaId,
-            Address: this.dataForm.Address,
+            Address: this.dataForm.AddressInfo,
             Contact: this.dataForm.Contact,
             Phone: this.dataForm.Phone
           }

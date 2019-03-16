@@ -9,8 +9,8 @@
         <el-input v-model="dataForm.Name" placeholder="药典规范名称"></el-input>
       </el-form-item>
       <el-form-item label="药品类别">
-        <el-select v-model="dataForm.CategoryName" placeholder="药品种类" @change="categoryChange" style="width: 184px">
-          <el-option v-if="item.pId !== null" v-for="item in drugsCategoryList" :key="item.id" :label="item.text" :value="item.text"></el-option>
+        <el-select v-model="dataForm.CategoryId" placeholder="药品种类" @change="categoryChange" style="width: 184px">
+          <el-option v-if="item.pId !== null" v-for="item in drugsCategoryList" :key="item.id" :label="item.text" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="库存药名" prop="ShowName">
@@ -20,7 +20,7 @@
           <el-input v-model="dataForm.SpellName" placeholder="首字母拼音缩写"></el-input>
       </el-form-item>
 
-      <el-form-item label="单位">
+      <el-form-item label="单位" prop="Unit">
         <el-select v-model="dataForm.Unit" placeholder="请选择药品单位" style="width: 184px">
           <el-option label="克" value="g"></el-option>
           <el-option label="毫升" value="ML"></el-option>
@@ -29,10 +29,10 @@
       <el-form-item label="规格" prop="Specification">
         <el-input v-model="dataForm.Specification" placeholder="x*x/g"></el-input>
       </el-form-item>
-      <el-form-item label="建议售价">
-        <el-input v-model="dataForm.SalePrice" placeholder="建议零售价"></el-input>
+      <el-form-item label="建议售价" prop="SalePrice">
+        <el-input v-model="dataForm.SalePrice" placeholder="小数点后只能必须写2位"></el-input>
       </el-form-item>
-      <el-form-item label="预警量">
+      <el-form-item label="预警量" prop="RedLine">
         <el-input v-model="dataForm.RedLine" placeholder="预警量"></el-input>
       </el-form-item>
 
@@ -43,32 +43,32 @@
       <el-row>
         <el-col :span="6" :offset="6">
           <el-form-item label="">
-            <el-input v-model="dataForm.Keywords[0]" placeholder="中文名"></el-input>
+            <el-input v-model="dataForm.Keywords0" placeholder="中文名"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="">
-            <el-input v-model="dataForm.Keywords[1]" placeholder="拼音码"></el-input>
+          <el-form-item label="" prop="Keywords1">
+            <el-input v-model="dataForm.Keywords1" placeholder="拼音码"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" :offset="6">
           <el-form-item label="">
-            <el-input v-model="dataForm.Keywords[2]" placeholder="中文名"></el-input>
+            <el-input v-model="dataForm.Keywords2" placeholder="中文名"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="">
-            <el-input v-model="dataForm.Keywords[3]" placeholder="拼音码"></el-input>
+          <el-form-item label="" prop="Keywords3">
+            <el-input v-model="dataForm.Keywords3" placeholder="拼音码"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6" :offset="6">
           <el-form-item label="">
-            <el-input v-model="dataForm.Keywords[4]" placeholder="中文名"></el-input>
+            <el-input v-model="dataForm.Keywords4" placeholder="中文名"></el-input>
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="">
-            <el-input v-model="dataForm.Keywords[5]" placeholder="拼音码"></el-input>
+          <el-form-item label="" prop="Keywords5">
+            <el-input v-model="dataForm.Keywords5" placeholder="拼音码"></el-input>
           </el-form-item>
         </el-col>
       </el-row>
@@ -83,20 +83,12 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
+import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
 // import {treeDataTranslate} from '@/utils'
 export default {
   components: {
   },
   data () {
-    var checkPhone = (rule, value, callback) => {
-      if (String(value).trim() === '') {
-        return callback(new Error('电话不能为空'))
-      } else if (!/^1[3456789]\d{9}$/.test(value)) {
-        return callback(new Error('电话号码格式不对'))
-      } else {
-        callback()
-      }
-    }
     return {
       visible: false,
       drugsCategoryList: [], // 初始化药品种类
@@ -114,19 +106,24 @@ export default {
         SalePrice: '',
         RedLine: '',
 
-        Keywords: ['', '', '', '', '', ''] // 别名
+        Keywords0: '',
+        Keywords1: '',
+        Keywords2: '',
+        Keywords3: '',
+        Keywords4: '',
+        Keywords5: ''
       },
 
       dataRule: {
-        Name: [
-          { required: true, message: '门店名称不能为空', trigger: 'blur' }
-        ],
-        Address: [
-          { required: true, message: '门店地址不能为空', trigger: 'blur' }
-        ],
-        Phone: [
-          { validator: checkPhone, trigger: 'blur' }
-        ]
+        Name: Currency('此为必填项'),
+        ShowName: Currency('此为必填项'),
+        SpellName: Letter(1),
+        Unit: Currency('必选项'),
+        SalePrice: NumberFloat(),
+        RedLine: NumberInt(),
+        Keywords1: Letter(),
+        Keywords3: Letter(),
+        Keywords5: Letter()
       }
     }
   },
@@ -152,7 +149,12 @@ export default {
                     Specification: result.data.Specification,
                     SalePrice: result.data.SalePrice,
                     RedLine: result.data.RedLine,
-                    Keywords: result.data.Keywords.split(',') // 别名
+                    Keywords0: result.data.Keywords.split(',')[0],
+                    Keywords1: result.data.Keywords.split(',')[1],
+                    Keywords2: result.data.Keywords.split(',')[2],
+                    Keywords3: result.data.Keywords.split(',')[3],
+                    Keywords4: result.data.Keywords.split(',')[4],
+                    Keywords5: result.data.Keywords.split(',')[5],
                   }
                   this.Id = result.data.Id
                 }
@@ -177,13 +179,18 @@ export default {
         Specification: '',
         SalePrice: '',
         RedLine: '',
-        Keywords: ['', '', '', '', '', ''] // 别名
+        Keywords0: '',
+        Keywords1: '',
+        Keywords2: '',
+        Keywords3: '',
+        Keywords4: '',
+        Keywords5: ''
       }
     },
-    categoryChange (text) {
+    categoryChange (id) {
       this.drugsCategoryList.forEach(item => {
-        if (item.text === text) {
-          this.dataForm.CategoryId = item.id
+        if (item.id === id) {
+          this.dataForm.CategoryName = item.text
           return false
         }
       })
@@ -204,7 +211,11 @@ export default {
             Specification: this.dataForm.Specification,
             SalePrice: this.dataForm.SalePrice,
             RedLine: this.dataForm.RedLine,
-            Keywords: this.dataForm.Keywords.join()
+            Keywords: [
+              this.dataForm.Keywords0, this.dataForm.Keywords1,
+              this.dataForm.Keywords2, this.dataForm.Keywords3,
+              this.dataForm.Keywords4, this.dataForm.Keywords5
+            ].join()
           }
           console.log(params)
           var tick = !this.Id ? API.drugs.createDrugs(params) : API.drugs.submitEdit(params)
