@@ -266,6 +266,6 @@ export default {
       line-height: 35px;
     }
   }
-  & /deep/ .highlightColumn { color: #409EFF } /*这儿只管上架状态的列的样式，‘未上架的列的样式’ 干脆跟着 ‘未上架的行的样式’ 混*/
+  & /deep/ .highlightColumn { color: #409EFF } /*这儿只管上架状态的列的样式，‘未上架的列的样式’ 干脆全跟着 ‘未上架的行的样式’ 混*/
 }
 </style>

@@ -58,7 +58,7 @@ export function resetPassword (params) {
   })
 } */
 
-// 获取用户门店列表
+// 获取用户门店列表(这下面的两个api根本就没有调用，没用没用没用，不要误导人，脑壳给看晕了)
 export function adminStoreList (params) {
   return request({
     url: requestUrl('/mobilereport/admin/store/account/list'), // ，/stocktaking/admin/account/store/list

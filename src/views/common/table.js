@@ -6,7 +6,7 @@ comObj.tableHeaderStyle = function () {
     'color': '#676A6C'
   }
 }
-// 针对表头：35px高度的
+// 针对表头：最开始35px高度的,后来又莫名其妙改成了40和elementUI默认表头高度貌似一致，所以看到了tableHeaderStyle、tableHeaderStyle40px这两个不要太懵逼
 comObj.tableHeaderStyle40px = function () {
   return {
     'fontWeight': 600,
