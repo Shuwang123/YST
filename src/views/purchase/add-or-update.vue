@@ -15,7 +15,7 @@
         </el-form-item>
         <br>
         <el-table
-          :data="dataList"
+          :data="dataList" ref="tableChild"
           border stripe
           :height="450"
           v-loading=""
@@ -56,8 +56,11 @@ export default {
   props: ['purchaseFatherList'],
   data () {
     return {
-      visible: false,
+      ownPurchaseFatherList: [],
+      dataListViews: [], // 所有看过的商品 分页记忆
+      // multipleAll: [], // 所有选中过的商品 分页记忆
 
+      visible: false,
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,
@@ -70,23 +73,42 @@ export default {
       },
       dataList: [],
       dataListSelections: [],
-      purchaseRegistered: [] // 采购单注册记名列表
+      purchaseRegistered: [], // 采购单注册记名列表
+      isInit: true
+    }
+  },
+  watch: {
+    dataList (n, o) {
+      this.$nextTick(() => {
+        this.ownPurchaseFatherList = this.ownPurchaseFatherList.length > 0 ? this.ownPurchaseFatherList : this.purchaseFatherList
+        // console.log(this.purchaseFatherList)
+        // console.log(this.ownPurchaseFatherList)
+
+        this.dataList.forEach(item => {
+          this.ownPurchaseFatherList.forEach(row => {
+            if (item.Code === row.Code) {
+              this.$refs.tableChild.toggleRowSelection(item, true)
+            }
+          })
+        })
+        this.isInit = false
+      })
     }
   },
   methods: {
     init (id) {
-      console.log('父组件传值')
-      console.log(this.purchaseFatherList)
       this.getDataList()
     },
     // 每页数
     sizeChangeHandle (val) {
       this.pageSize = val // this.pageIndex = 1
+      this.isInit = true
       this.getDataList()
     },
     // 当前页
     currentChangeHandle (val) {
       this.pageIndex = val
+      this.isInit = true
       this.getDataList()
     },
     getDataList () {
@@ -94,21 +116,13 @@ export default {
         if (result.code === '0000') {
           this.dataList = result.data
           this.totalPage = result.total
-          // 初始化勾选：服务器返回了对应的一部分药材列表后，核对返回的这部分与父组件传递的正式采购列表，用以初始化checkbox
-          // if (this.purchaseFatherList.length !== 0) {
-          //   this.dataList.forEach(item => {
-          //     this.purchaseFatherList.forEach(item_1 => {
-          //       if (item_1.Code === item.Code) {
-          //         return this.dataListSelections.push(item_1)
-          //       }
-          //     })
-          //   })
-          // }
-          this.$nextTick(() => {
-            // this.dataListSelections = this.purchaseFatherList
-            this.selectionChangeHandle(this.purchaseFatherList)
-            console.log(this.dataListSelections)
-          })
+          if (this.dataListViews.length === 0) {
+            this.dataListViews = this.dataListViews.concat(result.data) // 会打散拼接到尾巴，旧数组不变
+          } else if (this.dataListViews.some(item => item.Code === result.data[0].Code)) {
+            this.dataListViews = this.dataListViews.concat([])
+          } else {
+            this.dataListViews = this.dataListViews.concat(result.data)
+          }
         }
       })
       this.visible = true
@@ -117,11 +131,26 @@ export default {
     selectionChangeHandle (val) {
       this.dataListSelections = val
       console.log(val)
+      if (this.isInit === false) {
+        console.log('这儿很危险')
+        if (this.ownPurchaseFatherList.length !== 0) { // 先删
+          this.dataList.forEach(row => {
+            this.ownPurchaseFatherList = this.ownPurchaseFatherList.filter(item => {
+              return item.Code !== row.Code
+            })
+          })
+        }
+        val.forEach(item => {
+          this.ownPurchaseFatherList.push(item)
+          console.log(this.ownPurchaseFatherList)
+        })
+      }
     },
     handleClose () {
       this.$refs['dataForm'].resetFields()
       this.dataForm.Id = ''
-      this.dataListSelections = []
+      this.ownPurchaseFatherList = []
+      this.isInit = true // 儿豁，这个true这一句，精神处于崩溃边缘，儿豁嘛
     },
     // 表单提交
     dataFormSubmit () {
@@ -129,7 +158,7 @@ export default {
         this.$message({
           type: 'warning',
           message: '您没有勾选任何商品!',
-          duration: 1000,
+          duration: 1000
         })
       } else {
         this.$confirm(`确定将此次勾选的商品纳入采购列表?`, '提示', {
@@ -137,25 +166,20 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          this.$message({
-            type: 'success',
-            message: '添加成功!',
-            duration: 1000,
-            onClose: () => {
-              var purchaseFatherListOther = this.purchaseFatherList // 因为父组件传递给子组件的值vue官网不推荐直接修改
-              if (purchaseFatherListOther.length !== 0) {
-                this.dataList.forEach(item => {
-                  purchaseFatherListOther = JSON.parse(JSON.stringify(purchaseFatherListOther).replace(/JSON.stringify(item)/i, ''))
-                })
-              }
-              this.dataListSelections.forEach(item => {
-                purchaseFatherListOther.push(item)
-                this.$emit('refreshDataList', purchaseFatherListOther)
+          var fatherChecked = this.ownPurchaseFatherList // 因为父组件传递给子组件的值vue官网不推荐直接修改
+          if (fatherChecked.length !== 0) { // 假如首次导入，父组件传递的选中列表就为空，那么就不执行删除而跳过此语句
+            this.dataListViews.forEach(row => {
+              fatherChecked = fatherChecked.filter(item => {
+                return item.Code !== row.Code
               })
-              console.log(purchaseFatherListOther)
-              this.visible = false
-            }
+            })
+          }
+          this.ownPurchaseFatherList.forEach(item => {
+            fatherChecked.push(item)
           })
+          this.$emit('refreshDataList', fatherChecked)
+          // this.dataListSelections = []
+          this.visible = false
         })
       }
     }

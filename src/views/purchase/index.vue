@@ -2,32 +2,33 @@
   <div class="mod-purchase">
     <el-form :inline="true" :model="dataForm" @submit.native.prevent="getDataList()" ref="dataForm" label-width="100px">
     <!--<el-form :inline="true" :model="dataForm" @submit.native.prevent="getDataList()" :rules="dataRule" ref="dataForm" label-width="80">-->
-      <el-form-item label="选择门店：" prop="">
-        <el-select v-model="dataForm.StoreId" placeholder="选择门店" style="width: 100px" size="mini" @change="handleStore" :disabled="!dataForm.View">
-          <el-option v-for="item in storeAll" :key="item.Id" :label="'['+item.Id+']'+item.Name" :value="item.Id"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="供应商：" prop="">
-        <el-select v-model="dataForm.supplierName" placeholder="供应厂商" style="width: 150px" size="mini">
-          <el-option v-for="item in supplierArr" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item>
+        <el-button type="primary" size="mini">保存</el-button>
         <el-button type="primary" @click="addOrUpdateHandle()" size="mini">导入商品</el-button>
         <el-button type="danger" @click="deleteHandle()" icon="el-icon-delete" :disabled="dataListSelections.length <= 0" size="mini">批量移除</el-button>
       </el-form-item>
       <br>
-      <el-form-item label="操作人员：" prop="">
+      <el-form-item label="" prop="">
+        <el-select v-model="dataForm.StoreId" placeholder="选择门店" style="width: 100px" size="mini" @change="handleStore" :disabled="!dataForm.View">
+          <el-option v-for="item in storeAll" :key="item.Id" :label="'['+item.Id+']'+item.Name" :value="item.Id"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="" prop="">
+        <el-select v-model="dataForm.supplierName" placeholder="供应厂商" style="width: 150px" size="mini">
+          <el-option v-for="item in supplierArr" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="" prop="">
         <el-input v-model="dataForm.UserName" placeholder="操作账号" clearable size="mini" style="width: 100px" :disabled="true"></el-input>
       </el-form-item>
-      <el-form-item label="联系人：" prop="">
+      <el-form-item label="" prop="">
         <el-input v-model="dataForm.Buyer" placeholder="门店联系人" style="width: 100px" size="mini"></el-input>
       </el-form-item>
       <el-form-item>
         <el-input v-model="dataForm.Phone" placeholder="联系电话" style="width: 120px" size="mini"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.Address" placeholder="门店地址" style="width: 300px" size="mini"></el-input>
+        <el-input v-model="dataForm.Address" placeholder="门店地址" style="width: 100px" size="mini"></el-input>
       </el-form-item>
       <el-form-item>
         <el-input v-model="dataForm.Remark" placeholder="填写进货备注" style="width: 230px" size="mini"></el-input>
@@ -46,7 +47,7 @@
       <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
       <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
       <el-table-column prop="Id" header-align="center" :align="$store.state.common.align" width="80" label="商品编码"></el-table-column>
-      <el-table-column prop="Name" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
+      <el-table-column prop="ShowName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
       <el-table-column prop="Description" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="进价">-->
         <!--<template slot-scope="scope">-->
@@ -62,7 +63,7 @@
       <el-table-column header-align="center" :align="$store.state.common.align" width="190" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="mini" plain
-                     @click="deleteHandle(scope.row.Id)">移除
+                     @click="deleteHandle(scope.row.Code)">移除
           </el-button>
         </template>
       </el-table-column>
@@ -171,6 +172,7 @@ export default {
       var parmet = {pageIndex: this.pageIndex, pageSize: this.pageSize, 'Name': String(this.dataForm.Name), isPaging: true}
       this.dataList = dataList
       this.purchaseFormal = dataList
+      console.log(this.purchaseFormal)
     },
     // 每页数
     sizeChangeHandle (val) {
@@ -189,29 +191,14 @@ export default {
       })
     },
     // 删除
-    deleteHandle (id) {
-      var ids = id ? [id] : this.dataListSelections.map(function (item) {
-        return item.Id
-      })
-      var dataJSON = {ids: ids.join()}
-      this.$confirm(`确定对[ids=${ids.join()}]进行[${id === undefined ? '批量删除' : '删除'}]操作?`, '提示', {
+    deleteHandle (Code) {
+      this.$confirm(`确定移除?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        API.role.roleDelete(dataJSON).then((data) => {
-          if (data.code === '0000') {
-            this.$message({
-              type: 'success',
-              message: '删除成功!',
-              duration: 1000,
-              onClose: () => {
-                this.getDataList()
-              }
-            })
-          } else {
-            this.$message.error(data.message)
-          }
+        this.purchaseFormal = this.dataList = this.purchaseFormal.filter(item => {
+          return item.Code !== Code
         })
       })
     }
