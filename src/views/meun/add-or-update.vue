@@ -42,7 +42,7 @@
       </el-form-item>
 
       <el-form-item v-if="dataForm.urlType === 1" label="菜单URL" prop="url">
-        <el-input v-model="dataForm.url" placeholder="菜单URL"></el-input>
+        <el-input v-model="dataForm.url" placeholder="没有路径的请填写'#'，有路径的必须'/'开头"></el-input>
       </el-form-item>
 
       <el-form-item v-if="dataForm.urlType === 2" label="对应接口" prop="menuUrl">

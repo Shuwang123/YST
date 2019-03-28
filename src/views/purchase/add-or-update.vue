@@ -2,23 +2,27 @@
   <div class="mod-purchase-child">
     <el-dialog
       v-dialogDrag
-      :title="!dataForm.roleId ? '添加商品' : '修改'"
+      :title="'商品导入'"
       :close-on-click-modal="false"
       :visible.sync="visible" @close="handleClose">
-      <el-form :model="dataForm" ref="dataForm" label-width="0" :inline="true">
-      <!--<el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="0" :inline="true">-->
-        <el-form-item label="" prop="Name">
-          <el-input v-model="dataForm.Name" placeholder="角色名称Name" size="mini"></el-input>
+      <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="0" :inline="true">
+        <el-form-item label="" prop="CategoryText">
+          <el-radio-group v-model="dataForm.CategoryText" size="mini" @change="categoryTextHandle">
+            <el-radio-button v-for="item in drugsCategoryList" :key="item.id"
+                             :label="item.text" :disabled="!clickOk"></el-radio-button>
+          </el-radio-group>
         </el-form-item>
-        <el-form-item label="" prop="description">
-          <el-input v-model="dataForm.Description" placeholder="描述" size="mini"></el-input>
+        <el-form-item label="" prop="SpellName">
+          <el-input v-model="dataForm.SpellName" placeholder="拼音搜索" size="mini" clearable>
+            <el-button slot="append" icon="el-icon-search" @click="drugsSearch()"></el-button>
+          </el-input>
         </el-form-item>
         <br>
         <el-table
           :data="dataList" ref="tableChild"
           border stripe
           :height="450"
-          v-loading=""
+          v-loading="dataListLoading"
           @selection-change="selectionChangeHandle"
           :header-cell-style="$cxObj.tableHeaderStyle40px"
           row-class-name="purchaseTableRowClass"
@@ -51,53 +55,69 @@
 <script type="text/ecmascript-6">
 import API from '@/api'
 // import {treeDataTranslate} from '@/utils'
-import {Currency} from '../../utils/validate'
+import {Letter} from '../../utils/validate'
 export default {
   props: ['purchaseFatherList'],
   data () {
     return {
-      ownPurchaseFatherList: [],
+      ownPurchaseFatherList: [], // 所有勾选过的的商品 分页记忆
       dataListViews: [], // 所有看过的商品 分页记忆
-      // multipleAll: [], // 所有选中过的商品 分页记忆
 
       visible: false,
+      dataListLoading: false, // 加载v-loading
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,
 
       dataRule: {
-        Name: Currency('角色名不能为空')
+        SpellName: Letter()
       },
+      drugsCategoryList: [], // 先请求药品种类列表
       dataForm: {
-        Id: ''
+        SpellName: '',
+        CategoryId: '', // 先请求药品种类
+        CategoryText: ''
       },
       dataList: [],
       dataListSelections: [],
       purchaseRegistered: [], // 采购单注册记名列表
-      isInit: true
+      isInit: true,
+      clickOk: true
     }
   },
   watch: {
     dataList (n, o) {
       this.$nextTick(() => {
         this.ownPurchaseFatherList = this.ownPurchaseFatherList.length > 0 ? this.ownPurchaseFatherList : this.purchaseFatherList
-        // console.log(this.purchaseFatherList)
-        // console.log(this.ownPurchaseFatherList)
-
         this.dataList.forEach(item => {
+          // console.log('这儿执行就有问题')
           this.ownPurchaseFatherList.forEach(row => {
             if (item.Code === row.Code) {
-              this.$refs.tableChild.toggleRowSelection(item, true)
+              this.$refs.tableChild.toggleRowSelection(item, true) // 默认初始isInit勾选
             }
           })
         })
         this.isInit = false
+        // }
       })
     }
+    // SpellName (val) {
+    //   this.dataForm.SpellName = val
+    //   this.$nextTick(() => {
+    //     this.getDataList()
+    //   })
+    // }
   },
   methods: {
     init (id) {
       this.getDataList()
+      API.drugs.getDrugsCategory().then(result => {
+        if (result.code === '0000') {
+          this.drugsCategoryList = result.data
+          this.dataForm.CategoryText = this.drugsCategoryList[0].text
+          this.dataForm.CategoryId = this.drugsCategoryList[0].id
+        }
+      })
     },
     // 每页数
     sizeChangeHandle (val) {
@@ -111,19 +131,35 @@ export default {
       this.isInit = true
       this.getDataList()
     },
+    drugsSearch () {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          this.isInit = true
+          this.getDataList()
+        }
+      })
+    },
     getDataList () {
-      API.drugs.getDrugsList({name: '', PageIndex: this.pageIndex, PageSize: this.pageSize, IsPaging: 'true', SpellName: '', CategoryId: ''}).then(result => {
-        if (result.code === '0000') {
+      this.dataListLoading = true
+      API.drugs.getDrugsList({name: '', PageIndex: this.pageIndex, PageSize: this.pageSize, IsPaging: 'true', SpellName: this.dataForm.SpellName, CategoryId: this.dataForm.CategoryId}).then(result => {
+        if (result.code === '0000' && result.data.length > 0) {
           this.dataList = result.data
           this.totalPage = result.total
           if (this.dataListViews.length === 0) {
             this.dataListViews = this.dataListViews.concat(result.data) // 会打散拼接到尾巴，旧数组不变
-          } else if (this.dataListViews.some(item => item.Code === result.data[0].Code)) {
+          } else if (this.dataListViews.some(item => item.Code === result.data[0].Code || item.Code === result.data[this.pageSize - 1]).Code) {
             this.dataListViews = this.dataListViews.concat([])
           } else {
             this.dataListViews = this.dataListViews.concat(result.data)
           }
+        } else {
+          this.$message({
+            message: '查询结果为空',
+            type: 'warning',
+            duration: 3000
+          })
         }
+        this.dataListLoading = false
       })
       this.visible = true
     },
@@ -132,7 +168,6 @@ export default {
       this.dataListSelections = val
       console.log(val)
       if (this.isInit === false) {
-        console.log('这儿很危险')
         if (this.ownPurchaseFatherList.length !== 0) { // 先删
           this.dataList.forEach(row => {
             this.ownPurchaseFatherList = this.ownPurchaseFatherList.filter(item => {
@@ -147,41 +182,47 @@ export default {
       }
     },
     handleClose () {
-      this.$refs['dataForm'].resetFields()
-      this.dataForm.Id = ''
+      // this.$refs['dataForm'].resetFields()
+      // this.dataForm.Id = ''
       this.ownPurchaseFatherList = []
-      this.isInit = true // 儿豁，这个true这一句，精神处于崩溃边缘，儿豁嘛
+      this.isInit = true // 儿豁，这个true这一句，精神处于崩溃边缘
+    },
+    categoryTextHandle (text) {
+      this.clickOk = false
+      this.drugsCategoryList.forEach(item => {
+        if (item.text === text) {
+          this.dataForm.CategoryId = item.id
+          console.log(item.id)
+          this.isInit = true
+          this.getDataList()
+          var time = setTimeout(() => { // 切换的时候如果点太快，貌似循环太多运行不够快的情况下会有些冲突的漏洞产生，所以弄了个0.5s的禁用间隔
+            this.clickOk = true
+            clearTimeout(time)
+          }, 500)
+        }
+      })
     },
     // 表单提交
     dataFormSubmit () {
-      if (this.dataListSelections.length === 0) {
-        this.$message({
-          type: 'warning',
-          message: '您没有勾选任何商品!',
-          duration: 1000
-        })
-      } else {
-        this.$confirm(`确定将此次勾选的商品纳入采购列表?`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          var fatherChecked = this.ownPurchaseFatherList // 因为父组件传递给子组件的值vue官网不推荐直接修改
-          if (fatherChecked.length !== 0) { // 假如首次导入，父组件传递的选中列表就为空，那么就不执行删除而跳过此语句
-            this.dataListViews.forEach(row => {
-              fatherChecked = fatherChecked.filter(item => {
-                return item.Code !== row.Code
-              })
+      this.$confirm(`确定将此次勾选的商品纳入采购列表?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        var fatherChecked = this.ownPurchaseFatherList // 因为父组件传递给子组件的值vue官网不推荐直接修改
+        if (fatherChecked.length !== 0) { // 假如首次导入，父组件传递的选中列表就为空，那么就不执行删除而跳过此语句
+          this.dataListViews.forEach(row => {
+            fatherChecked = fatherChecked.filter(item => {
+              return item.Code !== row.Code
             })
-          }
-          this.ownPurchaseFatherList.forEach(item => {
-            fatherChecked.push(item)
           })
-          this.$emit('refreshDataList', fatherChecked)
-          // this.dataListSelections = []
-          this.visible = false
+        }
+        this.ownPurchaseFatherList.forEach(item => {
+          fatherChecked.push(item)
         })
-      }
+        this.$emit('refreshDataList', fatherChecked)
+        this.visible = false
+      })
     }
   }
 }

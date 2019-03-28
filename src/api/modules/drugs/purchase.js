@@ -10,3 +10,20 @@ export function getLoginInfo () {
     params: requestParam('get')
   })
 }
+// 正式提交采购单(创建采购单)
+export function submitPurchase (params) {
+  return request({
+    url: requestUrl('/YstApiPurchaseOrder/Create'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 上面的接口创建采购单后，会生成很多历史采购列表
+export function getPurchaseList (params) {
+  return request({
+    url: requestUrl('/YstApiPurchaseOrder/LoadData'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
