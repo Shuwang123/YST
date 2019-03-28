@@ -119,7 +119,7 @@ export default {
         Phone: '',
         Address: '',
         supplierId: 1,
-        supplierCode: 6006
+        supplierCode: '6006'
       },
       storeAll: [],
       supplierArr: [],
