@@ -5,7 +5,7 @@
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <!--<el-col><div style="border-top: 1px dashed #ccc;padding-top: 10px;font-weight: 900">别名（选填）</div></el-col>-->
-    <div style="min-height: 500px;max-height: 500px;">
+    <div class="ownScrollbar" style="min-height: 500px;max-height: 500px;overflow-y: scroll;">
       <el-row>
         <el-col style="padding: 0 50px">
           <el-steps :active="1" finish-status="success" align-center>
@@ -26,7 +26,7 @@
         <el-col :span="8"><p>备注：<span>{{dataList.CreatedByName}}</span></p></el-col>
       </el-row>
       <el-row>
-        <el-col><div style="padding-top: 5px;font-weight: 900;color: #1CA579">药品信息：<b>饮片</b></div></el-col>
+        <el-col><div style="padding-top: 5px;font-weight: 900;color: #1CA579">药品：<b>饮片</b></div></el-col>
       </el-row>
       <el-table
         :data="dataList.Items"
@@ -89,3 +89,18 @@ export default {
   }
 }
 </script>
+<style rel="stylesheet/scss" lang="scss" scoped>
+.ownScrollbar::-webkit-scrollbar {
+  width: 7px;
+}
+.ownScrollbar::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+  background-color: #DDDEE0;
+}
+.ownScrollbar::-webkit-scrollbar-track {
+  border-radius: 0;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0);
+  background-color: rgba(0,0,0,0);
+}
+</style>

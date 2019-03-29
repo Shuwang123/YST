@@ -132,16 +132,18 @@ export default {
 /*vue过渡初次尝试*/
 .chenxi-enter {
   transform: translate(50px, 30px);
+  opacity: 0;
 }
 .chenxi-enter-to, .chenxi-leave {
   transform: translate(0, 0);
+  opacity: 1;
 }
 .chenxi-enter-active,
 .chenxi-leave-active {
-  transition: all 0.4s ease;
+  transition: all 0.6s ease;
 }
 .chenxi-leave-to {
-  transform: translateX(-100px);
+  transform: translate(-100px, 0);
 }
 .mod {
   &-purchaseList /deep/ {
@@ -181,4 +183,9 @@ export default {
     }
   }
 }
+/*.mod-purchaseList {*/
+  /*& /deep/ .el-dialog__header {*/
+    /*background-color: #1CA579;*/
+  /*}*/
+/*}*/
 </style>
