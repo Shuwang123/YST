@@ -27,3 +27,19 @@ export function getPurchaseList (params) {
     data: requestParam(params)
   })
 }
+// 有整个历史采购单的列表后，当然要有查看某条采购单的info了
+export function getPurchaseInfo (params) {
+  return request({
+    url: requestUrl('/YstApiPurchaseOrder/Detail'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+// 当然也有删除某个purchase
+export function deletePurchase (params) {
+  return request({
+    url: requestUrl('/YstApiPurchaseOrder/DeleteBatch'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}

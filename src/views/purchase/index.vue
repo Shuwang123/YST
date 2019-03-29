@@ -54,7 +54,7 @@
       </el-table-column>
       <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="数量">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.Quantity" :precision="2" :step="1" :min="0.1" :max="10000" size="mini"></el-input-number>
+          <el-input-number v-model="scope.row.Quantity" :precision="2" :step="1" :min="1" :max="10000" size="mini"></el-input-number>
         </template>
       </el-table-column>
       <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>
@@ -118,8 +118,8 @@ export default {
         Buyer: '',
         Phone: '',
         Address: '',
-        supplierId: 1,
-        supplierCode: 6006
+        supplierId: '1',
+        supplierCode: '6006'
       },
       storeAll: [],
       supplierArr: [],
@@ -332,23 +332,27 @@ export default {
         API.purchase.submitPurchase(params).then(result => {
           if (result.code === '0000') {
             this.$message({message: result.message, type: 'success', duration: 3000})
+            this.dataForm = {
+              Name: '',
+              UserName: '', // 当前页面登陆的账号名
+              View: true, // 是否显示门店筛选组件
+              StoreId: '',
+              StoreCode: '',
+              Buyer: '',
+              Phone: '',
+              Address: '',
+              supplierId: '1',
+              supplierCode: '6006'
+            }
+            this.pageInit()
+            this.dataList = []
+            this.purchaseFormal = []
+            // this.dataList = this.purchaseFormal = [] 沃日，那个bug，在子层选中的第一个药品会直接显示到父层的bug就是这句话，写成连续的=就会那样，分开写就好了，不晓得为啥子，空了看看这方面的原理
+          } else {
+            this.$alert(`${result.message}`, '提示', {
+              confirmButtonText: '确定'
+            })
           }
-          this.dataForm = {
-            Name: '',
-            UserName: '', // 当前页面登陆的账号名
-            View: true, // 是否显示门店筛选组件
-            StoreId: '',
-            StoreCode: '',
-            Buyer: '',
-            Phone: '',
-            Address: '',
-            supplierId: 1,
-            supplierCode: 6006
-          }
-          this.pageInit()
-          this.dataList = []
-          this.purchaseFormal = []
-          // this.dataList = this.purchaseFormal = [] 沃日，那个bug，在子层选中的第一个药品会直接显示到父层的bug就是这句话，写成连续的=就会那样，分开写就好了，不晓得为啥子，空了看看这方面的原理
         })
       } else {
         this.$alert('你还啥都没填呢!', '提示', {
