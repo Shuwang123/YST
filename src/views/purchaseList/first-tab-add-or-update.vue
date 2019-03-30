@@ -16,19 +16,19 @@
         </el-col>
       </el-row>
       <el-row>
-        <el-col :span="8"><p>采购人：<span>{{dataList.CreatedByName !== null ? dataList.CreatedByName : '无'}}</span></p></el-col>
-        <el-col :span="8"><p>供应商：<span>{{dataList.SupplierName}}</span></p></el-col>
-        <el-col :span="8"><p>门店：<span>{{dataList.StoreName}}</span></p></el-col>
-        <el-col :span="8"><p>联系人：<span>{{dataList.Buyer}}</span></p></el-col>
-        <el-col :span="8"><p>电话：<span>{{dataList.Phone}}</span></p></el-col>
-        <el-col :span="8"><p>地址：<span>{{dataList.Address}}</span></p></el-col>
-        <el-col :span="16"><p>创建时间：<span>{{dataList.CreatedTime}}</span></p></el-col>
-        <el-col :span="8"><p>备注：<span>{{dataList.CreatedByName}}</span></p></el-col>
+        <el-col :span="8"><p>采购人：<span v-if="dataList !== null">{{dataList.CreatedByName}}</span></p></el-col>
+        <el-col :span="8"><p>供应商：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
+        <el-col :span="8"><p>门店：<span v-if="dataList !== null">{{dataList.StoreName}}</span></p></el-col>
+        <el-col :span="8"><p>联系人：<span v-if="dataList !== null">{{dataList.Buyer}}</span></p></el-col>
+        <el-col :span="8"><p>电话：<span v-if="dataList !== null">{{dataList.Phone}}</span></p></el-col>
+        <el-col :span="8"><p>地址：<span v-if="dataList !== null">{{dataList.Address}}</span></p></el-col>
+        <el-col :span="16"><p>创建时间：<span v-if="dataList !== null">{{dataList.CreatedTime}}</span></p></el-col>
+        <el-col :span="8"><p>备注：<span v-if="dataList !== null">{{dataList.Remark}}</span></p></el-col>
       </el-row>
       <el-row>
         <el-col><div style="padding-top: 5px;font-weight: 900;color: #1CA579">药品：<b>饮片</b></div></el-col>
       </el-row>
-      <el-table
+      <el-table  v-if="dataList !== null"
         :data="dataList.Items"
         stripe
         v-loading="dataListLoading"
