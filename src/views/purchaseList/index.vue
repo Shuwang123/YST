@@ -1,5 +1,6 @@
 <template>
-  <div class="mod-purchaseList">
+
+    <div class="mod-purchaseList">
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
       <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
         <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
@@ -25,18 +26,25 @@
       <!--<el-tab-pane label="成品药品" name="second" disabled="true">-->
       <el-tab-pane label="" name="first">
         <span slot="label"><i class="el-icon-date"></i> 所有采购</span>
-        <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
+        <transition name="chenxi">
+          <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
+        </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="second">
         <span slot="label"><i class=""></i> 待收货</span>
-        <first-tab v-if="isVisible[1].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
+        <transition name="chenxi">
+          <first-tab v-if="isVisible[1].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
+        </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="third">
         <span slot="label"><i class=""></i> 收货完成</span>
-        <first-tab v-if="isVisible[2].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
+        <transition name="chenxi">
+          <first-tab v-if="isVisible[2].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
+        </transition>
       </el-tab-pane>
     </el-tabs>
   </div>
+
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
