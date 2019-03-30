@@ -11,7 +11,6 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
-      <el-table-column prop="Id" header-align="center" align="center" label="ID" width="100"></el-table-column>
       <el-table-column prop="Code" header-align="center" align="center" label="采购单号" width="100"></el-table-column>
       <el-table-column prop="CreatedTime" header-align="center" align="center" label="采购时间" width="150"></el-table-column>
 
@@ -123,27 +122,33 @@ export default {
         this.$refs.addOrUpdate.init(id)
       })
     },
-    handelDelete (id) {
-      this.$confirm(`确定对[id=${id}]的采购单进行 '删除' 操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        API.purchase.deletePurchase({id: id, reason: '取消采购咯'}).then((result) => {
-          if (result.code === '0000') {
-            this.$message({
-              type: 'success',
-              message: '删除成功!',
-              duration: 1000,
-              onClose: () => {
-                this.getDataList()
-              }
-            })
-          } else {
-            this.$message.error(result.message)
-          }
-        })
-      })
+
+    // 下架 批量下架
+    handelShelfOff (id) {
+      // var ids = id ? [id] : this.dataListSelections.map(item => item.Id)
+      // var dataJSON = {ids: ids.join()}
+      // // console.log(dataJSON)
+      // this.$confirm(`确定对[ids=${ids.join()}]进行[${id === undefined ? '批量下架' : '下架'}]操作?`, '提示', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   type: 'warning'
+      // }).then(() => {
+      //   console.log(dataJSON.ids)
+      //   API.drugs.drugsOff(dataJSON).then((result) => {
+      //     if (result.code === '0000') {
+      //       this.$message({
+      //         type: 'success',
+      //         message: '下架成功!',
+      //         duration: 1000,
+      //         onClose: () => {
+      //           this.getDataList()
+      //         }
+      //       })
+      //     } else {
+      //       this.$message.error(result.message)
+      //     }
+      //   })
+      // })
     }
   }
 }

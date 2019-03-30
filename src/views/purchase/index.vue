@@ -118,7 +118,7 @@ export default {
         Buyer: '',
         Phone: '',
         Address: '',
-        supplierId: '1',
+        supplierId: 1,
         supplierCode: '6006'
       },
       storeAll: [],
