@@ -1,9 +1,9 @@
 <template>
   <div class="mod-purchase">
-    <el-form :inline="true" :model="dataForm" @submit.native.prevent="getDataList()" ref="dataForm" label-width="80px">
+    <el-form :inline="true" :model="dataForm" ref="dataForm" label-width="80px">
       <el-form-item>
         <el-button type="primary" size="mini" @click="savePurchase()">保存采购单</el-button>
-        <el-button type="primary" @click="addOrUpdateHandle()" size="mini" icon="el-icon-plus">商品导入</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle(dataForm.CategoryId)" size="mini" icon="el-icon-plus">商品导入</el-button>
         <el-button type="danger" @click="deleteHandle()" icon="el-icon-delete" :disabled="dataListSelections.length <= 0" size="mini">批量移除</el-button>
       </el-form-item>
       <br>
@@ -11,24 +11,21 @@
         <el-form-item label="操作账号" prop="">
           <el-input v-model="dataForm.UserName" placeholder="操作账号" clearable size="mini" style="width: 100px" :disabled="true"></el-input>
         </el-form-item>
+        <el-form-item label="" prop="CategoryText">
+          <el-radio-group v-model="dataForm.CategoryText" size="mini" @change="categoryTextHandle">
+            <el-radio-button v-for="item in drugsCategoryList" :key="item.id"
+                             :label="item.text"></el-radio-button>
+          </el-radio-group>
+        </el-form-item>
         <el-form-item label="" prop="">
           <el-select v-model="dataForm.supplierId" placeholder="供应厂商" style="width: 150px" size="mini" @change="handleSupplier">
-            <el-option v-for="item in supplierArr" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>
+            <el-option v-for="item in supplierArr" :key="item.Id" :label="item.ShortName" :value="item.Id"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="" prop="">
           <el-select v-model="dataForm.StoreId" placeholder="选择门店" style="width: 150px" size="mini" @change="handleStore" :disabled="!dataForm.View">
-            <el-option v-for="item in storeAll" :key="item.Id" :label="'['+item.Id+']'+item.Name" :value="item.Id"></el-option>
+            <el-option v-for="item in storeArr" :key="item.Id" :label="'['+item.Id+']'+item.Name" :value="item.Id"></el-option>
           </el-select>
-        </el-form-item>
-        <el-form-item label="" prop="">
-          <el-input v-model="dataForm.Buyer" placeholder="联系人" style="width: 80px" size="mini"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="dataForm.Phone" placeholder="联系电话" style="width: 120px" size="mini"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="dataForm.Address" placeholder="门店地址" style="width: 160px" size="mini"></el-input>
         </el-form-item>
       </div>
     </el-form>
@@ -67,28 +64,13 @@
       </el-table-column>
     </el-table>
 
-    <!--<div style="position: relative">-->
-      <!--<el-pagination-->
-        <!--@size-change="sizeChangeHandle"-->
-        <!--@current-change="currentChangeHandle"-->
-        <!--:current-page="pageIndex"-->
-        <!--:page-sizes="[10, 20, 50, 100]"-->
-        <!--:page-size="pageSize"-->
-        <!--:total="totalPage"-->
-        <!--layout="prev, pager, next, jumper, sizes, total" background>-->
-      <!--</el-pagination>-->
-      <!--<el-input-->
-        <!--:style="description" size="mini"-->
-        <!--type="textarea"-->
-        <!--:autosize="{ minRows: 1, maxRows: 4}"-->
-        <!--placeholder="请输入进货备注"-->
-        <!--v-model="dataForm.Remark">-->
-      <!--</el-input>-->
-    <!--</div>-->
+    <el-input v-model="dataForm.Buyer" placeholder="联系人" style="width: 80px" size="mini"></el-input>
+    <el-input v-model="dataForm.Phone" placeholder="联系电话" style="width: 120px" size="mini"></el-input>
+    <el-input v-model="dataForm.Address" placeholder="门店地址" style="width: 160px" size="mini"></el-input>
     <el-input
       size="mini" style="width: 300px"
       type="textarea"
-      :autosize="{ minRows: 2, maxRows: 4}"
+      :autosize="{ minRows: 1, maxRows: 4}"
       placeholder="请输入进货备注"
       v-model="dataForm.Remark">
     </el-input>
@@ -113,26 +95,28 @@ export default {
         Name: '',
         UserName: '', // 当前页面登陆的账号名
         View: true, // 是否显示门店筛选组件
-        StoreId: '',
+        supplierId: '0',
+        supplierCode: '',
+
+        StoreId: '0',
         StoreCode: '',
         Buyer: '',
         Phone: '',
         Address: '',
-        supplierId: '1',
-        supplierCode: '6006'
+        CategoryText: '', // 这两个后端不需要，只是前端自己弄来做一些判断而已
+        CategoryId: '', //
+        Remark: ''
       },
-      storeAll: [],
-      supplierArr: [],
+      oldCategoryText: '', // 切换药态时，此信息可以判断用户点的取消，还是确定
+      // oldCategoryId: '', //
 
-      dataList: [],
+      storeArr: [],
+      supplierArr: [],
+      drugsCategoryList: [],
+
       dataListSelections: [],
+      dataList: [],
       purchaseFormal: [] // 采购单正式列表
-      // description: {
-      //   width: '200px',
-      //   position: 'absolute',
-      //   top: '1px',
-      //   right: '100px'
-      // }
     }
   },
   components: {
@@ -154,10 +138,8 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
-            // console.log(vm.dataList)
-            // console.log(vm.purchaseFormal)
-            // console.log(vm)
-            vm.dataList = vm.purchaseFormal = JSON.parse(window.sessionStorage.getItem('modPurchaseList'))
+            vm.dataList = JSON.parse(window.sessionStorage.getItem('modPurchaseList'))
+            vm.purchaseFormal = JSON.parse(window.sessionStorage.getItem('modPurchaseList'))
             vm.dataForm.StoreId = JSON.parse(window.sessionStorage.getItem('modPurchasePeopleInfo')).StoreId
             vm.dataForm.Buyer = JSON.parse(window.sessionStorage.getItem('modPurchasePeopleInfo')).Buyer
             vm.dataForm.Phone = JSON.parse(window.sessionStorage.getItem('modPurchasePeopleInfo')).Phone
@@ -165,8 +147,14 @@ export default {
             vm.dataForm.Remark = JSON.parse(window.sessionStorage.getItem('modPurchasePeopleInfo')).Remark
             vm.dataForm.supplierId = JSON.parse(window.sessionStorage.getItem('modPurchasePeopleInfo')).supplierId
             vm.dataForm.supplierCode = JSON.parse(window.sessionStorage.getItem('modPurchasePeopleInfo')).supplierCode
+            vm.dataForm.CategoryText = JSON.parse(window.sessionStorage.getItem('modPurchasePeopleInfo')).CategoryText
+            vm.dataForm.CategoryId = JSON.parse(window.sessionStorage.getItem('modPurchasePeopleInfo')).CategoryId
+            vm.oldCategoryText = JSON.parse(window.sessionStorage.getItem('modPurchasePeopleInfo')).oldCategoryText
             window.sessionStorage.setItem('modPurchaseList', JSON.stringify([]))
             window.sessionStorage.setItem('modPurchasePeopleInfo', '')
+            // console.log(vm.dataList)
+            // console.log(vm.purchaseFormal)
+            // console.log(vm)
           }).catch(() => {
             window.sessionStorage.setItem('modPurchaseList', JSON.stringify([]))
             window.sessionStorage.setItem('modPurchasePeopleInfo', '')
@@ -176,7 +164,7 @@ export default {
       })
     }
   },
-  // 离开采购页面时
+  // 离开采购页时
   beforeRouteLeave (to, from, next) {
     if (from.path === '/drugs/purchase' && this.dataList.join() !== '') {
       this.$confirm(`检测到未保存的内容，是否在离开页面前保存修改？`, '提示', {
@@ -192,7 +180,10 @@ export default {
           Address: this.dataForm.Address,
           Remark: this.dataForm.Remark,
           supplierId: this.dataForm.supplierId,
-          supplierCode: this.dataForm.supplierCode
+          supplierCode: this.dataForm.supplierCode,
+          CategoryText: this.dataForm.CategoryText,
+          CategoryId: this.dataForm.CategoryId,
+          oldCategoryText: this.oldCategoryText
         }
         window.sessionStorage.setItem('modPurchasePeopleInfo', JSON.stringify(arr))
         next()
@@ -212,36 +203,58 @@ export default {
   methods: {
     pageInit () {
       this.dataListLoading = true
-      // 先初始化门店列表
-      API.store.storeAll({PageIndex: 1, PageSize: 1000, IsPaging: true}).then(result => {
-        if (result.code === '0000') {
-          this.storeAll = result.data
+      // 并发请求 供应商、门店、药态(并发请求，最后单独请求第四个，根据当前登陆账号觉得是否禁用门店下拉)
+      function funSupplier () { return API.supplier.getSupplierList({name: '', PageIndex: '1', PageSize: '1000', IsPaging: true, code: ''}) }
+      function funStore () { return API.store.storeAll({PageIndex: 1, PageSize: 1000, IsPaging: true}) }
+      function funCategory () { return API.drugs.getDrugsCategory() }
+      this.$ios.all([funSupplier(), funStore(), funCategory()]).then(this.$ios.spread((resultSupplier, resultStore, resultCategory) => {
+        if (resultSupplier.code === '0000' && resultStore.code === '0000' && resultCategory.code === '0000') {
+          this.supplierArr = resultSupplier.data // 初始化供应商
+          this.storeArr = resultStore.data // 初始化门店
+
+          this.drugsCategoryList = resultCategory.data.filter((item, index) => { return index > 0 }) // 初始化药态
+          this.dataForm.CategoryText = this.drugsCategoryList[0].text
+          this.dataForm.CategoryId = this.drugsCategoryList[0].id
+          this.oldCategoryText = this.drugsCategoryList[0].text
+          this.dataListLoading = false
         }
         this.$nextTick(() => {
-          // 后处理当前页面 login账号 的对应门店的详情，识别当前账号是：管理员账号、还是1对1类型的账号
+          // 初始化页面完毕后才，处理去获取当前页面login信息，获得账号下对应门店的详情---（识别当前账号是：管理员账号、还是1对1类型的账号）
           API.purchase.getLoginInfo().then(result => {
             if (result.code === '0000') {
               this.dataForm.UserName = result.data.UserName
-              this.dataForm.View = result.data.View // View为true表示当前账号可以自由选择门店
+              this.dataForm.View = result.data.View // 决定：门店下拉是否禁用
               this.dataForm.StoreId = result.data.StoreId
-              this.dataForm.StoreCode = result.data.StoreCode
+              this.dataForm.StoreCode = result.data.StoreCode // 这儿后端的接口获取登陆信息还有不足，或者前端自己处理，如果普通账号，那门店直接就锁定的，但这种情况下却没有联系人，电话，地址这三个页面的初始信息了
+              // 这下面应该还有几行的……
             }
-            this.dataListLoading = false
           })
         })
-      })
-      // 先提前获取供应商列表初始化给supplierArr保存好
-      API.supplier.getSupplierList({name: '', PageIndex: '1', PageSize: '1000', IsPaging: true, code: ''}).then(result => {
-        if (result.code === '0000') {
-          this.supplierArr = result.data.map(item => {
-            return {Id: item.Id, Name: item.Name}
-          })
-        }
+      }))
+    },
+    categoryTextHandle (text) {
+      this.$confirm('此操作将清空之前的记录!', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.getDataList() // 确定切换药态后，就会清空
+        this.drugsCategoryList.forEach(item => {
+          if (item.text === text) {
+            this.dataForm.CategoryId = item.id // 这个药态的id会传递给子组件，用于弹窗时正确请求对应的药材列表
+            this.oldCategoryText = item.text
+            console.log(this.dataForm.CategoryText)
+            console.log(this.oldCategoryText)
+            console.log(this.dataForm.CategoryId)
+          }
+        })
+      }).catch(() => {
+        this.dataForm.CategoryText = this.oldCategoryText
       })
     },
     // 切换门店时
     handleStore (storeId) {
-      var handChild = this.storeAll.filter(item => {
+      var handChild = this.storeArr.filter(item => {
         return item.Id === storeId
       })
       this.dataForm.StoreId = handChild[0].Id
@@ -261,21 +274,27 @@ export default {
     selectionChangeHandle (val) {
       this.dataListSelections = val
     },
-    // 这儿哟，子组件第一个勾选会跑到父组件的bug
-    getDataList (arr = []) {
-      this.dataList = this.purchaseFormal = arr
+    // 这儿哟，子组件第一个勾选会跑到父组件的bug 连续x=x=arr造成的
+    getDataList (arr) {
+      if (String(arr) === '[]' || arr === undefined) {
+        this.dataList = []
+        this.purchaseFormal = []
+      } else {
+        this.dataList = arr
+        this.purchaseFormal = arr
+      }
     },
     // 每页数
-    sizeChangeHandle (val) {
-      this.pageSize = val // this.pageIndex = 1
-      this.getDataList()
-    },
+    // sizeChangeHandle (val) {
+    //   this.pageSize = val // this.pageIndex = 1
+    //   this.getDataList()
+    // },
     // 当前页
-    currentChangeHandle (val) {
-      this.pageIndex = val
-      this.getDataList()
-    },
-    addOrUpdateHandle (id) {
+    // currentChangeHandle (val) {
+    //   this.pageIndex = val
+    //   this.getDataList()
+    // },
+    addOrUpdateHandle (id) { // id是药态类型、饮片、颗粒等
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id)
@@ -328,6 +347,12 @@ export default {
           SupplierId: this.dataForm.supplierId,
           SupplierCode: this.dataForm.supplierCode
         }
+        if (String(params.StoreId) === '0' || params.SupplierId === '0') {
+          this.$alert('您没有选择供应商、门店!', '提示', {
+            confirmButtonText: '确定'
+          })
+          return false
+        }
         console.log(params)
         API.purchase.submitPurchase(params).then(result => {
           if (result.code === '0000') {
@@ -336,14 +361,19 @@ export default {
               Name: '',
               UserName: '', // 当前页面登陆的账号名
               View: true, // 是否显示门店筛选组件
-              StoreId: '',
+              supplierId: '0',
+              supplierCode: '',
+
+              StoreId: '0',
               StoreCode: '',
               Buyer: '',
               Phone: '',
               Address: '',
-              supplierId: '1',
-              supplierCode: '6006'
+              CategoryText: '', // 这两个后端不需要，只是前端自己弄来做一些判断而已
+              CategoryId: '', //
+              Remark: ''
             }
+            this.oldCategoryText = ''
             this.pageInit()
             this.dataList = []
             this.purchaseFormal = []

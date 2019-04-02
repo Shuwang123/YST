@@ -6,12 +6,6 @@
       :close-on-click-modal="false"
       :visible.sync="visible" @close="handleClose">
       <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="0" :inline="true">
-        <el-form-item label="" prop="CategoryText">
-          <el-radio-group v-model="dataForm.CategoryText" size="mini" @change="categoryTextHandle">
-            <el-radio-button v-for="item in drugsCategoryList" :key="item.id"
-                             :label="item.text" :disabled="!clickOk"></el-radio-button>
-          </el-radio-group>
-        </el-form-item>
         <el-form-item label="" prop="SpellName">
           <el-input v-model="dataForm.SpellName" placeholder="拼音搜索" size="mini" clearable>
             <el-button slot="append" icon="el-icon-search" @click="drugsSearch()"></el-button>
@@ -30,6 +24,7 @@
           <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
           <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
           <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="100" label="商品编码" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="CategoryName" header-align="center" :align="$store.state.common.align" width="100" label="药态" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="ShowName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
           <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>
@@ -68,6 +63,7 @@ export default {
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,
+      categoryId: '',
 
       dataRule: {
         SpellName: Letter()
@@ -75,20 +71,19 @@ export default {
       drugsCategoryList: [], // 先请求药品种类列表
       dataForm: {
         SpellName: '',
-        CategoryId: '', // 先请求药品种类
-        CategoryText: ''
+        CategoryId: '' // 先请求药品种类
       },
       dataList: [],
       dataListSelections: [],
-      purchaseRegistered: [], // 采购单注册记名列表
-      isInit: true,
-      clickOk: true
+      // purchaseRegistered: [], // 采购单注册记名列表
+      isInit: true
     }
   },
   watch: {
     dataList (n, o) {
       this.$nextTick(() => {
         this.ownPurchaseFatherList = this.ownPurchaseFatherList.length > 0 ? this.ownPurchaseFatherList : this.purchaseFatherList
+        console.log(this.ownPurchaseFatherList)
         this.dataList.forEach(item => {
           // console.log('这儿执行就有问题')
           this.ownPurchaseFatherList.forEach(row => {
@@ -98,50 +93,37 @@ export default {
           })
         })
         this.isInit = false
-        // }
       })
     }
-    // SpellName (val) {
-    //   this.dataForm.SpellName = val
-    //   this.$nextTick(() => {
-    //     this.getDataList()
-    //   })
-    // }
   },
   methods: {
     init (id) {
-      this.getDataList()
-      API.drugs.getDrugsCategory().then(result => {
-        if (result.code === '0000') {
-          this.drugsCategoryList = result.data
-          this.dataForm.CategoryText = this.drugsCategoryList[0].text
-          this.dataForm.CategoryId = this.drugsCategoryList[0].id
-        }
-      })
+      this.categoryId = id
+      this.getDataList(this.categoryId)
     },
     // 每页数
     sizeChangeHandle (val) {
       this.pageSize = val // this.pageIndex = 1
       this.isInit = true
-      this.getDataList()
+      this.getDataList(this.categoryId)
     },
     // 当前页
     currentChangeHandle (val) {
       this.pageIndex = val
       this.isInit = true
-      this.getDataList()
+      this.getDataList(this.categoryId)
     },
     drugsSearch () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.isInit = true
-          this.getDataList()
+          this.getDataList(this.categoryId)
         }
       })
     },
-    getDataList () {
+    getDataList (id) {
       this.dataListLoading = true
-      API.drugs.getDrugsList({name: '', PageIndex: this.pageIndex, PageSize: this.pageSize, IsPaging: 'true', SpellName: this.dataForm.SpellName, CategoryId: this.dataForm.CategoryId}).then(result => {
+      API.drugs.getDrugsList({name: '', PageIndex: this.pageIndex, PageSize: this.pageSize, IsPaging: 'true', SpellName: this.dataForm.SpellName, CategoryId: id}).then(result => {
         if (result.code === '0000' && result.data.length > 0) {
           this.dataList = result.data
           this.totalPage = result.total
@@ -166,7 +148,6 @@ export default {
 
     selectionChangeHandle (val) {
       this.dataListSelections = val
-      console.log(val)
       if (this.isInit === false) {
         if (this.ownPurchaseFatherList.length !== 0) { // 先删
           this.dataList.forEach(row => {
@@ -177,30 +158,14 @@ export default {
         }
         val.forEach(item => {
           this.ownPurchaseFatherList.push(item)
-          console.log(this.ownPurchaseFatherList)
         })
       }
     },
     handleClose () {
-      // this.$refs['dataForm'].resetFields()
-      // this.dataForm.Id = ''
+      // this.dataList = [] 这两行注释的还不能写，不然又有bug，你可以把注释取消了看看
+      // this.dataListViews = []
       this.ownPurchaseFatherList = []
       this.isInit = true // 儿豁，这个true这一句，精神处于崩溃边缘
-    },
-    categoryTextHandle (text) {
-      this.clickOk = false
-      this.drugsCategoryList.forEach(item => {
-        if (item.text === text) {
-          this.dataForm.CategoryId = item.id
-          console.log(item.id)
-          this.isInit = true
-          this.getDataList()
-          var time = setTimeout(() => { // 切换的时候如果点太快，貌似循环太多运行不够快的情况下会有些冲突的漏洞产生，所以弄了个0.5s的禁用间隔
-            this.clickOk = true
-            clearTimeout(time)
-          }, 500)
-        }
-      })
     },
     // 表单提交
     dataFormSubmit () {

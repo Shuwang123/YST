@@ -19,9 +19,13 @@
         <el-col :span="8"><p>采购人：<span v-if="dataList !== null">{{dataList.CreatedByName}}</span></p></el-col>
         <el-col :span="8"><p>供应商：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
         <el-col :span="8"><p>门店：<span v-if="dataList !== null">{{dataList.StoreName}}</span></p></el-col>
+      </el-row>
+      <el-row>
         <el-col :span="8"><p>联系人：<span v-if="dataList !== null">{{dataList.Buyer}}</span></p></el-col>
         <el-col :span="8"><p>电话：<span v-if="dataList !== null">{{dataList.Phone}}</span></p></el-col>
         <el-col :span="8"><p>地址：<span v-if="dataList !== null">{{dataList.Address}}</span></p></el-col>
+      </el-row>
+      <el-row>
         <el-col :span="16"><p>创建时间：<span v-if="dataList !== null">{{dataList.CreatedTime}}</span></p></el-col>
         <el-col :span="8"><p>备注：<span v-if="dataList !== null">{{dataList.Remark}}</span></p></el-col>
       </el-row>
@@ -83,8 +87,7 @@ export default {
     handleClose () {
       // this.$refs['dataForm'].resetFields()
       // this.Id = ''
-      // this.dataForm = {
-      // }
+      // this.dataForm = {}
     }
   }
 }

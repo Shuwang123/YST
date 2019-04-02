@@ -25,7 +25,7 @@
 
       <!--<el-tab-pane label="成品药品" name="second" disabled="true">-->
       <el-tab-pane label="" name="first">
-        <span slot="label"><i class="el-icon-date"></i> 所有采购</span>
+        <span slot="label"><i class="el-icon-date"></i> 全部</span>
         <transition name="chenxi">
           <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
@@ -37,9 +37,15 @@
         </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="third">
-        <span slot="label"><i class=""></i> 收货完成</span>
+        <span slot="label"><i class=""></i> 收到货未入库</span>
         <transition name="chenxi">
           <first-tab v-if="isVisible[2].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
+        </transition>
+      </el-tab-pane>
+      <el-tab-pane label="" name="four">
+        <span slot="label"><i class=""></i> 已入库</span>
+        <transition name="chenxi">
+          <first-tab v-if="isVisible[3].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
     </el-tabs>
@@ -64,6 +70,7 @@ export default {
       },
       isVisible: [
         {child: true},
+        {child: false},
         {child: false},
         {child: false}
       ]
@@ -107,6 +114,10 @@ export default {
         this.isVisible = this.isVisible.map((item, index) => {
           return index === 2 ? {child: true} : {child: false}
         })
+      } else if (tab.name === 'four') {
+        this.isVisible = this.isVisible.map((item, index) => {
+          return index === 3 ? {child: true} : {child: false}
+        })
       }
       // console.log(this.isVisible)
       this.$nextTick(() => {
@@ -117,6 +128,8 @@ export default {
             } else if (index === 1) {
               this.$refs.firstTab.getDataList()
             } else if (index === 2) {
+              this.$refs.firstTab.getDataList()
+            } else if (index === 3) {
               this.$refs.firstTab.getDataList()
             }
           }
