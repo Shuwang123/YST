@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'采购单详情'" width="50%"
+    :title="'采购单详情'" width="60%"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <!--<el-col><div style="border-top: 1px dashed #ccc;padding-top: 10px;font-weight: 900">别名（选填）</div></el-col>-->
@@ -41,15 +41,26 @@
         style="width: 100%;">
         <el-table-column type="index" align="center" label="序号" width=""></el-table-column>
         <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称"></el-table-column>
-        <el-table-column prop="Quantity" header-align="center" align="center" label="采购数量"></el-table-column>
+        <el-table-column v-if="editType === 'A'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="采购数量">
+          <template slot-scope="scope">
+            <el-input-number v-model="scope.row.Quantity" :precision="2" :step="1" :min="0" :max="1000" size="mini" controls-position="right"></el-input-number>
+          </template>
+        </el-table-column>
+        <el-table-column v-else-if="editType === ''" :key="Math.random()" prop="Quantity" header-align="center" align="center" label="采购数量"></el-table-column>
         <el-table-column prop="CostPrice" header-align="center" align="center" label="采购价格"></el-table-column>
         <el-table-column prop="Amount" header-align="center" align="center" label="总价"></el-table-column>
+        <el-table-column v-if="editType === 'B'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="批号填写">
+          <template slot-scope="scope">
+            <el-input-number v-model="scope.row.SalePrice" :step="1" :min="0" :max="10000" size="mini" controls-position="right"></el-input-number>
+          </template>
+        </el-table-column>
       </el-table>
-      <!--<span slot="footer" class="dialog-footer">-->
-        <!--<el-button @click="visible = false">取消</el-button>-->
-        <!--<el-button type="primary" @click="dataFormSubmit()">确定添加</el-button>-->
-      <!--</span>-->
     </div>
+    <span v-show="editType !== ''" slot="footer" class="dialog-footer">
+      <el-button @click="visible = false">取消</el-button>
+      <el-button v-if="editType === 'A'" type="primary" @click="dataFormSubmit()">确定1</el-button>
+      <el-button v-else-if="editType === 'B'" type="primary" @click="dataFormSubmit()">确定2</el-button>
+    </span>
   </el-dialog>
 </template>
 <script type="text/ecmascript-6">
@@ -66,25 +77,28 @@ export default {
       Id: '',
       dataForm: {
       },
-      dataList: null
+      dataList: null,
+      editType: '' // 这个状态A表示待收货的编辑、B表示未入库的编辑、其他的表示查看
     }
   },
   methods: {
     // 获取某个采购单详情info
-    init (id) {
+    init (id, type) {
       this.visible = true
       this.dataListLoading = true
+      this.editType = type !== undefined ? type : ''
       if (id !== undefined) {
         API.purchase.getPurchaseInfo({id: id}).then(result => {
           if (result.code === '0000') {
             this.dataList = result.data
-            console.log(this.dataList)
+            // console.log(this.dataList)
             this.dataListLoading = false
           }
         })
       }
     },
     handleClose () {
+      this.editType = ''
       // this.$refs['dataForm'].resetFields()
       // this.Id = ''
       // this.dataForm = {}

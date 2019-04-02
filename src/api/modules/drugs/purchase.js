@@ -43,3 +43,12 @@ export function deletePurchase (params) {
     data: requestParam(params)
   })
 }
+
+// 修改purchase采购单为 已收货未入库状态
+export function handleStatus1 (params) {
+  return request({
+    url: requestUrl('/YstApiPurchaseOrder/FactoryDelivery'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}

@@ -83,7 +83,7 @@ export default {
     this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
   },
   mounted () {
-    this.$refs.firstTab.getDataList()
+    this.$refs.firstTab.getDataList(0)
   },
   methods: {
     pageInit () {
@@ -124,13 +124,13 @@ export default {
         this.isVisible.forEach((item, index) => {
           if (item.child === true) {
             if (index === 0) {
-              this.$refs.firstTab.getDataList()
+              this.$refs.firstTab.getDataList(0)
             } else if (index === 1) {
-              this.$refs.firstTab.getDataList()
+              this.$refs.firstTab.getDataList(1)
             } else if (index === 2) {
-              this.$refs.firstTab.getDataList()
+              this.$refs.firstTab.getDataList(4)
             } else if (index === 3) {
-              this.$refs.firstTab.getDataList()
+              this.$refs.firstTab.getDataList(3)
             }
           }
           return false

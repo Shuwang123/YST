@@ -19,19 +19,17 @@
       <el-table-column prop="StoreName" header-align="center" align="center" label="采购门店"></el-table-column>
       <el-table-column prop="Quantity" header-align="center" align="center" label="采购总量" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="CreatedByName" header-align="center" align="center" label="操作人" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
+      <el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="" label="操作" width="300" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
-          <el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">编辑</el-button>
+          <el-button v-if="scope.row.Status === 1" type="text" @click="addOrUpdateHandle(scope.row.Id, 'A')">编辑1</el-button>
+          <el-button v-if="scope.row.Status === 4" type="text" @click="addOrUpdateHandle(scope.row.Id, 'B')">编辑2</el-button>
           <el-button type="text" @click="handelDelete(scope.row.Id)">删除</el-button>
+          <el-button v-if="scope.row.Status === 1" type="text" @click="handelStatus1(scope.row.Id)">修改为未入库</el-button>
+          <el-button v-if="scope.row.Status === 4" type="text" @click="handelDelete(scope.row.Id)">确定入库</el-button>
         </template>
       </el-table-column>
-      <!--<el-table-column prop="Quantity" header-align="center" align="center" label="采购总价" :show-overflow-tooltip="true"></el-table-column>-->
-      <!--<el-table-column header-align="center" align="center" label="采购时间" width="150">-->
-      <!--<template slot-scope="scope">-->
-      <!--<span>{{ scope.row.CreatedOn | formatDate}}</span>-->
-      <!--</template>-->
-      <!--</el-table-column>-->
     </el-table>
 
     <el-pagination
@@ -70,22 +68,24 @@ export default {
       pageSize: 10,
       totalPage: 1,
       dataList: [],
-      dataListSelections: []
+      dataListSelections: [],
+
+      status: 0 // 采购单的状态、1 2 3 -1
     }
   },
   components: { FirstTabAddOrUpdate },
   mounted () {
-    // this.getDataList()
     window.onresize = () => {
-      this.chenxiHeight = document.documentElement['clientHeight'] - 273 // 273 测试老半天的值，苦逼，重新整理vue的计算属性和属性监听玩法
+      this.chenxiHeight = document.documentElement['clientHeight'] - 273 // 273 测试老半天
     }
   },
   methods: {
     selectionChangeHandle (val) {
       this.dataListSelections = val
     },
-    getDataList () {
-      var params = {
+    getDataList (status) {
+      this.status = status
+      var params = { // 这是不是要把status传递给后端啊，请求对应状态的采购单
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: true,
@@ -96,10 +96,18 @@ export default {
         EndDate: this.fatherDataForm.EndDate
       }
       this.dataListLoading = true
+      console.log(this.status)
       API.purchase.getPurchaseList(params).then(result => {
         if (result.code === '0000') {
-          this.dataList = result.data
-          this.totalPage = result.total
+          if (this.status === 0) {
+            this.dataList = result.data
+            this.totalPage = result.total
+          } else {
+            this.dataList = result.data.filter(item => {
+              return item.Status === this.status
+            })
+            this.totalPage = result.total
+          }
         } else {
           this.$message.error(result.message)
         }
@@ -110,17 +118,17 @@ export default {
     sizeChangeHandle (val) {
       this.pageSize = val
       this.pageIndex = 1
-      this.getDataList()
+      this.getDataList(this.status)
     },
     // 当前页
     currentChangeHandle (val) {
       this.pageIndex = val
-      this.getDataList()
+      this.getDataList(this.status)
     },
-    addOrUpdateHandle (id) {
+    addOrUpdateHandle (id, type) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id)
+        this.$refs.addOrUpdate.init(id, type)
       })
     },
     handelDelete (id) {
@@ -129,14 +137,38 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        API.purchase.deletePurchase({id: id, reason: '取消采购咯'}).then((result) => {
+        API.purchase.deletePurchase({ids: id, reason: '没有原因，要啥子原因嘛'}).then((result) => {
           if (result.code === '0000') {
             this.$message({
               type: 'success',
               message: '删除成功!',
               duration: 1000,
               onClose: () => {
-                this.getDataList()
+                this.getDataList(this.status)
+              }
+            })
+          } else {
+            this.$message.error(result.message)
+          }
+        })
+      })
+    },
+    handelStatus1 (id) {
+      this.$confirm(`确定对[id=${id}]的采购单进行 '添加到未入库列表' 操作?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        console.log('俺睡觉了快递费')
+        console.log(id)
+        API.purchase.handleStatus1({ids: id}).then((result) => {
+          if (result.code === '0000') {
+            this.$message({
+              type: 'success',
+              message: '修改成功!',
+              duration: 1000,
+              onClose: () => {
+                this.getDataList(this.status)
               }
             })
           } else {
