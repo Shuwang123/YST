@@ -102,22 +102,27 @@ export default {
     },
     handleClick (tab, event) {
       // console.log(tab, event)
-      if (tab.name === 'first') {
-        this.isVisible = this.isVisible.map((item, index) => {
-          return index === 0 ? {child: true} : {child: false}
-        })
-      } else if (tab.name === 'second') {
-        this.isVisible = this.isVisible.map((item, index) => {
-          return index === 1 ? {child: true} : {child: false}
-        })
-      } else if (tab.name === 'third') {
-        this.isVisible = this.isVisible.map((item, index) => {
-          return index === 2 ? {child: true} : {child: false}
-        })
-      } else if (tab.name === 'four') {
-        this.isVisible = this.isVisible.map((item, index) => {
-          return index === 3 ? {child: true} : {child: false}
-        })
+      switch (tab.name) {
+        case 'first':
+          this.isVisible = this.isVisible.map((item, index) => {
+            return index === 0 ? {child: true} : {child: false}
+          })
+          break
+        case 'second':
+          this.isVisible = this.isVisible.map((item, index) => {
+            return index === 1 ? {child: true} : {child: false}
+          })
+          break
+        case 'third':
+          this.isVisible = this.isVisible.map((item, index) => {
+            return index === 2 ? {child: true} : {child: false}
+          })
+          break
+        case 'four':
+          this.isVisible = this.isVisible.map((item, index) => {
+            return index === 3 ? {child: true} : {child: false}
+          })
+          break
       }
       // console.log(this.isVisible)
       this.$nextTick(() => {
@@ -126,11 +131,11 @@ export default {
             if (index === 0) {
               this.$refs.firstTab.getDataList(0)
             } else if (index === 1) {
-              this.$refs.firstTab.getDataList(1)
+              this.$refs.firstTab.getDataList(1) // 待收货
             } else if (index === 2) {
-              this.$refs.firstTab.getDataList(4)
+              this.$refs.firstTab.getDataList(4) // 已到货未入库
             } else if (index === 3) {
-              this.$refs.firstTab.getDataList(3)
+              this.$refs.firstTab.getDataList(10) // 已入库（已完成）
             }
           }
           return false

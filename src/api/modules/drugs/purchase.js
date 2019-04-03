@@ -45,9 +45,26 @@ export function deletePurchase (params) {
 }
 
 // 修改purchase采购单为 已收货未入库状态
-export function handleStatus1 (params) {
+export function handleStatus4 (params) {
   return request({
     url: requestUrl('/YstApiPurchaseOrder/FactoryDelivery'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 待收货：采购单编辑数量和价格后的保存
+export function editNumberAndPrice (params) {
+  return request({
+    url: requestUrl('/YstApiPurchaseOrder/Edit'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+// 已到货未入库：采购单编辑批号后的入库保存,同时采购单状态更新为10已入库
+export function editBatchNo (params) {
+  return request({
+    url: requestUrl('/YstApiPurchaseOrder/StockIn'),
     method: 'post',
     data: requestParam(params)
   })

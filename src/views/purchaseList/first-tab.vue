@@ -11,27 +11,26 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
-      <el-table-column prop="Id" header-align="center" align="center" label="ID" width="100"></el-table-column>
+      <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50"></el-table-column>
       <el-table-column prop="Code" header-align="center" align="center" label="采购单号" width="100"></el-table-column>
       <el-table-column prop="CreatedTime" header-align="center" align="center" label="采购时间" width="150"></el-table-column>
 
-      <el-table-column prop="SupplierName" header-align="center" align="center" label="供应商"></el-table-column>
+      <el-table-column prop="SupplierName" header-align="center" align="center" label="供应商" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="StoreName" header-align="center" align="center" label="采购门店"></el-table-column>
       <el-table-column prop="Quantity" header-align="center" align="center" label="采购总量" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="CreatedByName" header-align="center" align="center" label="操作人" width="" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="" label="操作" width="300" header-align="center" align="center">
+      <el-table-column prop="" label="操作" :width="status === 1 ? 280 : 150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
-          <el-button v-if="scope.row.Status === 1" type="text" @click="addOrUpdateHandle(scope.row.Id, 'A')">编辑1</el-button>
-          <el-button v-if="scope.row.Status === 4" type="text" @click="addOrUpdateHandle(scope.row.Id, 'B')">编辑2</el-button>
-          <el-button type="text" @click="handelDelete(scope.row.Id)">删除</el-button>
-          <el-button v-if="scope.row.Status === 1" type="text" @click="handelStatus1(scope.row.Id)">修改为未入库</el-button>
-          <el-button v-if="scope.row.Status === 4" type="text" @click="handelDelete(scope.row.Id)">确定入库</el-button>
+          <el-button v-if="scope.row.Status === 1 && status !== 0" type="text" @click="addOrUpdateHandle(scope.row.Id, 'A')">编辑1</el-button>
+          <el-button v-if="scope.row.Status === 1 && status !== 0" type="text" @click="handelStatus4(scope.row.Id)">修改为未入库</el-button>
+          <el-button v-if="scope.row.Status === 4 && status !== 0" type="text" @click="addOrUpdateHandle(scope.row.Id, 'B')">编辑2</el-button>
+          <!--<el-button v-if="scope.row.Status === 4" type="text" @click="handelDelete(scope.row.Id)">确定入库</el-button>-->
+          <el-button v-if="status === 1" type="text" @click="handelDelete(scope.row.Id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
-
     <el-pagination
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
@@ -70,7 +69,7 @@ export default {
       dataList: [],
       dataListSelections: [],
 
-      status: 0 // 采购单的状态、1 2 3 -1
+      status: 0 // 采购单的状态、1 4 10 -1
     }
   },
   components: { FirstTabAddOrUpdate },
@@ -93,7 +92,8 @@ export default {
         StoreId: this.fatherDataForm.StoreId, // 门店ID
         code: this.fatherDataForm.code, // 单据号
         StartDate: this.fatherDataForm.StartDate,
-        EndDate: this.fatherDataForm.EndDate
+        EndDate: this.fatherDataForm.EndDate,
+        Status: status === 0 ? '' : this.status // 单据号状态传0表示获取所有状态类型
       }
       this.dataListLoading = true
       console.log(this.status)
@@ -153,7 +153,7 @@ export default {
         })
       })
     },
-    handelStatus1 (id) {
+    handelStatus4 (id) {
       this.$confirm(`确定对[id=${id}]的采购单进行 '添加到未入库列表' 操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
@@ -161,7 +161,7 @@ export default {
       }).then(() => {
         console.log('俺睡觉了快递费')
         console.log(id)
-        API.purchase.handleStatus1({ids: id}).then((result) => {
+        API.purchase.handleStatus4({ids: id}).then((result) => {
           if (result.code === '0000') {
             this.$message({
               type: 'success',
