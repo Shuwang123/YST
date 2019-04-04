@@ -23,11 +23,12 @@
           style="width: 100%;">
           <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
           <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
-          <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="100" label="商品编码" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="ProductCode" header-align="center" :align="$store.state.common.align" width="100" label="商品编码" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="CategoryName" header-align="center" :align="$store.state.common.align" width="100" label="药态" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column prop="ShowName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
+          <el-table-column prop="ProductName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
           <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>
+          <!--<el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->
+          <el-table-column prop="Quantity" header-align="center" :align="$store.state.common.align" label="库存总量" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="RedLine" header-align="center" :align="$store.state.common.align" label="预警量" :show-overflow-tooltip="true"></el-table-column>
         </el-table>
         <el-pagination
@@ -64,14 +65,15 @@ export default {
       pageSize: 10,
       totalPage: 0,
       categoryId: '',
+      storeId: '',
 
       dataRule: {
         SpellName: Letter()
       },
       drugsCategoryList: [], // 先请求药品种类列表
       dataForm: {
-        SpellName: '',
-        CategoryId: '' // 先请求药品种类
+        SpellName: ''
+        // CategoryId: ''
       },
       dataList: [],
       dataListSelections: [],
@@ -87,7 +89,7 @@ export default {
         this.dataList.forEach(item => {
           // console.log('这儿执行就有问题')
           this.ownPurchaseFatherList.forEach(row => {
-            if (item.Code === row.Code) {
+            if (item.ProductCode === row.ProductCode) {
               this.$refs.tableChild.toggleRowSelection(item, true) // 默认初始isInit勾选
             }
           })
@@ -97,49 +99,64 @@ export default {
     }
   },
   methods: {
-    init (id) {
-      this.categoryId = id
-      this.getDataList(this.categoryId)
+    init (id0, id1) {
+      this.categoryId = id0
+      this.storeId = id1
+      this.getDataList(this.categoryId, this.storeId)
     },
     // 每页数
     sizeChangeHandle (val) {
       this.pageSize = val // this.pageIndex = 1
       this.isInit = true
-      this.getDataList(this.categoryId)
+      this.getDataList(this.categoryId, this.storeId)
     },
     // 当前页
     currentChangeHandle (val) {
       this.pageIndex = val
       this.isInit = true
-      this.getDataList(this.categoryId)
+      this.getDataList(this.categoryId, this.storeId)
     },
     drugsSearch () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           this.isInit = true
-          this.getDataList(this.categoryId)
+          this.getDataList(this.categoryId, this.storeId)
         }
       })
     },
-    getDataList (id) {
+    getDataList (categoryid, storeid) {
       this.dataListLoading = true
-      API.drugs.getDrugsList({name: '', PageIndex: this.pageIndex, PageSize: this.pageSize, IsPaging: 'true', SpellName: this.dataForm.SpellName, CategoryId: id}).then(result => {
+      // API.drugs.getDrugsList({name: '', PageIndex: this.pageIndex, PageSize: this.pageSize, IsPaging: 'true', SpellName: this.dataForm.SpellName, CategoryId: id}).then(result => {
+      API.storeStock.getStoreStock({
+        PageIndex: this.pageIndex,
+        PageSize: this.pageSize,
+        IsPaging: 'true',
+        SupplierId: '',
+        StoreId: storeid, // 父组件传递（用于请求对应门店自身的库存列表）且必填项!!!
+        CategoryId: categoryid, // 父组件传递
+
+        SpellName: this.dataForm.SpellName, // 子组件的input
+        ProductName: '', // 子组件的input
+        RedLine: '', // 子组件的input
+
+        BrandId: '', // 品牌ID 忽略
+        ProductCodeOrBarCode: '', // 商品编码 忽略
+        Order: '' // 按照分别按照Quantity, OccupyQuantityUsableQuantity排序 忽略
+      }).then(result => {
         if (result.code === '0000' && result.data.length > 0) {
           this.dataList = result.data
           this.totalPage = result.total
+          console.log(result.data)
+          console.log(this.dataList)
           if (this.dataListViews.length === 0) {
             this.dataListViews = this.dataListViews.concat(result.data) // 会打散拼接到尾巴，旧数组不变
-          } else if (this.dataListViews.some(item => item.Code === result.data[0].Code || item.Code === result.data[this.pageSize - 1]).Code) {
+          } else if (this.dataListViews.some(item => item.ProductCode === result.data[0].ProductCode || item.ProductCode === result.data[this.pageSize - 1]).ProductCode) {
             this.dataListViews = this.dataListViews.concat([])
           } else {
             this.dataListViews = this.dataListViews.concat(result.data)
           }
         } else {
-          this.$message({
-            message: '查询结果为空',
-            type: 'warning',
-            duration: 3000
-          })
+          this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
         }
         this.dataListLoading = false
       })
@@ -152,7 +169,7 @@ export default {
         if (this.ownPurchaseFatherList.length !== 0) { // 先删
           this.dataList.forEach(row => {
             this.ownPurchaseFatherList = this.ownPurchaseFatherList.filter(item => {
-              return item.Code !== row.Code
+              return item.ProductCode !== row.ProductCode
             })
           })
         }
@@ -178,7 +195,7 @@ export default {
         if (fatherChecked.length !== 0) { // 假如首次导入，父组件传递的选中列表就为空，那么就不执行删除而跳过此语句
           this.dataListViews.forEach(row => {
             fatherChecked = fatherChecked.filter(item => {
-              return item.Code !== row.Code
+              return item.ProductCode !== row.ProductCode
             })
           })
         }

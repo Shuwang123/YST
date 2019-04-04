@@ -40,7 +40,7 @@
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
-    <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></first-tab-add-or-update>
+    <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataListChild"></first-tab-add-or-update>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -84,7 +84,7 @@ export default {
     },
     getDataList (status) {
       this.status = status
-      var params = { // 这是不是要把status传递给后端啊，请求对应状态的采购单
+      var params = { // 对应采购单状态status 1 4 10
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: true,
@@ -113,6 +113,9 @@ export default {
         }
         this.dataListLoading = false
       })
+    },
+    getDataListChild () {
+      this.getDataList(this.status)
     },
     // 每页数
     sizeChangeHandle (val) {

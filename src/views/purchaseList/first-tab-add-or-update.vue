@@ -34,7 +34,8 @@
           <el-row>
             <el-col><div style="padding-top: 5px;font-weight: 900;color: #1CA579">药品：<b v-text="categoryName"></b></div></el-col>
           </el-row>
-          <el-table  v-if="dataList !== null"
+
+          <el-table  v-if="dataList !== null" :key="Math.random()"
                      :data="dataList.Items"
                      stripe
                      v-loading="dataListLoading"
@@ -42,7 +43,10 @@
                      :header-cell-style="$cxObj.tableHeaderStyle40px"
                      style="width: 100%;">
             <el-table-column type="index" align="center" label="序号" width="50"></el-table-column>
+            <el-table-column prop="ProductId" align="center" label="商品" width="50"></el-table-column>
+            <!--<el-table-column prop="Id" align="center" label="ID" width="50"></el-table-column>-->
             <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称"></el-table-column>
+            <el-table-column prop="CategoryName" header-align="center" align="center" label="药态"></el-table-column>
 
             <el-table-column v-if="editType === 'A'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="采购数量" width="120">
               <template slot-scope="scope">
@@ -58,16 +62,16 @@
             </el-table-column>
             <el-table-column v-else prop="CostPrice" header-align="center" align="center" label="采购价格"></el-table-column>
 
-            <el-table-column prop="Amount" header-align="center" align="center" label="总价"></el-table-column>
+            <!--<el-table-column prop="Amount" header-align="center" align="center" label="总价"></el-table-column>-->
             <el-table-column v-if="editType === 'B'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="批号填写">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.BatchNo" :step="1" :min="0" :max="10000" size="mini" controls-position="right"></el-input-number>
+                <el-input-number v-model="scope.row.ProductBatchNo" :step="1" :min="0" :max="10000" size="mini" controls-position="right"></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column v-else prop="BatchNo" header-align="center" align="center" label="批号"></el-table-column>
+            <el-table-column v-else prop="ProductBatchNo" header-align="center" align="center" label="批号"></el-table-column>
             <el-table-column v-if="editType === 'A'" prop="" label="操作" width="50" header-align="center" align="center">
               <template slot-scope="scope">
-                <el-button type="text" @click="leftRemove(scope.row.Id)">移除</el-button>
+                <el-button type="text" @click="leftRemove(scope.row.ProductId)">移除</el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -85,7 +89,7 @@
           <!--@selection-change="selectionChangeHandle"-->
           <!--<el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>-->
           <el-table
-            :data="dataListAdd" ref="tableChild"
+            :data="dataListAdd" ref="tableChild" :key="Math.random()"
             stripe
             :height="450"
             v-loading="dataListLoading"
@@ -162,9 +166,9 @@ export default {
       }
       this.comFunction()
     },
-    leftRemove (Id) {
+    leftRemove (ProductId) {
       this.dataList.Items = this.dataList.Items.filter(item => {
-        return item.Id !== Id
+        return item.ProductId !== ProductId
       })
       if (this.isAddActive === true) {
         this.comFunction()
@@ -186,7 +190,7 @@ export default {
                 BatchNo: 0,
                 BgColor: 'bg-danger',
                 CargoFee: 0,
-                Id: 127,
+                Id: '', // 这个明细id啥时候才起作用
                 InventoryQuantity: 0,
                 Pictures: Array(3),
                 Preferential: 0,
@@ -233,24 +237,16 @@ export default {
             this.dataList = result.data
           }
           this.$nextTick(() => {
-            API.drugs.getDrugsList({name: this.dataList.Items[0].ProductName, PageIndex: 1, PageSize: 1000, IsPaging: 'true', SpellName: '', CategoryId: ''}).then(result => {
-              if (result.code === '0000') {
-                result.data.forEach(item => {
-                  if (item.Code === this.dataList.Items[0].ProductCode) {
-                    this.categoryName = item.CategoryName
-                    return false
-                  }
-                })
-                API.drugs.getDrugsCategory().then(response => {
-                  response.data.forEach(item => {
-                    if (item.text === this.categoryName) {
-                      this.categoryId = item.id
-                      return false
-                    }
-                  })
-                  this.dataListLoading = false
-                })
-              }
+            API.drugs.getDrugsCategory().then(response => {
+              response.data.forEach(item => {
+                if (item.text === this.dataList.Items[0].CategoryName) {
+                  this.categoryId = item.id
+                  this.categoryName = item.text
+                  // this.categoryName = item.name
+                  return false
+                }
+              })
+              this.dataListLoading = false
             })
           })
         })
@@ -269,9 +265,12 @@ export default {
         Remark: this.dataList.Remark,
         StoreId: this.dataList.StoreId,
         StoreCode: this.dataList.StoreCode,
+        Id: this.dataList.Id,
+        SupplierId: this.dataList.SupplierId,
+        SupplierCode: this.dataList.SupplierCode,
         Items: JSON.stringify(this.dataList.Items.map(item => {
           return {
-            ProductId: item.Id,
+            ProductId: item.ProductId,
             CostPrice: item.CostPrice,
             Quantity: item.Quantity,
             SapProductCode: item.SapProductCode,
@@ -289,6 +288,7 @@ export default {
             message: `编辑${result.message}`,
             duration: 1000
           })
+          this.$emit('refreshDataList')
           this.visible = false
         } else {
           this.$message({
@@ -300,15 +300,21 @@ export default {
       })
     },
     dataFormSubmitB () { // 入库的提交
+      if (this.dataList.Items.some(item => item.ProductBatchNo === 0 || item.ProductBatchNo === '' || item.ProductBatchNo === null)) {
+        this.$alert('你的批次号还没填完呢!', '提示', {
+          confirmButtonText: '确定'
+        })
+        return false
+      }
       var params = {
         Code: this.dataList.Code,
         Id: this.dataList.Id,
         Remark: this.dataList.Remark,
         Items: JSON.stringify(this.dataList.Items.map(item => {
           return {
-            Id: item.Id,
+            Id: item.Id, // 这是详情id，上面那个A的是药材ID
             ActualQuantity: item.Quantity,
-            productBatchNo: item.BatchNo
+            productBatchNo: item.ProductBatchNo
           }
           // "[{\"Id\":96,\"ActualQuantity\":1,\"productBatchNo\":123123}, ]       }))
         }))
@@ -321,6 +327,7 @@ export default {
             message: `编辑${result.message}`,
             duration: 1000
           })
+          this.$emit('refreshDataList')
           this.visible = false
         } else {
           this.$message({

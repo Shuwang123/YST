@@ -3,7 +3,7 @@
     <el-form :inline="true" :model="dataForm" ref="dataForm" label-width="80px">
       <el-form-item>
         <el-button type="primary" size="mini" @click="savePurchase()">保存采购单</el-button>
-        <el-button type="primary" @click="addOrUpdateHandle(dataForm.CategoryId)" size="mini" icon="el-icon-plus">商品导入</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle(dataForm.CategoryId, dataForm.storeId)" size="mini" icon="el-icon-plus" :disabled="dataForm.StoreId > 0 ? false : true">商品导入</el-button>
         <el-button type="danger" @click="deleteHandle()" icon="el-icon-delete" :disabled="dataListSelections.length <= 0" size="mini">批量移除</el-button>
       </el-form-item>
       <br>
@@ -41,24 +41,24 @@
       style="width: 100%;">
       <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
       <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
-      <el-table-column prop="Id" header-align="center" :align="$store.state.common.align" width="80" label="商品编码"></el-table-column>
-      <el-table-column prop="ShowName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
-      <el-table-column prop="Description" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="进价">
+      <el-table-column prop="ProductCode" header-align="center" :align="$store.state.common.align" width="100" label="商品编码"></el-table-column>
+      <el-table-column prop="ProductName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
+      <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="进价" min-width="110">
         <template slot-scope="scope">
           <el-input-number v-model="scope.row.SalePrice" :precision="2" :step="0.1" :min="0.1" :max="100" size="mini" controls-position="right"></el-input-number>
         </template>
       </el-table-column>
-      <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="数量">
+      <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="数量" min-width="110">
         <template slot-scope="scope">
           <el-input-number v-model="scope.row.Quantity" :precision="2" :step="1" :min="1" :max="10000" size="mini"></el-input-number>
         </template>
       </el-table-column>
-      <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>
+      <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->
       <el-table-column header-align="center" :align="$store.state.common.align" width="190" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="mini" plain
-                     @click="deleteHandle(scope.row.Id)">移除
+                     @click="deleteHandle(scope.row.ProductId)">移除
           </el-button>
         </template>
       </el-table-column>
@@ -243,9 +243,9 @@ export default {
           if (item.text === text) {
             this.dataForm.CategoryId = item.id // 这个药态的id会传递给子组件，用于弹窗时正确请求对应的药材列表
             this.oldCategoryText = item.text
-            console.log(this.dataForm.CategoryText)
-            console.log(this.oldCategoryText)
-            console.log(this.dataForm.CategoryId)
+            // console.log(this.dataForm.CategoryText)
+            // console.log(this.oldCategoryText)
+            // console.log(this.dataForm.CategoryId)
           }
         })
       }).catch(() => {
@@ -284,20 +284,10 @@ export default {
         this.purchaseFormal = arr
       }
     },
-    // 每页数
-    // sizeChangeHandle (val) {
-    //   this.pageSize = val // this.pageIndex = 1
-    //   this.getDataList()
-    // },
-    // 当前页
-    // currentChangeHandle (val) {
-    //   this.pageIndex = val
-    //   this.getDataList()
-    // },
-    addOrUpdateHandle (id) { // id是药态类型、饮片、颗粒等
+    addOrUpdateHandle (id0, id1) { // id是药态类型、饮片、颗粒等
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id)
+        this.$refs.addOrUpdate.init(id0, id1)
       })
     },
     // 删除
@@ -313,12 +303,12 @@ export default {
         if (Id === undefined) {
           for (var i = 0; i < this.dataListSelections.length; i++) {
             this.purchaseFormal = this.dataList = this.purchaseFormal.filter(item => {
-              return item.Id !== this.dataListSelections[i].Id
+              return item.ProductId !== this.dataListSelections[i].ProductId
             })
           }
         } else {
           this.purchaseFormal = this.dataList = this.purchaseFormal.filter(item => {
-            return item.Id !== Id
+            return item.ProductId !== Id
           })
         }
       })
@@ -336,8 +326,8 @@ export default {
           StoreCode: this.dataForm.StoreCode,
           Items: JSON.stringify(this.dataList.map(item => {
             return {
-              ProductId: item.Id,
-              SapProductCode: item.Code,
+              ProductId: item.ProductId,
+              SapProductCode: item.ProductCode,
               CostPrice: item.SalePrice,
               Quantity: item.Quantity,
               SupplierId: this.dataForm.supplierId,
