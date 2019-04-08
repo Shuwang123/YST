@@ -80,7 +80,7 @@
 
       <el-main v-if="isAddActive" style="padding: 0 0 0 5px !important; border-left: 1px solid #E6E6E6">
         <!--<el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="0" :inline="true">-->
-        <el-form :model="dataForm" ref="dataForm" label-width="0" :inline="true">
+        <el-form class="purchaseListInfo" :model="dataForm" ref="dataForm" label-width="0" :inline="true">
           <el-form-item label="" prop="SpellName">
             <el-input v-model="dataForm.SpellName" placeholder="拼音搜索" size="mini" clearable>
               <el-button slot="append" icon="el-icon-search" @click="drugsSearch()"></el-button>
@@ -146,6 +146,7 @@ export default {
   },
   methods: {
     comFunction () {
+      // 这儿请求起点药材的接口要改成，请求对应门店库存的接口
       API.drugs.getDrugsList({name: '', PageIndex: 1, PageSize: 10000, IsPaging: 'false', SpellName: this.dataForm.SpellName, CategoryId: this.categoryId}).then(result => {
         if (result.code === '0000') {
           this.dataListAdd = result.data
@@ -230,25 +231,15 @@ export default {
     init (id, type) {
       this.visible = true
       this.dataListLoading = true
-      this.editType = type !== undefined ? type : ''
+      this.editType = type !== undefined ? type : '' // A B 不同编辑类型页面会展示不同的input和‘按钮’
       if (id !== undefined) {
         API.purchase.getPurchaseInfo({id: id}).then(result => {
           if (result.code === '0000') {
             this.dataList = result.data
+            this.categoryId = this.dataList.Items[0].CategoryId
+            this.categoryName = this.dataList.Items[0].CategoryName // 返回的采购单详情里每个药材对象中都包含药态，所以这儿取下巧
           }
-          this.$nextTick(() => {
-            API.drugs.getDrugsCategory().then(response => {
-              response.data.forEach(item => {
-                if (item.text === this.dataList.Items[0].CategoryName) {
-                  this.categoryId = item.id
-                  this.categoryName = item.text
-                  // this.categoryName = item.name
-                  return false
-                }
-              })
-              this.dataListLoading = false
-            })
-          })
+          this.dataListLoading = false
         })
       }
     },
@@ -301,7 +292,7 @@ export default {
     },
     dataFormSubmitB () { // 入库的提交
       if (this.dataList.Items.some(item => item.ProductBatchNo === 0 || item.ProductBatchNo === '' || item.ProductBatchNo === null)) {
-        this.$alert('你的批次号还没填完呢!', '提示', {
+        this.$alert('请把批次号填完!', '提示', {
           confirmButtonText: '确定'
         })
         return false
@@ -342,15 +333,18 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-.ownScrollbar::-webkit-scrollbar {
+.ownScrollbar::-webkit-scrollbar,
+.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar {
   width: 7px;
 }
-.ownScrollbar::-webkit-scrollbar-thumb {
+.ownScrollbar::-webkit-scrollbar-thumb,
+.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-thumb {
   border-radius: 3px;
   box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
   background-color: #DDDEE0;
 }
-.ownScrollbar::-webkit-scrollbar-track {
+.ownScrollbar::-webkit-scrollbar-track,
+.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-track {
   border-radius: 0;
   box-shadow: inset 0 0 5px rgba(0,0,0,0);
   background-color: rgba(0,0,0,0);

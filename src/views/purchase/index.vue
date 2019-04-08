@@ -3,7 +3,7 @@
     <el-form :inline="true" :model="dataForm" ref="dataForm" label-width="80px">
       <el-form-item>
         <el-button type="primary" size="mini" @click="savePurchase()">保存采购单</el-button>
-        <el-button type="primary" @click="addOrUpdateHandle(dataForm.CategoryId, dataForm.storeId)" size="mini" icon="el-icon-plus" :disabled="dataForm.StoreId > 0 ? false : true">商品导入</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle(dataForm.CategoryId, dataForm.StoreId)" size="mini" icon="el-icon-plus" :disabled="dataForm.StoreId > 0 ? false : true">商品导入</el-button>
         <el-button type="danger" @click="deleteHandle()" icon="el-icon-delete" :disabled="dataListSelections.length <= 0" size="mini">批量移除</el-button>
       </el-form-item>
       <br>
@@ -233,7 +233,7 @@ export default {
       }))
     },
     categoryTextHandle (text) {
-      this.$confirm('此操作将清空之前的记录!', '提示', {
+      this.$confirm('此操作将清空之前的记录! 是否要继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -262,6 +262,8 @@ export default {
       this.dataForm.Buyer = handChild[0].Contact
       this.dataForm.Phone = handChild[0].Phone
       this.dataForm.Address = handChild[0].Address
+
+      this.getDataList()
     },
     // 切换供应商时
     handleSupplier (supplierId) {

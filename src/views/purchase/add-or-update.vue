@@ -102,6 +102,7 @@ export default {
     init (id0, id1) {
       this.categoryId = id0
       this.storeId = id1
+      // debugger
       this.getDataList(this.categoryId, this.storeId)
     },
     // 每页数
@@ -126,8 +127,7 @@ export default {
     },
     getDataList (categoryid, storeid) {
       this.dataListLoading = true
-      // API.drugs.getDrugsList({name: '', PageIndex: this.pageIndex, PageSize: this.pageSize, IsPaging: 'true', SpellName: this.dataForm.SpellName, CategoryId: id}).then(result => {
-      API.storeStock.getStoreStock({
+      API.storeStock.getStoreStock({ // 药材来源门店库存
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: 'true',
@@ -157,6 +157,8 @@ export default {
           }
         } else {
           this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
+          this.dataList = []
+          // this.$message({ message: `${result.message}`, type: 'warning', duration: 3000 })
         }
         this.dataListLoading = false
       })
