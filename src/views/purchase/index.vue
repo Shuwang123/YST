@@ -41,8 +41,8 @@
       style="width: 100%;">
       <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
       <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
-      <el-table-column prop="ProductCode" header-align="center" :align="$store.state.common.align" width="100" label="商品编码"></el-table-column>
-      <el-table-column prop="ProductName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
+      <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="100" label="商品编码"></el-table-column>
+      <el-table-column prop="ShowName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
       <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="进价" min-width="110">
         <template slot-scope="scope">
@@ -58,7 +58,7 @@
       <el-table-column header-align="center" :align="$store.state.common.align" width="190" label="操作">
         <template slot-scope="scope">
           <el-button type="text" size="mini" plain
-                     @click="deleteHandle(scope.row.ProductId)">移除
+                     @click="deleteHandle(scope.row.Id)">移除
           </el-button>
         </template>
       </el-table-column>
@@ -286,7 +286,7 @@ export default {
         this.purchaseFormal = arr
       }
     },
-    addOrUpdateHandle (id0, id1) { // id是药态类型、饮片、颗粒等
+    addOrUpdateHandle (id0, id1) { // id0是药态类型、饮片、颗粒等+id1门店id
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id0, id1)
@@ -305,12 +305,12 @@ export default {
         if (Id === undefined) {
           for (var i = 0; i < this.dataListSelections.length; i++) {
             this.purchaseFormal = this.dataList = this.purchaseFormal.filter(item => {
-              return item.ProductId !== this.dataListSelections[i].ProductId
+              return item.Id !== this.dataListSelections[i].Id
             })
           }
         } else {
           this.purchaseFormal = this.dataList = this.purchaseFormal.filter(item => {
-            return item.ProductId !== Id
+            return item.Id !== Id
           })
         }
       })
@@ -328,8 +328,8 @@ export default {
           StoreCode: this.dataForm.StoreCode,
           Items: JSON.stringify(this.dataList.map(item => {
             return {
-              ProductId: item.ProductId,
-              SapProductCode: item.ProductCode,
+              ProductId: item.Id,
+              SapProductCode: item.Code,
               CostPrice: item.SalePrice,
               Quantity: item.Quantity,
               SupplierId: this.dataForm.supplierId,

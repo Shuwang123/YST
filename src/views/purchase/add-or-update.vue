@@ -23,12 +23,13 @@
           style="width: 100%;">
           <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
           <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
-          <el-table-column prop="ProductCode" header-align="center" :align="$store.state.common.align" width="100" label="商品编码" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="100" label="商品编码" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="CategoryName" header-align="center" :align="$store.state.common.align" width="100" label="药态" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column prop="ProductName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
+          <el-table-column prop="ShowName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
           <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
           <!--<el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->
           <el-table-column prop="Quantity" header-align="center" :align="$store.state.common.align" label="库存总量" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="SalePrice" header-align="center" :align="$store.state.common.align" label="库存价格" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="RedLine" header-align="center" :align="$store.state.common.align" label="预警量" :show-overflow-tooltip="true"></el-table-column>
         </el-table>
         <el-pagination
@@ -89,7 +90,7 @@ export default {
         this.dataList.forEach(item => {
           // console.log('这儿执行就有问题')
           this.ownPurchaseFatherList.forEach(row => {
-            if (item.ProductCode === row.ProductCode) {
+            if (item.Code === row.Code) {
               this.$refs.tableChild.toggleRowSelection(item, true) // 默认初始isInit勾选
             }
           })
@@ -127,21 +128,31 @@ export default {
     },
     getDataList (categoryid, storeid) {
       this.dataListLoading = true
-      API.storeStock.getStoreStock({ // 药材来源门店库存
+      // ※ 为什么给注释了呢：本来打算弄门店库存接口（可根据库存量勾选），但后来还是用的老创建药材列表界面的获取接口
+      // API.storeStock.getStoreStock({ // 药材来源门店库存
+      //   PageIndex: this.pageIndex,
+      //   PageSize: this.pageSize,
+      //   IsPaging: 'true',
+      //   SupplierId: '',
+      //   StoreId: storeid, // 父组件传递（用于请求对应门店自身的库存列表）且必填项!!!
+      //   CategoryId: categoryid, // 父组件传递
+      //
+      //   SpellName: this.dataForm.SpellName, // 子组件的input
+      //   ProductName: '', // 子组件的input
+      //   RedLine: '', // 子组件的input
+      //
+      //   BrandId: '', // 品牌ID 忽略
+      //   ProductCodeOrBarCode: '', // 商品编码 忽略
+      //   Order: '' // 按照分别按照Quantity, OccupyQuantityUsableQuantity排序 忽略
+      API.drugs.getDrugsList({
+        Name: '',
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: 'true',
-        SupplierId: '',
-        StoreId: storeid, // 父组件传递（用于请求对应门店自身的库存列表）且必填项!!!
-        CategoryId: categoryid, // 父组件传递
-
-        SpellName: this.dataForm.SpellName, // 子组件的input
-        ProductName: '', // 子组件的input
-        RedLine: '', // 子组件的input
-
-        BrandId: '', // 品牌ID 忽略
-        ProductCodeOrBarCode: '', // 商品编码 忽略
-        Order: '' // 按照分别按照Quantity, OccupyQuantityUsableQuantity排序 忽略
+        SpellName: this.dataForm.SpellName,
+        CategoryId: categoryid,
+        StoreId: storeid, // 传不传门店id决定了是否返回库存余量!!!
+        CodeOrBarCode: '' // 暂无
       }).then(result => {
         if (result.code === '0000' && result.data.length > 0) {
           this.dataList = result.data
@@ -150,15 +161,15 @@ export default {
           console.log(this.dataList)
           if (this.dataListViews.length === 0) {
             this.dataListViews = this.dataListViews.concat(result.data) // 会打散拼接到尾巴，旧数组不变
-          } else if (this.dataListViews.some(item => item.ProductCode === result.data[0].ProductCode || item.ProductCode === result.data[this.pageSize - 1]).ProductCode) {
+          } else if (this.dataListViews.some(item => item.Code === result.data[0].Code || item.Code === result.data[this.pageSize - 1]).Code) {
             this.dataListViews = this.dataListViews.concat([])
           } else {
             this.dataListViews = this.dataListViews.concat(result.data)
           }
         } else {
-          this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
+          // this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
           this.dataList = []
-          // this.$message({ message: `${result.message}`, type: 'warning', duration: 3000 })
+          this.$message({ message: `${result.message}`, type: 'warning', duration: 3000 })
         }
         this.dataListLoading = false
       })
@@ -171,7 +182,7 @@ export default {
         if (this.ownPurchaseFatherList.length !== 0) { // 先删
           this.dataList.forEach(row => {
             this.ownPurchaseFatherList = this.ownPurchaseFatherList.filter(item => {
-              return item.ProductCode !== row.ProductCode
+              return item.Code !== row.Code
             })
           })
         }
@@ -197,7 +208,7 @@ export default {
         if (fatherChecked.length !== 0) { // 假如首次导入，父组件传递的选中列表就为空，那么就不执行删除而跳过此语句
           this.dataListViews.forEach(row => {
             fatherChecked = fatherChecked.filter(item => {
-              return item.ProductCode !== row.ProductCode
+              return item.Code !== row.Code
             })
           })
         }

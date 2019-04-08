@@ -149,20 +149,21 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 /*vue过渡初次尝试*/
 .chenxi-enter {
-  transform: translate(50px, 30px);
+  transform: translate(40px, 30px);
   opacity: 0;
 }
-.chenxi-enter-to, .chenxi-leave {
-  transform: translate(0, 0);
-  opacity: 1;
-}
+/*.chenxi-enter-to, .chenxi-leave {
+transform: translate(0, 0);
+opacity: 1;
+}*/
 .chenxi-enter-active,
 .chenxi-leave-active {
   transition: all 0.6s ease;
 }
-.chenxi-leave-to {
-  transform: translate(-100px, 0);
-}
+/*.chenxi-leave-to {
+  transform: translateX(-100px, 0);
+}*/
+
 .mod {
   &-purchaseList /deep/ {
     margin-left: 10px;

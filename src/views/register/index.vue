@@ -11,7 +11,7 @@
         </el-form-item>
         </el-form>
         <!--中间数据展示  v-loading="dataListLoading"-->
-        <el-table 
+        <el-table
                 :data="dataMenu"
                 stripe border
                 :height="$store.state.documentClientIFRMAE"
@@ -50,46 +50,45 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-    import API from '@/api'
-    import { treeDataTranslate } from '@/utils'
-    export default{
-        data(){
-            return{
-                objMenu:{
-                    name:'',
-                    pageIndex:2
-                },
-                dataMenu:[
-                    {
-
-                        name:"小弟舒",
-                        Id:'1',
-                        tel:'2',
-                        type:3,
-                        num:'4',
-                        time:'5',
-                        source:'6',
-                        doc:'7',
-                        stat:'8'
-                    }
-                ]
-            }
-        },
-        methods:{
-            searchMenu(){
-                console.log("1233");
-            },
-            dataListLoading(){
-                console.log('456');
-            },
-            getNewMenuList(){
-                console.log("admin")
-            },
-            getNewPageSizes(){
-                console.log('psd')
-            }
+import API from '@/api'
+import { treeDataTranslate } from '@/utils'
+export default{
+  data () {
+    return {
+      objMenu: {
+        name: '',
+        pageIndex: 2
+      },
+      dataMenu: [
+        {
+          name: '小弟舒',
+          Id: '1',
+          tel: '2',
+          type: 3,
+          num: '4',
+          time: '5',
+          source: '6',
+          doc: '7',
+          stat: '8'
         }
+      ]
     }
+  },
+  methods: {
+    searchMenu () {
+      console.log('1233')
+    },
+    dataListLoading () {
+      console.log('456')
+    },
+    getNewMenuList () {
+      console.log('admin')
+    },
+    getNewPageSizes () {
+      console.log('psd')
+    }
+  }
+}
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 .mod {
