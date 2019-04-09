@@ -8,9 +8,11 @@
       <sidebar></sidebar>
       <div class="site-content__wrapper" :style="siteContentWarpperStyles">
         <content-tabs></content-tabs>
-        <iframe v-if="$store.state.contentAcitveTab.type=='iframe'" :src="$store.state.contentAcitveTab.iframurl" width="100%" height="100%" frameborder="0" scrolling="yes">
-        </iframe>
-        <router-view v-else></router-view>
+        <transition mode="out-in">
+          <iframe v-if="$store.state.contentAcitveTab.type=='iframe'" :src="$store.state.contentAcitveTab.iframurl" width="100%" height="100%" frameborder="0" scrolling="yes">
+          </iframe>
+          <router-view v-else></router-view>
+        </transition>
         <!--路由不刷新-->
         <!--<keep-alive>
           <router-view v-if="$route.meta.keepAlive"></router-view>
@@ -75,3 +77,20 @@ export default {
   }
 }
 </script>
+
+<!--chenxi 新增-->
+<style rel="stylesheet/scss" lang="scss" scoped>
+.v-enter {
+  opacity: 0;
+  transform: translateX(-10%);
+}
+.v-enter-active,
+.v-leave-active {
+  transition: all .6s ease;
+}
+.v-leave-to {
+  opacity: 0;
+  transform: translateX(10%);
+  position: fixed; /*搞不懂为啥子absolute就不行了，absolute必须搭配-10%和-10%，两个都必须是-，有一个正的就罢工； 其实absolute的时候某一部分页面可行，貌似和页面之间的高度有关，height小于等于100%？*/
+}
+</style>

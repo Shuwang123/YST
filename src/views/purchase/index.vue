@@ -222,11 +222,15 @@ export default {
           // 初始化页面完毕后才，处理去获取当前页面login信息，获得账号下对应门店的详情---（识别当前账号是：管理员账号、还是1对1类型的账号）
           API.purchase.getLoginInfo().then(result => {
             if (result.code === '0000') {
+              console.log(result)
+              console.log('???')
               this.dataForm.UserName = result.data.UserName
               this.dataForm.View = result.data.View // 决定：门店下拉是否禁用
               this.dataForm.StoreId = result.data.StoreId
               this.dataForm.StoreCode = result.data.StoreCode // 这儿后端的接口获取登陆信息还有不足，或者前端自己处理，如果普通账号，那门店直接就锁定的，但这种情况下却没有联系人，电话，地址这三个页面的初始信息了
               // 这下面应该还有几行的……
+              // 超级管理员：canViewStore: '', storeId都是0，view都是true
+              // 普通账号：canViewStore: '', storeId都不能与0，view都是false
             }
           })
         })

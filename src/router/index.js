@@ -47,8 +47,12 @@ var router = new Router({
         /* 供应商模块End */
         /* 采购单模块：采购单Begin 创建采购单、之后生成采购单列表 */
         {path: '/drugs/purchase', component: _import('purchase/index'), name: 'purchaseList', meta: {title: '采购单', keepAlive: false}},
-        {path: '/drugs/purchaseList', component: _import('purchaseList/index'), name: 'purchaseListAll', meta: {title: '采购单列表', keepAlive: false}}
+        {path: '/drugs/purchaseList', component: _import('purchaseList/index'), name: 'purchaseListAll', meta: {title: '采购单列表', keepAlive: false}},
         /* 采购单模块End */
+
+        /* 库存管理模块：Begin */
+        {path: '/drugs/inventoryList', component: _import('inventory/index'), name: 'inventoryList', meta: {title: '库存详情', keepAlive: false}},
+        /* 库存管理模块End */
       ]
     },
     {path: '*', name: 'error401', component: _import('errorPage401/error401')}
