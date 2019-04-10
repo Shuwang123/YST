@@ -1,27 +1,24 @@
 <template>
-
-    <div class="mod-purchaseList">
+    <div class="mod-storeStock">
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
-      <!--<div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">-->
-        <!--<el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">-->
-          <!--<el-form-item label="">-->
-            <!--<el-select v-model="dataForm.SupplierId" placeholder="供应厂商" size="mini" clearable style="width: 120px">-->
-              <!--<el-option v-for="item in SupplierIdArr" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>-->
-            <!--</el-select>-->
-          <!--</el-form-item>-->
-          <!--<el-form-item>-->
-            <!--<el-select v-model="dataForm.StoreId" placeholder="采购门店" size="mini" clearable style="width: 120px">-->
-              <!--<el-option v-for="item in StoreArr" :key="item.Id" :label="'['+item.Id+']'+item.Name" :value="item.Id"></el-option>-->
-            <!--</el-select>-->
-          <!--</el-form-item>-->
-          <!--<el-form-item>-->
-            <!--<el-input v-model="dataForm.code" placeholder="采购单批次" size="mini" clearable></el-input>-->
-          <!--</el-form-item>-->
-          <!--<el-form-item>-->
-            <!--<el-button icon="el-icon-search" @click="getDataList()" size="mini">查询</el-button>-->
-          <!--</el-form-item>-->
-        <!--</el-form>-->
-      <!--</div>-->
+      <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
+        <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+          <el-form-item>
+            <el-select v-model="dataForm.StoreId" placeholder="可查询门店" size="mini" clearable style="width: 120px">
+              <el-option v-for="item in StoreArr" :key="item.Id" :label="'['+item.Id+']'+item.Name" :value="item.Id"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="dataForm.ProductName" placeholder="商品名称" size="mini" clearable style="width: 120px"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="dataForm.SpellName" placeholder="商品拼音" size="mini" clearable style="width: 120px"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="dataForm.ProductCodeOrBarCode" placeholder="商品编码" size="mini" clearable style="width: 120px"></el-input>
+          </el-form-item>
+        </el-form>
+      </div>
 
       <!--<el-tab-pane label="成品药品" name="second" disabled="true">-->
       <el-tab-pane label="" name="first">
@@ -33,34 +30,34 @@
       <el-tab-pane label="" name="second">
         <span slot="label"><i class=""></i> 库存历史</span>
         <transition name="chenxi">
-          <first-tab v-if="isVisible[1].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
+          <second-tab v-if="isVisible[1].child" ref="firstTab" :fatherDataForm="dataForm"></second-tab>
         </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="third">
         <span slot="label"><i class=""></i> 库存批次流水</span>
         <transition name="chenxi">
-          <first-tab v-if="isVisible[2].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
+          <third-tab v-if="isVisible[2].child" ref="firstTab" :fatherDataForm="dataForm"></third-tab>
         </transition>
       </el-tab-pane>
     </el-tabs>
   </div>
-
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
 import FirstTab from './first-tab'
+import SecondTab from './second-tab'
+import ThirdTab from './third-tab'
 export default {
   data () {
     return {
       activeName: 'first',
-      SupplierIdArr: [], // 先请求供应商数组
+      // SupplierIdArr: [], // 先请求供应商数组
       StoreArr: [], // 先请求门店数组
-      dataForm: {
-        SupplierId: '',
+      dataForm: { // 三个子组件共有的查询条件：门店，商品编码，商品名称
         StoreId: '',
-        code: '', // 采购单批号
-        StartDate: '',
-        EndDate: ''
+        ProductCodeOrBarCode: '',
+        ProductName: '',
+        SpellName: ''
       },
       isVisible: [
         {child: true},
@@ -71,22 +68,24 @@ export default {
     }
   },
   components: {
-    FirstTab
+    FirstTab,
+    SecondTab,
+    ThirdTab
   },
   created () {
     this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
   },
   mounted () {
-    this.$refs.firstTab.getDataList(0)
+    // this.$refs.firstTab.getDataList(0)
   },
   methods: {
     pageInit () {
       this.dataListLoading = true
-      API.supplier.getSupplierList({name: '', PageIndex: '1', PageSize: '1000', IsPaging: true, code: ''}).then(result => {
-        if (result.code === '0000') {
-          this.SupplierIdArr = result.data
-        }
-      })
+      // API.supplier.getSupplierList({name: '', PageIndex: '1', PageSize: '1000', IsPaging: true, code: ''}).then(result => {
+      //   if (result.code === '0000') {
+      //     this.SupplierIdArr = result.data
+      //   }
+      // })
       API.store.storeAll({PageIndex: 1, PageSize: 1000, IsPaging: true}).then(result => {
         if (result.code === '0000') {
           this.StoreArr = result.data
@@ -95,7 +94,6 @@ export default {
       this.dataListLoading = false
     },
     handleClick (tab, event) {
-      // console.log(tab, event)
       switch (tab.name) {
         case 'first':
           this.isVisible = this.isVisible.map((item, index) => {
@@ -112,27 +110,7 @@ export default {
             return index === 2 ? {child: true} : {child: false}
           })
           break
-        case 'four':
-          this.isVisible = this.isVisible.map((item, index) => {
-            return index === 3 ? {child: true} : {child: false}
-          })
-          break
       }
-      // console.log(this.isVisible)
-      this.$nextTick(() => {
-        this.isVisible.forEach((item, index) => {
-          if (item.child === true) {
-            if (index === 0) {
-              this.$refs.firstTab.getDataList(0)
-            } else if (index === 1) {
-              this.$refs.firstTab.getDataList(1) // 待收货
-            } else if (index === 2) {
-              this.$refs.firstTab.getDataList(4) // 已到货未入库
-            }
-          }
-          return false
-        })
-      })
     }
   }
 }
@@ -157,7 +135,7 @@ opacity: 1;
 }*/
 
 .mod {
-  &-purchaseList /deep/ {
+  &-storeStock /deep/ {
     margin-left: 10px;
     /*max-height: 810px;*/
     overflow: hidden;
@@ -172,7 +150,7 @@ opacity: 1;
   }
 }
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
-.mod-purchaseList {
+.mod-storeStock{
   & /deep/ .el-form-item {
     margin-bottom: 14px;
   }
@@ -185,7 +163,7 @@ opacity: 1;
     padding: 0 !important;
   }
   /*& /deep/ .el-tabs__content {background-color: #F0F0F0}*/
-  & /deep/ .purchaseListRow {
+  & /deep/ .storeStockListRow {
     color: #606266;
     & td {padding: 0;}
     & td .cell{

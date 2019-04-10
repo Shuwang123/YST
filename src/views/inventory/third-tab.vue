@@ -4,16 +4,10 @@
     <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
       <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
         <el-form-item>
-          <el-input v-model="dataForm.RedLine" placeholder="预警量" size="mini" clearable style="width: 120px"></el-input>
+          <el-input v-model="dataForm.SupplierId" placeholder="供应商" size="mini" clearable style="width: 120px"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="dataForm.CategoryId" placeholder="药品种类" size="mini" clearable style="width: 120px"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="dataForm.BrandId" placeholder="品牌ID" size="mini" clearable style="width: 120px"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="dataForm.Order" placeholder="排序" size="mini" clearable style="width: 120px"></el-input>
+          <el-input v-model="dataForm.BatchNo" placeholder="批次号" size="mini" clearable style="width: 120px"></el-input>
         </el-form-item>
         <el-form-item>
           <el-button icon="el-icon-search" @click="getDataList()" size="mini">查询</el-button>
@@ -30,21 +24,17 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
-      <el-table-column prop="ProductCode" header-align="center" align="center" label="药品编码" width="90"></el-table-column>
-      <el-table-column prop="ProductName" header-align="center" align="center" label="药名" width="80"></el-table-column>
-      <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="CategoryName" header-align="center" align="center" label="种类" width="70" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="ProductCode" header-align="center" align="center" label="商品编码" width="80"></el-table-column>
+      <el-table-column prop="ProductName" header-align="center" align="center" label="名称" width="70" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧？所以厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
 
-      <el-table-column prop="Quantity" header-align="center" align="center" label="库存数" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="OccupyQuantity" header-align="center" align="center" label="锁定数" width="80"></el-table-column>
-      <el-table-column prop="UsableQuantity" header-align="center" align="center" label="可用数" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="AvgCostPrice" header-align="center" align="center" label="平均成本" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Amount" header-align="center" align="center" label="成本总价" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="SalePrice" header-align="center" align="center" label="售价" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="SaleAmount" header-align="center" align="center" label="售价总价" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="RedLine" header-align="center" align="center" label="警戒线" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="ProfitPercent" header-align="center" align="center" label="毛利" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Quantity" header-align="center" align="center" label="规格" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="SupplierId" header-align="center" align="center" label="供应商" width=""></el-table-column>
+
+      <el-table-column prop="Specification" header-align="center" align="center" label="规格" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Price" header-align="center" align="center" label="进价" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="BatchNo" header-align="center" align="center" label="批次号" width="" :show-overflow-tooltip="true"></el-table-column>
     </el-table>
     <el-pagination
       @size-change="sizeChangeHandle"
@@ -82,10 +72,8 @@ export default {
       pageSize: 10,
       IsPaging: true,
       dataForm: {
-        RedLine: '',
-        CategoryId: '', // 商品种类
-        BrandId: '', // 品牌ID
-        Order: '' // 按照分别按照Quantity,OccupyQuantityUsableQuantity排序
+        SupplierId: '',
+        BatchNo: ''
       },
       dataList: [],
       totalPage: 1,
@@ -113,16 +101,11 @@ export default {
         IsPaging: this.IsPaging,
         StoreId: this.fatherDataForm.StoreId, // 门店ID
         ProductCodeOrBarCode: this.fatherDataForm.ProductCodeOrBarCode, // 产品编码
-        ProductName: this.fatherDataForm.ProductName, // 产品名称
-        SpellName: this.fatherDataForm.SpellName,
-
-        // SupplierId: this.dataForm.SupplierId, // 供应商
-        RedLine: this.dataForm.RedLine,
-        CategoryId: this.dataForm.CategoryId,
-        BrandId: this.dataForm.BrandId,
-        Order: this.dataForm.Order
+        // ProductName: this.fatherDataForm.ProductName, // 产品名称
+        SupplierId: this.dataForm.SupplierId,
+        BatchNo: this.dataForm.BatchNo
       }
-      API.storeStock.getStoreStock(params).then(result => {
+      API.storeStock.getStockBatch(params).then(result => {
         if (result.code === '0000') {
           this.dataList = result.data
           this.totalPage = result.total
