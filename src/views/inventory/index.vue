@@ -3,11 +3,15 @@
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
       <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
         <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-          <el-form-item>
-            <el-select v-model="dataForm.StoreId" placeholder="可查询门店" size="mini" clearable style="width: 120px">
-              <el-option v-for="item in StoreArr" :key="item.Id" :label="'['+item.Id+']'+item.Name" :value="item.Id"></el-option>
-            </el-select>
-          </el-form-item>
+          <com-store :paramsFather="{
+            'label_0': '',
+            'size_1': 'mini',
+            'width_2': '120px',
+            'clear_3': true,
+            'disabled_4': false,
+            'multiple_5': false
+          }" ref="comStoreOne" @eventStore="changeStoreData"
+          ></com-store>
           <el-form-item>
             <el-input v-model="dataForm.ProductName" placeholder="商品名称" size="mini" clearable style="width: 120px"></el-input>
           </el-form-item>
@@ -47,12 +51,13 @@ import API from '@/api'
 import FirstTab from './first-tab'
 import SecondTab from './second-tab'
 import ThirdTab from './third-tab'
+import ComStore from '../common/com-store'
 export default {
   data () {
     return {
       activeName: 'first',
       // SupplierIdArr: [], // 先请求供应商数组
-      StoreArr: [], // 先请求门店数组
+
       dataForm: { // 三个子组件共有的查询条件：门店，商品编码，商品名称
         StoreId: '',
         ProductCodeOrBarCode: '',
@@ -70,7 +75,8 @@ export default {
   components: {
     FirstTab,
     SecondTab,
-    ThirdTab
+    ThirdTab,
+    ComStore
   },
   created () {
     this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
@@ -79,19 +85,19 @@ export default {
     // this.$refs.firstTab.getDataList(0)
   },
   methods: {
+    changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
+      if (isMultiple === false) {
+        this.dataForm.StoreId = choseStoreId
+      }
+    },
     pageInit () {
-      this.dataListLoading = true
-      // API.supplier.getSupplierList({name: '', PageIndex: '1', PageSize: '1000', IsPaging: true, code: ''}).then(result => {
-      //   if (result.code === '0000') {
-      //     this.SupplierIdArr = result.data
-      //   }
-      // })
-      API.store.storeAll({PageIndex: 1, PageSize: 1000, IsPaging: true}).then(result => {
-        if (result.code === '0000') {
-          this.StoreArr = result.data
-        }
-      })
-      this.dataListLoading = false
+      // this.dataListLoading = true
+      // // API.supplier.getSupplierList({name: '', PageIndex: '1', PageSize: '1000', IsPaging: true, code: ''}).then(result => {
+      // //   if (result.code === '0000') {
+      // //     this.SupplierIdArr = result.data
+      // //   }
+      // // })
+      // this.dataListLoading = false
     },
     handleClick (tab, event) {
       switch (tab.name) {

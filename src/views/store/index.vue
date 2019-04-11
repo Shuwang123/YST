@@ -109,7 +109,14 @@ export default {
     },
     getDataList () {
       const _this = this
-      var parmet = {name: this.dataForm.storeName, code: this.dataForm.storeCode, pageIndex: this.pageIndex, pageSize: this.pageSize, isPaging: true}
+      var parmet = {
+        name: this.dataForm.storeName,
+        code: this.dataForm.storeCode,
+        pageIndex: this.pageIndex,
+        pageSize: this.pageSize,
+        isPaging: true,
+        canViewStores: '' // 普通管理员能拥有这个界面吗？如果有权限，那这个门店列表的展示又有判断了，会根据登陆接口获取当前账号的可控门店字段
+      }
       _this.dataListLoading = true
       API.store.storeAll(parmet).then(response => {
         if (response.code === '0000') {

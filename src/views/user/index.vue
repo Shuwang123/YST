@@ -7,14 +7,19 @@
       <el-form-item>
         <el-input v-model="dataForm.nickName" placeholder="账号别名（text）" clearable></el-input>
       </el-form-item>
-      <el-form-item>
-        <el-input v-model="dataForm.id" placeholder="账号ID(系统自动生成的不可控)" clearable style="width: 100px"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-select v-model="dataForm.storeId" placeholder="请选择门店ID" clearable>
-          <el-option v-for="item in storeArr" :key="item.id" :label="item.name" :value="item.id"></el-option>
-        </el-select>
-      </el-form-item>
+      <!--<el-form-item>-->
+        <!--<el-input v-model="dataForm.id" placeholder="账号ID(系统自动生成的不可控)" clearable style="width: 100px"></el-input>-->
+      <!--</el-form-item>-->
+      <com-store :paramsFather="{
+        'label_0': '',
+        'size_1': '',
+        'width_2': '180px',
+        'clear_3': true,
+        'disabled_4': false,
+        'multiple_5': false
+      }" ref="comStore" @eventStore="changeStoreData">
+      </com-store>
+
       <el-form-item>
         <el-select v-model="dataForm.roleId" placeholder="请选择角色ID" clearable>
           <el-option v-for="item in roleArr" :key="item.id" :label="item.name" :value="item.id"></el-option>
@@ -66,12 +71,6 @@
             @click="scope.row.Status === 1 ? handelDelete(scope.row.Id) : handelStart(scope.row.Id)">
             {{scope.row.Status === 1 ? '禁用' : '启用'}}
           </el-button>
-          <!--<el-button type="danger" size="mini" plain-->
-                     <!--@click="handelDelete(scope.row.Id)">禁-->
-          <!--</el-button>-->
-          <!--<el-button type="danger" size="mini" plain-->
-                     <!--@click="handelUpdatePwd(scope.row.Id)">修改密码-->
-          <!--</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -94,6 +93,7 @@
 import {formatDate} from '@/utils/validate'
 import AddOrUpdate from './add-or-update'
 // import UpdatePwd from './update-pwd'
+import ComStore from '../common/com-store'
 import API from '@/api'
 export default {
   name: 'user',
@@ -106,8 +106,9 @@ export default {
   computed: {
   },
   components: {
-    AddOrUpdate
-    // ,    UpdatePwd
+    AddOrUpdate,
+    ComStore
+    // UpdatePwd
   },
   data () {
     return {
@@ -128,7 +129,6 @@ export default {
         storeId: '', // 名店id ※
         roleId: ''// 角色id
       },
-      storeArr: [],
       roleArr: [],
       dataList: []
     }
@@ -138,14 +138,11 @@ export default {
     this.initID()
   },
   methods: {
+    // 公用门店下拉子组件的想option改变时，父组件的storedId也变化
+    changeStoreData (choseStoreId) {
+      this.dataForm.storeId = choseStoreId
+    },
     initID () {
-      API.store.storeAll({PageIndex: 1, PageSize: 1000, IsPaging: true}).then(result => {
-        if (result.code === '0000') {
-          result.data.forEach(item => {
-            this.storeArr.push({name: item.Name, id: item.Id})
-          })
-        }
-      })
       API.role.jueseList({PageIndex: 1, PageSize: 1000, IsPaging: true}).then(result => {
         if (result.code === '0000') {
           result.data.forEach(item => {
@@ -198,7 +195,6 @@ export default {
       console.log(parmet)
       this.dataListLoading = true
       API.adminUser.adminUserList(parmet).then(response => {
-        // console.log(response)
         if (response.code === '0000') {
           if (response.data) {
             this.dataList = response.data

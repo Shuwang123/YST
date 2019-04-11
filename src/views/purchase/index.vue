@@ -22,11 +22,15 @@
             <el-option v-for="item in supplierArr" :key="item.Id" :label="item.ShortName" :value="item.Id"></el-option>
           </el-select>
         </el-form-item>
-        <el-form-item label="" prop="">
-          <el-select v-model="dataForm.StoreId" placeholder="选择门店" style="width: 150px" size="mini" @change="handleStore" :disabled="!dataForm.View">
-            <el-option v-for="item in storeArr" :key="item.Id" :label="'['+item.Id+']'+item.Name" :value="item.Id"></el-option>
-          </el-select>
-        </el-form-item>
+        <com-store :paramsFather="{
+            'label_0': '',
+            'size_1': 'mini',
+            'width_2': '150px',
+            'clear_3': true,
+            'disabled_4': !dataForm.View,
+            'multiple_5': false
+          }" ref="comStoreOne" @eventStore="changeStoreData"
+        ></com-store>
       </div>
     </el-form>
 
@@ -81,6 +85,7 @@
 import AddOrUpdate from './add-or-update'
 import API from '@/api'
 import {formatDate} from '@/utils/validate'
+import ComStore from '../common/com-store'
 export default {
   name: 'role',
   data () {
@@ -110,7 +115,6 @@ export default {
       oldCategoryText: '', // 切换药态时，此信息可以判断用户点的取消，还是确定
       // oldCategoryId: '', //
 
-      storeArr: [],
       supplierArr: [],
       drugsCategoryList: [],
 
@@ -120,7 +124,8 @@ export default {
     }
   },
   components: {
-    AddOrUpdate
+    AddOrUpdate,
+    ComStore
   },
   computed: {
   },
@@ -201,16 +206,48 @@ export default {
     this.pageInit()
   },
   methods: {
+    changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店,单选、多选类型门店
+      if (isMultiple === false) {
+        this.dataForm.StoreId = choseStoreId
+        // 当门店改变后，电话地址联系人那些也要改变
+        if (this.dataForm.StoreId === '') {
+          this.dataForm.StoreId = ''
+          this.dataForm.StoreCode = ''
+          this.dataForm.Buyer = ''
+          this.dataForm.Phone = ''
+          this.dataForm.Address = ''
+          this.getDataList()
+          return false
+        }
+        this.$nextTick(() => {
+          API.store.storeAll({
+            name: '',
+            PageIndex: 1,
+            PageSize: 1000,
+            IsPaging: true,
+            code: '',
+            canViewStores: this.dataForm.StoreId
+          }).then(result => {
+            if (result.code === '0000') {
+              this.dataForm.StoreId = result.data[0].Id
+              this.dataForm.StoreCode = result.data[0].Code
+              this.dataForm.Buyer = result.data[0].Contact
+              this.dataForm.Phone = result.data[0].Phone
+              this.dataForm.Address = result.data[0].Address
+              this.getDataList()
+            }
+          })
+        })
+      }
+    },
     pageInit () {
       this.dataListLoading = true
-      // 并发请求 供应商、门店、药态(并发请求，最后单独请求第四个，根据当前登陆账号觉得是否禁用门店下拉)
+      // 并发请求 供应商、药态(并发请求，最后单独请求第四个，根据当前登陆账号觉得是否禁用门店下拉)
       function funSupplier () { return API.supplier.getSupplierList({name: '', PageIndex: '1', PageSize: '1000', IsPaging: true, code: ''}) }
-      function funStore () { return API.store.storeAll({PageIndex: 1, PageSize: 1000, IsPaging: true}) }
       function funCategory () { return API.drugs.getDrugsCategory() }
-      this.$ios.all([funSupplier(), funStore(), funCategory()]).then(this.$ios.spread((resultSupplier, resultStore, resultCategory) => {
-        if (resultSupplier.code === '0000' && resultStore.code === '0000' && resultCategory.code === '0000') {
+      this.$ios.all([funSupplier(), funCategory()]).then(this.$ios.spread((resultSupplier, resultCategory) => {
+        if (resultSupplier.code === '0000' && resultCategory.code === '0000') {
           this.supplierArr = resultSupplier.data // 初始化供应商
-          this.storeArr = resultStore.data // 初始化门店
 
           this.drugsCategoryList = resultCategory.data.filter((item, index) => { return index > 0 }) // 初始化药态
           this.dataForm.CategoryText = this.drugsCategoryList[0].text
@@ -223,14 +260,28 @@ export default {
           API.purchase.getLoginInfo().then(result => {
             if (result.code === '0000') {
               console.log(result)
-              console.log('???')
               this.dataForm.UserName = result.data.UserName
               this.dataForm.View = result.data.View // 决定：门店下拉是否禁用
-              this.dataForm.StoreId = result.data.StoreId
-              this.dataForm.StoreCode = result.data.StoreCode // 这儿后端的接口获取登陆信息还有不足，或者前端自己处理，如果普通账号，那门店直接就锁定的，但这种情况下却没有联系人，电话，地址这三个页面的初始信息了
-              // 这下面应该还有几行的……
-              // 超级管理员：canViewStore: '', storeId都是0，view都是true
-              // 普通账号：canViewStore: '', storeId都不能与0，view都是false
+              if (result.data.View === false) {
+                this.$refs.comStoreOne.pageInit(result.data.StoreId) // 单选类型，多选类型，初始化下拉值
+                API.store.storeAll({
+                  name: '',
+                  PageIndex: 1,
+                  PageSize: 1000,
+                  IsPaging: true,
+                  code: '',
+                  canViewStores: result.data.CanViewStores
+                }).then(result => {
+                  if (result.code === '0000') {
+                    this.dataForm.StoreId = result.data[0].Id
+                    this.dataForm.StoreCode = result.data[0].Code
+                    this.dataForm.Buyer = result.data[0].Contact
+                    this.dataForm.Phone = result.data[0].Phone
+                    this.dataForm.Address = result.data[0].Address
+                    this.getDataList()
+                  }
+                })
+              }
             }
           })
         })
@@ -255,19 +306,6 @@ export default {
       }).catch(() => {
         this.dataForm.CategoryText = this.oldCategoryText
       })
-    },
-    // 切换门店时
-    handleStore (storeId) {
-      var handChild = this.storeArr.filter(item => {
-        return item.Id === storeId
-      })
-      this.dataForm.StoreId = handChild[0].Id
-      this.dataForm.StoreCode = handChild[0].Code
-      this.dataForm.Buyer = handChild[0].Contact
-      this.dataForm.Phone = handChild[0].Phone
-      this.dataForm.Address = handChild[0].Address
-
-      this.getDataList()
     },
     // 切换供应商时
     handleSupplier (supplierId) {
