@@ -3,8 +3,10 @@
     <!--chenxiHeight命名法-->
     <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
       <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-        <el-form-item>
-          <el-input v-model="dataForm.SupplierId" placeholder="供应商" size="mini" clearable style="width: 120px"></el-input>
+        <el-form-item label="">
+          <el-select v-model="dataForm.SupplierId" placeholder="供应厂商" size="mini" clearable style="width: 120px">
+            <el-option v-for="item in SupplierIdArr" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <el-input v-model="dataForm.BatchNo" placeholder="批次号" size="mini" clearable style="width: 120px"></el-input>
@@ -24,17 +26,19 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
-      <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ProductCode" header-align="center" align="center" label="商品编码" width="80"></el-table-column>
       <el-table-column prop="ProductName" header-align="center" align="center" label="名称" width="70" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧？所以厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
 
       <el-table-column prop="Quantity" header-align="center" align="center" label="规格" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="SupplierId" header-align="center" align="center" label="供应商" width=""></el-table-column>
+      <el-table-column prop="SupplierName" header-align="center" align="center" label="供应商" width=""></el-table-column>
 
       <el-table-column prop="Specification" header-align="center" align="center" label="规格" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Quantity" header-align="center" align="center" label="存量" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Price" header-align="center" align="center" label="进价" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="BatchNo" header-align="center" align="center" label="批次号" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="CreatedOn" header-align="center" align="center" label="时间" width="" :show-overflow-tooltip="true"></el-table-column>
     </el-table>
     <el-pagination
       @size-change="sizeChangeHandle"
@@ -71,6 +75,8 @@ export default {
       pageIndex: 1,
       pageSize: 10,
       IsPaging: true,
+
+      SupplierIdArr: [], // 先请求供应商数组
       dataForm: {
         SupplierId: '',
         BatchNo: ''
@@ -88,6 +94,12 @@ export default {
     window.onresize = () => {
       this.chenxiHeight = document.documentElement['clientHeight'] - 333 // 273 测试老半天
     }
+    // 初始化供应商数组
+    API.supplier.getSupplierList({name: '', PageIndex: '1', PageSize: '1000', IsPaging: true, code: ''}).then(result => {
+      if (result.code === '0000') {
+        this.SupplierIdArr = result.data
+      }
+    })
   },
   methods: {
     selectionChangeHandle (val) {

@@ -4,24 +4,26 @@
     <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
       <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
         <el-form-item>
-          <el-input v-model="dataForm.SpellName" placeholder="单据编码" size="mini" clearable style="width: 120px"></el-input>
+          <el-input v-model="dataForm.BillCode" placeholder="单据编码" size="mini" clearable style="width: 120px"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="dataForm.RedLine" placeholder="单据类型" size="mini" clearable style="width: 120px"></el-input>
+          <el-input v-model="dataForm.BillType" placeholder="单据类型" size="mini" clearable style="width: 120px"></el-input>
         </el-form-item>
         <el-form-item>
+          <!--:default-time="['12:00:00']"-->
           <el-date-picker
+            size="mini"
             v-model="value6"
-            type="datetimerange"
+            type="daterange"
+            range-separator="至"
             start-placeholder="开始日期"
             end-placeholder="结束日期"
-            :default-time="['12:00:00']"
-            size="mini"
-            value-format="yyyy-MM-dd HH:mm">
+            value-format="yyyy-MM-dd"
+            style="width: 260px">
           </el-date-picker>
         </el-form-item>
         <el-form-item>
-          <el-button icon="el-icon-search" @click="getDataList()" size="mini">查询</el-button>
+          <el-button icon="el-icon-search" @click="pageIndex = 1; getDataList()" size="mini">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -99,11 +101,15 @@ export default {
   },
   watch: {
     'value6': function () {
-      if (this.value6 !== []) {
+      console.log(this.value6)
+      if (this.value6 !== [] && this.value6 !== null) {
         this.dataForm.StartDate = this.value6[0]
         this.dataForm.EndDate = this.value6[1]
-        console.log(this.dataForm.StartDate)
-        console.log(this.dataForm.EndDate)
+        // console.log(this.dataForm.StartDate)
+        // console.log(this.dataForm.EndDate)
+      } else {
+        this.dataForm.StartDate = ''
+        this.dataForm.EndDate = ''
       }
     }
   },

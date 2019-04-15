@@ -29,7 +29,7 @@
           <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
           <!--<el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->
           <el-table-column prop="Quantity" header-align="center" :align="$store.state.common.align" label="库存总量" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column prop="SalePrice" header-align="center" :align="$store.state.common.align" label="库存价格" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="CostPrice" header-align="center" :align="$store.state.common.align" label="库存上次的成本价" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="RedLine" header-align="center" :align="$store.state.common.align" label="预警量" :show-overflow-tooltip="true"></el-table-column>
         </el-table>
         <el-pagination

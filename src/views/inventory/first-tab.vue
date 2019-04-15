@@ -3,20 +3,22 @@
     <!--chenxiHeight命名法-->
     <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
       <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-        <el-form-item>
-          <el-input v-model="dataForm.RedLine" placeholder="预警量" size="mini" clearable style="width: 120px"></el-input>
+        <!--<el-form-item>-->
+          <!--<el-input v-model="dataForm.RedLine" placeholder="预警量" size="mini" clearable style="width: 120px"></el-input>-->
+        <!--</el-form-item>-->
+        <!--<el-form-item>-->
+          <!--<el-input v-model="dataForm.CategoryId" placeholder="药品种类" size="mini" clearable style="width: 120px"></el-input>-->
+        <!--</el-form-item>-->
+        <!--<el-form-item>-->
+          <!--<el-input v-model="dataForm.BrandId" placeholder="品牌ID" size="mini" clearable style="width: 120px"></el-input>-->
+        <!--</el-form-item>-->
+        <el-form-item label="">
+          <el-select v-model="dataForm.Order" placeholder="排序" size="mini" clearable style="width: 120px">
+            <el-option v-for="item in OrderArr" :key="item.text" :label="item.text" :value="item.val"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="dataForm.CategoryId" placeholder="药品种类" size="mini" clearable style="width: 120px"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="dataForm.BrandId" placeholder="品牌ID" size="mini" clearable style="width: 120px"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-input v-model="dataForm.Order" placeholder="排序" size="mini" clearable style="width: 120px"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button icon="el-icon-search" @click="getDataList()" size="mini">查询</el-button>
+          <el-button icon="el-icon-search" @click="pageIndex = 1; getDataList()" size="mini">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -81,11 +83,15 @@ export default {
       pageIndex: 1,
       pageSize: 10,
       IsPaging: true,
+
+      OrderArr: [
+        {text: '库存从大-->小', val: 'Quantity'},
+        {text: '暂用量或可使用量排序', val: 'OccupyQuantityUsableQuantity'}
+      ], // 先请求供应商数组
       dataForm: {
         RedLine: '',
-        CategoryId: '', // 商品种类
         BrandId: '', // 品牌ID
-        Order: '' // 按照分别按照Quantity,OccupyQuantityUsableQuantity排序
+        Order: '' // 按照分别按照Quantity, OccupyQuantityUsableQuantity排序
       },
       dataList: [],
       totalPage: 1,
@@ -118,7 +124,7 @@ export default {
 
         // SupplierId: this.dataForm.SupplierId, // 供应商
         RedLine: this.dataForm.RedLine,
-        CategoryId: this.dataForm.CategoryId,
+        CategoryId: this.fatherDataForm.CategoryId === '10' ? '' : this.fatherDataForm.CategoryId,
         BrandId: this.dataForm.BrandId,
         Order: this.dataForm.Order
       }

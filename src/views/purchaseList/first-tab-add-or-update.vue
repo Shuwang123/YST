@@ -62,13 +62,21 @@
             </el-table-column>
             <el-table-column v-else :key="Math.random()" prop="Quantity" header-align="center" align="center" label="采购数量"></el-table-column>
 
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="采购价格" width="110">
+            <el-table-column prop="CostPrice" header-align="center" align="center" label="上次采购价格"></el-table-column>
+
+            <el-table-column v-if="editType === 'A'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="此次采购价格" width="110">
               <template slot-scope="scope">
                 <el-input-number v-model="scope.row.CostPrice" :precision="2" :step="0.01" :min="0.01" :max="1000" size="mini" controls-position="right" style="width: 100px"></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column v-else prop="CostPrice" header-align="center" align="center" label="采购价格"></el-table-column>
+            <el-table-column v-else prop="CostPrice" header-align="center" align="center" label="此次采购价格"></el-table-column>
 
+            <el-table-column v-if="editType === 'A'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="售价填写" width="110">
+              <template slot-scope="scope">
+                <el-input-number v-model="scope.row.SalePrice" :precision="2" :step="0.01" :min="0.01" :max="1000" size="mini" controls-position="right" style="width: 100px"></el-input-number>
+              </template>
+            </el-table-column>
+            <el-table-column v-if="dataList.Status === 4" prop="SalePrice" header-align="center" align="center" label="售价"></el-table-column>
             <!--<el-table-column prop="Amount" header-align="center" align="center" label="总价"></el-table-column>-->
             <el-table-column v-if="editType === 'B'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="批号填写" width="150">
               <template slot-scope="scope">

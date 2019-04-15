@@ -23,6 +23,22 @@
             <el-input v-model="dataForm.code" placeholder="采购单批次" size="mini" clearable></el-input>
           </el-form-item>
           <el-form-item>
+            <!--<el-date-picker-->
+              <!--:default-time="['12:00:00']"-->
+              <!--value-format="yyyy-MM-dd HH:mm">-->
+            <!--</el-date-picker>-->
+            <el-date-picker
+              size="mini"
+              v-model="value6"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd"
+              style="width: 260px">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item>
             <el-button icon="el-icon-search" @click="getChildDataList" size="mini">查询</el-button>
           </el-form-item>
         </el-form>
@@ -80,7 +96,8 @@ export default {
         {child: false},
         {child: false}
       ],
-      num: 0
+      num: 0,
+      value6: []
     }
   },
   components: {
@@ -92,6 +109,20 @@ export default {
   },
   mounted () {
     this.$refs.firstTab.getDataList(0)
+  },
+  watch: {
+    'value6': function () {
+      console.log(this.value6)
+      if (this.value6 !== [] && this.value6 !== null) {
+        this.dataForm.StartDate = this.value6[0]
+        this.dataForm.EndDate = this.value6[1]
+        // console.log(this.dataForm.StartDate)
+        // console.log(this.dataForm.EndDate)
+      } else {
+        this.dataForm.StartDate = ''
+        this.dataForm.EndDate = ''
+      }
+    }
   },
   methods: {
     getChildDataList () {

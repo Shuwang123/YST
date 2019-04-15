@@ -49,6 +49,7 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
+import md5 from 'js-md5'
 import {Currency, Phone} from '../../utils/validate'
 import ComStore from '../common/com-store'
 
@@ -167,7 +168,8 @@ export default {
         if (valid) {
           var obj = {
             UserName: this.dataForm.UserName,
-            Password: this.dataForm.Password,
+            // Password: this.dataForm.Password,
+            Password: md5(this.dataForm.Password),
             NickName: this.dataForm.NickName,
             RoleId: this.dataForm.RoleId,
             StoreId: this.dataForm.StoreId,

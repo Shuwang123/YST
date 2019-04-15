@@ -11,7 +11,7 @@
                  style="border-radius: 100%;background-color: rgba(84,92,100,.85);vertical-align: bottom">
           </div>
         </div>
-        <p>善郎中</p>
+        <p>一善堂&nbsp;</p>
       </div>
     </div>
     <div class="site-sidebar__inner">

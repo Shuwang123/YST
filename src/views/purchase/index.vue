@@ -48,11 +48,13 @@
       <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="100" label="商品编码"></el-table-column>
       <el-table-column prop="ShowName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
       <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="进价" min-width="110">
-        <template slot-scope="scope">
-          <el-input-number v-model="scope.row.SalePrice" :precision="2" :step="0.1" :min="0.1" :max="100" size="mini" controls-position="right"></el-input-number>
-        </template>
-      </el-table-column>
+      <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="进价" min-width="110">-->
+        <!--<template slot-scope="scope">-->
+          <!--<el-input-number v-model="scope.row.SalePrice" :precision="2" :step="0.1" :min="0.1" :max="100" size="mini" controls-position="right"></el-input-number>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
+      <el-table-column prop="CostPrice" header-align="center" :align="$store.state.common.align" label="库存上次的成本价" :show-overflow-tooltip="true"></el-table-column>
+
       <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="数量" min-width="110">
         <template slot-scope="scope">
           <el-input-number v-model="scope.row.Quantity" :precision="2" :step="1" :min="1" :max="10000" size="mini"></el-input-number>
@@ -372,7 +374,8 @@ export default {
             return {
               ProductId: item.Id,
               SapProductCode: item.Code,
-              CostPrice: item.SalePrice,
+              // CostPrice: item.SalePrice,
+              CostPrice: item.CostPrice,
               Quantity: item.Quantity,
               SupplierId: this.dataForm.supplierId,
               SupplierCode: this.dataForm.supplierCode

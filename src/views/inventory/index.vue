@@ -12,14 +12,20 @@
             'multiple_5': false
           }" ref="comStoreOne" @eventStore="changeStoreData"
           ></com-store>
-          <el-form-item>
-            <el-input v-model="dataForm.ProductName" placeholder="商品名称" size="mini" clearable style="width: 120px"></el-input>
+          <el-form-item label="" prop="CategoryText">
+            <el-radio-group v-model="dataForm.CategoryText" size="mini" @change="categoryTextHandle">
+              <el-radio-button v-for="item in drugsCategoryList" :key="item.id"
+                               :label="item.text"></el-radio-button>
+            </el-radio-group>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="dataForm.SpellName" placeholder="商品拼音" size="mini" clearable style="width: 120px"></el-input>
+            <el-input v-model="dataForm.ProductName" placeholder="商品名称" size="mini" clearable style="width: 100px"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="dataForm.ProductCodeOrBarCode" placeholder="商品编码" size="mini" clearable style="width: 120px"></el-input>
+            <el-input v-model="dataForm.SpellName" placeholder="商品拼音" size="mini" clearable style="width: 100px"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="dataForm.ProductCodeOrBarCode" placeholder="商品编码" size="mini" clearable style="width: 100px"></el-input>
           </el-form-item>
         </el-form>
       </div>
@@ -57,9 +63,12 @@ export default {
     return {
       activeName: 'first',
       // SupplierIdArr: [], // 先请求供应商数组
+      drugsCategoryList: [],
 
-      dataForm: { // 三个子组件共有的查询条件：门店，商品编码，商品名称
+      dataForm: { // 三个子组件共有的查询条件：门店，商品编码、商品名称、商品拼音
         StoreId: '',
+        CategoryText: '',
+        CategoryId: '',
         ProductCodeOrBarCode: '',
         ProductName: '',
         SpellName: ''
@@ -79,7 +88,8 @@ export default {
     ComStore
   },
   created () {
-    this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
+    // this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
+    this.getDrugsCategoryType()
   },
   mounted () {
     // this.$refs.firstTab.getDataList(0)
@@ -89,6 +99,27 @@ export default {
       if (isMultiple === false) {
         this.dataForm.StoreId = choseStoreId
       }
+    },
+    // 并发请求 供应商、药态(并发请求，最后单独请求第四个，根据当前登陆账号觉得是否禁用门店下拉)
+    getDrugsCategoryType () {
+      API.drugs.getDrugsCategory().then(result => {
+        if (result.code === '0000') {
+          // this.drugsCategoryList = result.data.filter((item, index) => { return index > 0 }) // 初始化药态
+          this.drugsCategoryList = result.data // 初始化药态
+          this.dataForm.CategoryText = this.drugsCategoryList[0].text
+          this.dataForm.CategoryId = this.drugsCategoryList[0].id
+        }
+      })
+    },
+    categoryTextHandle (text) {
+      this.drugsCategoryList.forEach(item => {
+        if (item.text === text) {
+          this.dataForm.CategoryId = item.id // 这个药态的id会传递给子组件，用于弹窗时正确请求对应的药材列表
+          this.oldCategoryText = item.text
+          console.log(this.dataForm.CategoryText)
+          console.log(this.dataForm.CategoryId)
+        }
+      })
     },
     pageInit () {
       // this.dataListLoading = true
