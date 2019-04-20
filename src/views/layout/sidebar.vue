@@ -58,7 +58,7 @@ export default {
         'url': '/dashboard',
         'perms': null,
         'type': 1,
-        'icon': 'icon-custom-shouye',
+        'icon': '、',
         'orderNum': 0,
         'open': null,
         'children': []
@@ -85,6 +85,14 @@ export default {
     this.menuList.unshift(this.menudash)
     this.UPDATE_MENU_NAV_LIST(this.menuList)
     this.routeHandle(this.$route)
+
+    // cx
+    document.getElementsByClassName("site-sidebar__inner")[0].style.height = `${document.documentElement['clientHeight'] - 160}px`
+    window.onresize = () => {
+      var sideBar = document.getElementsByClassName("site-sidebar__inner")[0]
+      sideBar.style.overflowY = 'scroll'
+      sideBar.style.height = `${document.documentElement['clientHeight'] - 160}px`
+    }
   },
   methods: {
     // 路由操作
@@ -190,5 +198,7 @@ export default {
     & p {color: #fff;font-size: 16px;padding-top: 10px;text-align: center}
   }
 }
-
+.site-sidebar__inner::-webkit-scrollbar {
+  width: 0;   /*cx:设置了scroll后容易冒出写滚动条，直接0*/
+}
 </style>

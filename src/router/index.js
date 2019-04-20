@@ -38,10 +38,6 @@ var router = new Router({
         {path: '/drugs/nameList', component: _import('drugs/index'), name: 'nameList', meta: {title: '药名列表', keepAlive: false}},
         /* 进销存模块End */
 
-        /* 柜台模块：挂号Begin */
-        {path: '/register/index', component: _import('register/index'), name: 'register', meta: {title: '挂号', keepAlive: false}},
-        /* 柜台模块End */
-
         /* 供应商模块：供应商Begin */
         {path: '/drugs/supplierList', component: _import('supplier/index'), name: 'supplierList', meta: {title: '供应商列表', keepAlive: false}},
         /* 供应商模块End */
@@ -49,10 +45,13 @@ var router = new Router({
         {path: '/drugs/purchase', component: _import('purchase/index'), name: 'purchaseList', meta: {title: '采购单', keepAlive: false}},
         {path: '/drugs/purchaseList', component: _import('purchaseList/index'), name: 'purchaseListAll', meta: {title: '采购单列表', keepAlive: false}},
         /* 采购单模块End */
-
         /* 库存管理模块：Begin */
         {path: '/drugs/inventoryList', component: _import('inventory/index'), name: 'inventoryList', meta: {title: '库存详情', keepAlive: false}},
         /* 库存管理模块End */
+
+        /* 柜台模块：挂号Begin */
+        {path: '/register/index', component: _import('register/index'), name: 'register', meta: {title: '挂号', keepAlive: false}}
+        /* 柜台模块End */
       ]
     },
     {path: '*', name: 'error401', component: _import('errorPage401/error401')}
