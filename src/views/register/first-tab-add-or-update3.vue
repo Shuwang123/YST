@@ -1,13 +1,14 @@
 <template>
   <div class="ownScrollbar" style="min-height: 400px;max-height: 400px;overflow-y: scroll;">
     <el-row>
-      <el-col>A B C D E ...</el-col>
+      <!--<el-col>A B C D E ...</el-col>-->
     </el-row>
     <el-row>
       <el-col :span="24"><p>患者姓名：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
       <el-col :span="24"><p>性别：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
       <el-col :span="24"><p>出生：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
       <el-col :span="24"><p>电话：<span v-if="dataList !== null">{{dataList.Buyer}}</span></p></el-col>
+      <el-col :span="24"><p>地址：<span v-if="dataList !== null">{{dataList.Buyer}}</span></p></el-col>
       <br>
       <br>
       <br>

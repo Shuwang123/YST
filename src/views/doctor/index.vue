@@ -1,38 +1,39 @@
 <template>
-    <div class="mod-storeStock">
+  <div class="mod-purchaseList">
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
       <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
-        <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-          <com-store :paramsFather="{
-            'label_0': '',
-            'size_1': '',
-            'width_2': '120px',
-            'clear_3': true,
-            'disabled_4': false,
-            'multiple_5': false
-          }" ref="comStoreOne" @eventStore="changeStoreData"
-          ></com-store>
-          <el-button  type="primary" @click="$router.push(`/doctor/treatment`)">辅助医生开方</el-button>
+        <!--<el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">-->
+        <el-form :inline="true" :model="dataForm">
+          <span>候诊人数：100人</span>
+          <el-form-item>
+            <el-button @click="getChildDataList" size="mini">直接就诊</el-button>
+          </el-form-item>
         </el-form>
       </div>
 
       <!--<el-tab-pane label="成品药品" name="second" disabled="true">-->
       <el-tab-pane label="" name="first">
-        <span slot="label"><i class="el-icon-upload"></i> 挂号</span>
+        <span slot="label"><i class="el-icon-date"></i> 待就诊患者</span>
         <transition name="chenxi">
           <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="second">
-        <span slot="label"><i class=""></i> 挂号列表</span>
+        <span slot="label"><i class=""></i> xx</span>
         <transition name="chenxi">
-          <second-tab v-if="isVisible[1].child" ref="firstTab" :fatherDataForm="dataForm"></second-tab>
+          <first-tab v-if="isVisible[1].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="third">
         <span slot="label"><i class=""></i> xx</span>
         <transition name="chenxi">
-          <third-tab v-if="isVisible[2].child" ref="firstTab" :fatherDataForm="dataForm"></third-tab>
+          <first-tab v-if="isVisible[2].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
+        </transition>
+      </el-tab-pane>
+      <el-tab-pane label="" name="four">
+        <span slot="label"><i class=""></i> xx</span>
+        <transition name="chenxi">
+          <first-tab v-if="isVisible[3].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
     </el-tabs>
@@ -41,82 +42,74 @@
 <script type="text/ecmascript-6">
 import API from '@/api'
 import FirstTab from './first-tab'
-import SecondTab from './second-tab'
-import ThirdTab from './third-tab'
 import ComStore from '../common/com-store'
 export default {
   data () {
     return {
       activeName: 'first',
-      // SupplierIdArr: [], // 先请求供应商数组
-      drugsCategoryList: [],
+      SupplierIdArr: [], // 先请求供应商数组
 
-      dataForm: { // 三个子组件共有的查询条件：门店，商品编码、商品名称、商品拼音
+      dataForm: {
+        SupplierId: '',
         StoreId: '',
-        CategoryText: '',
-        CategoryId: '',
-        ProductCodeOrBarCode: '',
-        ProductName: '',
-        SpellName: ''
+        code: '', // 采购单批号
+        StartDate: '',
+        EndDate: ''
       },
       isVisible: [
         {child: true},
         {child: false},
         {child: false},
         {child: false}
-      ]
+      ],
+      num: 0,
+      value6: []
     }
   },
   components: {
     FirstTab,
-    SecondTab,
-    ThirdTab,
     ComStore
   },
   created () {
-    // this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
-    this.getDrugsCategoryType()
+    this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
   },
   mounted () {
-    // this.$refs.firstTab.getDataList(0)
+    this.$refs.firstTab.getDataList(0)
+  },
+  watch: {
+    'value6': function () {
+      console.log(this.value6)
+      if (this.value6 !== [] && this.value6 !== null) {
+        this.dataForm.StartDate = this.value6[0]
+        this.dataForm.EndDate = this.value6[1]
+        // console.log(this.dataForm.StartDate)
+        // console.log(this.dataForm.EndDate)
+      } else {
+        this.dataForm.StartDate = ''
+        this.dataForm.EndDate = ''
+      }
+    }
   },
   methods: {
+    getChildDataList () {
+      this.$refs.firstTab.getDataList(this.num)
+    },
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
         this.dataForm.StoreId = choseStoreId
       }
     },
-    // 并发请求 供应商、药态(并发请求，最后单独请求第四个，根据当前登陆账号觉得是否禁用门店下拉)
-    getDrugsCategoryType () {
-      API.drugs.getDrugsCategory().then(result => {
-        if (result.code === '0000') {
-          // this.drugsCategoryList = result.data.filter((item, index) => { return index > 0 }) // 初始化药态
-          this.drugsCategoryList = result.data // 初始化药态
-          this.dataForm.CategoryText = this.drugsCategoryList[0].text
-          this.dataForm.CategoryId = this.drugsCategoryList[0].id
-        }
-      })
-    },
-    categoryTextHandle (text) {
-      this.drugsCategoryList.forEach(item => {
-        if (item.text === text) {
-          this.dataForm.CategoryId = item.id // 这个药态的id会传递给子组件，用于弹窗时正确请求对应的药材列表
-          this.oldCategoryText = item.text
-          console.log(this.dataForm.CategoryText)
-          console.log(this.dataForm.CategoryId)
-        }
-      })
-    },
     pageInit () {
-      // this.dataListLoading = true
-      // // API.supplier.getSupplierList({name: '', PageIndex: '1', PageSize: '1000', IsPaging: true, code: ''}).then(result => {
-      // //   if (result.code === '0000') {
-      // //     this.SupplierIdArr = result.data
-      // //   }
-      // // })
-      // this.dataListLoading = false
+      this.dataListLoading = true
+      API.supplier.getSupplierList({name: '', PageIndex: '1', PageSize: '1000', IsPaging: true, code: ''}).then(result => {
+        if (result.code === '0000') {
+          this.SupplierIdArr = result.data
+        }
+      })
+      this.dataListLoading = false
     },
     handleClick (tab, event) {
+      // console.log(tab, event)
       switch (tab.name) {
         case 'first':
           this.isVisible = this.isVisible.map((item, index) => {
@@ -133,7 +126,33 @@ export default {
             return index === 2 ? {child: true} : {child: false}
           })
           break
+        case 'four':
+          this.isVisible = this.isVisible.map((item, index) => {
+            return index === 3 ? {child: true} : {child: false}
+          })
+          break
       }
+      // console.log(this.isVisible)
+      this.$nextTick(() => {
+        this.isVisible.forEach((item, index) => {
+          if (item.child === true) {
+            if (index === 0) {
+              this.num = 0
+              this.$refs.firstTab.getDataList(this.num)
+            } else if (index === 1) {
+              this.num = 1
+              this.$refs.firstTab.getDataList(this.num) // 待收货
+            } else if (index === 2) {
+              this.num = 4
+              this.$refs.firstTab.getDataList(this.num) // 已到货未入库
+            } else if (index === 3) {
+              this.num = 10
+              this.$refs.firstTab.getDataList(this.num) // 已入库（已完成）
+            }
+          }
+          return false
+        })
+      })
     }
   }
 }
@@ -158,7 +177,7 @@ opacity: 1;
 }*/
 
 .mod {
-  &-storeStock /deep/ {
+  &-purchaseList /deep/ {
     margin-left: 10px;
     /*max-height: 810px;*/
     overflow: hidden;
@@ -173,7 +192,7 @@ opacity: 1;
   }
 }
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
-.mod-storeStock{
+.mod-purchaseList {
   & /deep/ .el-form-item {
     margin-bottom: 14px;
   }
@@ -186,7 +205,7 @@ opacity: 1;
     padding: 0 !important;
   }
   /*& /deep/ .el-tabs__content {background-color: #F0F0F0}*/
-  & /deep/ .storeStockListRow {
+  & /deep/ .purchaseListRow {
     color: #606266;
     & td {padding: 0;}
     & td .cell{

@@ -50,7 +50,12 @@ var router = new Router({
         /* 库存管理模块End */
 
         /* 柜台模块：挂号Begin */
-        {path: '/register/index', component: _import('register/index'), name: 'register', meta: {title: '挂号', keepAlive: false}}
+        {path: '/register/index', component: _import('register/index'), name: 'register', meta: {title: '挂号', keepAlive: false}},
+        /* 柜台模块End */
+
+        /* 医生模块：待就诊Begin treatment、recipel */
+        {path: '/doctor/treatment', component: _import('doctor/index'), name: 'treatment', meta: {title: '待就诊', keepAlive: false}}
+        // {path: '/doctor/recipel', component: _import('doctor/recipel'), name: 'recipel', meta: {title: '开方', keepAlive: false}}
         /* 柜台模块End */
       ]
     },
