@@ -40,6 +40,7 @@ import {mapMutations} from 'vuex'
 import isEmpty from 'lodash/isEmpty'
 import {getStore, treeDataTranslate} from '@/utils'
 import API from '@/api'
+import '../common/icon/iconfont.css'
 export default {
   components: {
     SubMenuNav

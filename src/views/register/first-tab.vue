@@ -23,10 +23,10 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
-      <el-table-column prop="ProductCode" header-align="center" align="center" label="医生" width=""></el-table-column>
-      <el-table-column prop="ProductName" header-align="center" align="center" label="可挂号人数" width=""></el-table-column>
-      <el-table-column prop="StoreName" header-align="left" align="left" label="已就挂号人数" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="StoreName" header-align="left" align="left" label="时间（全天）" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="NickName" header-align="center" align="center" label="门店医生" width=""></el-table-column>
+      <el-table-column prop="Phone" header-align="center" align="center" label="可挂号人数" width=""></el-table-column>
+      <el-table-column prop="Phone" header-align="left" align="left" label="已就挂号人数" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Phone" header-align="left" align="left" label="时间（全天）" width="" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain
@@ -67,22 +67,18 @@ export default {
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
 
+      dataListSelections: [],
       pageIndex: 1,
       pageSize: 10,
+      totalPage: 1,
       IsPaging: true,
 
-      OrderArr: [
-        {text: '库存从大-->小', val: 'Quantity'},
-        {text: '暂用量或可使用量排序', val: 'OccupyQuantityUsableQuantity'}
-      ], // 先请求供应商数组
       dataForm: {
         RedLine: '',
         BrandId: '', // 品牌ID
         Order: '' // 按照分别按照Quantity, OccupyQuantityUsableQuantity排序
       },
-      dataList: [],
-      totalPage: 1,
-      dataListSelections: []
+      dataList: []
     }
   },
   components: { FirstTabAddOrUpdate },
@@ -104,18 +100,14 @@ export default {
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: this.IsPaging,
-        StoreId: this.fatherDataForm.StoreId, // 门店ID
-        ProductCodeOrBarCode: this.fatherDataForm.ProductCodeOrBarCode, // 产品编码
-        ProductName: this.fatherDataForm.ProductName, // 产品名称
-        SpellName: this.fatherDataForm.SpellName,
+        storeId: '3', // 门店ID
 
-        // SupplierId: this.dataForm.SupplierId, // 供应商
-        RedLine: this.dataForm.RedLine,
-        CategoryId: this.fatherDataForm.CategoryId === '10' ? '' : this.fatherDataForm.CategoryId,
-        BrandId: this.dataForm.BrandId,
-        Order: this.dataForm.Order
+        id: '',
+        userName: '',
+        nickName: '',
+        roleId: ''
       }
-      API.storeStock.getStoreStock(params).then(result => {
+      API.register.getDoctorList(params).then(result => {
         if (result.code === '0000') {
           this.dataList = result.data
           this.totalPage = result.total

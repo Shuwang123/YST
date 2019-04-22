@@ -15,6 +15,15 @@ comObj.tableHeaderStyle40px = function () {
     'line-height': '40px'
   }
 }
+comObj.tableHeaderStyle30px = function () {
+  return {
+    'fontWeight': 600,
+    'color': '#909399',
+    'height': '30px',
+    'line-height': '30px'
+  }
+}
+
 comObj.tableRowClassName = function ({row, rowIndex}) {
   // 这是通用的35px行高表体
   if (rowIndex >= 0) {

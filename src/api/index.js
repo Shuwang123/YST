@@ -15,6 +15,8 @@ import * as purchase from './modules/drugs/purchase' // 采购单创建以及状
 import * as storeStock from './modules/drugs/storeStock' // 门店库存管理（cx）[药材, ...]
 import * as inventory from './modules/drugs/inventory' // 门店库存(cx) 库存查询
 
+import * as register from './modules/counter/register' // 柜台(cx) 挂号
+
 export default {
   // 手机盘点及相关接口
   common,
@@ -28,5 +30,7 @@ export default {
   supplier,
   purchase,
   storeStock,
-  inventory
+  inventory,
+
+  register
 }

@@ -1,18 +1,24 @@
 <template>
     <div class="mod-storeStock">
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
-      <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
+      <div style="background-color: #F5F7FA;margin-bottom: 0;border-radius: 0 0 0 0;padding: 1px 3px">
         <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-          <com-store :paramsFather="{
-            'label_0': '',
-            'size_1': '',
-            'width_2': '120px',
-            'clear_3': true,
-            'disabled_4': false,
-            'multiple_5': false
-          }" ref="comStoreOne" @eventStore="changeStoreData"
-          ></com-store>
-          <el-button  type="primary" @click="$router.push(`/doctor/treatment`)">辅助医生开方</el-button>
+          <el-row style="height: 35px;line-height: 35px">
+            <el-col :span="12">
+              对应门店：yst
+              <!--<com-store style="vertical-align: middle" :paramsFather="{-->
+                <!--'label_0': '',-->
+                <!--'size_1': 'small',-->
+                <!--'width_2': '120px',-->
+                <!--'clear_3': true,-->
+                <!--'disabled_4': false,-->
+                <!--'multiple_5': false-->
+              <!--}" ref="comStoreOne" @eventStore="changeStoreData"></com-store>-->
+            </el-col>
+            <el-col :span="12" style="text-align: right;padding-right: 10px">
+              <el-button  type="primary" @click="$router.push(`/doctor/treatment`)" size="mini">辅助医生开方</el-button>
+            </el-col>
+          </el-row>
         </el-form>
       </div>
 
