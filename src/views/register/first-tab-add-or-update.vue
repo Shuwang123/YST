@@ -1,74 +1,151 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'挂号信息填写、所有历史患者列表、新建患者'" :width="'50%'"
+    :title="'挂号信息填写、所有历史患者列表、新建患者'" :width="'678px'"
     :close-on-click-modal="false"
-    :visible.sync="visible" @close="handleClose">
+    :visible.sync="visible" @close="handleClose" class="registerIndex">
     <div v-if="show">
-      <div class="ownScrollbar" style="min-height: 400px;max-height: 400px;overflow-y: scroll;">
-        <el-row>
-          <el-col><div style="padding-top: 5px;font-weight: 900;color: #1CA579">患者信息：<b v-text="categoryName"></b></div></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><p>病历号：<span v-if="dataList !== null">{{dataList.CreatedByName}}</span></p></el-col>
-          <el-col :span="8"><p>会员卡号：<span v-if="dataList !== null">{{dataList.CreatedByName}}</span></p></el-col>
-          <br>
-          <el-col :span="8">
-            <p>患者姓名：
-              <span>
-                <el-button  type="danger" @click="show = !show; addOrUpdateHandle1()" size="mini">导入患者</el-button>
-              </span>
-            </p>
-          </el-col>
-          <el-col :span="8"><p>性别：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
-          <el-col :span="8"><p>年龄：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><p>电话：<span v-if="dataList !== null">{{dataList.Buyer}}</span></p></el-col>
-          <el-col :span="8"><p>地址：<span v-if="dataList !== null">{{dataList.Phone}}</span></p></el-col>
-          <el-col :span="8"><p>xxx：<span v-if="dataList !== null">{{dataList.Address}}</span></p></el-col>
-        </el-row>
+      <div class="ownScrollbar" style="min-height: 400px;overflow-y: scroll;">
+        <el-form :inline="true" :model="dataForm" label-width="70px" size="mini">
+          <el-row>
+            <el-col><div style="padding-top: 5px; font-size: 16px; font-weight: 900;color: #1CA579">患者信息：</div></el-col>
+          </el-row>
+          <div style="padding-left: 32px">
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="姓名">
+                  <el-input v-model="dataForm.SpellName" placeholder="选择患者" style="width: 80px" disabled></el-input>
+                  <span class="iconfont icon-renwu-zengjia" style="display: inline-block;width: 40px;height: 30px;
+                              font-size: 26px;font-weight: 900;color: #1EA57B; margin-left: 5px; vertical-align: top"
+                        @click="show = !show; openPatientList()" ></span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="性别">
+                  <el-input v-model="dataForm.SpellName" placeholder="只读" style="width: 80px" disabled></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="年龄">
+                  <el-input v-model="dataForm.SpellName" placeholder="只读" style="width: 80px" disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="电话">
+                  <el-input v-model="dataForm.SpellName" placeholder="只读" style="width: 140px" disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12"><p>病历编号：<span v-text="'1904240001'"></span></p></el-col>
+              <el-col :span="12"><p>会员卡号：<span v-text="'15023104895'"></span></p></el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="填写地址">
+                  <el-input v-model="dataForm.SpellName" placeholder="请输入地址详情" style="width: 465px" clearable></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+          <!--分割线-->
+          <el-row>
+            <el-col><div style="padding-top: 5px; font-size: 16px; font-weight: 900;color: #1CA579">医生信息：</div></el-col>
+          </el-row>
+          <div style="padding-left: 48px"><p>姓名：<span v-text="doctorName"></span></p></div>
 
-        <el-row>
-          <el-col><div style="padding-top: 5px;font-weight: 900;color: #1CA579">医生信息：xx医生<b v-text="categoryName"></b></div></el-col>
-        </el-row>
-        <el-row>
-          <el-col><div style="padding-top: 5px;font-weight: 900;color: #1CA579">其他信息：<b v-text="categoryName"></b></div></el-col>
-        </el-row>
-        <hr>
-        <el-row>
-          <el-col :span="24"><p>挂号单号：201904190001<span v-if="dataList !== null">{{dataList.Buyer}}</span></p></el-col>
-          <el-col :span="24"><p>操作时间：2019-04-19 12:00:00<span v-if="dataList !== null">{{dataList.Buyer}}</span></p></el-col>
-          <el-col :span="24"><p>挂号类型：初诊、复诊<span v-if="dataList !== null">{{dataList.Buyer}}</span></p></el-col>
-          <el-col :span="24"><p>挂号费填写：30￥<span v-if="dataList !== null">{{dataList.Phone}}</span></p></el-col>
-          <el-col :span="24"><p>诊疗费填写：10￥<span v-if="dataList !== null">{{dataList.Address}}</span></p></el-col>
-          <el-col :span="24"><p>收费类型：只挂号、只诊疗、挂号+诊疗<span v-if="dataList !== null">{{dataList.Address}}</span></p></el-col>
-          <el-col :span="24"><p>支付方式：<span v-if="dataList !== null">{{dataList.Address}}</span></p></el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8"><p>合计：40￥<span v-if="dataList !== null">{{dataList.Buyer}}</span></p></el-col>
-          <el-col :span="8"><p>实收：50￥<span v-if="dataList !== null">{{dataList.Phone}}</span></p></el-col>
-          <el-col :span="8"><p>找零：10￥<span v-if="dataList !== null">{{dataList.Address}}</span></p></el-col>
-        </el-row>
+          <el-row>
+            <el-col><div style="padding-top: 5px;font-size: 16px;font-weight: 900;color: #1CA579">收费信息：<b v-text="categoryName"></b></div></el-col>
+          </el-row>
+          <div style="padding-left: 32px">
+            <el-row>
+              <el-col :span="12"><p>挂号单号：<span v-text="'201904190001'"></span></p></el-col>
+              <el-col :span="12"><p>操作时间：<span v-text="'2019-04-19 12:00:00'"></span></p></el-col>
+            </el-row>
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="类型">
+                  <el-radio-group v-model="dataForm.type">
+                    <el-radio-button label="初诊"></el-radio-button>
+                    <el-radio-button label="复诊"></el-radio-button>
+                  </el-radio-group>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="收费类型">
+                  <el-select v-model="dataForm.ageUnit" style="width: 100px" placeholder="收费类型" clearable>
+                    <el-option :label="'0元号'" :value="'0元号'"></el-option>
+                    <el-option :label="'只挂号'" :value="'只挂号'"></el-option>
+                    <el-option :label="'挂号+诊疗'" :value="'挂号+诊疗'"></el-option>
+                    <el-option :label="'只诊疗'" :value="'只诊疗'"></el-option>
+                    <el-option :label="'疗程'" :value="'疗程'"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="挂号费">
+                  <el-input v-model="dataForm.SpellName" placeholder="挂号费(小数点没处理)" style="width: 85px" clearable></el-input> ￥
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="12">
+                <el-form-item label="支付方式">
+                  <el-select v-model="dataForm.ageUnit" style="width: 100px" placeholder="支付方式" clearable>
+                    <el-option :label="'现金'" :value="'现金'"></el-option>
+                    <el-option :label="'银行卡'" :value="'银行卡'"></el-option>
+                    <el-option :label="'支付宝'" :value="'支付宝'"></el-option>
+                    <el-option :label="'微信'" :value="'微信'"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="诊疗费">
+                  <el-input v-model="dataForm.SpellName" placeholder="诊疗费" style="width: 85px" clearable></el-input> ￥
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row style="margin-top: 10px;font-weight: 500; font-size: 16px">
+              <el-col :span="8">
+                <el-form-item label="总共金额">
+                  <el-input v-model="dataForm.SpellName" placeholder="总金额" style="width: 100px" disabled size="small"></el-input> ￥
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="实收">
+                  <el-input v-model="dataForm.SpellName" style="width: 90px" clearable="" size="small"></el-input> ￥
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="找零">
+                  <el-input v-model="dataForm.SpellName" style="width: 90px" clearable size="small"></el-input> ￥
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+        </el-form>
       </div>
-      <span slot="footer" class="dialog-footer">
+      <div style="text-align: right; margin-top: 30px">
+        <span slot="footer" class="dialog-footer">
         <el-button  type="primary" @click="dataFormSubmitA()">挂号并打印</el-button>
-        <el-button  type="primary" @click="dataFormAdd()">只挂号不打印</el-button>
+        <el-button  type="primary" @click="dataFormAdd()">挂号不打印</el-button>
         <el-button @click="visible = false">取消</el-button>
       </span>
+      </div>
     </div>
     <div v-if="!show">
-      <first-tab-add-or-update1 v-if="addOrUpdateVisible" ref="addOrUpdate" @childEven="father001"></first-tab-add-or-update1>
+      <first-patient-list v-if="addOrUpdateVisible" ref="patientList" @childEven="father001"></first-patient-list>
     </div>
   </el-dialog>
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
 import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
+import '../common/icon/iconfont.css'
 // import {treeDataTranslate} from '@/utils'
-import FirstTabAddOrUpdate1 from './first-tab-add-or-update1'
+import FirstPatientList from './first-patient-list'
 export default {
-  components: { FirstTabAddOrUpdate1 },
+  components: { FirstPatientList },
   data () {
     return {
       show: true,
@@ -77,15 +154,11 @@ export default {
       dataListLoading: false, // 加载
       Id: '',
       dataForm: {
+        type: '初诊',
         SpellName: ''
       },
+      doctorName: '',
       dataList: null,
-      editType: '', // 这个状态A表示待收货的编辑、B表示未入库的编辑、其他的表示查看
-      categoryName: '',
-      categoryId: '',
-
-      isAddActive: false,
-      dataListAdd: [],
       addOrUpdateVisible: false
     }
   },
@@ -94,133 +167,14 @@ export default {
     father001 () {
       this.show = !this.show
     },
-    comFunction () {
-      // 这儿请求起点药材的接口要改成，请求对应门店库存的接口 后来 又改回老接口了
-      API.drugs.getDrugsList({
-        Name: '',
-        PageIndex: 1,
-        PageSize: 10000,
-        IsPaging: 'false',
-        SpellName: this.dataForm.SpellName,
-        CategoryId: this.categoryId,
-        StoreId: this.dataList.StoreId,
-        CodeOrBarCode: ''
-      }).then(result => {
-        if (result.code === '0000') {
-          this.dataListAdd = result.data
-          this.dataList.Items.forEach(item0 => {
-            this.dataListAdd = this.dataListAdd.filter(item => {
-              return item0.ProductCode !== item.Code
-            })
-          })
-        } else {
-          this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
-        }
-      })
-    },
-    // 先初始化 右边 待添加的药材列表
-    dataFormAdd () {
-      this.isAddActive = !this.isAddActive // 点击'[添加药材]'按钮
-      if (this.isAddActive === false) {
-        return false
-      }
-      this.comFunction()
-    },
-    leftRemove (ProductId) {
-      this.dataList.Items = this.dataList.Items.filter(item => {
-        return item.ProductId !== ProductId
-      })
-      if (this.isAddActive === true) {
-        this.comFunction()
-      }
-    },
-    rightAdd (row) {
-      // 这为什么要发个请求呢，看起来没必要，但其实左右el-table的详情展示不同（来源的接口也不同），右边无法直接传递自己的值给左边
-      API.drugs.getDrugsList({name: '', PageIndex: 1, PageSize: 10000, IsPaging: 'false', SpellName: this.dataForm.SpellName, CategoryId: this.categoryId}).then(result => {
-        if (result.code === '0000') {
-          result.data.forEach(item => {
-            if (item.Code === row.Code) {
-              // this.dataList.Items.push(item) // 左边右边的table中row的详情不一样，脑壳大……
-              this.dataList.Items.push({
-                Id: '', // 这个明细id啥时候才起作用 CategoryName
-                ProductId: item.Id, // need 这儿为什么需要商品id而不需要明细id
-                SapProductCode: item.Code, // need
-                ProductCode: item.Code, // need
-                ProductName: item.ShowName, // need
-                Specification: null,
-                Unit: 'g',
-                CostPrice: item.SalePrice, // need
-                SalePrice: 0,
-                Preferential: 0,
-                CategoryId: '',
-                CategoryName: item.CategoryName, // need
-                Quantity: item.Quantity, // need
-                Amount: 0.33,
-                ActualShipAmount: 0,
-                ActualAmount: 0,
-                ActualShipQuantity: 0,
-                ActualQuantity: 0,
-                BgColor: 'bg-danger',
-                SupplierId: 0, // ???取不到哦
-                SupplierCode: null, // ???取不到哦
-                SupplierName: null,
-                InventoryQuantity: 0,
-                BatchNo: 0,
-                ProductBatchNo: null,
-                CargoFee: 0,
-                Pictures: [
-                  '/Content/AdminLTE/img/default-50x50.gif',
-                  '/Content/AdminLTE/img/default-50x50.gif',
-                  '/Content/AdminLTE/img/default-50x50.gif'
-                ],
-                StoreId: '', // ???取不到哦,这个貌似确定取不到
-                SapStoreCode: null,
-                ShippedQuantityByInventory: 0,
-                ShippedQuantityByFactory: 0,
-                ActualOrderQuantity: 0
-              })
-              console.log(this.dataList.Items)
-              return false
-            }
-          })
-          this.$nextTick(() => {
-            console.log('这儿没执行？')
-            if (this.isAddActive === true) {
-              this.comFunction()
-            }
-          })
-        }
-      })
-    },
     // 获取某个采购单详情info
-    init (id, type) {
+    init (row) {
       this.visible = true
       this.dataListLoading = true
-      this.editType = type !== undefined ? type : '' // A B 不同编辑类型页面会展示不同的input和‘按钮’
-      if (id !== undefined) {
-        API.purchase.getPurchaseInfo({id: id}).then(result => {
-          if (result.code === '0000') {
-            this.dataList = result.data
-            this.categoryId = this.dataList.Items[0].CategoryId
-            this.categoryName = this.dataList.Items[0].CategoryName // 返回的采购单详情里每个药材对象中都包含药态，所以这儿取下巧
-            switch (result.data.Status) {
-              case -1:
-                this.stepActive = -1
-                break
-              case 1:
-                this.stepActive = 0
-                break
-              case 4:
-                this.stepActive = 1
-                break
-              case 10:
-                this.stepActive = 2
-                break
-            }
-            this.dataListLoading = false
-          }
-        })
+      if (row !== undefined) {
+        this.doctorName = row.NickName
       }
+      this.dataListLoading = false
     },
     handleClose () {
       this.editType = ''
@@ -269,55 +223,25 @@ export default {
         }
       })
     },
-    dataFormSubmitB () { // 入库的提交 批次号
-      if (this.dataList.Items.some(item => item.ProductBatchNo === 0 || item.ProductBatchNo === '' || item.ProductBatchNo === null)) {
-        this.$alert('请把批次号填完!', '提示', {
-          confirmButtonText: '确定'
-        })
-        return false
-      }
-      var params = {
-        Code: this.dataList.Code,
-        Id: this.dataList.Id,
-        Remark: this.dataList.Remark,
-        Items: JSON.stringify(this.dataList.Items.map(item => {
-          return {
-            Id: item.Id, // 这是详情id，上面那个A的是药材ID
-            ActualQuantity: item.Quantity,
-            productBatchNo: item.ProductBatchNo
-          }
-          // "[{\"Id\":96,\"ActualQuantity\":1,\"productBatchNo\":123123}, ]       }))
-        }))
-      }
-      console.log(params)
-      API.purchase.editBatchNo(params).then(result => {
-        if (result.code === '0000') {
-          this.$message({
-            type: 'success',
-            message: `编辑${result.message}`,
-            duration: 1000
-          })
-          this.$emit('refreshDataList')
-          this.visible = false
-        } else {
-          this.$message({
-            type: 'error',
-            message: `${result.message}`,
-            duration: 1000
-          })
-        }
-      })
-    },
-    addOrUpdateHandle1 (id, type) {
+    openPatientList (id, type) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id, type)
+        this.$refs.patientList.init(id, type)
       })
     }
   }
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
+.registerIndex /deep/ .el-form-item {
+  margin-bottom: 0px;
+}
+/*出诊复诊样式覆盖*/
+.registerIndex /deep/ {
+  .el-radio-button--mini .el-radio-button__inner {
+    padding: 7px 9px;
+  }
+}
 .ownScrollbar::-webkit-scrollbar,
 .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar {
   width: 7px;

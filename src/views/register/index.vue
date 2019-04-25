@@ -1,6 +1,7 @@
 <template>
     <div class="mod-storeStock">
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
+
       <div style="background-color: #F5F7FA;margin-bottom: 0;border-radius: 0 0 0 0;padding: 1px 3px">
         <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
           <el-row style="height: 35px;line-height: 35px">
@@ -68,7 +69,6 @@ export default {
       isVisible: [
         {child: true},
         {child: false},
-        {child: false},
         {child: false}
       ]
     }
@@ -114,13 +114,6 @@ export default {
       })
     },
     pageInit () {
-      // this.dataListLoading = true
-      // // API.supplier.getSupplierList({name: '', PageIndex: '1', PageSize: '1000', IsPaging: true, code: ''}).then(result => {
-      // //   if (result.code === '0000') {
-      // //     this.SupplierIdArr = result.data
-      // //   }
-      // // })
-      // this.dataListLoading = false
     },
     handleClick (tab, event) {
       switch (tab.name) {

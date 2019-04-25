@@ -96,5 +96,7 @@ export default {
 </script>
 
 <style scoped>
-
+.mod-drugs[data-v-1e1a4cc4] .el-form-item {
+  margin-bottom: 0;
+}
 </style>

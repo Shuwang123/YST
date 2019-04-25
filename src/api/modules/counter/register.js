@@ -3,7 +3,7 @@ import requestUrl from '../../requestUrl'
 import requestParam from '../../requestParam'
 
 // 获取医生列表
-export function getDoctorList () {
+export function getDoctors (parmas) {
   return request({
     url: requestUrl('/YstApiAccount/LoadData'),
     method: 'get',

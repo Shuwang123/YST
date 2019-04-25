@@ -1,47 +1,40 @@
 <template>
   <div v-if="show3" class="ownScrollbar" style="min-height: 400px;max-height: 400px;overflow-y: scroll;">
-    <el-row>
-      <el-col>A B C D E ...</el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="5"><p>患者姓名：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
-      <el-col :span="5"><p>性别：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
-      <el-col :span="5"><p>出生：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
-      <el-col :span="5"><p>电话：<span v-if="dataList !== null">{{dataList.Buyer}}</span></p></el-col>
-      <el-col :span="4">
-        <p>操作：
-          <span>
-            <el-button  type="danger" @click="child" size="mini">载入</el-button>
-          </span>
-        </p>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="5"><p>患者姓名：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
-      <el-col :span="5"><p>性别：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
-      <el-col :span="5"><p>出生：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
-      <el-col :span="5"><p>电话：<span v-if="dataList !== null">{{dataList.Buyer}}</span></p></el-col>
-      <el-col :span="4">
-        <p>操作：
-          <span>
-            <el-button  type="danger" @click="child" size="mini">载入</el-button>
-          </span>
-        </p>
-      </el-col>
-    </el-row>
-    <el-row>
-      <el-col :span="5"><p>患者姓名：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
-      <el-col :span="5"><p>性别：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
-      <el-col :span="5"><p>出生：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
-      <el-col :span="5"><p>电话：<span v-if="dataList !== null">{{dataList.Buyer}}</span></p></el-col>
-      <el-col :span="4">
-        <p>操作：
-          <span>
-            <el-button  type="danger" @click="child" size="mini">载入</el-button>
-          </span>
-        </p>
-      </el-col>
-    </el-row>
+    <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+      <el-form-item label="">
+        <el-input v-model="dataForm.code" placeholder="姓名" size="mini" clearable></el-input>
+      </el-form-item>
+      <el-form-item label="">
+        <el-input v-model="dataForm.code" placeholder="患者电话" size="mini" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button icon="el-icon-search" @click="getDataList()" size="mini">查询</el-button>
+        <el-button type="danger" @click="show3 = !show3; addOrUpdateHandle3()" size="mini">新建患者</el-button>
+      </el-form-item>
+    </el-form>
+
+    <el-table
+      @selection-change="selectionChangeHandle"
+      :height="chenxiHeight"
+      :data="dataList"
+      border stripe
+      v-loading="dataListLoading"
+      row-class-name="storeStockListRow"
+      :header-cell-style="$cxObj.tableHeaderStyle30px"
+      style="width: 100%;">
+      <el-table-column type="selection" align="center" width="50"></el-table-column>
+      <el-table-column prop="NickName" header-align="center" align="center" label="姓名" width=""></el-table-column>
+      <el-table-column prop="Phone" header-align="left" align="left" label="电话" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Phone" header-align="center" align="center" label="性别" width=""></el-table-column>
+      <el-table-column prop="Phone" header-align="left" align="left" label="出生" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
+        <template slot-scope="scope">
+          <el-button type="primary" size="mini" plain
+                     @click="child; addOrUpdateHandle(scope.row)">载入
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
     <br>
     <br>
     <br>
@@ -51,9 +44,6 @@
     <br>
     <br>
     <br>
-    <el-row>
-      <el-col :span="24"><el-button  type="danger" @click="show3 = !show3; addOrUpdateHandle3()" size="mini">新建患者</el-button></el-col>
-    </el-row>
   </div>
   <div v-else-if="!show3">
     <first-tab-add-or-update3 v-if="addOrUpdateVisible" ref="addOrUpdate" @childEven="father003"></first-tab-add-or-update3>
@@ -138,45 +128,6 @@ export default {
         if (result.code === '0000') {
           result.data.forEach(item => {
             if (item.Code === row.Code) {
-              // this.dataList.Items.push(item) // 左边右边的table中row的详情不一样，脑壳大……
-              this.dataList.Items.push({
-                Id: '', // 这个明细id啥时候才起作用 CategoryName
-                ProductId: item.Id, // need 这儿为什么需要商品id而不需要明细id
-                SapProductCode: item.Code, // need
-                ProductCode: item.Code, // need
-                ProductName: item.ShowName, // need
-                Specification: null,
-                Unit: 'g',
-                CostPrice: item.SalePrice, // need
-                SalePrice: 0,
-                Preferential: 0,
-                CategoryId: '',
-                CategoryName: item.CategoryName, // need
-                Quantity: item.Quantity, // need
-                Amount: 0.33,
-                ActualShipAmount: 0,
-                ActualAmount: 0,
-                ActualShipQuantity: 0,
-                ActualQuantity: 0,
-                BgColor: 'bg-danger',
-                SupplierId: 0, // ???取不到哦
-                SupplierCode: null, // ???取不到哦
-                SupplierName: null,
-                InventoryQuantity: 0,
-                BatchNo: 0,
-                ProductBatchNo: null,
-                CargoFee: 0,
-                Pictures: [
-                  '/Content/AdminLTE/img/default-50x50.gif',
-                  '/Content/AdminLTE/img/default-50x50.gif',
-                  '/Content/AdminLTE/img/default-50x50.gif'
-                ],
-                StoreId: '', // ???取不到哦,这个貌似确定取不到
-                SapStoreCode: null,
-                ShippedQuantityByInventory: 0,
-                ShippedQuantityByFactory: 0,
-                ActualOrderQuantity: 0
-              })
               console.log(this.dataList.Items)
               return false
             }
@@ -215,10 +166,10 @@ export default {
                 this.stepActive = 2
                 break
             }
-            this.dataListLoading = false
           }
         })
       }
+      this.dataListLoading = false
     },
     handleClose () {
       this.editType = ''

@@ -3,7 +3,7 @@
     <!--chenxiHeight命名法-->
     <!--<div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">-->
       <!--<el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">-->
-        <!--&lt;!&ndash;<el-form-item label="">&ndash;&gt;-->
+        <!--&lt;!&ndash;<el-form-item label="">个人想法，因为门店的医生没筛选，所以这儿可能留着做input search&ndash;&gt;-->
           <!--&lt;!&ndash;<el-select v-model="dataForm.Order" placeholder="排序" size="mini" clearable style="width: 120px">&ndash;&gt;-->
             <!--&lt;!&ndash;<el-option v-for="item in OrderArr" :key="item.text" :label="item.text" :value="item.val"></el-option>&ndash;&gt;-->
           <!--&lt;!&ndash;</el-select>&ndash;&gt;-->
@@ -14,7 +14,6 @@
       <!--</el-form>-->
     <!--</div>-->
     <el-table
-      @selection-change="selectionChangeHandle"
       :height="chenxiHeight"
       :data="dataList"
       border stripe
@@ -22,10 +21,13 @@
       row-class-name="storeStockListRow"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
-      <el-table-column type="selection" align="center" width="50"></el-table-column>
-      <el-table-column prop="NickName" header-align="center" align="center" label="门店医生" width=""></el-table-column>
-      <el-table-column prop="Phone" header-align="center" align="center" label="可挂号人数" width=""></el-table-column>
-      <el-table-column prop="Phone" header-align="left" align="left" label="已就挂号人数" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column type="index" align="center" width="50" label="序号"></el-table-column>
+      <el-table-column prop="NickName" header-align="center" align="center" label="医生姓名" width=""></el-table-column>
+      <el-table-column prop="" label="可挂号/已挂号" width="" header-align="center" align="center">
+        <template slot-scope="scope">
+          <span>{{scope.row.Id}}/{{scope.row.Id}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="Phone" header-align="left" align="left" label="时间（全天）" width="" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
@@ -45,6 +47,13 @@
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
     <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataListChild"></first-tab-add-or-update>
+
+    <input type="button" id="tts_btn" @click="doTTS()" value="播放"><div id="bdtts_div_id">
+    <audio id="tts_autio_id" autoplay="autoplay">
+      <source id="tts_source_id" src="http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=2&text=1 2 3" type="audio/mpeg">
+      <embed id="tts_embed_id" height="0" width="0" src="">
+    </audio>
+  </div>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -67,7 +76,6 @@ export default {
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
 
-      dataListSelections: [],
       pageIndex: 1,
       pageSize: 10,
       totalPage: 1,
@@ -91,8 +99,8 @@ export default {
     }
   },
   methods: {
-    selectionChangeHandle (val) {
-      this.dataListSelections = val
+    doTTS () {
+      document.getElementById('tts_autio_id').play()
     },
     getDataList () {
       this.dataListLoading = true
@@ -100,19 +108,28 @@ export default {
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: this.IsPaging,
-        storeId: '3', // 门店ID
-
         id: '',
         userName: '',
         nickName: '',
-        roleId: ''
+        roleId: '',
+        storeId: 0 // 门店ID
       }
-      API.register.getDoctorList(params).then(result => {
-        if (result.code === '0000') {
-          this.dataList = result.data
-          this.totalPage = result.total
+      // API.register.getDoctors(params).then(result => {
+      //   console.log('ajsdj')
+      //   if (result.code === '0000') {
+      //     this.dataList = result.data
+      //     this.totalPage = result.total
+      //   } else {
+      //     this.$message.error(result.message)
+      //   }
+      //   this.dataListLoading = false
+      // })
+      API.adminUser.adminUserList(params).then(response => {
+        if (response.code === '0000') {
+          if (response.data) { this.dataList = response.data }
+          this.totalPage = response.total
         } else {
-          this.$message.error(result.message)
+          this.$message.error(response.message)
         }
         this.dataListLoading = false
       })
@@ -131,10 +148,10 @@ export default {
       this.pageIndex = val
       this.getDataList()
     },
-    addOrUpdateHandle (id, type) {
+    addOrUpdateHandle (row) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id, type)
+        this.$refs.addOrUpdate.init(row)
       })
     },
     handelDelete (id) {
