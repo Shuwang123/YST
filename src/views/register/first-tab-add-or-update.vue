@@ -1,9 +1,10 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'挂号信息填写、所有历史患者列表、新建患者'" :width="'678px'"
+    :title="'挂号页填写、历史患者载入、建立新的患者'" :width="'678px'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose" class="registerIndex">
+    <!--one div-->
     <div v-if="show">
       <div class="ownScrollbar" style="min-height: 400px;overflow-y: scroll;">
         <el-form :inline="true" :model="dataForm" label-width="70px" size="mini">
@@ -14,7 +15,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="姓名">
-                  <el-input v-model="dataForm.SpellName" placeholder="选择患者" style="width: 80px" disabled></el-input>
+                  <el-input v-model="dataForm.UserName" placeholder="选择患者" style="width: 80px" disabled></el-input>
                   <span class="iconfont icon-renwu-zengjia" style="display: inline-block;width: 40px;height: 30px;
                               font-size: 26px;font-weight: 900;color: #1EA57B; margin-left: 5px; vertical-align: top"
                         @click="show = !show; openPatientList()" ></span>
@@ -22,19 +23,19 @@
               </el-col>
               <el-col :span="12">
                 <el-form-item label="性别">
-                  <el-input v-model="dataForm.SpellName" placeholder="只读" style="width: 80px" disabled></el-input>
+                  <el-input v-model="dataForm.Sex" placeholder="只读" style="width: 80px" disabled></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
             <el-row>
               <el-col :span="12">
                 <el-form-item label="年龄">
-                  <el-input v-model="dataForm.SpellName" placeholder="只读" style="width: 80px" disabled></el-input>
+                  <el-input v-model="dataForm.BirthDate" placeholder="只读" style="width: 80px" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="电话">
-                  <el-input v-model="dataForm.SpellName" placeholder="只读" style="width: 140px" disabled></el-input>
+                  <el-input v-model="dataForm.MobilePhone" placeholder="只读" style="width: 140px" disabled></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12"><p>病历编号：<span v-text="'1904240001'"></span></p></el-col>
@@ -43,7 +44,7 @@
             <el-row>
               <el-col :span="24">
                 <el-form-item label="填写地址">
-                  <el-input v-model="dataForm.SpellName" placeholder="请输入地址详情" style="width: 465px" clearable></el-input>
+                  <el-input v-model="dataForm.Address" placeholder="请输入地址详情" style="width: 465px" clearable></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -55,7 +56,7 @@
           <div style="padding-left: 48px"><p>姓名：<span v-text="doctorName"></span></p></div>
 
           <el-row>
-            <el-col><div style="padding-top: 5px;font-size: 16px;font-weight: 900;color: #1CA579">收费信息：<b v-text="categoryName"></b></div></el-col>
+            <el-col><div style="padding-top: 5px;font-size: 16px;font-weight: 900;color: #1CA579">收费信息：</div></el-col>
           </el-row>
           <div style="padding-left: 32px">
             <el-row>
@@ -133,13 +134,15 @@
       </span>
       </div>
     </div>
+    <!--two div-->
     <div v-if="!show">
-      <first-patient-list v-if="addOrUpdateVisible" ref="patientList" @childEven="father001"></first-patient-list>
+      <first-patient-list v-if="addOrUpdateVisible" ref="patientList" @childEven="patientListFun"></first-patient-list>
     </div>
   </el-dialog>
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
+import {formatDate} from '@/utils/validate'
 import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
 import '../common/icon/iconfont.css'
 // import {treeDataTranslate} from '@/utils'
@@ -154,8 +157,14 @@ export default {
       dataListLoading: false, // 加载
       Id: '',
       dataForm: {
-        type: '初诊',
-        SpellName: ''
+        SpellName: '',
+        UserName: '',
+        Sex: '',
+        BirthDate: '',
+        MobilePhone: '',
+        Address: '',
+
+        type: '初诊'
       },
       doctorName: '',
       dataList: null,
@@ -164,8 +173,20 @@ export default {
   },
 
   methods: {
-    father001 () {
+    patientListFun (row) {
       this.show = !this.show
+      function countAge (time) {
+        var age = formatDate(new Date(time.substring(6, time.length - 2) * 1), 'yyyy-MM-dd')
+        var now = formatDate(new Date(), 'yyyy-MM-dd')
+        var nowArr = now.split('-')
+        var ageArr = age.split('-')
+        return `${nowArr[0] - ageArr[0]}`
+      }
+      this.dataForm.UserName = row.UserName
+      this.dataForm.Sex = row.Sex === 1 ? '男' : '女'
+      this.dataForm.BirthDate = countAge(row.BirthDate)
+      this.dataForm.MobilePhone = row.MobilePhone
+      this.dataForm.Address = row.Address
     },
     // 获取某个采购单详情info
     init (row) {
@@ -177,8 +198,17 @@ export default {
       this.dataListLoading = false
     },
     handleClose () {
-      this.editType = ''
-      this.isAddActive = false
+      this.show = true
+      this.dataForm = {
+        SpellName: '',
+        UserName: '',
+        Sex: '',
+        BirthDate: '',
+        MobilePhone: '',
+        Address: '',
+
+        type: '初诊'
+      }
     },
     dataFormSubmitA () { // 编辑的提交 采购数量和价格
       var params = {
@@ -223,10 +253,43 @@ export default {
         }
       })
     },
-    openPatientList (id, type) {
+    // 表单提交
+    dataFormSubmit () {
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          var paramsAdd = {
+            StoreId: 0,
+            UserName: this.dataForm.UserName,
+            Sex: this.dataForm.Sex,
+            BirthDate: this.dataForm.BirthDate,
+            MobilePhone: this.dataForm.MobilePhone,
+            AllergyHistory: this.dataForm.AllergyHistory,
+            Address: this.dataForm.Address
+          }
+          console.log(paramsAdd)
+          API.member.addMemberSubmit(paramsAdd).then((data) => {
+            if (data.code === '0000') {
+              this.$message({
+                message: `${'添加患者成功'}`,
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  // this.visible = false
+                  this.$emit('childEven')
+                }
+              })
+            } else {
+              this.$message.error(data.message)
+            }
+          })
+        }
+      })
+    },
+
+    openPatientList (storeId = 0) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.patientList.init(id, type)
+        this.$refs.patientList.init(storeId)
       })
     }
   }

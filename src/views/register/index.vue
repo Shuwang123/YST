@@ -6,7 +6,7 @@
         <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
           <el-row style="height: 35px;line-height: 35px">
             <el-col :span="12">
-              对应门店：yst
+              对应门店：index页
               <!--<com-store style="vertical-align: middle" :paramsFather="{-->
                 <!--'label_0': '',-->
                 <!--'size_1': 'small',-->
