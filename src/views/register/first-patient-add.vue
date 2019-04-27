@@ -36,8 +36,8 @@
     </el-form>
 
     <div style="text-align: right; margin-top: 210px">
-      <el-button @click="$emit('childEven')">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">新增</el-button>
+      <el-button @click="$store.commit('setRegisterStep', 2); $emit('childEven')">返回</el-button>
+      <el-button type="primary" @click=" $store.commit('setRegisterStep', 2); dataFormSubmit()">新增</el-button>
     </div>
   </div>
 </template>

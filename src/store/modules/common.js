@@ -1,20 +1,20 @@
 const state = {
-  cityArea:[],
-  align:'center',
+  cityArea: [],
+  align: 'center'
 }
 const getters = {
-  align:state => state.align,
-  cityArea:state =>state.cityArea,
+  align: state => state.align,
+  cityArea: state => state.cityArea
 }
 const actions = {
-  setUpCityeArea({commit},cityArea){
-    commit('UPCITYEAREA',cityArea)
+  setUpCityeArea ({commit}, cityArea) {
+    commit('UPCITYEAREA', cityArea)
   }
 }
 const mutations = {
-  UPCITYEAREA(state, cityArea) {
+  UPCITYEAREA (state, cityArea) {
     state.cityArea = cityArea
-  },
+  }
 }
 export default {
   state,

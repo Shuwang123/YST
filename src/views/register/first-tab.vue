@@ -46,8 +46,8 @@
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
-    <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataListChild"></first-tab-add-or-update>
-
+    <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate"></first-tab-add-or-update>
+    <!--<first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataListChild"></first-tab-add-or-update>-->
     <input type="button" id="tts_btn" @click="doTTS()" value="播放"><div id="bdtts_div_id">
     <audio id="tts_autio_id" autoplay="autoplay">
       <source id="tts_source_id" src="http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=2&text=1 2 3" type="audio/mpeg">
@@ -134,9 +134,9 @@ export default {
         this.dataListLoading = false
       })
     },
-    getDataListChild () {
-      this.getDataList()
-    },
+    // getDataListChild () {
+    //   this.getDataList()
+    // },
     // 每页数
     sizeChangeHandle (val) {
       this.pageSize = val

@@ -22,7 +22,7 @@ export default {
   [types.UPDATE_CONTENT_TABS] (state, tabs) {
     state.contentTabs = tabs
   },
-  [types.UPDATE_CONTENT_TABS_ACTIVE] (state, tab){
+  [types.UPDATE_CONTENT_TABS_ACTIVE] (state, tab) {
     state.contentAcitveTab = tab
   },
 
@@ -32,5 +32,10 @@ export default {
 
   [types.UPDATE_CONTENT_TABS_ACTIVE_NAME] (state, { name }) {
     state.contentTabsActiveName = name
+  },
+
+  // cx
+  setRegisterStep (state, num) {
+    state.registerStep = num
   }
 }

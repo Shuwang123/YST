@@ -37,20 +37,20 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
-      <el-table-column prop="CreateTime" header-align="center" align="center" label="变动时间" width="140" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="ProductCode" header-align="center" align="center" label="药品编码" width="90"></el-table-column>
-      <el-table-column prop="ProductName" header-align="center" align="center" label="药名" width="80"></el-table-column>
-      <!--<el-table-column prop="CategoryName" header-align="center" align="center" label="种类" width="70" :show-overflow-tooltip="true"></el-table-column>-->
-
-      <el-table-column prop="Quantity" header-align="center" align="center" label="改变前" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="ChangeQuantity" header-align="center" align="center" label="改变" width="80"></el-table-column>
-      <el-table-column prop="CurrentQuantity" header-align="center" align="center" label="剩余" width="80" :show-overflow-tooltip="true"></el-table-column>
-
-      <el-table-column prop="BillId" header-align="center" align="center" label="账单ID" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="BillTypeName" header-align="center" align="center" label="账单类型" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="BillCode" header-align="center" align="center" label="账单编码" width="100" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="BatchNo" header-align="center" align="center" label="批次号" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Id" header-align="center" align="center" label="ID" width="60" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="UserName" header-align="left" align="left" label="用户名" width="70" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="NickName" header-align="center" align="center" label="别名" width="90"></el-table-column>
+      <el-table-column prop="RoleName" header-align="center" align="center" label="职业" width="80"></el-table-column>
+      <el-table-column prop="CreatedOn" header-align="center" align="center" label="创建时间" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="StoreName" header-align="center" align="center" label="所属门店" width=""></el-table-column>
+      <el-table-column prop="Status" header-align="center" align="center" label="状态" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Phone" header-align="center" align="center" label="电话" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="StatusName" header-align="center" align="center" label="状态名" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
+        <template slot-scope="scope">
+          <el-button type="text" size="mini" plain @click="xx(scope.row)">编辑、打印、查看等</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <el-pagination
       @size-change="sizeChangeHandle"
@@ -132,19 +132,19 @@ export default {
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: this.IsPaging,
-        StoreId: this.fatherDataForm.StoreId, // 门店ID
-        ProductCodeOrBarCode: this.fatherDataForm.ProductCodeOrBarCode, // 产品编码
-        ProductName: this.fatherDataForm.ProductName, // 产品名称
-        // SpellName: this.fatherDataForm.SpellName,
-        // SupplierId: this.dataForm.SupplierId, // 供应商
 
-        BillCode: this.dataForm.BillCode,
-        BillType: this.dataForm.BillType,
-        StartDate: this.dataForm.StartDate,
-        EndDate: this.dataForm.EndDate
+        StoreId: 0, // 门店Id（必须）
+        Code: '', // 挂号单
+        UserName: '', // 患者姓名
+        MobilePhone: '', // 患者电话
+        AccountId: '', // 账户Id
+        WrokFrom: '', // 开始时间
+        WrokTo: '' // 结束时间
       }
       console.log(this.value6)
-      API.storeStock.getStockHistory(params).then(result => {
+      console.log('jdaljdjadjlk去哦wieuROIu气我ie')
+      // 获取挂号列表
+      API.register.getRegisterList(params).then(result => {
         if (result.code === '0000') {
           this.dataList = result.data
           this.totalPage = result.total

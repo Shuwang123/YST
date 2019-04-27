@@ -8,6 +8,9 @@ import common from './modules/common'
 import getters from './getters'
 import actions from './actions'
 import mutations from './mutations'
+
+// import register from './modules/ownRegisterStatus' // 新增（cx）
+
 Vue.use(Vuex)
 const state = {
   // 侧边栏, 水平折叠收起状态
@@ -20,7 +23,10 @@ const state = {
   contentTabs: [],
   contentAcitveTab: '', // 当前活跃的Tab
   contentTabsActiveName: '',
-  documentClientIFRMAE: document.documentElement['clientHeight'] - 240
+  documentClientIFRMAE: document.documentElement['clientHeight'] - 240,
+
+  // cx(start)
+  registerStep: 1
 }
 
 const store = new Vuex.Store({
@@ -28,10 +34,11 @@ const store = new Vuex.Store({
   modules: {
     user,
     common
+    // register // 新增（cx）
   },
-  actions,
-  mutations,
   getters,
+  mutations,
+  actions,
   strict: process.env.NODE_ENV !== 'production'
 })
 export default store

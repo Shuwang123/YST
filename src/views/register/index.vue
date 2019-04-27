@@ -27,13 +27,13 @@
       <el-tab-pane label="" name="first">
         <span slot="label"><i class="el-icon-upload"></i> 挂号</span>
         <transition name="chenxi">
-          <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
+          <first-tab v-if="isVisible[0].child"  :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="second">
         <span slot="label"><i class=""></i> 挂号列表</span>
         <transition name="chenxi">
-          <second-tab v-if="isVisible[1].child" ref="firstTab" :fatherDataForm="dataForm"></second-tab>
+          <second-tab v-if="isVisible[1].child" :fatherDataForm="dataForm"></second-tab>
         </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="third">

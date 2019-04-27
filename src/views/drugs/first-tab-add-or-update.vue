@@ -4,7 +4,7 @@
     :title="!dataForm.id ? '新增药品信息' : '修改药品信息'" width="600px"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm"  label-width="80px" size="small" :inline="true">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px" size="small" :inline="true">
       <el-form-item label="药典名称" prop="Name">
         <el-input v-model="dataForm.Name" placeholder="药典规范名称"></el-input>
       </el-form-item>

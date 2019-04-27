@@ -8,9 +8,9 @@
         <el-input v-model="dataForm.MobilePhone" placeholder="患者电话" size="mini" clearable style="width: 120px"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button icon="el-icon-search" @click="getDataList()" size="mini">查询</el-button>
-        <el-button type="primary" size="mini" @click="dataForm.UserName = ''; dataForm.MobilePhone = ''">重置</el-button>
-        <el-button type="primary" @click="show3 = !show3; addOrUpdateHandle3()" size="mini">新建患者</el-button>
+        <!--<el-button icon="el-icon-search" @click="getDataList()" size="mini">查询</el-button>-->
+        <el-button type="primary" size="mini" @click="dataForm.UserName = ''; dataForm.MobilePhone = ''; getDataList()">重置</el-button>
+        <el-button type="warning" @click="show3 = !show3; addOrUpdateHandle3(); $store.commit('setRegisterStep', 3)" size="mini">新建患者</el-button>
       </el-form-item>
     </el-form>
 
@@ -39,7 +39,7 @@
       <el-table-column prop="Address" header-align="left" align="left" label="地址" width="" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="" label="操作" width="80" header-align="center" align="center">
         <template slot-scope="scope">
-          <el-button type="text" size="mini" plain @click="child(scope.row)">载入</el-button>
+          <el-button type="text" size="mini" plain @click="child(scope.row); $store.commit('setRegisterStep', 1)">载入</el-button>
         </template>
       </el-table-column>
     </el-table>
