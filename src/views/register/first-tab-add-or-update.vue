@@ -6,6 +6,7 @@
     :visible.sync="visible" @close="handleClose" class="registerIndex">
     <!--vuex 1、2、3-->
     <!--one div-->
+    <transition mode="out-in">
     <div v-if="show">
       <div class="ownScrollbar" style="min-height: 420px;overflow-y: scroll;">
         <el-form ref="dataForm" :rules="dataRule" :model="dataForm" label-width="70px" size="mini" :inline="true">
@@ -141,10 +142,14 @@
         </span>
       </div>
     </div>
-    <!--two div-->
+    </transition>
+
+    <transition mode="out-in">
+      <!--two div-->
     <div v-if="!show">
       <first-patient-list v-if="addOrUpdateVisible" ref="patientList" @childEven="patientListFun"></first-patient-list>
     </div>
+    </transition>
   </el-dialog>
 </template>
 <script type="text/ecmascript-6">
@@ -439,13 +444,18 @@ export default {
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 .registerIndex /deep/ .el-form-item {
-  margin-bottom: 0px;
+  margin-bottom: 0;
 }
-/*出诊复诊样式覆盖*/
+
+/*出诊 复诊样式覆盖*/
 .registerIndex /deep/ {
   .el-radio-button--mini .el-radio-button__inner {
     padding: 7px 9px;
   }
+  /*只要半场动画*/
+  .v-enter {opacity: 0}
+  .v-enter-active {transition: all .4s ease}
+  .v-leave-active {position:absolute}
 }
 .ownScrollbar::-webkit-scrollbar,
 .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar {

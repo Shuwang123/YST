@@ -34,33 +34,33 @@
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column type="index" label="排序" align="center" width="50"></el-table-column>
       <el-table-column prop="CategoryName" header-align="center" align="center" label="种类" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Code" header-align="center" align="center" label="编码" width="100" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Code" header-align="center" align="center" label="编码" width="90" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Id" header-align="center" align="center" label="ID" width="50"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="药典" width="100" :show-overflow-tooltip="true">
+      <el-table-column header-align="center" align="center" label="药典" width="70" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span style="text-decoration: underline">{{scope.row.Name}}</span>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" align="center" label="库存" width="100" :show-overflow-tooltip="true">
+      <el-table-column header-align="center" align="center" label="库存" width="70" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span style="text-decoration: underline">{{scope.row.ShowName}}</span>
           <!--<span v-if="scope.row.WebStatus === 2" style="color: #ccc;text-decoration: underline">{{scope.row.ShowName}}</span>color: #409EFF;-->
         </template>
       </el-table-column>
-      <el-table-column prop="SpellName" header-align="center" align="center" width="80" label="拼音"></el-table-column>
+      <el-table-column prop="SpellName" header-align="center" align="center" width="50" label="拼音"></el-table-column>
       <el-table-column prop="Keywords" header-align="center" align="center" label="别名" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Unit" header-align="center" align="center" label="单位" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Unit" header-align="center" align="center" label="单位" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Specification" header-align="center" align="center" label="规格" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="CostPrice" header-align="center" align="center" label="进货单价" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="SalePrice" header-align="center" align="center" label="零售价" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="CostPrice" header-align="center" align="center" label="进货单价" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="SalePrice" header-align="center" align="center" label="零售价" :show-overflow-tooltip="true"></el-table-column>
 
       <!--<el-table-column prop="BrandName" header-align="center" align="center" label="物品" width="80" :show-overflow-tooltip="true"></el-table-column>-->
       <!--<el-table-column prop="StoreName" header-align="center" align="center" label="仓库" width="80" :show-overflow-tooltip="true"></el-table-column>-->
       <!--<el-table-column prop="ContractPrice" header-align="center" align="center" label="合同价" width="80" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column prop="RedLine" header-align="center" align="center" label="预警量" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="WebStatus" header-align="center" align="center" label="状态" width="100" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="WebStatusName" header-align="center" align="center" label="状态" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
+      <el-table-column prop="RedLine" header-align="center" align="center" label="预警量" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="WebStatus" header-align="center" align="center" label="状态" width="50" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="WebStatusName" header-align="center" align="center" label="状态" width="70" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="" label="操作" width="119" header-align="center" align="center">
         <template slot-scope="scope">
           <span style="padding-right: 12px;border-right: 1px solid #ccc;cursor: pointer">
             <span type="text" @click="addOrUpdateHandle(scope.row.Id)">编辑</span>
