@@ -110,7 +110,7 @@ export default {
         PageSize: this.pageSize,
         IsPaging: this.isPaging,
         UserName: this.dataForm.UserName,
-        StoreId: this.StoreId,
+        StoreId: this.dataForm.StoreId,
         MobilePhone: this.dataForm.MobilePhone
       }
       API.member.getMemberList(params).then(result => {
@@ -124,9 +124,10 @@ export default {
       })
     },
     // 获取某个采购单详情info
-    init (storeId) {
+    init (StoreId) {
       this.visible = true
-      if (storeId === 0) {
+      this.dataForm.StoreId = StoreId
+      if (StoreId !== 0) {
         this.getDataList()
       }
     },
@@ -183,10 +184,10 @@ export default {
         }
       })
     },
-    addOrUpdateHandle3 (id, type) {
+    addOrUpdateHandle3 () {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id, type)
+        this.$refs.addOrUpdate.init(this.dataForm.StoreId)
       })
     }
   }

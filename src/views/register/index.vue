@@ -1,45 +1,65 @@
 <template>
-    <div class="mod-storeStock">
+    <div class="mod-storeRegister">
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
-
       <div style="background-color: #F5F7FA;margin-bottom: 0;border-radius: 0 0 0 0;padding: 1px 3px">
-        <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+        <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()" size="mini">
           <el-row style="height: 35px;line-height: 35px">
-            <el-col :span="12">
-              对应门店：index页
-              <!--<com-store style="vertical-align: middle" :paramsFather="{-->
-                <!--'label_0': '',-->
-                <!--'size_1': 'small',-->
-                <!--'width_2': '120px',-->
-                <!--'clear_3': true,-->
-                <!--'disabled_4': false,-->
-                <!--'multiple_5': false-->
-              <!--}" ref="comStoreOne" @eventStore="changeStoreData"></com-store>-->
+            <el-col :span="21">
+              <com-store :paramsFather="{
+                'label_0': '',
+                'size_1': 'mini',
+                'width_2': '120px',
+                'clear_3': false,
+                'disabled_4': !dataForm.View,
+                'multiple_5': false
+              }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
+              <el-form-item>
+                <el-input v-model="dataForm.MobilePhone" placeholder="医生" clearable style="width: 70px"></el-input>
+              </el-form-item>
+              <span>
+                <el-form-item>
+                <el-input v-model="dataForm.MobilePhone" placeholder="患者" clearable style="width: 70px"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-input v-model="dataForm.MobilePhone" placeholder="患者电话" clearable style="width: 119px"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-date-picker
+                  size="mini"
+                  v-model="value6"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
+                  style="width: 260px">
+                </el-date-picker>
+              </el-form-item>
+              </span>
+              <el-form-item>
+                <el-button
+                  @click="isVisible[0].child ===  true ? $refs.firstTab.getDataList() : $refs.secondTab.getDataList()"
+                  size="mini">查询
+                </el-button>
+              </el-form-item>
             </el-col>
-            <el-col :span="12" style="text-align: right;padding-right: 10px">
-              <el-button  type="primary" @click="$router.push(`/doctor/treatment`)" size="mini">辅助医生开方</el-button>
+            <el-col :span="3" style="text-align: right;padding-right: 10px">
+              <el-button  type="primary" @click="$router.push(`/doctor/treatment`)" size="mini">辅助开方</el-button>
             </el-col>
           </el-row>
         </el-form>
       </div>
 
-      <!--<el-tab-pane label="成品药品" name="second" disabled="true">-->
       <el-tab-pane label="" name="first">
         <span slot="label"><i class="el-icon-upload"></i> 挂号</span>
         <transition name="chenxi">
-          <first-tab v-if="isVisible[0].child"  :fatherDataForm="dataForm"></first-tab>
+          <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="second">
         <span slot="label"><i class=""></i> 挂号列表</span>
         <transition name="chenxi">
-          <second-tab v-if="isVisible[1].child" :fatherDataForm="dataForm"></second-tab>
-        </transition>
-      </el-tab-pane>
-      <el-tab-pane label="" name="third">
-        <span slot="label"><i class=""></i> xx</span>
-        <transition name="chenxi">
-          <third-tab v-if="isVisible[2].child" ref="firstTab" :fatherDataForm="dataForm"></third-tab>
+          <second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>
         </transition>
       </el-tab-pane>
     </el-tabs>
@@ -49,71 +69,111 @@
 import API from '@/api'
 import FirstTab from './first-tab'
 import SecondTab from './second-tab'
-import ThirdTab from './third-tab'
 import ComStore from '../common/com-store'
 export default {
+  watch: {
+    'value6': function () {
+      console.log(this.value6)
+      if (this.value6 !== [] && this.value6 !== null) {
+        this.dataForm.StartDate = this.value6[0]
+        this.dataForm.EndDate = this.value6[1]
+        // console.log(this.dataForm.StartDate)
+        // console.log(this.dataForm.EndDate)
+      } else {
+        this.dataForm.StartDate = ''
+        this.dataForm.EndDate = ''
+      }
+    }
+  },
   data () {
     return {
       activeName: 'first',
-      // SupplierIdArr: [], // 先请求供应商数组
       drugsCategoryList: [],
-
       dataForm: { // 三个子组件共有的查询条件：门店，商品编码、商品名称、商品拼音
         StoreId: '',
-        CategoryText: '',
-        CategoryId: '',
-        ProductCodeOrBarCode: '',
-        ProductName: '',
-        SpellName: ''
+        View: true, // 是否显示门店筛选组件
+        StartDate: '',
+        EndDate: ''
       },
       isVisible: [
         {child: true},
         {child: false},
         {child: false}
-      ]
+      ],
+      value6: []
     }
   },
   components: {
+    ComStore,
     FirstTab,
-    SecondTab,
-    ThirdTab,
-    ComStore
+    SecondTab
   },
   created () {
-    // this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
-    this.getDrugsCategoryType()
-  },
-  mounted () {
-    // this.$refs.firstTab.getDataList(0)
+    this.pageInit() // 初始化门店列表
   },
   methods: {
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
         this.dataForm.StoreId = choseStoreId
+        if (this.isVisible[0].child === true) {
+          this.$refs.firstTab.getDataList()
+        } else {
+          this.$refs.secondTab.getDataList()
+        }
       }
     },
-    // 并发请求 供应商、药态(并发请求，最后单独请求第四个，根据当前登陆账号觉得是否禁用门店下拉)
-    getDrugsCategoryType () {
-      API.drugs.getDrugsCategory().then(result => {
-        if (result.code === '0000') {
-          // this.drugsCategoryList = result.data.filter((item, index) => { return index > 0 }) // 初始化药态
-          this.drugsCategoryList = result.data // 初始化药态
-          this.dataForm.CategoryText = this.drugsCategoryList[0].text
-          this.dataForm.CategoryId = this.drugsCategoryList[0].id
-        }
-      })
-    },
-    categoryTextHandle (text) {
-      this.drugsCategoryList.forEach(item => {
-        if (item.text === text) {
-          this.dataForm.CategoryId = item.id // 这个药态的id会传递给子组件，用于弹窗时正确请求对应的药材列表
-          this.oldCategoryText = item.text
-          console.log(this.dataForm.CategoryText)
-          console.log(this.dataForm.CategoryId)
-        }
-      })
-    },
     pageInit () {
+      this.$nextTick(() => {
+        API.purchase.getLoginInfo().then(result => {
+          if (result.code === '0000') {
+            this.dataForm.UserName = result.data.UserName
+            this.dataForm.View = result.data.View // 决定门店下拉禁用
+            console.log(result.data)
+            if (result.data.View === false) {
+              this.$refs.comStoreOne.pageInit(result.data.StoreId) // 单选类型，多选类型，初始化下拉值
+              // 下面这个API，只是因为loginInfo这个无法直接拿到contact等信息，不得不重新请求另一个接口而已
+              API.store.storeAll({
+                name: '',
+                PageIndex: 1,
+                PageSize: 1000,
+                IsPaging: true,
+                code: '',
+                canViewStores: result.data.CanViewStores
+              }).then(result => {
+                if (result.code === '0000') {
+                  this.dataForm.StoreId = result.data[0].Id
+                  this.dataForm.StoreCode = result.data[0].Code
+                  this.dataForm.Buyer = result.data[0].Contact
+                  this.dataForm.Phone = result.data[0].Phone
+                  this.dataForm.Address = result.data[0].Address
+                }
+                console.log(this.dataForm.StoreId)
+                this.$refs.firstTab.getDataList()
+              })
+            } else {
+              API.store.storeAll({
+                name: '',
+                PageIndex: 1,
+                PageSize: 1000,
+                IsPaging: true,
+                code: '',
+                canViewStores: ''
+              }).then(result => {
+                if (result.code === '0000') {
+                  this.dataForm.StoreId = result.data[0].Id
+                  this.dataForm.StoreCode = result.data[0].Code
+                  this.dataForm.Buyer = result.data[0].Contact
+                  this.dataForm.Phone = result.data[0].Phone
+                  this.dataForm.Address = result.data[0].Address
+                }
+                this.$refs.comStoreOne.pageInit(this.dataForm.StoreId)
+                this.$refs.firstTab.getDataList()
+                console.log(this.dataForm.StoreId)
+              })
+            }
+          }
+        })
+      })
     },
     handleClick (tab, event) {
       switch (tab.name) {
@@ -127,12 +187,21 @@ export default {
             return index === 1 ? {child: true} : {child: false}
           })
           break
-        case 'third':
-          this.isVisible = this.isVisible.map((item, index) => {
-            return index === 2 ? {child: true} : {child: false}
-          })
-          break
       }
+      this.$nextTick(() => {
+        this.isVisible.forEach((item, index) => {
+          if (item.child === true) {
+            if (index === 0) {
+              this.num = 0
+              this.$refs.firstTab.getDataList()
+            } else if (index === 1) {
+              this.num = 1
+              this.$refs.secondTab.getDataList() // 挂号列表
+            }
+            return false
+          }
+        })
+      })
     }
   }
 }
@@ -157,7 +226,7 @@ opacity: 1;
 }*/
 
 .mod {
-  &-storeStock /deep/ {
+  &-storeRegister /deep/ {
     margin-left: 10px;
     /*max-height: 810px;*/
     overflow: hidden;
@@ -172,9 +241,9 @@ opacity: 1;
   }
 }
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
-.mod-storeStock{
+.mod-storeRegister{
   & /deep/ .el-form-item {
-    margin-bottom: 14px;
+    margin-bottom: 0px;
   }
   & /deep/ .el-dialog__body {
     padding-top: 10px;

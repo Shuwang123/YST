@@ -58,7 +58,6 @@ export default {
   },
   components: {
   },
-  props: ['fatherStoreId'],
   data () {
     return {
       visible: false,
@@ -82,25 +81,24 @@ export default {
   },
   methods: {
     // 新增，编辑时获取单行详情info
-    init (id) {
+    init (id, StoreId) {
       this.visible = true
       this.memberId = id
+      this.dataForm.StoreId = StoreId
+      console.log(this.dataForm.StoreId)
       if (id !== undefined) {
         this.$nextTick(() => {
           API.member.editMemberGet({id: id}).then(result => {
             if (result.code === '0000') {
-              this.dataForm = {
-                // StoreId: '',
-                UserName: result.data.UserName,
-                Sex: String(result.data.Sex),
-                BirthDate: formatDate(new Date(result.data.BirthDate
-                  .substring(6, result.data.BirthDate.length - 2) * 1), 'yyyy-MM-dd'),
-                MobilePhone: result.data.MobilePhone,
-                AllergyHistory: result.data.AllergyHistory,
-                Address: result.data.Address
-              }
-              console.log(result.data)
-              console.log(this.dataForm)
+              this.dataForm.UserName = result.data.UserName
+              this.dataForm.Sex = String(result.data.Sex)
+              this.dataForm.BirthDate = formatDate(new Date(result.data.BirthDate
+                .substring(6, result.data.BirthDate.length - 2) * 1), 'yyyy-MM-dd')
+              this.dataForm.MobilePhone = result.data.MobilePhone
+              this.dataForm.AllergyHistory = result.data.AllergyHistory
+              this.dataForm.Address = result.data.Address
+              // console.log(result.data)
+              // console.log(this.dataForm)
               this.memberId = result.data.Id
             }
           })
@@ -108,7 +106,7 @@ export default {
       }
     },
     handleClose () {
-      this.$refs['dataForm'].resetFields()
+      // this.$refs['dataForm'].resetFields()
       this.Id = ''
       this.dataForm = {
         StoreId: '',
@@ -125,7 +123,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var paramsAdd = {
-            StoreId: this.fatherStoreId,
+            StoreId: this.dataForm.StoreId,
             UserName: this.dataForm.UserName,
             Sex: this.dataForm.Sex,
             BirthDate: this.dataForm.BirthDate,
@@ -134,7 +132,7 @@ export default {
             Address: this.dataForm.Address
           }
           var paramsEdit = {
-            StoreId: this.fatherStoreId,
+            StoreId: this.dataForm.StoreId,
             UserName: this.dataForm.UserName,
             Sex: this.dataForm.Sex,
             BirthDate: this.dataForm.BirthDate,
@@ -143,6 +141,7 @@ export default {
             Address: this.dataForm.Address,
             Id: this.memberId
           }
+          console.log(paramsAdd)
           console.log(paramsEdit)
           var tick = this.memberId ? API.member.editMemberSubmit(paramsEdit) : API.member.addMemberSubmit(paramsAdd)
           tick.then((data) => {

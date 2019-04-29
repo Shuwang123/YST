@@ -59,7 +59,7 @@ export default {
           this.loginInfo = result.data
           console.log(this.loginInfo)
           this.$nextTick(() => {
-            API.store.storeAll({
+            API.store.storeAll({ // 在allstore里请求出，当前账号对应的所有可控门店
               name: '',
               code: '',
               pageIndex: 1,

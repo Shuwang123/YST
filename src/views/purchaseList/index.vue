@@ -139,8 +139,8 @@ export default {
         if (result.code === '0000') {
           this.SupplierIdArr = result.data
         }
+        this.dataListLoading = false
       })
-      this.dataListLoading = false
     },
     handleClick (tab, event) {
       // console.log(tab, event)

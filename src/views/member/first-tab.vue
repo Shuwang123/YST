@@ -2,21 +2,20 @@
   <div class="first-tab">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
+        <com-store :paramsFather="{
+          'label_0': '',
+          'size_1': '',
+          'width_2': '130px',
+          'clear_3': false,
+          'disabled_4': !dataForm.View,
+          'multiple_5': false
+        }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
+      </el-form-item>
+      <el-form-item>
         <el-input v-model="dataForm.UserName" placeholder="姓名" clearable style="width: 150px"></el-input>
       </el-form-item>
       <el-form-item>
         <el-input v-model="dataForm.MobilePhone" placeholder="电话" clearable style="width: 150px"></el-input>
-      </el-form-item>
-      <el-form-item>
-        <com-store :paramsFather="{
-            'label_0': '',
-            'size_1': '',
-            'width_2': '120px',
-            'clear_3': true,
-            'disabled_4': false,
-            'multiple_5': false
-          }" ref="comStoreOne" @eventStore="changeStoreData"
-        ></com-store>
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
@@ -35,6 +34,9 @@
       :cell-class-name="ownColumnStyle"
       style="width: 100%;">
       <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="StoreId" header-align="center" align="center" label="门店" width="50" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="StoreName" header-align="center" align="center" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Code" header-align="center" align="center" label="病历号" width="100" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="UserName" header-align="center" align="center" label="姓名" width="60" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column header-align="center" :align="$store.state.common.align" label="性别" width="60">
         <template slot-scope="scope">
@@ -42,15 +44,15 @@
           <span v-else-if="scope.row.Sex === 2">女</span>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" :align="$store.state.common.align" label="年龄(岁)" width="80">
+      <el-table-column header-align="center" :align="$store.state.common.align" label="年龄" width="50">
         <template slot-scope="scope">
           <span>{{ scope.row.BirthDate | getAge}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="MobilePhone" header-align="center" align="center" width="120" label="电话"></el-table-column>
+      <el-table-column prop="MobilePhone" header-align="center" align="center" width="110" label="电话"></el-table-column>
       <el-table-column prop="Address" header-align="center" align="center" label="地址" width="" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="AllergyHistory" header-align="center" align="center" label="过敏史" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="CreatedBy" header-align="center" align="center" label="创建人" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="CreatedBy" header-align="center" align="center" label="创建人" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column header-align="center" :align="$store.state.common.align" label="创建时间" width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.CreatedOn | formatDate}}</span>
@@ -61,7 +63,7 @@
           <span>{{ scope.row.UpdatedOn | formatDate}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="UpdatedBy" header-align="center" align="center" label="操作人" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="UpdatedBy" header-align="center" align="center" label="操作人" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">编辑</el-button>
@@ -78,10 +80,7 @@
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
-    <first-tab-add-or-update
-      :fatherStoreId="dataForm.StoreId" v-if="addOrUpdateVisible"
-      ref="addOrUpdate" @refreshDataList="getDataList">
-    </first-tab-add-or-update>
+    <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></first-tab-add-or-update>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -102,7 +101,6 @@ export default {
       var now = formatDate(new Date(), 'yyyy-MM-dd')
       var nowArr = now.split('-')
       var ageArr = age.split('-')
-      // if (nowArr[0] - ageArr[0] >= 1) { console.log(nowArr[0] - ageArr[0]) }
       return `${nowArr[0] - ageArr[0]}`
     }
   },
@@ -117,7 +115,8 @@ export default {
       isPaging: true,
       dataForm: {
         UserName: '',
-        StoreId: 0,
+        View: true, // 是否显示门店筛选组件
+        StoreId: '',
         MobilePhone: ''
       },
       totalPage: 1,
@@ -141,26 +140,57 @@ export default {
       if (isMultiple === false) {
         this.dataForm.StoreId = choseStoreId
       }
+      this.getDataList()
     },
     getDataList () {
       this.dataListLoading = true
-      // console.log(this.dataForm.StoreId)
-      var params = {
-        PageIndex: this.pageIndex,
-        PageSize: this.pageSize,
-        IsPaging: this.isPaging,
-        UserName: this.dataForm.UserName,
-        StoreId: this.dataForm.StoreId === '' ? 0 : this.dataForm.StoreId, // 所有门店传递0
-        MobilePhone: this.dataForm.MobilePhone
-      }
-      API.member.getMemberList(params).then(result => {
-        if (result.code === '0000') {
-          this.dataList = result.data
-          this.totalPage = result.total
-        } else {
-          this.$message.error(result.message)
-        }
-        this.dataListLoading = false
+      this.$nextTick(() => {
+        API.purchase.getLoginInfo().then(result => {
+          if (result.code === '0000') {
+            this.dataForm.View = result.data.View // 决定门店下拉禁用
+            if (result.data.View === false) { // 如果是不可选择的单门店!!!
+              this.$refs.comStoreOne.pageInit(result.data.StoreId) // 单选类型，多选类型，初始化下拉值
+              this.dataForm.StoreId = result.data.StoreId
+            } else { // 如果是可选择的多门店下拉
+              // 下面这个API，只是因为loginInfo这个无法直接拿到contact等信息，不得不重新请求另一个接口而已
+              API.store.storeAll({
+                name: '',
+                PageIndex: 1,
+                PageSize: 1000,
+                IsPaging: true,
+                code: '',
+                canViewStores: ''// 最初的考虑是单门店的：storeId = CanViewStores
+              }).then(result => {
+                if (result.code === '0000') {
+                  this.dataForm.StoreId = this.dataForm.StoreId > 0 ? this.dataForm.StoreId : result.data[0].Id // 这有问题哈，归属门店难道一定排第一个吗
+                  this.$refs.comStoreOne.pageInit(this.dataForm.StoreId)
+                }
+              })
+            }
+
+            this.$nextTick(() => {
+              var params = {
+                StoreId: this.dataForm.StoreId, // 所有门店传递0
+                PageIndex: this.pageIndex,
+                PageSize: this.pageSize,
+                IsPaging: this.isPaging,
+                UserName: this.dataForm.UserName,
+                MobilePhone: this.dataForm.MobilePhone,
+                Code: this.dataForm.Code
+              }
+              console.log(params)
+              API.member.getMemberList(params).then(result => {
+                if (result.code === '0000') {
+                  this.dataList = result.data
+                  this.totalPage = result.total
+                } else {
+                  this.$message.error(result.message)
+                }
+                this.dataListLoading = false
+              })
+            })
+          }
+        })
       })
     },
     // 每页数
@@ -177,7 +207,7 @@ export default {
     addOrUpdateHandle (id) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id)
+        this.$refs.addOrUpdate.init(id, this.dataForm.StoreId)
       })
     },
 

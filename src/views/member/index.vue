@@ -5,7 +5,7 @@
         <first-tab></first-tab>
       </el-tab-pane>
       <!--<el-tab-pane label="成品药品" name="second" disabled="true">-->
-      <el-tab-pane label="超级会员" name="second">
+      <el-tab-pane label="…" name="second">
         超级会员
         <br>
         <br>
@@ -13,7 +13,7 @@
         <br>
         <br>
       </el-tab-pane>
-      <el-tab-pane label="熊猫会员" name="third">
+      <el-tab-pane label="…" name="third">
       <!--<el-tab-pane label="其他商品" name="third" disabled="true">-->
         熊猫会员
         <br>

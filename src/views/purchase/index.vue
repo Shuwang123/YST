@@ -23,14 +23,13 @@
           </el-select>
         </el-form-item>
         <com-store :paramsFather="{
-            'label_0': '',
-            'size_1': 'mini',
-            'width_2': '150px',
-            'clear_3': true,
-            'disabled_4': !dataForm.View,
-            'multiple_5': false
-          }" ref="comStoreOne" @eventStore="changeStoreData"
-        ></com-store>
+          'label_0': '',
+          'size_1': 'mini',
+          'width_2': '150px',
+          'clear_3': true,
+          'disabled_4': !dataForm.View,
+          'multiple_5': false
+        }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
       </div>
     </el-form>
 
@@ -266,6 +265,7 @@ export default {
               this.dataForm.View = result.data.View // 决定：门店下拉是否禁用
               if (result.data.View === false) {
                 this.$refs.comStoreOne.pageInit(result.data.StoreId) // 单选类型，多选类型，初始化下拉值
+                // 下面这个API，只是因为loginInfo这个无法直接拿到contact等信息，不得不重新请求另一个接口而已
                 API.store.storeAll({
                   name: '',
                   PageIndex: 1,

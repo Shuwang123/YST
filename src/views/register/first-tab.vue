@@ -22,6 +22,7 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column type="index" align="center" width="50" label="序号"></el-table-column>
+      <el-table-column prop="StoreName" header-align="center" align="center" label="门店" width="100" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="NickName" header-align="center" align="center" label="医生姓名" width=""></el-table-column>
       <el-table-column prop="" label="可挂号/已挂号" width="" header-align="center" align="center">
         <template slot-scope="scope">
@@ -32,7 +33,7 @@
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain
-                     @click="addOrUpdateHandle(scope.row)">挂号
+                     @click="addOrUpdateHandle(scope.row, fatherDataForm.StoreId)">挂号
           </el-button>
         </template>
       </el-table-column>
@@ -47,7 +48,7 @@
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
     <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate"></first-tab-add-or-update>
-    <!--<first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataListChild"></first-tab-add-or-update>-->
+
     <input type="button" id="tts_btn" @click="doTTS()" value="播放"><div id="bdtts_div_id">
     <audio id="tts_autio_id" autoplay="autoplay">
       <source id="tts_source_id" src="http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=2&text=1 2 3" type="audio/mpeg">
@@ -75,12 +76,10 @@ export default {
       chenxiHeight: document.documentElement['clientHeight'] - 333, // 心累，不要动
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
-
       pageIndex: 1,
       pageSize: 10,
       totalPage: 1,
       IsPaging: true,
-
       dataForm: {
         RedLine: '',
         BrandId: '', // 品牌ID
@@ -90,9 +89,6 @@ export default {
     }
   },
   components: { FirstTabAddOrUpdate },
-  created () {
-    this.getDataList()
-  },
   mounted () {
     window.onresize = () => {
       this.chenxiHeight = document.documentElement['clientHeight'] - 333 // 273 测试老半天
@@ -103,40 +99,40 @@ export default {
       document.getElementById('tts_autio_id').play()
     },
     getDataList () {
-      this.dataListLoading = true
-      var params = {
-        PageIndex: this.pageIndex,
-        PageSize: this.pageSize,
-        IsPaging: this.IsPaging,
-        id: '',
-        userName: '',
-        nickName: '',
-        roleId: '',
-        storeId: 0 // 门店ID
-      }
-      // API.register.getDoctors(params).then(result => {
-      //   console.log('ajsdj')
-      //   if (result.code === '0000') {
-      //     this.dataList = result.data
-      //     this.totalPage = result.total
-      //   } else {
-      //     this.$message.error(result.message)
-      //   }
-      //   this.dataListLoading = false
-      // })
-      API.adminUser.adminUserList(params).then(response => {
-        if (response.code === '0000') {
-          if (response.data) { this.dataList = response.data }
-          this.totalPage = response.total
-        } else {
-          this.$message.error(response.message)
+      this.$nextTick(() => {
+        this.dataListLoading = true
+        var params = {
+          PageIndex: this.pageIndex,
+          PageSize: this.pageSize,
+          IsPaging: this.IsPaging,
+          id: '',
+          userName: '',
+          nickName: '',
+          roleId: '',
+          storeId: this.fatherDataForm.StoreId // 门店ID
         }
-        this.dataListLoading = false
+        console.log(params)
+        API.adminUser.adminUserList(params).then(response => {
+          if (response.code === '0000') {
+            if (response.data) { this.dataList = response.data }
+            this.totalPage = response.total
+          } else {
+            this.$message.error(response.message)
+          }
+          this.dataListLoading = false
+        })
+        // API.register.getDoctors(params).then(result => {
+        //   console.log('ajsdj')
+        //   if (result.code === '0000') {
+        //     this.dataList = result.data
+        //     this.totalPage = result.total
+        //   } else {
+        //     this.$message.error(result.message)
+        //   }
+        //   this.dataListLoading = false
+        // })
       })
     },
-    // getDataListChild () {
-    //   this.getDataList()
-    // },
     // 每页数
     sizeChangeHandle (val) {
       this.pageSize = val
@@ -148,10 +144,10 @@ export default {
       this.pageIndex = val
       this.getDataList()
     },
-    addOrUpdateHandle (row) {
+    addOrUpdateHandle (row, StoreId) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(row)
+        this.$refs.addOrUpdate.init(row, StoreId)
       })
     },
     handelDelete (id) {

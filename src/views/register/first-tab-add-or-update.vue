@@ -40,8 +40,8 @@
                   <el-input v-model="dataForm.MobilePhone" placeholder="只读" style="width: 140px" disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="12"><p>病历编号：<span v-text="'1904240001'"></span></p></el-col>
-              <el-col :span="12"><p>会员卡号：<span v-text="'15023104895'"></span></p></el-col>
+              <el-col :span="12"><p>病历编号：<span v-text="dataForm.Code"></span></p></el-col>
+              <el-col :span="12"><p>会员卡号：<span v-text="dataForm.MobilePhone"></span></p></el-col>
             </el-row>
             <el-row>
               <el-col :span="24">
@@ -227,6 +227,7 @@ export default {
       show: true,
       visible: false,
       dataListLoading: false, // 加载
+      StoreId: '',
       doctorId: '',
       doctorName: '',
       dataForm: {
@@ -236,6 +237,7 @@ export default {
         MobilePhone: '',
         Address: '',
         UserId: '',
+        Code: '',
 
         PaymentWay: 1, // 支付方式
         DiagnosisType: '1', // 看诊类型
@@ -312,12 +314,14 @@ export default {
       this.dataForm.MobilePhone = row.MobilePhone
       this.dataForm.Address = row.Address
       this.dataForm.UserId = row.Id
+      this.dataForm.Code = row.Code
     },
     // 获取某个采购单详情info
-    init (row) {
+    init (row, StoreId) {
       this.visible = true
       this.dataListLoading = true
       if (row !== undefined) {
+        this.StoreId = StoreId // 门店id 来源index页（而不是first-tab页）
         this.doctorId = row.Id // 医生id
         this.doctorName = row.NickName
       }
@@ -369,6 +373,7 @@ export default {
         MobilePhone: '',
         Address: '',
         UserId: '',
+        Code: '',
 
         PaymentWay: 1, // 支付方式
         DiagnosisType: '1', // 看诊类型
@@ -398,7 +403,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var params = {
-            StoreId: 0,
+            StoreId: this.StoreId,
             AccountId: this.doctorId, // 医生id
             UserId: this.dataForm.UserId, // 患者id
             OrderType: 1, // 1挂号 2退号
@@ -415,10 +420,6 @@ export default {
                 message: `${'挂号成功'}`,
                 type: 'success',
                 duration: 3000
-                // onClose: () => {
-                //   this.visible = false
-                //   this.$emit('childEven')
-                // }
               })
               this.visible = false
             } else {
@@ -433,10 +434,10 @@ export default {
       })
     },
 
-    openPatientList (storeId = 0) {
+    openPatientList () {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.patientList.init(storeId)
+        this.$refs.patientList.init(this.StoreId)
       })
     }
   }

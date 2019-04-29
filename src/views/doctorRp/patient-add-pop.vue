@@ -79,9 +79,10 @@ export default {
       this.$emit('childEven')
     },
     // 获取某个采购单详情info
-    init (StoreId) {
-      this.dataForm.StoreId = StoreId
-      // if (StoreId !== undefined) {}
+    init (id) {
+      // this.visible = true
+      if (id !== undefined) {
+      }
     },
     handleClose () {
       this.dataForm = {
@@ -99,7 +100,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var paramsAdd = {
-            StoreId: this.dataForm.StoreId,
+            StoreId: 0,
             UserName: this.dataForm.UserName,
             Sex: this.dataForm.Sex,
             BirthDate: this.dataForm.BirthDate,
