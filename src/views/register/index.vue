@@ -14,27 +14,30 @@
                 'multiple_5': false
               }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
               <el-form-item>
-                <el-input v-model="dataForm.MobilePhone" placeholder="医生" clearable style="width: 70px"></el-input>
+                <el-select v-model="dataForm.AccountId" placeholder="医生" clearable style="width: 100px">
+                  <el-option v-for="item in storeDoctorArr" :key="item.Id"
+                             :label="`${item.Id}-${item.NickName}`" :value="item.Id"></el-option>
+                </el-select>
               </el-form-item>
-              <span>
+              <span v-show="isVisible[1].child">
                 <el-form-item>
-                <el-input v-model="dataForm.MobilePhone" placeholder="患者" clearable style="width: 70px"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-input v-model="dataForm.MobilePhone" placeholder="患者电话" clearable style="width: 119px"></el-input>
-              </el-form-item>
-              <el-form-item>
-                <el-date-picker
-                  size="mini"
-                  v-model="value6"
-                  type="daterange"
-                  range-separator="至"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  value-format="yyyy-MM-dd"
-                  style="width: 260px">
-                </el-date-picker>
-              </el-form-item>
+                <el-input v-model="dataForm.patientName" placeholder="患者" clearable style="width: 70px"></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-input v-model="dataForm.MobilePhone" placeholder="患者电话" clearable style="width: 119px"></el-input>
+                </el-form-item>
+                <el-form-item>
+                  <el-date-picker
+                    size="mini"
+                    v-model="value6"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    value-format="yyyy-MM-dd"
+                    style="width: 260px">
+                  </el-date-picker>
+                </el-form-item>
               </span>
               <el-form-item>
                 <el-button
@@ -92,6 +95,9 @@ export default {
       dataForm: { // 三个子组件共有的查询条件：门店，商品编码、商品名称、商品拼音
         StoreId: '',
         View: true, // 是否显示门店筛选组件
+        AccountId: '', // 医生Id
+        patientName: '', // 患者
+        MobilePhone: '', // 电话
         StartDate: '',
         EndDate: ''
       },
@@ -100,7 +106,8 @@ export default {
         {child: false},
         {child: false}
       ],
-      value6: []
+      value6: [],
+      storeDoctorArr: []
     }
   },
   components: {
@@ -115,6 +122,8 @@ export default {
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
         this.dataForm.StoreId = choseStoreId
+        this.dataForm.AccountId = ''
+        this.getStoreAllDoctor()
         if (this.isVisible[0].child === true) {
           this.$refs.firstTab.getDataList()
         } else {
@@ -149,6 +158,7 @@ export default {
                 }
                 console.log(this.dataForm.StoreId)
                 this.$refs.firstTab.getDataList()
+                this.getStoreAllDoctor()
               })
             } else {
               API.store.storeAll({
@@ -168,11 +178,36 @@ export default {
                 }
                 this.$refs.comStoreOne.pageInit(this.dataForm.StoreId)
                 this.$refs.firstTab.getDataList()
+                this.getStoreAllDoctor()
                 console.log(this.dataForm.StoreId)
               })
             }
           }
         })
+      })
+    },
+    // 当门店改变时，获取门店下所有医生
+    getStoreAllDoctor () {
+      var params = {
+        PageIndex: 1,
+        PageSize: 10000,
+        IsPaging: true,
+        id: '',
+        userName: '',
+        nickName: '',
+        roleId: '',
+        storeId: this.dataForm.StoreId // 门店ID
+      }
+      API.adminUser.adminUserList(params).then(response => {
+        if (response.code === '0000') {
+          if (response.data) {
+            this.storeDoctorArr = response.data.map(item => {
+              return {Id: item.Id, NickName: item.NickName}
+            })
+          }
+        } else {
+          this.$message.error(response.message)
+        }
       })
     },
     handleClick (tab, event) {

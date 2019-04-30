@@ -46,7 +46,8 @@
         <el-table-column prop="Address" header-align="left" align="left" label="地址" width="" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="" label="操作" width="80" header-align="center" align="center">
           <template slot-scope="scope">
-            <el-button type="text" size="mini" plain @click="child(scope.row); $store.commit('setRegisterStep', 1)">载入</el-button>
+            <el-button type="text" size="mini" plain @click="child(scope.row); $store.commit('setRegisterStep', 1)">
+              载入</el-button>
           </template>
         </el-table-column>
       </el-table>

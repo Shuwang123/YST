@@ -25,7 +25,9 @@
       <el-table-column prop="" label="操作" :width="status === 1 ? 280 : 150" header-align="center" align="center">
         <template slot-scope="scope">
           <!--<el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">就诊</el-button>-->
-          <el-button type="text" @click="$router.push(`/doctor/recipel(kaifang)/${scope.row.Id}`)">就诊</el-button>
+          <el-button type="text"
+            @click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&StoreId=${fatherDataForm.StoreId}&DoctorName=${scope.row.DoctorName}`)">
+            就诊</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -63,6 +65,7 @@ export default {
 
       pageIndex: 1,
       pageSize: 10,
+      IsPaging: 10,
       totalPage: 1,
       dataList: [],
       status: 0 // 采购单的状态、1 4 10 -1
@@ -81,14 +84,15 @@ export default {
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: this.IsPaging,
-        StoreId: 0, // 门店Id（必须）
+        StoreId: this.fatherDataForm.StoreId, // 门店Id（必须）
         Code: '', // 挂号单
         UserName: '', // 患者姓名
         MobilePhone: '', // 患者电话
-        AccountId: '', // 账户Id,医生Id
+        AccountId: this.fatherDataForm.AccountId, // 账户Id,医生Id
         WrokFrom: '', // 开始时间
         WrokTo: '' // 结束时间
       }
+      console.log(params)
       console.log('jdaljdjadjlk去哦wieuROIu气我ie')
       // 获取待就诊列表（挂号列表为基础筛选：医生）
       API.register.getRegisterList(params).then(result => {

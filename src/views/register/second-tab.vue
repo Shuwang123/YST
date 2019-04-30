@@ -101,15 +101,15 @@ export default {
         PageSize: this.pageSize,
         IsPaging: this.IsPaging,
         StoreId: this.fatherDataForm.StoreId, // 门店Id（必须）
+        AccountId: this.fatherDataForm.AccountId, // 账户Id,医生Id
         Code: '', // 挂号单
-        UserName: '', // 患者姓名
-        MobilePhone: '', // 患者电话
-        AccountId: '', // 账户Id,医生Id
+        UserName: this.fatherDataForm.patientName, // 患者姓名
+        MobilePhone: this.fatherDataForm.MobilePhone, // 患者电话
         WrokFrom: '', // 开始时间
         WrokTo: '' // 结束时间
       }
-      console.log('jdaljdjadjlk去哦wieuROIu气我ie')
       // 获取挂号列表
+      console.log(params)
       API.register.getRegisterList(params).then(result => {
         if (result.code === '0000') {
           this.dataList = result.data

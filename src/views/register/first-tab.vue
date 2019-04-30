@@ -81,9 +81,7 @@ export default {
       totalPage: 1,
       IsPaging: true,
       dataForm: {
-        RedLine: '',
-        BrandId: '', // 品牌ID
-        Order: '' // 按照分别按照Quantity, OccupyQuantityUsableQuantity排序
+        RedLine: ''
       },
       dataList: []
     }
@@ -105,7 +103,7 @@ export default {
           PageIndex: this.pageIndex,
           PageSize: this.pageSize,
           IsPaging: this.IsPaging,
-          id: '',
+          id: this.fatherDataForm.AccountId,
           userName: '',
           nickName: '',
           roleId: '',
@@ -116,6 +114,7 @@ export default {
           if (response.code === '0000') {
             if (response.data) { this.dataList = response.data }
             this.totalPage = response.total
+            console.log(this.dataList)
           } else {
             this.$message.error(response.message)
           }
