@@ -14,7 +14,7 @@
                 <el-input v-model="dataForm.UserName" placeholder="选择患者" style="width: 94px" disabled></el-input>
                 <!--<el-button type="warning" icon="iconfont icon-renwu-zengjia" @click="send()" size="mini"></el-button>-->
                 <!--{{$route.query.patientId}}-->
-                <span v-show="$route.query.patientId === '0'"
+                <span v-if="$route.query.MobilePhone === '0'"
                   class="iconfont icon-renwu-zengjia" style="display: inline-block;width: 40px;height: 30px;
                   font-size: 26px;font-weight: 900;color: #1EA57B; margin-left: 7px; vertical-align: top"
                       @click="openPatientList(); $store.commit('setRegisterStep', 2)"></span>
@@ -141,7 +141,7 @@
             <li v-for="item in rightUlData" :key="item.Id" style="clear: both">
               <span style="display: inline-block;width: 60px">{{item.ShowName}}</span>
               [余{{item.Quantity}}]-{{item.Code}}+++{{item.Id}}
-              <el-button type="text" size="mini" style="float: right">添加</el-button>
+              <el-button type="text" size="mini" style="float: right;margin-top: -3px">添加</el-button>
             </li>
             <ol style="position: absolute;top: 0;right: -30px;width: 30px;background-color: pink;text-align: center;font-weight: 900">
               <li style="height: 20px;line-height: 20px">A</li>
@@ -179,7 +179,8 @@
             :page-sizes="[10, 20, 50, 100]"
             :page-size="pageSize"
             :total="totalPage"
-            layout="prev, pager, next, jumper, sizes, total" background>
+            layout="prev, pager, next, total" background :pager-count="3">
+            <!--layout="prev, pager, next, jumper, sizes, total" background :pager-count="2">-->
           </el-pagination>
         </el-main>
       </el-container>
@@ -437,10 +438,10 @@ export default {
       this.pageIndex = val
       this.getDataList()
     },
-    addOrUpdateHandle (id, type) {
+    addOrUpdateHandle (row, StoreId) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id, type)
+        this.$refs.addOrUpdate.init(row, StoreId)
       })
     }
   }
