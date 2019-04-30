@@ -139,7 +139,7 @@
           </el-tabs>
           <ul style="min-height: 500px; background-color: #f1f2f6;width: 90%;position: relative;">
             <li v-for="item in rightUlData" :key="item.Id" style="clear: both">
-              <span style="display: inline-block;width: 40px">{{item.ShowName}}</span>
+              <span style="display: inline-block;width: 60px">{{item.ShowName}}</span>
               [余{{item.Quantity}}]-{{item.Code}}+++{{item.Id}}
               <el-button type="text" size="mini" style="float: right">添加</el-button>
             </li>
@@ -374,6 +374,10 @@ export default {
         }
       })
       // 获取对应门店下的对应药材库
+      this.getStoreCategorytypeStock()
+    },
+    // 获取对应门店对应药态下的对应药材库
+    getStoreCategorytypeStock () {
       API.drugs.getDrugsList({
         Name: '',
         PageIndex: this.pageIndex,
@@ -420,6 +424,7 @@ export default {
           this.rightUl = 'ul-one'
           break
       }
+      this.getStoreCategorytypeStock()
     },
     // 每页数
     sizeChangeHandle (val) {
