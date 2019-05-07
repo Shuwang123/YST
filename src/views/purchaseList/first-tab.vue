@@ -96,7 +96,6 @@ export default {
         Status: status === 0 ? '' : this.status // 单据号状态传0表示获取所有状态类型
       }
       this.dataListLoading = true
-      console.log(this.status)
       API.purchase.getPurchaseList(params).then(result => {
         if (result.code === '0000') {
           if (this.status === 0) {

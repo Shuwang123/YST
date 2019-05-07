@@ -5,13 +5,14 @@
         <!--<el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">-->
         <el-form :inline="true" :model="dataForm" size="mini">
           <com-store :paramsFather="{
-                'label_0': '',
-                'size_1': 'mini',
-                'width_2': '120px',
-                'clear_3': false,
-                'disabled_4': !dataForm.View,
-                'multiple_5': false
-              }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
+            'label_0': '',
+            'size_1': 'mini',
+            'width_2': '120px',
+            'clear_3': false,
+            'multiple_4': false,
+            'must_5': true,
+            'isTrigger': true
+          }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
           <el-form-item>
             <el-select @change="doctorHandle()" v-model="dataForm.AccountId" placeholder="医生" style="width: 100px">
               <el-option v-for="item in storeDoctorArr" :key="item.Id"
@@ -19,8 +20,8 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button v-if="isDoctor"
-            @click="$router.push(`/doctor/recipel?MobilePhone=0&StoreId=${dataForm.StoreId}&DoctorName=${dataForm.currentDoctorName}`)">
+            <el-button v-if="$store.getters.getAccountIsDoctor"
+            @click="$router.push(`/doctor/recipel?MobilePhone=0&DoctorName=${dataForm.currentDoctorName}`)">
               直接就诊</el-button>
           </el-form-item>
         </el-form>
@@ -65,7 +66,6 @@ export default {
       SupplierIdArr: [], // 先请求供应商数组
 
       dataForm: {
-        StoreId: '', // 门店Id
         AccountId: '', // 医生Id
         currentDoctorName: '', // 当前选中的医生名
         View: true, // 是否显示门店筛选组件
@@ -88,9 +88,6 @@ export default {
     FirstTab,
     ComStore
   },
-  created () {
-    this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
-  },
   watch: {
     'value6': function () {
       console.log(this.value6)
@@ -105,74 +102,17 @@ export default {
     }
   },
   methods: {
-    // getChildDataList () {
-    //   this.$refs.firstTab.getDataList()
-    // },
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
-        this.dataForm.StoreId = choseStoreId
         this.dataForm.AccountId = ''
         this.dataForm.currentDoctorName = ''
-        this.getStoreAllDoctor()
+        this.getStoreAllDoctor() // 切换门店后，更新头部下拉option的选项 在这触发 初始化，不要崇拜…代替pageInit方法
         // if (this.isVisible[0].child === true) {
         //   this.$refs.firstTab.getDataList()
         // } else {
         //   this.$refs.secondTab.getDataList()
         // }
       }
-    },
-    pageInit () {
-      this.$nextTick(() => {
-        API.purchase.getLoginInfo().then(result => {
-          if (result.code === '0000') {
-            this.dataForm.UserName = result.data.UserName
-            this.dataForm.View = result.data.View // 决定门店下拉禁用
-            console.log(result.data)
-            if (result.data.View === false) {
-              this.$refs.comStoreOne.pageInit(result.data.StoreId) // 单选类型，多选类型，初始化下拉值
-              // 下面这个API，只是因为loginInfo这个无法直接拿到contact等信息，不得不重新请求另一个接口而已
-              API.store.storeAll({
-                name: '',
-                PageIndex: 1,
-                PageSize: 1000,
-                IsPaging: true,
-                code: '',
-                canViewStores: result.data.CanViewStores
-              }).then(result => {
-                if (result.code === '0000') {
-                  this.dataForm.StoreId = result.data[0].Id
-                  this.dataForm.StoreCode = result.data[0].Code
-                  this.dataForm.Buyer = result.data[0].Contact
-                  this.dataForm.Phone = result.data[0].Phone
-                  this.dataForm.Address = result.data[0].Address
-                }
-                console.log(this.dataForm.StoreId)
-                this.getStoreAllDoctor()
-              })
-            } else {
-              API.store.storeAll({
-                name: '',
-                PageIndex: 1,
-                PageSize: 1000,
-                IsPaging: true,
-                code: '',
-                canViewStores: ''
-              }).then(result => {
-                if (result.code === '0000') {
-                  this.dataForm.StoreId = result.data[0].Id
-                  this.dataForm.StoreCode = result.data[0].Code
-                  this.dataForm.Buyer = result.data[0].Contact
-                  this.dataForm.Phone = result.data[0].Phone
-                  this.dataForm.Address = result.data[0].Address
-                }
-                this.$refs.comStoreOne.pageInit(this.dataForm.StoreId)
-                this.getStoreAllDoctor()
-                console.log(this.dataForm.StoreId)
-              })
-            }
-          }
-        })
-      })
     },
     // 当门店改变时，获取门店下所有医生
     getStoreAllDoctor () {
@@ -183,32 +123,22 @@ export default {
         id: '',
         userName: '',
         nickName: '',
-        roleId: '',
-        storeId: this.dataForm.StoreId // 门店ID
+        roleId: '', // ?????????????????有问题哟!!!!!!!!!!!!!!!!!!!!!!!!
+        storeIdcanViewStores: this.$store.getters.getAccountCurrentHandleStore // 有问题，第四处了，这儿又要获取对应门店下所有医生，不是展示的，而是用于下拉option，别忘了
       }
       API.adminUser.adminUserList(params).then(response => {
         if (response.code === '0000') {
-          if (response.data) {
-            this.storeDoctorArr = response.data.map(item => {
-              return {Id: item.Id, NickName: item.NickName}
-            })
-            API.purchase.getLoginInfo().then(result => {
-              if (result.code === '0000') {
-                if (result.data.RoleName === '医生') { // 是医生类型账号？？？？？？？？？？？？？
-                  this.dataForm.AccountId = result.data.AccountId // 判断当前登陆的账号是否是医生类型，从此锁定当前的医生id
-                  this.dataForm.currentDoctorName = result.data.NickName
-                  this.isDoctor = true
-                } else {
-                  this.dataForm.AccountId = this.storeDoctorArr[0].Id
-                  this.dataForm.currentDoctorName = this.storeDoctorArr[0].NickName
-                }
-                this.$refs.firstTab.getDataList() // 切换门店后，刷新出对应门店下对应医生自己的待就诊列表
-              }
-            })
-          }
+          this.storeDoctorArr = response.data.map(item => {
+            return {Id: item.Id, NickName: item.NickName}
+          })
+          this.dataForm.AccountId = response.data[0].Id
+          console.log('ls')
+          console.log(this.dataForm.AccountId)
+          this.dataForm.currentDoctorName = response.data[0].NickName // 这儿存在问题，如果是药房类型账号来判断当然没问题，但如账号本身就有医生那应该是直接选择自己id的，以后处理下，应该问题不大
         } else {
           this.$message.error(response.message)
         }
+        this.$refs.firstTab.getDataList() // 初始化或者是说任何情况下确定AccountId这个字段完整了后，才继续更新子层页面的展示内容（这有点玄）!!!!!!!!!!
       })
     },
     doctorHandle () {

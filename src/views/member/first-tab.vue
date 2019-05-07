@@ -7,8 +7,9 @@
           'size_1': '',
           'width_2': '130px',
           'clear_3': false,
-          'disabled_4': !dataForm.View,
-          'multiple_5': false
+          'multiple_4': false,
+          'must_5': true,
+          'isTrigger': true
         }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
       </el-form-item>
       <el-form-item>
@@ -115,8 +116,6 @@ export default {
       isPaging: true,
       dataForm: {
         UserName: '',
-        View: true, // 是否显示门店筛选组件
-        StoreId: '',
         MobilePhone: ''
       },
       totalPage: 1,
@@ -137,74 +136,31 @@ export default {
   },
   methods: {
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
-      if (isMultiple === false) {
-        this.dataForm.StoreId = choseStoreId
-      }
+      // if (isMultiple === false) { this.dataForm.StoreId = choseStoreId }
       this.getDataList()
     },
     getDataList () {
       this.dataListLoading = true
-      API.purchase.getLoginInfo().then(result => { // 封装思路，把登陆信息保存在vuex，就减少很多请求，暂未实现
-        if (result.code === '0000') {
-          this.dataForm.View = result.data.View // 决定门店下拉禁用
-          if (result.data.View === false) { // 如果是不可选择的单门店!!!
-            this.$refs.comStoreOne.pageInit(result.data.StoreId) // 单选类型，多选类型，初始化下拉值
-            this.dataForm.StoreId = result.data.StoreId
-            var params = {
-              StoreId: this.dataForm.StoreId, // 所有门店传递0
-              PageIndex: this.pageIndex,
-              PageSize: this.pageSize,
-              IsPaging: this.isPaging,
-              UserName: this.dataForm.UserName,
-              MobilePhone: this.dataForm.MobilePhone,
-              Code: this.dataForm.Code
-            }
-            console.log(params)
-            API.member.getMemberList(params).then(result => {
-              if (result.code === '0000') {
-                this.dataList = result.data
-                this.totalPage = result.total
-              } else {
-                this.$message.error(result.message)
-              }
-              this.dataListLoading = false
-            })
-          } else { // 如果是可选择的多门店下拉
-            // 下面这个API，只是因为loginInfo这个无法直接拿到contact等信息，不得不重新请求另一个接口而已
-            API.store.storeAll({
-              name: '',
-              PageIndex: 1,
-              PageSize: 1000,
-              IsPaging: true,
-              code: '',
-              canViewStores: ''// 最初的考虑是单门店的：storeId = CanViewStores
-            }).then(result => {
-              if (result.code === '0000') {
-                this.dataForm.StoreId = this.dataForm.StoreId > 0 ? this.dataForm.StoreId : result.data[0].Id // 这有问题哈，归属门店难道一定排第一个吗
-                this.$refs.comStoreOne.pageInit(this.dataForm.StoreId)
-              }
-              var params = {
-                StoreId: this.dataForm.StoreId, // 所有门店传递0
-                PageIndex: this.pageIndex,
-                PageSize: this.pageSize,
-                IsPaging: this.isPaging,
-                UserName: this.dataForm.UserName,
-                MobilePhone: this.dataForm.MobilePhone,
-                Code: this.dataForm.Code
-              }
-              console.log(params)
-              API.member.getMemberList(params).then(result => {
-                if (result.code === '0000') {
-                  this.dataList = result.data
-                  this.totalPage = result.total
-                } else {
-                  this.$message.error(result.message)
-                }
-                this.dataListLoading = false
-              })
-            })
-          }
+      this.$nextTick(() => { // 因为门店切换后，属性监听，存给Vuex和session，最后这又从Vuex获得，整个流程不写$nextTick()的话，可能得到的是切换前的旧值哟
+        var params = {
+          StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店来源Vuex
+          PageIndex: this.pageIndex,
+          PageSize: this.pageSize,
+          IsPaging: this.isPaging,
+          UserName: this.dataForm.UserName,
+          MobilePhone: this.dataForm.MobilePhone,
+          Code: this.dataForm.Code
         }
+        console.log(params)
+        API.member.getMemberList(params).then(result => {
+          if (result.code === '0000') {
+            this.dataList = result.data
+            this.totalPage = result.total
+          } else {
+            this.$message.error(result.message)
+          }
+          this.dataListLoading = false
+        })
       })
     },
     // 每页数
@@ -221,7 +177,7 @@ export default {
     addOrUpdateHandle (id) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id, this.dataForm.StoreId)
+        this.$refs.addOrUpdate.init(id)
       })
     },
 

@@ -39,7 +39,7 @@
     </el-form>
 
     <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消StoreId</el-button>
+      <el-button @click="visible = false">取消</el-button>
       <el-button type="primary" @click="dataFormSubmit()">确定添加</el-button>
     </span>
   </el-dialog>
@@ -64,7 +64,6 @@ export default {
       drugsCategoryList: [], // 初始化药品种类
       memberId: '', // 会员ID，提交是判断add、edit
       dataForm: {
-        StoreId: '',
         UserName: '',
         Sex: '1',
         BirthDate: '',
@@ -76,16 +75,14 @@ export default {
         UserName: Currency('此为必填项'),
         BirthDate: Currency('此为必填项'),
         MobilePhone: Phone(1)
-      },
+      }
     }
   },
   methods: {
     // 新增，编辑时获取单行详情info
-    init (id, StoreId) {
+    init (id) {
       this.visible = true
       this.memberId = id
-      this.dataForm.StoreId = StoreId
-      console.log(this.dataForm.StoreId)
       if (id !== undefined) {
         this.$nextTick(() => {
           API.member.editMemberGet({id: id}).then(result => {
@@ -109,7 +106,6 @@ export default {
       // this.$refs['dataForm'].resetFields()
       this.Id = ''
       this.dataForm = {
-        StoreId: '',
         UserName: '',
         Sex: '1',
         BirthDate: '',
@@ -123,7 +119,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var paramsAdd = {
-            StoreId: this.dataForm.StoreId,
+            StoreId: this.$store.getters.getAccountCurrentHandleStore,
             UserName: this.dataForm.UserName,
             Sex: this.dataForm.Sex,
             BirthDate: this.dataForm.BirthDate,
@@ -132,7 +128,7 @@ export default {
             Address: this.dataForm.Address
           }
           var paramsEdit = {
-            StoreId: this.dataForm.StoreId,
+            StoreId: this.$store.getters.getAccountCurrentHandleStore,
             UserName: this.dataForm.UserName,
             Sex: this.dataForm.Sex,
             BirthDate: this.dataForm.BirthDate,

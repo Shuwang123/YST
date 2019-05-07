@@ -1,4 +1,5 @@
 import * as types from './mutation-types'
+import {setAccountData} from '@/utils'
 
 export default {
   [types.SWITCH_SIDEBAR_COLLAPSE] (state, { collapse }) {
@@ -34,8 +35,24 @@ export default {
     state.contentTabsActiveName = name
   },
 
-  // cx
+  // ①cx 挂号弹窗标题步骤控制
   setRegisterStep (state, num) {
     state.registerStep = num
+  },
+
+  // ②账号所有信息控制管理
+  setAccountLoginInfoAll (state, content) {
+    state.accountLoginInfoAll = content // 先存给Vuex，同时下面顺手给sessionStorage
+    setAccountData('accountLoginInfoAll', content)
+  },
+  // 账号是否是医生
+  setIsDoctor (state, content) {
+    state.accountIsDoctor = content // 先存给Vuex，同时下面顺手给sessionStorage
+    setAccountData('accountIsDoctor', content)
+  },
+  // 账号目前选中的默认门店（归属门店? 手选门店? 还是storeArr[0]门店?）
+  setAccountCurrentHandleStore (state, content) {
+    state.accountCurrentHandleStore = content // 先存给Vuex，同时下面顺手给sessionStorage
+    setAccountData('accountCurrentHandleStore', content)
   }
 }

@@ -23,7 +23,7 @@ import '@/element-ui'
 import '@/assets/scss/index.scss'
 import store from './store'
 import "@/assets/font/iconfont.css"
-import { isAuth } from '@/utils'
+import { isAuth, getAccountData } from '@/utils' // sessionStorage
 Vue.use(VueCookie)
 Vue.config.productionTip = false
 Vue.prototype.isAuth = isAuth // 挂载权限方法
@@ -33,5 +33,19 @@ new Vue({
   router,
   store,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  created () {
+    console.log('// 2019.5.5 cx 新增, 全局监听页面刷新保存用户info')
+    console.log(this.$store.getters.getAccountLoginInfoAll)
+    if (this.$store.getters.getAccountLoginInfoAll === null) { // 证明刷新了页面把内存中Vuex的账户信息等变量销毁了，需要重新手工赋值，取值来源session
+      this.$store.commit('setAccountLoginInfoAll', getAccountData('accountLoginInfoAll'))
+      console.log(this.$store.getters.getAccountLoginInfoAll)
+    }
+    if (this.$store.getters.getAccountCurrentHandleStore === '') {
+      this.$store.commit('setAccountCurrentHandleStore', getAccountData('accountCurrentHandleStore'))
+    }
+    if (this.$store.getters.getAccountIsDoctor === '') {
+      this.$store.commit('setIsDoctor', getAccountData('accountIsDoctor'))
+    }
+  }
 })

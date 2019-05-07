@@ -227,7 +227,7 @@ export default {
       show: true,
       visible: false,
       dataListLoading: false, // 加载
-      StoreId: '',
+
       doctorId: '',
       doctorName: '',
       dataForm: {
@@ -317,11 +317,10 @@ export default {
       this.dataForm.Code = row.Code
     },
     // 获取某个采购单详情info
-    init (row, StoreId) {
+    init (row) {
       this.visible = true
       this.dataListLoading = true
       if (row !== undefined) {
-        this.StoreId = StoreId // 门店id 来源index页（而不是first-tab页）
         this.doctorId = row.Id // 医生id
         this.doctorName = row.NickName
       }
@@ -403,7 +402,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var params = {
-            StoreId: this.StoreId,
+            StoreId: this.$store.getters.getAccountCurrentHandleStore,
             AccountId: this.doctorId, // 医生id
             UserId: this.dataForm.UserId, // 患者id
             OrderType: 1, // 1挂号 2退号
@@ -437,7 +436,7 @@ export default {
     openPatientList () {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.patientList.init(this.StoreId)
+        this.$refs.patientList.init()
       })
     }
   }

@@ -14,11 +14,11 @@
             'label_0': '',
             'size_1': 'mini',
             'width_2': '120px',
-            'clear_3': true,
-            'disabled_4': false,
-            'multiple_5': false
-          }" ref="comStoreOne" @eventStore="changeStoreData"
-          ></com-store>
+            'clear_3': false,
+            'multiple_4': false,
+            'must_5': true,
+            'isTrigger': true
+          }" ref="comStore" @eventStore="changeStoreData"></com-store>
           <el-form-item>
             <el-input v-model="dataForm.code" placeholder="采购单批次" size="mini" clearable></el-input>
           </el-form-item>
@@ -107,9 +107,6 @@ export default {
   created () {
     this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
   },
-  mounted () {
-    this.$refs.firstTab.getDataList(0)
-  },
   watch: {
     'value6': function () {
       console.log(this.value6)
@@ -125,13 +122,14 @@ export default {
     }
   },
   methods: {
-    getChildDataList () {
-      this.$refs.firstTab.getDataList(this.num)
-    },
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
         this.dataForm.StoreId = choseStoreId
+        this.$refs.firstTab.getDataList(this.num)
       }
+    },
+    getChildDataList () {
+      this.$refs.firstTab.getDataList(this.num)
     },
     pageInit () {
       this.dataListLoading = true

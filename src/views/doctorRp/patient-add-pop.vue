@@ -58,7 +58,6 @@ export default {
       // visible: false,
       dataListLoading: false, // 加载
       dataForm: {
-        StoreId: '',
         UserName: '',
         Sex: '1',
         BirthDate: '',
@@ -79,14 +78,9 @@ export default {
       this.$emit('childEven')
     },
     // 获取某个采购单详情info
-    init (id) {
-      // this.visible = true
-      if (id !== undefined) {
-      }
-    },
+    init () {},
     handleClose () {
       this.dataForm = {
-        StoreId: '',
         UserName: '',
         Sex: '1',
         BirthDate: '',
@@ -100,7 +94,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var paramsAdd = {
-            StoreId: 0,
+            StoreId: this.$store.getters.getAccountCurrentHandleStore,
             UserName: this.dataForm.UserName,
             Sex: this.dataForm.Sex,
             BirthDate: this.dataForm.BirthDate,
@@ -126,13 +120,14 @@ export default {
           })
         }
       })
-    },
-    addOrUpdateHandle3 (id, type) {
-      this.addOrUpdateVisible = true
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id, type)
-      })
     }
+    // ,
+    // addOrUpdateHandle3 (id, type) {
+    //   this.addOrUpdateVisible = true
+    //   this.$nextTick(() => {
+    //     this.$refs.addOrUpdate.init(id, type)
+    //   })
+    // }
   }
 }
 </script>

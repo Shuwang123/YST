@@ -15,10 +15,10 @@
         'size_1': '',
         'width_2': '180px',
         'clear_3': true,
-        'disabled_4': false,
-        'multiple_5': false
-      }" ref="comStore" @eventStore="changeStoreData">
-      </com-store>
+        'multiple_4': false,
+        'must_5': false,
+        'isTrigger': false
+      }" ref="comStore" @eventStore="changeStoreData"></com-store>
 
       <el-form-item>
         <el-select v-model="dataForm.roleId" placeholder="请选择角色ID" clearable>
@@ -190,6 +190,7 @@ export default {
         nickName: this.dataForm.nickName, // 别名
         id: this.dataForm.id, // 账号id
         storeId: this.dataForm.storeId === '' ? 0 : this.dataForm.storeId, // 名店id ※?????无法请求分页
+        // storeId: this.dataForm.storeId === '' ? this.$store.getters.getAccountLoginInfoAll.CanViewStores : this.dataForm.storeId,
         roleId: this.dataForm.roleId// 角色id
       }
       console.log(parmet)

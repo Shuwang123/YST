@@ -100,7 +100,7 @@ export default {
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: this.IsPaging,
-        StoreId: this.fatherDataForm.StoreId, // 门店Id（必须）
+        StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店Id（必须）
         AccountId: this.fatherDataForm.AccountId, // 账户Id,医生Id
         Code: '', // 挂号单
         UserName: this.fatherDataForm.patientName, // 患者姓名

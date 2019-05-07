@@ -10,6 +10,7 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column prop="Id" header-align="center" align="center" label="ID" width="60" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="DoctorName" header-align="center" align="center" label="医生" min-width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Code" header-align="left" align="left" label="挂号单号" width="100" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="UserCode" header-align="left" align="left" label="病历号" width="100" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="UserName" header-align="center" align="center" label="患者" width="70"></el-table-column>
@@ -19,14 +20,13 @@
       <el-table-column prop="DiagnosisTypeName" header-align="center" align="center" label="初诊、复诊" min-width="100" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="RegisterAmount" header-align="center" align="center" label="挂号费" width=""></el-table-column>
       <el-table-column prop="ConsultationAmount" header-align="center" align="center" label="问诊费" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="DoctorName" header-align="center" align="center" label="医生" min-width="70" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="StatusName" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="" label="操作" :width="status === 1 ? 280 : 150" header-align="center" align="center">
         <template slot-scope="scope">
           <!--<el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">就诊</el-button>-->
           <el-button type="text"
-            @click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&StoreId=${fatherDataForm.StoreId}&DoctorName=${scope.row.DoctorName}`)">
+            @click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&DoctorName=${scope.row.DoctorName}`)">
             就诊</el-button>
         </template>
       </el-table-column>
@@ -80,29 +80,29 @@ export default {
   methods: {
     getDataList () {
       this.dataListLoading = true
-      var params = {
-        PageIndex: this.pageIndex,
-        PageSize: this.pageSize,
-        IsPaging: this.IsPaging,
-        StoreId: this.fatherDataForm.StoreId, // 门店Id（必须）
-        Code: '', // 挂号单
-        UserName: '', // 患者姓名
-        MobilePhone: '', // 患者电话
-        AccountId: this.fatherDataForm.AccountId, // 账户Id,医生Id
-        WrokFrom: '', // 开始时间
-        WrokTo: '' // 结束时间
-      }
-      console.log(params)
-      console.log('jdaljdjadjlk去哦wieuROIu气我ie')
-      // 获取待就诊列表（挂号列表为基础筛选：医生）
-      API.register.getRegisterList(params).then(result => {
-        if (result.code === '0000') {
-          this.dataList = result.data
-          this.totalPage = result.total
-        } else {
-          this.$message.error(result.message)
+      this.$nextTick(() => {
+        var params = {
+          PageIndex: this.pageIndex,
+          PageSize: this.pageSize,
+          IsPaging: this.IsPaging,
+          StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店Id（必须）
+          Code: '', // 挂号单
+          UserName: '', // 患者姓名
+          MobilePhone: '', // 患者电话
+          AccountId: this.fatherDataForm.AccountId, // 账户Id,医生Id
+          WrokFrom: '', // 开始时间
+          WrokTo: '' // 结束时间
         }
-        this.dataListLoading = false
+        API.register.getRegisterList(params).then(result => { // 获取待就诊列表（挂号列表为基础筛选：医生）或者以后还可能筛选挂号单本身的状态
+          if (result.code === '0000') {
+            this.dataList = result.data
+            this.totalPage = result.total
+          } else {
+            this.$message.error(result.message)
+          }
+          this.dataListLoading = false
+        })
+        console.log(params)
       })
     },
     getDataListChild () {

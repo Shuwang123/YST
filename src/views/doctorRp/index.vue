@@ -327,27 +327,25 @@ export default {
       this.dataForm.Code = row.Code
     },
     // 打开会员弹窗
-    openPatientList (storeId = 0) {
+    openPatientList () {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.patientListPop.init(storeId)
+        this.$refs.patientListPop.init()
       })
     },
     // 通用封装的门店子组件绑定的父组件的返回方法（开方页面的上层已提前决定了门店，这儿还能改变门店吗？？？？？？？？？？？？？？？？？？？）
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
-      if (isMultiple === false) {
-        this.dataForm.StoreId = choseStoreId
-      }
+      // if (isMultiple === false) { this.dataForm.StoreId = choseStoreId }
     },
     pageInit () {
       this.dataListLoading = true
-      // 请求会员信息，根据前一层路由传递的会员电话
+      // 请求会员信息，根据前一层路由传递的会员电话，其实会员信息正常是 只返回一条（自动填充患者的电话、年龄、性别、姓名、病历号...）
       var params = {
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: this.isPaging,
         UserName: '',
-        StoreId: this.$route.query.StoreId,
+        StoreId: this.$store.getters.getAccountCurrentHandleStore,
         MobilePhone: this.$route.query.MobilePhone
       }
       console.log(params)
@@ -374,10 +372,10 @@ export default {
           })
         }
       })
-      // 获取对应门店下的对应药材库
+      // 后初始化页面的右上角：
       this.getStoreCategorytypeStock()
     },
-    // 获取对应门店对应药态下的对应药材库
+    // 右侧‘添加’药材的小模块：获取 对应门店 对应药态下的 对应药材库
     getStoreCategorytypeStock () {
       API.drugs.getDrugsList({
         Name: '',
@@ -386,7 +384,7 @@ export default {
         IsPaging: 'true',
         SpellName: this.dataForm.SpellName,
         CategoryId: this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001
-        StoreId: this.$route.query.StoreId, // 传不传门店id决定了是否返回库存余量!!!
+        StoreId: this.$store.getters.getAccountCurrentHandleStore, // 传不传门店id决定了是否返回库存余量!!!（另外这儿可以能有点问题要处理，因为可能是药房的账号进来，那这样的话如果药房的权限大于医生，那门店库存也更正变大了，这是个要考虑的地方）
         CodeOrBarCode: '' // 暂无
       }).then(result => {
         if (result.code === '0000' && result.data.length > 0) {
@@ -437,12 +435,6 @@ export default {
     currentChangeHandle (val) {
       this.pageIndex = val
       this.getDataList()
-    },
-    addOrUpdateHandle (row, StoreId) {
-      this.addOrUpdateVisible = true
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(row, StoreId)
-      })
     }
   }
 }

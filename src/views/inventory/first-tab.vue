@@ -79,7 +79,6 @@ export default {
       chenxiHeight: document.documentElement['clientHeight'] - 333, // 心累，不要动
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
-
       pageIndex: 1,
       pageSize: 10,
       IsPaging: true,
@@ -99,9 +98,6 @@ export default {
     }
   },
   components: { FirstTabAddOrUpdate },
-  created () {
-    this.getDataList()
-  },
   mounted () {
     window.onresize = () => {
       this.chenxiHeight = document.documentElement['clientHeight'] - 333 // 273 测试老半天
@@ -113,6 +109,7 @@ export default {
     },
     getDataList () {
       this.dataListLoading = true
+      console.log('有问题没这儿')
       var params = {
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,

@@ -5,13 +5,13 @@
         <img src="@/assets/logo/login-img.png" class="main-left-img"/>
       </div>
       <div class="main-right">
+
         <div class="main-right-logo">
           <img src="@/assets/logo/login_logo.png" class="main-right-logo-img"/>
         </div>
         <div class="main-right-title">
           <p class="main-right-title-p">一善堂</p>
         </div>
-
         <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm" @keyup.enter.native="submitForm('ruleForm')">
           <el-form-item label="账号" prop="name">
             <el-input v-model="ruleForm.name" placeholder="请输入登陆账号" clearable></el-input>
@@ -33,8 +33,7 @@
 <script type="text/ecmascript-6">
 import API from '@/api'
 import md5 from 'js-md5'
-import {setStore} from '@/utils'
-import axios from 'axios'
+import {setStore, setAccountData} from '@/utils'
 export default {
   data () {
     return {
@@ -44,10 +43,10 @@ export default {
       },
       rules: {
         name: [
-          { required: true, message: '请输入账号', trigger: 'blur' },
+          { required: true, message: '请输入账号', trigger: 'blur' }
         ],
         pass: [
-          { required: true, message: '请输入密码', trigger: 'blur' },
+          { required: true, message: '请输入密码', trigger: 'blur' }
         ]
       }
     }
@@ -59,19 +58,36 @@ export default {
           var passMd5 = md5(this.ruleForm.pass)
           console.log(passMd5)
           API.common.login({userName: this.ruleForm.name, password: this.ruleForm.pass, remmberMe: false}).then(data => {
-          // this.$ios.get('../static/data/data.json').then(result => {
+            // this.$ios.get('../static/data/data.json').then(result => {
             if (data.code === '0000') {
-              API.common.leftMenuTreeList().then(response => {
-                if (response.code === '0000') {
-                  setStore('userInfo', response.data)
-                  console.log(response)
+              function funMenu () { return API.common.leftMenuTreeList() } // 返回登陆后menu权限
+              function funLoginInfo () { return API.purchase.getLoginInfo() } // 返回登陆后store的相关内容
+              this.$ios.all([funMenu(), funLoginInfo()]).then(this.$ios.spread((response, result) => {
+                if (response.code === '0000' && result.code === '0000') {
+                  // console.log(response)
+                  setStore('userInfo', response.data) // 保存当前账号的 菜单树
                   this.$router.push({name: 'dashboard'})
-                }
-                else
-                {
+
+                  // 陈希2019.5.5 新增start 登陆详情处理，把登陆后返回的store相关信息保存在session
+                  // "AccountId": 1,
+                  // "UserName": "superman",
+                  // "NickName": "系统管理员",
+                  // "RoleId": 1,
+                  // "RoleName": "系统管理员",
+                  // "StoreName": "",
+                  // "StoreId": 0,
+                  // "CanViewStores": "",
+                  // "StoreCode": "",
+                  // "View": true
+                  console.log(result)
+                  this.$store.commit('setAccountLoginInfoAll', result.data) // ①当前账号的 门店所有详情(先存给Vuex，后在Vuex的commit中存给store，同时转存给session)
+                  var isDoctor = result.data.RoleName === '医生' ? true : false
+                  this.$store.commit('setIsDoctor', isDoctor) // ②判断是否是医生
+                  // setAccountData('accountCurrentHandleStore', '') // ③当前的手动选择门店，这个后来感觉应该在采购单等往后的模块处理就放弃了
+                } else {
                   this.$message.error('获取菜单失败')
                 }
-              })
+              }))
             } else {
               this.$message.error('账号或者密码错误，请重新登录！')
             }

@@ -27,6 +27,32 @@ export function removeStore (name) {
   window.sessionStorage.removeItem(name)
 }
 
+
+
+/** chenxi 陈希start   用的时候必须先：import {setStore} from '@/utils'
+ * import {key} from '@/utils' 陈希2019.5.5对账号登陆后返回的：账号信息、是否是医生类账号、当前选中门店等状态进行封装；提供 给采购、挂号、开方模块 使用
+ * accountLoginInfoAll、accountIsDoctor、accountCurrentHandleStore 账号信息、是否是医生类账号、当前选中门店
+ */
+export function setAccountData (name, content) {
+  if (!name) return
+  if (typeof content !== 'string') { // 如果传递进来的内容不是格式好了的字符串类型，那必须先序列化好
+    content = JSON.stringify(content)
+  }
+  window.sessionStorage.setItem(name, content) // 序列化好了，就存了呗
+}
+
+export function getAccountData (name) {
+  if (!name) return
+  var getStr = window.sessionStorage.getItem(name) !== undefined ? window.sessionStorage.getItem(name) : ''
+  return JSON.parse(getStr)
+}
+/** chenxi 陈希end    用的时候必须先：import {setStore} from '@/utils'
+ */
+
+
+
+
+
 /**
  * 获取路由名称, 根据url地址
  * @param {*} url

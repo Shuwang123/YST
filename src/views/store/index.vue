@@ -116,6 +116,7 @@ export default {
         pageSize: this.pageSize,
         isPaging: true,
         canViewStores: '' // 普通管理员能拥有这个界面吗？如果有权限，那这个门店列表的展示又有判断了，会根据登陆接口获取当前账号的可控门店字段
+        // (后端自动处理过了，当传递''时可以自动返回对应账号的上限个数的门店)
       }
       _this.dataListLoading = true
       API.store.storeAll(parmet).then(response => {

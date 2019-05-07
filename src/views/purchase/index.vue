@@ -9,7 +9,7 @@
       <br>
       <div style="background-color: #F5F7FA;margin-bottom: -5px;border-radius: 5px 5px 0 0">
         <el-form-item label="操作账号" prop="">
-          <el-input v-model="dataForm.UserName" placeholder="操作账号" clearable size="mini" style="width: 100px" :disabled="true"></el-input>
+          <el-input v-model="$store.getters.getAccountLoginInfoAll.NickName" placeholder="操作账号" clearable size="mini" style="width: 100px" :disabled="true"></el-input>
         </el-form-item>
         <el-form-item label="" prop="CategoryText">
           <el-radio-group v-model="dataForm.CategoryText" size="mini" @change="categoryTextHandle">
@@ -27,9 +27,10 @@
           'size_1': 'mini',
           'width_2': '150px',
           'clear_3': true,
-          'disabled_4': !dataForm.View,
-          'multiple_5': false
-        }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
+          'multiple_4': false,
+          'must_5': false,
+          'isTrigger': false
+        }" ref="comStore" @eventStore="changeStoreData"></com-store>
       </div>
     </el-form>
 
@@ -99,11 +100,12 @@ export default {
       totalPage: 1,
       dataForm: {
         Name: '',
-        UserName: '', // 当前页面登陆的账号名
-        View: true, // 是否显示门店筛选组件
+        // UserName: '', // 当前页面登陆的账号名
+        // View: true, // 是否显示门店筛选组件
         supplierId: '0',
         supplierCode: '',
 
+        isOriginHistory: false, // 是否来源于历史操作, 这个字段2019.5.5号加的，目的是如果通过保存来初始化页面，门店初始化那步会把一些数据误清空掉，后来就加了个字段是调用历史记录初始化页面时触发切换门店事件不清空页面中间的历史数据，反正就是那个意思嘛，好奇的话自己想
         StoreId: '0',
         StoreCode: '',
         Buyer: '',
@@ -147,6 +149,8 @@ export default {
             vm.dataList = JSON.parse(window.sessionStorage.getItem('modPurchaseList'))
             vm.purchaseFormal = JSON.parse(window.sessionStorage.getItem('modPurchaseList'))
             vm.dataForm.StoreId = JSON.parse(window.sessionStorage.getItem('modPurchasePeopleInfo')).StoreId
+            vm.isOriginHistory = true
+            vm.$refs.comStore.pageInit(vm.dataForm.StoreId)
             vm.dataForm.Buyer = JSON.parse(window.sessionStorage.getItem('modPurchasePeopleInfo')).Buyer
             vm.dataForm.Phone = JSON.parse(window.sessionStorage.getItem('modPurchasePeopleInfo')).Phone
             vm.dataForm.Address = JSON.parse(window.sessionStorage.getItem('modPurchasePeopleInfo')).Address
@@ -219,8 +223,11 @@ export default {
           this.dataForm.Address = ''
           this.getDataList()
           return false
-        }
-        this.$nextTick(() => {
+        } else {
+          if (this.isOriginHistory === true) {
+            this.isOriginHistory = false
+            return false
+          }
           API.store.storeAll({
             name: '',
             PageIndex: 1,
@@ -238,12 +245,12 @@ export default {
               this.getDataList()
             }
           })
-        })
+        }
       }
     },
     pageInit () {
       this.dataListLoading = true
-      // 并发请求 供应商、药态(并发请求，最后单独请求第四个，根据当前登陆账号觉得是否禁用门店下拉)
+      // 先并发请求 供应商、药态(最后单独请求第三个，根据当前登陆账号觉得是否禁用门店下拉)
       function funSupplier () { return API.supplier.getSupplierList({name: '', PageIndex: '1', PageSize: '1000', IsPaging: true, code: ''}) }
       function funCategory () { return API.drugs.getDrugsCategory() }
       this.$ios.all([funSupplier(), funCategory()]).then(this.$ios.spread((resultSupplier, resultCategory) => {
@@ -256,37 +263,26 @@ export default {
           this.oldCategoryText = this.drugsCategoryList[0].text
           this.dataListLoading = false
         }
-        this.$nextTick(() => {
-          // 初始化页面完毕后才，处理去获取当前页面login信息，获得账号下对应门店的详情---（识别当前账号是：管理员账号、还是1对1类型的账号）
-          API.purchase.getLoginInfo().then(result => {
-            if (result.code === '0000') {
-              console.log(result)
-              this.dataForm.UserName = result.data.UserName
-              this.dataForm.View = result.data.View // 决定：门店下拉是否禁用
-              if (result.data.View === false) {
-                this.$refs.comStoreOne.pageInit(result.data.StoreId) // 单选类型，多选类型，初始化下拉值
-                // 下面这个API，只是因为loginInfo这个无法直接拿到contact等信息，不得不重新请求另一个接口而已
-                API.store.storeAll({
-                  name: '',
-                  PageIndex: 1,
-                  PageSize: 1000,
-                  IsPaging: true,
-                  code: '',
-                  canViewStores: result.data.CanViewStores
-                }).then(result => {
-                  if (result.code === '0000') {
-                    this.dataForm.StoreId = result.data[0].Id
-                    this.dataForm.StoreCode = result.data[0].Code
-                    this.dataForm.Buyer = result.data[0].Contact
-                    this.dataForm.Phone = result.data[0].Phone
-                    this.dataForm.Address = result.data[0].Address
-                    this.getDataList()
-                  }
-                })
-              }
-            }
-          })
-        })
+        // this.$nextTick(() => {
+        //   // 初始化页面完毕后才，处理去获取当前页面login信息，获得账号下对应门店的详情---（识别当前账号是：管理员账号、还是1对1类型的账号）
+        //   API.store.storeAll({
+        //     name: '',
+        //     PageIndex: 1,
+        //     PageSize: 1000,
+        //     IsPaging: true,
+        //     code: '',
+        //     canViewStores: result.data.CanViewStores
+        //   }).then(result => {
+        //     if (result.code === '0000') {
+        //       this.dataForm.StoreId = result.data[0].Id
+        //       this.dataForm.StoreCode = result.data[0].Code
+        //       this.dataForm.Buyer = result.data[0].Contact
+        //       this.dataForm.Phone = result.data[0].Phone
+        //       this.dataForm.Address = result.data[0].Address
+        //       this.getDataList()
+        //     }
+        //   })
+        // }
       }))
     },
     categoryTextHandle (text) {
@@ -332,6 +328,7 @@ export default {
     },
     addOrUpdateHandle (id0, id1) { // id0是药态类型、饮片、颗粒等+id1门店id
       this.addOrUpdateVisible = true
+      console.log(id1)
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id0, id1)
       })

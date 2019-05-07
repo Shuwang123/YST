@@ -7,11 +7,11 @@
             'label_0': '',
             'size_1': 'mini',
             'width_2': '120px',
-            'clear_3': true,
-            'disabled_4': false,
-            'multiple_5': false
-          }" ref="comStoreOne" @eventStore="changeStoreData"
-          ></com-store>
+            'clear_3': false,
+            'multiple_4': false,
+            'must_5': true,
+            'isTrigger': true
+          }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
           <el-form-item label="" prop="CategoryText">
             <el-radio-group v-model="dataForm.CategoryText" size="mini" @change="categoryTextHandle">
               <el-radio-button v-for="item in drugsCategoryList" :key="item.id"
@@ -91,13 +91,11 @@ export default {
     // this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
     this.getDrugsCategoryType()
   },
-  mounted () {
-    // this.$refs.firstTab.getDataList(0)
-  },
   methods: {
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
         this.dataForm.StoreId = choseStoreId
+        this.$refs.firstTab.getDataList()
       }
     },
     // 并发请求 供应商、药态(并发请求，最后单独请求第四个，根据当前登陆账号觉得是否禁用门店下拉)
@@ -135,6 +133,9 @@ export default {
         case 'first':
           this.isVisible = this.isVisible.map((item, index) => {
             return index === 0 ? {child: true} : {child: false}
+          })
+          this.$nextTick(() => {
+            this.$refs.firstTab.getDataList() // 这儿写了为什么后两个不写呢，一个小bug不好描述，好奇的话，只看代码是很难看出来的，删了后然后tabs切换几下就知道了，不过记得提前备份哟
           })
           break
         case 'second':

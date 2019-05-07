@@ -8,6 +8,8 @@ import common from './modules/common'
 import getters from './getters'
 import actions from './actions'
 import mutations from './mutations'
+// cx start
+import {getAccountData} from '@/utils'
 
 // import register from './modules/ownRegisterStatus' // 新增（cx）
 
@@ -26,7 +28,11 @@ const state = {
   documentClientIFRMAE: document.documentElement['clientHeight'] - 240,
 
   // cx(start)
-  registerStep: 1
+  registerStep: 1, // 药房挂号模版那个挂号弹窗
+
+  accountLoginInfoAll: null, // result.data 来源session session来源login.vue
+  accountIsDoctor: '', // 判断是否是医生 true false
+  accountCurrentHandleStore: '' // 只针对当前手选门店 在采购单、药房、医生这几个模块 手动改变comstore的option时响应变化
 }
 
 const store = new Vuex.Store({

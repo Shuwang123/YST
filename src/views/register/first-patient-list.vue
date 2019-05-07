@@ -86,7 +86,6 @@ export default {
       isPaging: true,
       dataForm: {
         UserName: '',
-        StoreId: 0,
         MobilePhone: ''
       },
       totalPage: 1,
@@ -110,7 +109,7 @@ export default {
         PageSize: this.pageSize,
         IsPaging: this.isPaging,
         UserName: this.dataForm.UserName,
-        StoreId: this.dataForm.StoreId,
+        StoreId: this.$store.getters.getAccountCurrentHandleStore,
         MobilePhone: this.dataForm.MobilePhone
       }
       API.member.getMemberList(params).then(result => {
@@ -124,12 +123,9 @@ export default {
       })
     },
     // 获取某个采购单详情info
-    init (StoreId) {
+    init () {
       this.visible = true
-      this.dataForm.StoreId = StoreId
-      if (StoreId !== 0) {
-        this.getDataList()
-      }
+      this.getDataList()
     },
     // 每页数
     sizeChangeHandle (val) {
@@ -142,8 +138,7 @@ export default {
       this.pageIndex = val
       this.getDataList()
     },
-    handleClose () {
-    },
+    handleClose () {}, // 暂未处理
 
     dataFormSubmitB () { // 入库的提交 批次号
       if (this.dataList.Items.some(item => item.ProductBatchNo === 0 || item.ProductBatchNo === '' || item.ProductBatchNo === null)) {
@@ -187,7 +182,7 @@ export default {
     addOrUpdateHandle3 () {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(this.dataForm.StoreId)
+        this.$refs.addOrUpdate.init()
       })
     }
   }

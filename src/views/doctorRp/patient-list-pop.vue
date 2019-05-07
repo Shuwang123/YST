@@ -95,7 +95,6 @@ export default {
       isPaging: true,
       dataForm: {
         UserName: '',
-        StoreId: 0,
         MobilePhone: ''
       },
       totalPage: 1,
@@ -120,7 +119,7 @@ export default {
         PageSize: this.pageSize,
         IsPaging: this.isPaging,
         UserName: this.dataForm.UserName,
-        StoreId: this.StoreId,
+        StoreId: this.$store.getters.getAccountCurrentHandleStore,
         MobilePhone: this.dataForm.MobilePhone
       }
       API.member.getMemberList(params).then(result => {
@@ -134,11 +133,9 @@ export default {
       })
     },
     // 获取某个采购单详情info
-    init (storeId) {
+    init () {
       this.visible = true
-      if (storeId === 0) {
-        this.getDataList()
-      }
+      this.getDataList()
     },
     // 每页数
     sizeChangeHandle (val) {
@@ -155,10 +152,10 @@ export default {
       this.editType = ''
       this.isAddActive = false
     },
-    addOrUpdateHandle3 (id, type) {
+    addOrUpdateHandle3 () {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id, type)
+        this.$refs.addOrUpdate.init()
       })
     }
   }

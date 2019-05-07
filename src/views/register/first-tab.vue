@@ -33,7 +33,7 @@
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain
-                     @click="addOrUpdateHandle(scope.row, fatherDataForm.StoreId)">挂号
+                     @click="addOrUpdateHandle(scope.row)">挂号
           </el-button>
         </template>
       </el-table-column>
@@ -97,40 +97,39 @@ export default {
       document.getElementById('tts_autio_id').play()
     },
     getDataList () {
-      this.$nextTick(() => {
-        this.dataListLoading = true
-        var params = {
-          PageIndex: this.pageIndex,
-          PageSize: this.pageSize,
-          IsPaging: this.IsPaging,
-          id: this.fatherDataForm.AccountId,
-          userName: '',
-          nickName: '',
-          roleId: '',
-          storeId: this.fatherDataForm.StoreId // 门店ID
+      this.dataListLoading = true
+      var params = {
+        PageIndex: this.pageIndex,
+        PageSize: this.pageSize,
+        IsPaging: this.IsPaging,
+        id: this.fatherDataForm.AccountId,
+        userName: '',
+        nickName: '',
+        roleId: '',
+        storeIdcanViewStores: this.$store.getters.getAccountCurrentHandleStore // 门店ID 好像请求失败了，？？？？涉及到三个地方要改，别忘了
+      }
+      console.log(params)
+      // 这才是正文要展示出来的对应门店的所有医生列表
+      API.adminUser.adminUserList(params).then(response => {
+        if (response.code === '0000') {
+          if (response.data) { this.dataList = response.data }
+          this.totalPage = response.total
+          console.log(this.dataList)
+        } else {
+          this.$message.error(response.message)
         }
-        console.log(params)
-        API.adminUser.adminUserList(params).then(response => {
-          if (response.code === '0000') {
-            if (response.data) { this.dataList = response.data }
-            this.totalPage = response.total
-            console.log(this.dataList)
-          } else {
-            this.$message.error(response.message)
-          }
-          this.dataListLoading = false
-        })
-        // API.register.getDoctors(params).then(result => {
-        //   console.log('ajsdj')
-        //   if (result.code === '0000') {
-        //     this.dataList = result.data
-        //     this.totalPage = result.total
-        //   } else {
-        //     this.$message.error(result.message)
-        //   }
-        //   this.dataListLoading = false
-        // })
+        this.dataListLoading = false
       })
+      // API.register.getDoctors(params).then(result => {
+      //   console.log('ajsdj')
+      //   if (result.code === '0000') {
+      //     this.dataList = result.data
+      //     this.totalPage = result.total
+      //   } else {
+      //     this.$message.error(result.message)
+      //   }
+      //   this.dataListLoading = false
+      // })
     },
     // 每页数
     sizeChangeHandle (val) {
@@ -143,10 +142,10 @@ export default {
       this.pageIndex = val
       this.getDataList()
     },
-    addOrUpdateHandle (row, StoreId) {
+    addOrUpdateHandle (row) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(row, StoreId)
+        this.$refs.addOrUpdate.init(row)
       })
     },
     handelDelete (id) {

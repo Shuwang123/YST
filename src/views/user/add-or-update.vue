@@ -17,12 +17,12 @@
         'label_0': '归属门店',
         'size_1': '',
         'width_2': '400px',
-        'clear_3': true,
-        'disabled_4': false,
-        'multiple_5': false
-      }" ref="comStoreOne" @eventStore="changeStoreData"
-      ></com-store>
-
+        'clear_3': false,
+        'multiple_4': false,
+        'must_5': false,
+        'isTrigger': false
+      }" ref="comStoreOne" @eventStore="changeStoreData">
+      </com-store>
       <el-form-item label="角色ID" prop="RoleId">
         <el-select v-model="dataForm.RoleId" placeholder="此账号的角色ID（一个账号只能对应一个角色）" style="width: 400px">
           <el-option v-for="item in roleArr" :key="item.value"
@@ -30,13 +30,15 @@
           </el-option>
         </el-select>
       </el-form-item>
+
       <com-store :paramsFather="{
         'label_0': '可控门店',
         'size_1': '',
         'width_2': '400px',
         'clear_3': false,
-        'disabled_4': false,
-        'multiple_5': true
+        'multiple_4': true,
+        'must_5': false,
+        'isTrigger': false
       }" ref="comStoreSome" @eventStore="changeStoreData">
       </com-store>
     </el-form>
@@ -140,6 +142,7 @@ export default {
           }
         })
       }
+      // 这儿不要注释哟，重复弹窗可以清空上次弹窗的操作记录
       this.$nextTick(() => {
         this.$refs.comStoreOne.pageInit('')
         this.$refs.comStoreSome.pageInit([]) // 多选的时候清空子组件不要传''了，不然子组件后续的选择调用push方法时有bug，而且你还找不出来，恶心死人
@@ -165,6 +168,7 @@ export default {
         } else {
           this.dataForm.CanViewStores = this.dataForm.CanViewStores.split(',').concat(this.dataForm.StoreId).join()
         }
+
         if (valid) {
           var obj = {
             UserName: this.dataForm.UserName,
