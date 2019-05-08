@@ -2,11 +2,12 @@
   <div class="doctor-recipel">
     <el-form ref="form" :rules="dataRule" :model="dataForm" label-width="80px" size="mini">
       <el-container style="padding-left: 20px">
-        <el-aside width="75%" style="border-right: 1px solid #DCDFE6; padding-right: 5px">
+        <el-aside width="75%" style="border-right: 1px solid #DCDFE6; padding-right: 5px;min-width: 700px">
           <!--<h1>开方：</h1>-->
           <p style="text-align: center;font-size: 16px; padding: 5px 0 20px 0; cursor: pointer"
              @click="cutOut = !cutOut" title="点击展开或收起">
-            ꧁<span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;"> 处方笺 </span>꧂
+            <!--꧁<span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;"> 处方笺 </span>꧂-->
+            <span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;"> 处方笺 </span>
           </p>
           <el-row>
             <el-col :span="8">
@@ -102,16 +103,17 @@
           </transition>
 
           <div style="border-bottom: 1px solid #E6E6E6; font-weight: 500">R:</div>
+          <!--左侧开方：直接用组件的引用名切换-->
           <el-table
             :height="chenxiHeight"
-            :data="dataList"
+            :data="leftTableData"
             stripe
             v-loading="dataListLoading"
             row-class-name="purchaseListRow"
             :header-cell-style="$cxObj.tableHeaderStyle30px"
             style="width: 100%;">
-            <!--组件切换，直接控制组件的引用名-->
-            <component :is="this.leftTable"></component>
+            <component :is="this.leftTable" ref="leftCurrentTable" @tableEvent="delDrugs"></component>
+            <!--v-if="addOrUpdateVisible" ref="patientListPop" @childEven="zairuFun"-->
             <!--<div>-->
               <!--<el-table-column type="index" align="center" width="50" label="序号"></el-table-column>-->
               <!--<el-table-column prop="Id" header-align="center" align="center" label="药品/规格" width="100"></el-table-column>-->
@@ -129,59 +131,47 @@
           </el-table>
         </el-aside>
 
-        <el-main style="padding: 10px; border-bottom: 1px solid #DCDFE6">
-          <el-input v-model="dataForm.name" placeholder="请输入要查询要的药材" style="width: 100%" size="small" clearable>
-            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+        <el-main width="25%" style="padding: 10px; border-bottom: 1px solid #DCDFE6;">
+          <el-input v-model="dataForm.SpellName" @blur="dataForm.SpellName = ''"
+                    :placeholder="`请输入要查询要的药材, 当前门店：${$store.getters.getAccountCurrentHandleStore}`"
+                    style="min-width: 190px; width: 100%" size="small" clearable><i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
-          <!--右上角tabs标签页切换-->
+          <!--右侧药材：tabs标签页切换引导组件切换-->
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane v-for="item in drugsCategoryArr" :key="item.id" :label="item.text" :name="item.id"></el-tab-pane>
           </el-tabs>
-          <ul style="min-height: 500px; background-color: #f1f2f6;width: 90%;position: relative;">
-            <li v-for="item in rightUlData" :key="item.Id" style="clear: both">
-              <span style="display: inline-block;width: 60px">{{item.ShowName}}</span>
-              [余{{item.Quantity}}]-{{item.Code}}+++{{item.Id}}
-              <el-button type="text" size="mini" style="float: right;margin-top: -3px">添加</el-button>
-            </li>
-            <ol style="position: absolute;top: 0;right: -30px;width: 30px;background-color: pink;text-align: center;font-weight: 900">
-              <li style="height: 20px;line-height: 20px">A</li>
-              <li style="height: 20px;line-height: 20px">B</li>
-              <li style="height: 20px;line-height: 20px">C</li>
-              <li style="height: 20px;line-height: 20px">D</li>
-              <li style="height: 20px;line-height: 20px">E</li>
-              <li style="height: 20px;line-height: 20px">F</li>
-              <li style="height: 20px;line-height: 20px">G</li>
-              <li style="height: 20px;line-height: 20px">H</li>
-              <li style="height: 20px;line-height: 20px">I</li>
-              <li style="height: 20px;line-height: 20px">J</li>
-              <li style="height: 20px;line-height: 20px">K</li>
-              <li style="height: 20px;line-height: 20px">M</li>
-              <li style="height: 20px;line-height: 20px">L</li>
-              <li style="height: 20px;line-height: 20px">N</li>
-              <li style="height: 20px;line-height: 20px">O</li>
-              <li style="height: 20px;line-height: 20px">P</li>
-              <li style="height: 20px;line-height: 20px">Q</li>
-              <li style="height: 20px;line-height: 20px">R</li>
-              <li style="height: 20px;line-height: 20px">S</li>
-              <li style="height: 20px;line-height: 20px">T</li>
-              <li style="height: 20px;line-height: 20px">U</li>
-              <li style="height: 20px;line-height: 20px">V</li>
-              <li style="height: 20px;line-height: 20px">W</li>
-              <li style="height: 20px;line-height: 20px">X</li>
-              <li style="height: 20px;line-height: 20px">Y</li>
-              <li style="height: 20px;line-height: 20px">Z</li>
+          <div class="rightUlStyle">
+            <ul class="ownScrollbar">
+              <li v-for="item in rightUlData" :key="item.Id">
+                <el-row>
+                  <el-col :span="18">
+                    <span v-text="item.ShowName === null ? '000' : item.ShowName"></span> id{{item.Id}}-[{{item.Quantity}}g]
+                  </el-col>
+                  <el-col :span="6" style="text-align: right;padding-right: 7px">
+                    <el-button type="text" size="mini" @click="addDrugs(item)">添加</el-button>
+                  </el-col>
+                </el-row>
+              </li>
+            </ul>
+            <!--A B C D...字母按钮-->
+            <ol>
+              <li v-for="(item, ind) in litterArr" :key="item.content" :class="[item.isActive ? 'isActive' : '']"
+                  v-text="item.content" @click="activeLitter(item.content, ind)">
+              </li>
             </ol>
-          </ul>
-          <el-pagination
-            @size-change="sizeChangeHandle"
-            @current-change="currentChangeHandle"
-            :current-page="pageIndex"
-            :page-sizes="[10, 20, 50, 100]"
-            :page-size="pageSize"
-            :total="totalPage"
-            layout="prev, pager, next, total" background :pager-count="3">
-            <!--layout="prev, pager, next, jumper, sizes, total" background :pager-count="2">-->
-          </el-pagination>
+          </div>
+          <div class="rightPageCounter">
+            <el-pagination
+              @size-change="sizeChangeHandle"
+              @current-change="currentChangeHandle"
+              :current-page="pageIndex"
+              :page-sizes="[10, 20, 50, 100]"
+              :page-size="pageSize"
+              :total="totalPage"
+              layout="prev, pager, next, total" background :pager-count="3">
+              <!--layout="prev, pager, next, jumper, sizes, total" background :pager-count="2">-->
+            </el-pagination>
+          </div>
         </el-main>
       </el-container>
 
@@ -259,16 +249,34 @@ export default {
         }, 400)
       }
       console.log(this.chenxiHeight)
+    },
+    'dataForm.SpellName': function () {
+      this.getStoreCategorytypeStock()
     }
   },
   data () {
     return {
       cutOut: true, // 收起，显示
       reduceHeight: 350,
+      litterArr: [
+        {content: 'A', isActive: false}, {content: 'N', isActive: false},
+        {content: 'B', isActive: false}, {content: 'O', isActive: false},
+        {content: 'C', isActive: false}, {content: 'P', isActive: false},
+        {content: 'D', isActive: false}, {content: 'Q', isActive: false},
+        {content: 'E', isActive: false}, {content: 'R', isActive: false},
+        {content: 'F', isActive: false}, {content: 'S', isActive: false},
+        {content: 'G', isActive: false}, {content: 'T', isActive: false},
+        {content: 'H', isActive: false}, {content: 'U', isActive: false},
+        {content: 'I', isActive: false}, {content: 'V', isActive: false},
+        {content: 'J', isActive: false}, {content: 'W', isActive: false},
+        {content: 'K', isActive: false}, {content: 'X', isActive: false},
+        {content: 'L', isActive: false}, {content: 'Y', isActive: false},
+        {content: 'M', isActive: false}, {content: 'Z', isActive: false}],
       drugsCategoryArr: [], // 先请求药品种类
       activeName: '1001',
-      leftTable: 'TableOne', // 左侧表格
-      dataList: [], // 左侧表格的数据
+      dataList: [],
+      leftTable: 'TableOne', // 左侧表格 组件的引用名切换哟，这的值决定
+      leftTableData: [], // 左侧表格的数据
       rightUl: '', // 右侧列表
       rightUlData: [], // 右侧列表的数据
 
@@ -290,8 +298,9 @@ export default {
         age: 1,
         ageUnit: '岁',
         DiagnosisType: '1', // 看诊类型
-        morbidityTime: ''
+        morbidityTime: '',
 
+        SpellName: ''
       },
       dataRule: {
         UserName: Currency('此为必填项')
@@ -380,7 +389,7 @@ export default {
       API.drugs.getDrugsList({
         Name: '',
         PageIndex: this.pageIndex,
-        PageSize: 30,
+        PageSize: this.pageSize,
         IsPaging: 'true',
         SpellName: this.dataForm.SpellName,
         CategoryId: this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001
@@ -402,9 +411,23 @@ export default {
         } else {
           // this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
           this.dataList = []
+          this.rightUlData = []
+          this.totalPage = 0
           this.$message({ message: `${result.message}`, type: 'warning', duration: 3000 })
         }
         this.dataListLoading = false
+      })
+    },
+    // 当点击右侧药材列表的‘添加’按钮的时候
+    addDrugs (row) {
+      this.leftTableData.push(row)
+    },
+    delDrugs (row) {
+      this.leftTableData.some((item, i) => {
+        if (item.Id === row.Id) {
+          this.leftTableData.splice(i, 1)
+          return false
+        }
       })
     },
     handleClick (tab, event) {
@@ -425,16 +448,26 @@ export default {
       }
       this.getStoreCategorytypeStock()
     },
+    activeLitter (txt, ind) {
+      this.dataForm.SpellName = txt
+      this.litterArr.forEach((item, indx) => {
+        if (indx === ind) {
+          this.litterArr[indx].isActive = true
+        } else {
+          this.litterArr[indx].isActive = false
+        }
+      })
+    },
     // 每页数
     sizeChangeHandle (val) {
       this.pageSize = val
       this.pageIndex = 1
-      this.getDataList()
+      this.getStoreCategorytypeStock()
     },
     // 当前页
     currentChangeHandle (val) {
       this.pageIndex = val
-      this.getDataList()
+      this.getStoreCategorytypeStock()
     }
   }
 }
@@ -454,8 +487,72 @@ export default {
   .el-radio-button--mini .el-radio-button__inner {
     padding: 7px 9px;
   }
-}
+  .el-main {position: relative;}
+  .el-main::-webkit-scrollbar { width: 0px; }
 
+  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar, .ownScrollbar::-webkit-scrollbar { width: 7px; }
+  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-thumb, .ownScrollbar::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    background-color: #eee;
+  }
+  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-track, .ownScrollbar::-webkit-scrollbar-track {
+    border-radius: 0;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0);
+    background-color: rgba(0,0,0,0);
+  }
+
+  /*rightUlStyle 容器div*/
+  .rightUlStyle {
+    position: relative;
+    width: 80%;
+    min-width: 190px;
+    ul {
+      width: 100%;
+      min-height: 500px;
+      max-height: 600px;
+      overflow-y: scroll;
+      background-color: #fff;
+      li {
+        min-width: 180px;
+        height: 30px;
+        line-height: 30px;
+      }
+    }
+    ol {
+      position: absolute; top: 0; left: 103%;
+      color: #050505;
+      font-size: 14px;
+      font-weight: 700;
+      width: 51px;
+      text-align: center;
+      border-left: 1px solid #dedede;
+      border-top: 1px solid #dedede;
+      li {
+        float: left;
+        width: 25px;
+        height: 25px;
+        line-height: 25px;
+        cursor: pointer;
+        border-right: 1px solid #dedede;
+        border-bottom: 1px solid #dedede;
+        &.isActive {
+          background-color: #409EFF;
+          color: #fff;
+        }
+      }
+    }
+  }
+  .rightPageCounter {
+    padding-top: 5px;
+    position: absolute;
+    left: 0;
+    bottom: 5px;
+    width: 100%;
+    text-align: center;
+    background-color: #fff;
+  }
+}
 .mod {
   &-purchaseList /deep/ {
     margin-left: 10px;
