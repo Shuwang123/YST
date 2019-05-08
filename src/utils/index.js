@@ -48,8 +48,10 @@ export function getAccountData (name) {
 }
 /** chenxi 陈希end    用的时候必须先：import {setStore} from '@/utils'
  */
-
-
+export function removeAccountData (name) {
+  if (!name) return
+  window.sessionStorage.removeItem(name)
+}
 
 
 
