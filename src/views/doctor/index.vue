@@ -124,7 +124,7 @@ export default {
         userName: '',
         nickName: '',
         roleId: '', // ?????????????????有问题哟!!!!!!!!!!!!!!!!!!!!!!!!
-        storeIdcanViewStores: this.$store.getters.getAccountCurrentHandleStore // 有问题，第四处了，这儿又要获取对应门店下所有医生，不是展示的，而是用于下拉option，别忘了
+        canViewStores: this.$store.getters.getAccountCurrentHandleStore
       }
       API.adminUser.adminUserList(params).then(response => {
         if (response.code === '0000') {

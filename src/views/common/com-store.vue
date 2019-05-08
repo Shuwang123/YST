@@ -48,14 +48,14 @@ export default {
   watch: {
     StoreId (val, oldval) { // 第二个参数true和false判断返回是多选,还是单选值
       console.log(val)
+      // 当前手选门店时，这个也是true的话，就会更新全局的当前选中门店字段【这个字段是在采购单列表往后开始出现的】(先存给Vuex，后在Vuex的commit中存给store，同时转存给session)
+      if (this.paramsFather.isTrigger === true) {
+        this.$store.commit('setAccountCurrentHandleStore', val)
+      }
       if (this.paramsFather.multiple_4 === true) {
         this.$emit('eventStore', val.join(), true)
       } else {
         this.$emit('eventStore', val, false)
-      }
-      // 当前手选门店时，这个也是true的话，就会更新全局的当前选中门店字段【这个字段是在采购单列表往后开始出现的】(先存给Vuex，后在Vuex的commit中存给store，同时转存给session)
-      if (this.paramsFather.isTrigger === true) {
-        this.$store.commit('setAccountCurrentHandleStore', val)
       }
     }
   },
@@ -76,8 +76,7 @@ export default {
           // 以下分支必须要父组件确认自己为必选且默选时才调用Vuex当前选中项，如果是edit类型的这段代码不符合要求
           if (this.paramsFather.must_5 === true) { // 2019.5.5 cx新增字段，用于判断是否需要默认值
             this.StoreId =
-              this.$store.getters.getAccountCurrentHandleStore === '' ? (this.$store.getters.getAccountLoginInfoAll.StoreId === 0 ? response.data[0].Id : this.$store.getters.getAccountLoginInfoAll.StoreId) : this.$store.getters.getAccountCurrentHandleStore
-            console.log(this.StoreId)
+              this.$store.getters.getAccountCurrentHandleStore === null ? (this.$store.getters.getAccountLoginInfoAll.StoreId === 0 ? response.data[0].Id : this.$store.getters.getAccountLoginInfoAll.StoreId) : this.$store.getters.getAccountCurrentHandleStore
           }
         })
       })

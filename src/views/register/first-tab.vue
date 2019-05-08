@@ -106,7 +106,7 @@ export default {
         userName: '',
         nickName: '',
         roleId: '',
-        storeIdcanViewStores: this.$store.getters.getAccountCurrentHandleStore // 门店ID 好像请求失败了，？？？？涉及到三个地方要改，别忘了
+        canViewStores: this.$store.getters.getAccountCurrentHandleStore
       }
       console.log(params)
       // 这才是正文要展示出来的对应门店的所有医生列表

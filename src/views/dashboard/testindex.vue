@@ -1,12 +1,25 @@
 <template>
   <div class="site-content">
     挡泥板
+    <!--<el-form :inline="true">-->
+      <!--<com-store :paramsFather="{-->
+        <!--'label_0': '',-->
+        <!--'size_1': '',-->
+        <!--'width_2': '180px',-->
+        <!--'clear_3': false,-->
+        <!--'multiple_4': false,-->
+        <!--'must_5': true,-->
+        <!--'isTrigger': true-->
+      <!--}" ref="comStore" @eventStore="changeStoreData"></com-store>-->
+    <!--</el-form>-->
   </div>
 </template>
 <script type="text/ecmascript-6">
 import axios from 'axios'
+// import ComStore from '../common/com-store'
 export default {
   components: {
+    // ComStore
   },
   name: 'testdashboard',
   data () {
@@ -18,6 +31,10 @@ export default {
     this.getList()
   },
   methods: {
+    // cx新增，取了个巧，所有账号都会先进入这个页面，触发comStore，不然如果第一次进入有comstore的其他页面是没有手选门店初始值的
+    // changeStoreData (choseStoreId) {
+    //   // this.dataForm.storeId = choseStoreId
+    // },
     getList () {
       /* const that = this */
       axios.get('../static/data/data.json').then((response) => {

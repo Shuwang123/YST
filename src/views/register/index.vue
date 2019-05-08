@@ -135,7 +135,7 @@ export default {
         userName: '',
         nickName: '',
         roleId: '', // 就是这个字段，这个列表应该只能是当前门店下所有的医生类型账号，这个地方要重新处理
-        storeIdcanViewStores: this.$store.getters.getAccountCurrentHandleStore // 门店ID// storeId: this.dataForm.StoreId // 门店ID
+        canViewStores: this.$store.getters.getAccountCurrentHandleStore // 门店ID// storeId: this.dataForm.StoreId // 门店ID
       }
       API.adminUser.adminUserList(params).then(response => {
         if (response.code === '0000') {

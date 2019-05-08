@@ -141,6 +141,7 @@ export default {
     // 公用门店下拉子组件的想option改变时，父组件的storedId也变化
     changeStoreData (choseStoreId) {
       this.dataForm.storeId = choseStoreId
+      this.getDataList()
     },
     initID () {
       API.role.jueseList({PageIndex: 1, PageSize: 1000, IsPaging: true}).then(result => {
@@ -189,7 +190,7 @@ export default {
         IsPaging: true,
         nickName: this.dataForm.nickName, // 别名
         id: this.dataForm.id, // 账号id
-        storeId: this.dataForm.storeId === '' ? 0 : this.dataForm.storeId, // 名店id ※?????无法请求分页
+        canViewStores: this.dataForm.storeId === '' ? this.$store.getters.getAccountLoginInfoAll.CanViewStores : this.dataForm.storeId, // 名店id 传递''返回全部（相对自己的权限内），不是传递0
         // storeId: this.dataForm.storeId === '' ? this.$store.getters.getAccountLoginInfoAll.CanViewStores : this.dataForm.storeId,
         roleId: this.dataForm.roleId// 角色id
       }
