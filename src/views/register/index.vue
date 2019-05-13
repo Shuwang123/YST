@@ -14,23 +14,24 @@
                 'must_5': true,
                 'isTrigger': true
               }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
-              <el-form-item>
-                <el-select v-model="dataForm.AccountId" placeholder="医生" clearable style="width: 100px">
-                  <el-option v-for="item in storeDoctorArr" :key="item.Id"
-                             :label="`${item.Id} ${item.NickName}`" :value="item.Id"></el-option>
-                </el-select>
-              </el-form-item>
+
               <span v-show="isVisible[1].child">
                 <el-form-item>
-                <el-input v-model="dataForm.patientName" placeholder="患者" clearable style="width: 70px"></el-input>
+                  <el-select v-model="dataForm.AccountId" placeholder="医生" clearable style="width: 100px">
+                    <el-option v-for="item in storeDoctorArr" :key="item.Id"
+                               :label="`${item.Id} ${item.NickName}`" :value="item.Id"></el-option>
+                  </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-input v-model="dataForm.MobilePhone" placeholder="患者电话" clearable style="width: 119px"></el-input>
+                  <el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="患者/患者电话" clearable style="width: 119px"></el-input>
                 </el-form-item>
+                <!--<el-form-item>-->
+                  <!--<el-input v-model="dataForm.MobilePhone" placeholder="患者电话" clearable style="width: 119px"></el-input>-->
+                <!--</el-form-item>-->
                 <el-form-item>
                   <el-date-picker
                     size="mini"
-                    v-model="value6"
+                    v-model="valueTime"
                     type="daterange"
                     range-separator="至"
                     start-placeholder="开始日期"
@@ -40,11 +41,10 @@
                   </el-date-picker>
                 </el-form-item>
               </span>
+
               <el-form-item>
-                <el-button
-                  @click="isVisible[0].child ===  true ? $refs.firstTab.getDataList() : $refs.secondTab.getDataList()"
-                  size="mini">查询
-                </el-button>
+                <el-button @click="isVisible[0].child ===  true ? $refs.firstTab.getDataList() : $refs.secondTab.getDataList()"
+                           size="mini">查询</el-button>
               </el-form-item>
             </el-col>
             <el-col :span="3" style="text-align: right;padding-right: 10px">
@@ -76,13 +76,26 @@ import SecondTab from './second-tab'
 import ComStore from '../common/com-store'
 export default {
   watch: {
-    'value6': function () {
-      console.log(this.value6)
-      if (this.value6 !== [] && this.value6 !== null) {
-        this.dataForm.StartDate = this.value6[0]
-        this.dataForm.EndDate = this.value6[1]
-        // console.log(this.dataForm.StartDate)
-        // console.log(this.dataForm.EndDate)
+    'dataForm.AccountId': function () {
+      if (this.isVisible[1].child === true) {
+        this.$refs.secondTab.getDataList()
+      }
+    },
+    'dataForm.patientNameOrMobilePhone': function (val, oldval) {
+      var reg = /\d{11}/ig
+      if (reg.test(val) === true && val.length === 11) { // 验证通过表示输入的是手机号
+        this.dataForm.patientName = ''
+        this.dataForm.MobilePhone = val
+      } else {
+        this.dataForm.patientName = val
+        this.dataForm.MobilePhone = ''
+      }
+    },
+    valueTime (val, oldval) {
+      console.log(val)
+      if (val !== [] && val !== null) {
+        this.dataForm.StartDate = val[0]
+        this.dataForm.EndDate = val[1]
       } else {
         this.dataForm.StartDate = ''
         this.dataForm.EndDate = ''
@@ -95,6 +108,7 @@ export default {
       drugsCategoryList: [],
       dataForm: { // 三个子组件共有的查询条件：门店，商品编码、商品名称、商品拼音
         AccountId: '', // 医生Id
+        patientNameOrMobilePhone: '', // 合一
         patientName: '', // 患者
         MobilePhone: '', // 电话 这几个信息只是父组件传递给子组件的查询字段而已
         StartDate: '',
@@ -104,7 +118,7 @@ export default {
         {child: true},
         {child: false}
       ],
-      value6: [],
+      valueTime: [],
       storeDoctorArr: []
     }
   },
@@ -117,12 +131,16 @@ export default {
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
         this.dataForm.AccountId = '' // 门店切换时，选择的医生筛选条件当然也清空
+        this.dataForm.patientNameOrMobilePhone = ''
+        this.valueTime = null
         this.getStoreAllDoctor() // 门店切换时，获取对应门店下所有医生
-        if (this.isVisible[0].child === true) {
-          this.$refs.firstTab.getDataList()
-        } else {
-          this.$refs.secondTab.getDataList()
-        }
+        this.$nextTick(() => { // 等待watch那计算完毕才执行查询
+          if (this.isVisible[0].child === true) {
+            this.$refs.firstTab.getDataList()
+          } else {
+            this.$refs.secondTab.getDataList()
+          }
+        })
       }
     },
     // 当门店改变时，获取门店下所有医生（只是给表头的查询下拉option赋初始值而已）

@@ -20,7 +20,7 @@ export function registerSubmit (params) {
   })
 }
 
-// 获取挂号列表
+// 获取当前门店：当天所有挂号列表
 export function getRegisterList (params) {
   return request({
     url: requestUrl('/YstApiSaleOrder/LoadData'),
@@ -29,10 +29,10 @@ export function getRegisterList (params) {
   })
 }
 
-// 获取所有药材的列表
-export function getDrugsList (params) {
+// 挂号列表：某一行的详情
+export function getRegisterInfo (params) {
   return request({
-    url: requestUrl('/YstApiProduct/LoadData'),
+    url: requestUrl('/YstApiSaleOrder/GetSaleOrderById'),
     method: 'post',
     data: requestParam(params)
   })

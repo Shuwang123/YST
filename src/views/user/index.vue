@@ -47,7 +47,7 @@
       style="width: 100%;">
       <el-table-column type="index" label="序号" :align="$store.state.common.align" width="50px"></el-table-column>
       <!--<el-table-column prop="Id" header-align="center" :align="$store.state.common.align" label="ID" width="50"></el-table-column>-->
-      <el-table-column prop="UserName" header-align="center" :align="$store.state.common.align" label="账号"></el-table-column>
+      <el-table-column prop="UserName" header-align="center" :align="$store.state.common.align" label="账号" :show-tooltip-when-overflow="true"></el-table-column>
       <el-table-column prop="NickName" header-align="center" :align="$store.state.common.align" label="昵称" width="100"></el-table-column>
       <el-table-column prop="Phone" header-align="center" :align="$store.state.common.align" label="电话" width="150"></el-table-column>
       <el-table-column prop="StoreName" header-align="center" :align="$store.state.common.align" label="门店" :show-overflow-tooltip="true"></el-table-column>
@@ -121,9 +121,6 @@ export default {
       totalPage: 1,
       dataForm: {
         userName: '',
-        pageIndex: 1,
-        pageSize: 10,
-        isPaging: true,
         nickName: '', // 别名
         id: '', // 账号id
         storeId: '', // 名店id ※
@@ -185,8 +182,8 @@ export default {
     getDataList () {
       var parmet = {
         userName: this.dataForm.userName,
-        PageIndex: this.dataForm.pageIndex,
-        PageSize: this.dataForm.pageSize,
+        PageIndex: this.pageIndex,
+        PageSize: this.pageSize,
         IsPaging: true,
         nickName: this.dataForm.nickName, // 别名
         id: this.dataForm.id, // 账号id

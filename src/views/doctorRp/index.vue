@@ -284,7 +284,7 @@ export default {
       dataListLoading: false, // 加载
       chenxiHeight: document.documentElement['clientHeight'] - 550 > 350 ? document.documentElement['clientHeight'] - 550 : 350, // 心累，不要动
       pageIndex: 1,
-      pageSize: 10,
+      pageSize: 30, // 50 标准
       totalPage: 1,
       dataForm: {
         UserName: '',
@@ -490,13 +490,13 @@ export default {
   .el-main {position: relative;}
   .el-main::-webkit-scrollbar { width: 0px; }
 
-  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar, .ownScrollbar::-webkit-scrollbar { width: 7px; }
-  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-thumb, .ownScrollbar::-webkit-scrollbar-thumb {
+  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar, .el-table__body-wrapper.is-scrolling-left::-webkit-scrollbar, .ownScrollbar::-webkit-scrollbar { width: 7px; }
+  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-thumb, .el-table__body-wrapper.is-scrolling-left::-webkit-scrollbar-thumb, .ownScrollbar::-webkit-scrollbar-thumb {
     border-radius: 3px;
     box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
     background-color: #eee;
   }
-  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-track, .ownScrollbar::-webkit-scrollbar-track {
+  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-track, .el-table__body-wrapper.is-scrolling-left::-webkit-scrollbar-track, .ownScrollbar::-webkit-scrollbar-track {
     border-radius: 0;
     box-shadow: inset 0 0 5px rgba(0,0,0,0);
     background-color: rgba(0,0,0,0);
@@ -510,13 +510,16 @@ export default {
     ul {
       width: 100%;
       min-height: 500px;
-      max-height: 600px;
+      max-height: 500px;
       overflow-y: scroll;
       background-color: #fff;
+      box-shadow: 0 0 10px 1px #f1f2f7 inset;
       li {
         min-width: 180px;
         height: 30px;
         line-height: 30px;
+        padding-left: 5px;
+        font-weight: 500;
       }
     }
     ol {

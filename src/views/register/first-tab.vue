@@ -21,20 +21,19 @@
       row-class-name="storeStockListRow"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
-      <el-table-column type="index" align="center" width="50" label="序号"></el-table-column>
-      <el-table-column prop="StoreName" header-align="center" align="center" label="门店" width="100" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="NickName" header-align="center" align="center" label="医生姓名" width=""></el-table-column>
-      <el-table-column prop="" label="可挂号/已挂号" width="" header-align="center" align="center">
+      <el-table-column prop="StoreName" header-align="center" align="center" label="门店" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="NickName" header-align="center" align="center" label="医生" width="100"></el-table-column>
+      <!--<el-table-column prop="" label="可挂号/已挂号" width="" header-align="center" align="center">-->
+        <!--<template slot-scope="scope">-->
+          <!--<span>{{scope.row.Id}}/{{scope.row.Id}}</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
+      <!--<el-table-column prop="Phone" header-align="left" align="left" label="时间（全天）" width="" :show-overflow-tooltip="true"></el-table-column>-->
+      <el-table-column prop="Phone" header-align="center" align="center" label="医生联系电话" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="" label="操作" width="190" header-align="center" align="center">
         <template slot-scope="scope">
-          <span>{{scope.row.Id}}/{{scope.row.Id}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="Phone" header-align="left" align="left" label="时间（全天）" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
-        <template slot-scope="scope">
-          <el-button type="primary" size="mini" plain
-                     @click="addOrUpdateHandle(scope.row)">挂号
-          </el-button>
+          <el-button type="text" size="mini" plain
+                     @click="addOrUpdateHandle(scope.row)">挂号</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -96,20 +95,21 @@ export default {
     doTTS () {
       document.getElementById('tts_autio_id').play()
     },
+    // 这个是查询某门店的：全部医生列表
     getDataList () {
       this.dataListLoading = true
       var params = {
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: this.IsPaging,
-        id: this.fatherDataForm.AccountId,
+        // id: this.fatherDataForm.AccountId,
+        id: '',
         userName: '',
         nickName: '',
         roleId: '',
         canViewStores: this.$store.getters.getAccountCurrentHandleStore
       }
       console.log(params)
-      // 这才是正文要展示出来的对应门店的所有医生列表
       API.adminUser.adminUserList(params).then(response => {
         if (response.code === '0000') {
           if (response.data) { this.dataList = response.data }
