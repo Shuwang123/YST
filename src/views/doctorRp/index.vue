@@ -3,106 +3,106 @@
     <el-form ref="form" :rules="dataRule" :model="dataForm" label-width="80px" size="mini">
       <el-container style="padding-left: 20px">
         <el-aside width="75%" style="border-right: 1px solid #DCDFE6; padding-right: 5px;min-width: 700px">
-          <!--<h1>开方：</h1>-->
-          <p style="text-align: center;font-size: 16px; padding: 5px 0 20px 0; cursor: pointer"
-             @click="cutOut = !cutOut" title="点击展开或收起">
-            <!--꧁<span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;"> 处方笺 </span>꧂-->
-            <span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;"> 处方笺 </span>
-          </p>
-          <el-row>
-            <el-col :span="8">
-              <el-form-item label="姓名" prop="UserName">
-                <el-input v-model="dataForm.UserName" placeholder="选择患者" style="width: 94px" disabled></el-input>
-                <!--<el-button type="warning" icon="iconfont icon-renwu-zengjia" @click="send()" size="mini"></el-button>-->
-                <!--{{$route.query.patientId}}-->
-                <span v-if="$route.query.MobilePhone === '0'"
-                  class="iconfont icon-renwu-zengjia" style="display: inline-block;width: 40px;height: 30px;
-                  font-size: 26px;font-weight: 900;color: #1EA57B; margin-left: 7px; vertical-align: top"
-                      @click="openPatientList(); $store.commit('setRegisterStep', 2)"></span>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="性别">
-                <el-input v-model="dataForm.Sex" placeholder="只读" style="width: 80px" disabled></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">
-              <el-form-item label="年龄">
-                <el-input-number v-model="dataForm.BirthDate" :min="1" :step="1" :max="100" style="width: 95px"></el-input-number>
-                <!--<el-input-number v-model="dataForm.age" :min="1" :step="1" :max="12" style="width: 95px"></el-input-number>-->
-                <div class="recipelAgeUnit">
-                  <el-select v-model="dataForm.ageUnit" style="width: 45px">
-                    <el-option :label="'岁'" :value="'岁'"></el-option>
-                    <el-option :label="'月'" :value="'月'"></el-option>
-                  </el-select>
-                </div>
-              </el-form-item>
-            </el-col>
-          </el-row>
+          <div id="leftHeightPatient">
+            <p style="text-align: center;font-size: 16px; padding: 5px 0 20px 0; cursor: pointer"
+               @click="cutOut = !cutOut" title="点击展开或收起">
+              <!--꧁<span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;"> 处方笺 </span>꧂-->
+              <span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;"> 处方笺 </span>
+            </p>
+            <el-row>
+              <el-col :span="8">
+                <el-form-item label="姓名" prop="UserName">
+                  <el-input v-model="dataForm.UserName" placeholder="选择患者" style="width: 94px" disabled></el-input>
+                  <!--<el-button type="warning" icon="iconfont icon-renwu-zengjia" @click="send()" size="mini"></el-button>-->
+                  <!--{{$route.query.patientId}}-->
+                  <span v-if="$route.query.MobilePhone === '0'"
+                    class="iconfont icon-renwu-zengjia" style="display: inline-block;width: 40px;height: 30px;
+                    font-size: 26px;font-weight: 900;color: #1EA57B; margin-left: 7px; vertical-align: top"
+                        @click="openPatientList(); $store.commit('setRegisterStep', 2)"></span>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="性别">
+                  <el-input v-model="dataForm.Sex" placeholder="只读" style="width: 80px" disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item label="年龄">
+                  <el-input-number v-model="dataForm.BirthDate" :min="1" :step="1" :max="100" style="width: 95px"></el-input-number>
+                  <!--<el-input-number v-model="dataForm.age" :min="1" :step="1" :max="12" style="width: 95px"></el-input-number>-->
+                  <div class="recipelAgeUnit">
+                    <el-select v-model="dataForm.ageUnit" style="width: 45px">
+                      <el-option :label="'岁'" :value="'岁'"></el-option>
+                      <el-option :label="'月'" :value="'月'"></el-option>
+                    </el-select>
+                  </div>
+                </el-form-item>
+              </el-col>
+            </el-row>
 
-          <transition>
-            <div v-show="cutOut">
-              <el-row>
-                <el-col :span="8">
-                  <el-form-item label="电话">
-                    <el-input v-model="dataForm.MobilePhone" placeholder="只读" style="width: 140px" disabled></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="地址">
-                    <el-input v-model="dataForm.Address" placeholder="请输入地址" style="width: 140px" disabled></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="病历号">
-                    <el-input v-model="dataForm.Code" placeholder="请输入病历号" style="width: 140px" disabled></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
+            <transition>
+              <div v-show="cutOut">
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="电话">
+                      <el-input v-model="dataForm.MobilePhone" placeholder="只读" style="width: 140px" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="地址">
+                      <el-input v-model="dataForm.Address" placeholder="请输入地址" style="width: 140px" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="病历号">
+                      <el-input v-model="dataForm.Code" placeholder="请输入病历号" style="width: 140px" disabled></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
 
-              <el-row>
-                <el-col :span="8">
-                  <el-form-item label="看诊类型">
-                    <el-radio-group v-model="dataForm.DiagnosisType">
-                      <el-radio-button label="1">初诊</el-radio-button>
-                      <el-radio-button label="2">复诊</el-radio-button>
-                    </el-radio-group>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="8">
-                  <el-form-item label="发病时间">
-                    <el-date-picker type="date" placeholder="请选择发病时间" v-model="dataForm.morbidityTime"  style="width: 144px"></el-date-picker>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label="过敏史">
-                    <el-input v-model="dataForm.name" placeholder="请输入过敏史" style="width: 144px"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <el-row>
-                <el-col :span="24">
-                  <el-form-item label="主诉">
-                    <el-input v-model="dataForm.name" placeholder="请选择或输入主诉" style="width: 75%"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                  <el-form-item label="现病史">
-                    <el-input v-model="dataForm.name" placeholder="从起病到就诊时疾病的发生、发展及其他变化的经过和诊疗情况" style="width: 75%"></el-input>
-                  </el-form-item>
-                </el-col>
-                <el-col :span="24">
-                  <el-form-item label="诊断信息">
-                    <el-input v-model="dataForm.name" placeholder="请选择或输入诊断信息" style="width: 75%"></el-input>
-                  </el-form-item>
-                </el-col>
-              </el-row>
-            </div>
-          </transition>
-
-          <div style="border-bottom: 1px solid #E6E6E6; font-weight: 500">R:</div>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="看诊类型">
+                      <el-radio-group v-model="dataForm.DiagnosisType">
+                        <el-radio-button label="1">初诊</el-radio-button>
+                        <el-radio-button label="2">复诊</el-radio-button>
+                      </el-radio-group>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="8">
+                    <el-form-item label="发病时间">
+                      <el-date-picker type="date" placeholder="请选择发病时间" v-model="dataForm.morbidityTime"  style="width: 144px"></el-date-picker>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="8">
+                    <el-form-item label="过敏史">
+                      <el-input v-model="dataForm.name" placeholder="请输入过敏史" style="width: 144px"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="24">
+                    <el-form-item label="主诉">
+                      <el-input v-model="dataForm.name" placeholder="请选择或输入主诉" style="width: 75%"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="24">
+                    <el-form-item label="现病史">
+                      <el-input v-model="dataForm.name" placeholder="从起病到就诊时疾病的发生、发展及其他变化的经过和诊疗情况" style="width: 75%"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="24">
+                    <el-form-item label="诊断信息">
+                      <el-input v-model="dataForm.name" placeholder="请选择或输入诊断信息" style="width: 75%"></el-input>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+              </div>
+            </transition>
+            <div style="border-bottom: 1px solid #E6E6E6; font-weight: 500">R:</div>
+          </div>
           <!--左侧开方：直接用组件的引用名切换-->
           <el-table
             :height="chenxiHeight"
@@ -131,12 +131,12 @@
           </el-table>
         </el-aside>
 
+        <!--右侧药材：tabs标签页切换引导组件切换-->
         <el-main width="25%" style="padding: 10px; border-bottom: 1px solid #DCDFE6;">
           <el-input v-model="dataForm.SpellName" @blur="dataForm.SpellName = ''"
-                    :placeholder="`请输入要查询要的药材, 当前门店：${$store.getters.getAccountCurrentHandleStore}`"
+                    :placeholder="`请输入要查询的药材, 门店：${$store.getters.getAccountCurrentHandleStore}`"
                     style="min-width: 190px; width: 100%" size="small" clearable><i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
-          <!--右侧药材：tabs标签页切换引导组件切换-->
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane v-for="item in drugsCategoryArr" :key="item.id" :label="item.text" :name="item.id"></el-tab-pane>
           </el-tabs>
@@ -205,8 +205,7 @@
           <el-col :span="12" style="font-weight: 500; font-size: 16px">
             &nbsp;&nbsp;&nbsp;总金额：￥0 -
             <el-input-number v-model="dataForm.date1" controls-position="right"
-                             :min="1" :max="10000" style="width: 100px" size="mini"></el-input-number>
-            = x￥
+                             :min="1" :max="10000" style="width: 100px" size="mini"></el-input-number> = x￥
           </el-col>
           <el-col :span="6">
             <el-form-item>
@@ -240,15 +239,21 @@ export default {
   watch: {
     'cutOut': function (newval, oldval) {
       if (newval === true) {
-        // this.reduceHeight = 350
-        this.chenxiHeight = document.documentElement['clientHeight'] - 550 > 350 ? document.documentElement['clientHeight'] - 550 : 350
-      } else {
-        // this.reduceHeight = 0
+        this.chenxiHeight = 0
         setTimeout(() => {
-          this.chenxiHeight = document.documentElement['clientHeight'] - 350 > 350 ? document.documentElement['clientHeight'] - 350 : 350
-        }, 400)
+          console.log('前')
+          let youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
+          let zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
+          this.chenxiHeight = Number(youHeight.substring(0, youHeight.length - 2)) - Number(zuoHeight.substring(0, zuoHeight.length - 2))
+        }, 450)
+      } else {
+        setTimeout(() => {
+          console.log('后')
+          let youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
+          let zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
+          this.chenxiHeight = Number(youHeight.substring(0, youHeight.length - 2)) - Number(zuoHeight.substring(0, zuoHeight.length - 2))
+        }, 450)
       }
-      console.log(this.chenxiHeight)
     },
     'dataForm.SpellName': function () {
       this.getStoreCategorytypeStock()
@@ -282,7 +287,7 @@ export default {
 
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
-      chenxiHeight: document.documentElement['clientHeight'] - 550 > 350 ? document.documentElement['clientHeight'] - 550 : 350, // 心累，不要动
+      chenxiHeight: 337,
       pageIndex: 1,
       pageSize: 30, // 50 标准
       totalPage: 1,
@@ -311,10 +316,17 @@ export default {
     this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
   },
   mounted () {
-    window.onresize = () => {
-      var newHeight = document.documentElement['clientHeight'] - 350
-      this.chenxiHeight = newHeight > 350 ? newHeight : 350 // 273 测试老半天
-    }
+    // console.log(document.getElementById('leftHeightPatient').style.height) ??? 为什么得到 空无空白
+    // window.onresize = () => {
+    //   var newHeight = document.documentElement['clientHeight'] - 350
+    //   this.chenxiHeight = newHeight > 350 ? newHeight : 350 // 273 测试老半天
+    // }
+    // console.log(youHeight)
+    // console.log(zuoHeight)
+    // console.log(this.chenxiHeight)
+    var youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
+    var zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
+    this.chenxiHeight = Number(youHeight.substring(0, youHeight.length - 2)) - Number(zuoHeight.substring(0, zuoHeight.length - 2))
   },
   methods: {
     // 特殊的计算除年龄的方法
@@ -325,7 +337,14 @@ export default {
       var ageArr = age.split('-')
       return `${nowArr[0] - ageArr[0]}`
     },
-    // 在会员子组件弹窗点击载入后返回调用这父组件的方法
+    // 打开会员弹窗
+    openPatientList () {
+      this.addOrUpdateVisible = true
+      this.$nextTick(() => {
+        this.$refs.patientListPop.init()
+      })
+    },
+    // 只医生‘直接开方’才用：子组件点击载入 传给 父组件
     zairuFun (row) {
       this.dataForm.UserName = row.UserName
       this.dataForm.Sex = row.Sex === 1 ? '男' : '女'
@@ -335,13 +354,7 @@ export default {
       this.dataForm.UserId = row.Id
       this.dataForm.Code = row.Code
     },
-    // 打开会员弹窗
-    openPatientList () {
-      this.addOrUpdateVisible = true
-      this.$nextTick(() => {
-        this.$refs.patientListPop.init()
-      })
-    },
+
     // 通用封装的门店子组件绑定的父组件的返回方法（开方页面的上层已提前决定了门店，这儿还能改变门店吗？？？？？？？？？？？？？？？？？？？）
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       // if (isMultiple === false) { this.dataForm.StoreId = choseStoreId }
@@ -509,8 +522,8 @@ export default {
     min-width: 190px;
     ul {
       width: 100%;
-      min-height: 500px;
-      max-height: 500px;
+      min-height: 550px; // 拿尺子对着电脑屏幕量过，就这个值吧
+      max-height: 550px;
       overflow-y: scroll;
       background-color: #fff;
       box-shadow: 0 0 10px 1px #f1f2f7 inset;
@@ -593,9 +606,10 @@ export default {
       line-height: 35px;
     }
   }
-  /*cutOut剪纸show切换动画*!*/
+  /*cutOut剪纸show切换动画*/
   .v-enter, .v-leave-to {opacity: 0}
   .v-enter-active, .v-leave-active {transition: all 0.4s ease}
+  .v-enter-to, .v-leave {opacity: 1}
 }
 /*.mod-purchaseList {*/
   /*& /deep/ .el-dialog__header {*/
