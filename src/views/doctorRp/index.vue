@@ -4,10 +4,12 @@
       <el-container style="padding-left: 20px">
         <el-aside width="75%" style="border-right: 1px solid #DCDFE6; padding-right: 5px;min-width: 700px">
           <div id="leftHeightPatient">
-            <p style="text-align: center;font-size: 16px; padding: 5px 0 20px 0; cursor: pointer"
-               @click="cutOut = !cutOut" title="点击展开或收起">
+            <p style="text-align: center;font-size: 16px; padding: 5px 0 20px 0;">
               <!--꧁<span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;"> 处方笺 </span>꧂-->
-              <span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;"> 处方笺 </span>
+              <span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;cursor: pointer"
+                    @click="cutOut = !cutOut" title="点击展开或收起"> 处方笺
+                <b style="font-weight: 700;font-size: 12px;color: #409EFF;text-decoration: underline">点击展开隐藏</b>
+              </span>
             </p>
             <el-row>
               <el-col :span="8">
@@ -241,14 +243,12 @@ export default {
       if (newval === true) {
         this.chenxiHeight = 0
         setTimeout(() => {
-          console.log('前')
           let youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
           let zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
           this.chenxiHeight = Number(youHeight.substring(0, youHeight.length - 2)) - Number(zuoHeight.substring(0, zuoHeight.length - 2))
         }, 450)
       } else {
         setTimeout(() => {
-          console.log('后')
           let youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
           let zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
           this.chenxiHeight = Number(youHeight.substring(0, youHeight.length - 2)) - Number(zuoHeight.substring(0, zuoHeight.length - 2))
@@ -433,8 +433,15 @@ export default {
     },
     // 当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
+      if (this.leftTableData.some(item => item.Id === row.Id)) {
+        this.$alert('该药材已添加！', '提示', {
+          confirmButtonText: '确定'
+        })
+        return false
+      }
       this.leftTableData.push(row)
     },
+    // 当点击左边table的‘删除’按钮的时候
     delDrugs (row) {
       this.leftTableData.some((item, i) => {
         if (item.Id === row.Id) {

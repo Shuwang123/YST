@@ -2,7 +2,7 @@
     <div class="mod-storeRegister">
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
       <div style="background-color: #F5F7FA;margin-bottom: 0;border-radius: 0 0 0 0;padding: 1px 3px">
-        <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()" size="mini">
+        <el-form :inline="true" :model="dataForm" size="mini">
           <el-row style="height: 35px;line-height: 35px">
             <el-col :span="21">
               <com-store :paramsFather="{
