@@ -2,7 +2,7 @@
   <div class="doctor-recipel">
     <el-form ref="form" :rules="dataRule" :model="dataForm" label-width="80px" size="mini">
       <el-container style="padding-left: 20px">
-        <el-aside width="75%" style="border-right: 1px solid #DCDFE6; padding-right: 5px;min-width: 700px">
+        <el-aside width="75%" style="border-right: 1px solid #DCDFE6; padding-right: 5px;min-width: 700px;">
           <div id="leftHeightPatient">
             <p style="text-align: center;font-size: 16px; padding: 5px 0 20px 0;">
               <!--꧁<span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;"> 处方笺 </span>꧂-->
@@ -114,7 +114,7 @@
             row-class-name="purchaseListRow"
             :header-cell-style="$cxObj.tableHeaderStyle30px"
             style="width: 100%;">
-            <component :is="this.leftTable" ref="leftCurrentTable" @tableEvent="delDrugs"></component>
+            <component :is="this.leftTable" ref="leftCurrentTable" @tableEvent="delDrugs" @tableNumberEvent="consoleTable"></component>
             <!--v-if="addOrUpdateVisible" ref="patientListPop" @childEven="zairuFun"-->
             <!--<div>-->
               <!--<el-table-column type="index" align="center" width="50" label="序号"></el-table-column>-->
@@ -163,14 +163,13 @@
             </ol>
           </div>
           <div class="rightPageCounter">
-            <el-pagination
-              @size-change="sizeChangeHandle"
+            <el-pagination @size-change="sizeChangeHandle"
               @current-change="currentChangeHandle"
               :current-page="pageIndex"
-              :page-sizes="[10, 20, 50, 100]"
+              :page-sizes="[10,20,50,100]"
               :page-size="pageSize"
               :total="totalPage"
-              layout="prev, pager, next, total" background :pager-count="3">
+              layout="prev, pager, next" :pager-count="5" small>
               <!--layout="prev, pager, next, jumper, sizes, total" background :pager-count="2">-->
             </el-pagination>
           </div>
@@ -278,6 +277,7 @@ export default {
         {content: 'L', isActive: false}, {content: 'Y', isActive: false},
         {content: 'M', isActive: false}, {content: 'Z', isActive: false}],
       drugsCategoryArr: [], // 先请求药品种类
+      oldTabsName: '1001',
       activeName: '1001',
       dataList: [],
       leftTable: 'TableOne', // 左侧表格 组件的引用名切换哟，这的值决定
@@ -365,7 +365,7 @@ export default {
       var params = {
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
-        IsPaging: this.isPaging,
+        IsPaging: true,
         UserName: '',
         StoreId: this.$store.getters.getAccountCurrentHandleStore,
         MobilePhone: this.$route.query.MobilePhone
@@ -403,17 +403,18 @@ export default {
         Name: '',
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
-        IsPaging: 'true',
+        IsPaging: true,
         SpellName: this.dataForm.SpellName,
         CategoryId: this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001
         StoreId: this.$store.getters.getAccountCurrentHandleStore, // 传不传门店id决定了是否返回库存余量!!!（另外这儿可以能有点问题要处理，因为可能是药房的账号进来，那这样的话如果药房的权限大于医生，那门店库存也更正变大了，这是个要考虑的地方）
         CodeOrBarCode: '' // 暂无
       }).then(result => {
         if (result.code === '0000' && result.data.length > 0) {
-          this.dataList = result.data
+          this.dataList = result.data // 这个dataList有啥子用哟？好像没用起来
           this.rightUlData = result.data
           this.totalPage = result.total
-          console.log(result.data)
+          // console.log(result.data)
+
           // if (this.dataListViews.length === 0) {
           //   this.dataListViews = this.dataListViews.concat(result.data) // 会打散拼接到尾巴，旧数组不变
           // } else if (this.dataListViews.some(item => item.Code === result.data[0].Code || item.Code === result.data[this.pageSize - 1]).Code) {
@@ -434,11 +435,16 @@ export default {
     // 当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
       if (this.leftTableData.some(item => item.Id === row.Id)) {
-        this.$alert('该药材已添加！', '提示', {
-          confirmButtonText: '确定'
+        // this.$alert(`[${row.ShowName}] 已添加！`, '提示', {
+        this.$alert(`<b style="color: #409EFF;font-size: 14px">[${row.ShowName}]</b> 已添加！`, '提示', {
+          confirmButtonText: '确定',
+          dangerouslyUseHTMLString: true,
+          closeOnClickModal: true,
+          closeOnPressEscape: true
         })
         return false
       }
+      row.myNum = 1
       this.leftTableData.push(row)
     },
     // 当点击左边table的‘删除’按钮的时候
@@ -450,23 +456,58 @@ export default {
         }
       })
     },
+    consoleTable () {
+      this.leftTableData.push() // 这个可能会非常懵逼，目的是每次改变任何的myNum的值都会重新渲染左边的table，你把push()拿掉就能找到问题在哪，这就是为什么push()没任何实际参数但还是要写一个在这
+      console.log(this.leftTableData)
+    },
+
     handleClick (tab, event) {
-      console.log(tab, event)
-      switch (tab.name) {
-        case '1001':
-          this.leftTable = 'TableOne'
-          this.rightUl = 'ul-one'
-          break
-        case '1002':
-          this.leftTable = 'TableTwo'
-          this.rightUl = 'ul-one'
-          break
-        case '1003':
-          this.leftTable = 'TableThree'
-          this.rightUl = 'ul-one'
-          break
+      // console.log(tab, event)
+      // console.log(this.leftTableData)
+      if (this.leftTableData.length === 0) { // 没开任何药材时直接切换直接加载呗，都没药材记录还提示啥子嘛
+        switch (tab.name) {
+          case '1001':
+            this.leftTable = 'TableOne'
+            this.rightUl = 'ul-one'
+            break
+          case '1002':
+            this.leftTable = 'TableTwo'
+            this.rightUl = 'ul-one'
+            break
+          case '1003':
+            this.leftTable = 'TableThree'
+            this.rightUl = 'ul-one'
+            break
+        }
+        this.oldTabsName = this.activeName
+        this.getStoreCategorytypeStock()
+      } else { // 有的时候提示是否确定切换tabs
+        this.$confirm('切换药品将清空已经加入的药品, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          switch (tab.name) {
+            case '1001':
+              this.leftTable = 'TableOne'
+              this.rightUl = 'ul-one'
+              break
+            case '1002':
+              this.leftTable = 'TableTwo'
+              this.rightUl = 'ul-one'
+              break
+            case '1003':
+              this.leftTable = 'TableThree'
+              this.rightUl = 'ul-one'
+              break
+          }
+          this.oldTabsName = this.activeName
+          this.getStoreCategorytypeStock()
+          this.leftTableData = [] // 不只切换，还需要清空左边table信息
+        }).catch(() => {
+          this.activeName = this.oldTabsName // 依靠oldTabsName切回上一步，table、ul、和tableData都不需要变
+        })
       }
-      this.getStoreCategorytypeStock()
     },
     activeLitter (txt, ind) {
       this.dataForm.SpellName = txt
@@ -543,7 +584,9 @@ export default {
       }
     }
     ol {
-      position: absolute; top: 0; left: 103%;
+      position: absolute;
+      top: 0;
+      right: -56px;
       color: #050505;
       font-size: 14px;
       font-weight: 700;
@@ -571,7 +614,8 @@ export default {
     position: absolute;
     left: 0;
     bottom: 5px;
-    width: 100%;
+    width: 90%;
+    margin: 0 auto;
     text-align: center;
     background-color: #fff;
   }
@@ -618,9 +662,4 @@ export default {
   .v-enter-active, .v-leave-active {transition: all 0.4s ease}
   .v-enter-to, .v-leave {opacity: 1}
 }
-/*.mod-purchaseList {*/
-  /*& /deep/ .el-dialog__header {*/
-    /*background-color: #1CA579;*/
-  /*}*/
-/*}*/
 </style>

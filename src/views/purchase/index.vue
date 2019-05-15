@@ -144,6 +144,8 @@ export default {
           vm.$confirm(`系统有历史保存信息，是否调用？`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
+            closeOnClickModal: false,
+            closeOnPressEscape: false,
             type: 'warning'
           }).then(() => {
             vm.dataList = JSON.parse(window.sessionStorage.getItem('modPurchaseList'))
@@ -180,6 +182,8 @@ export default {
       this.$confirm(`检测到未保存的内容，是否在离开页面前保存修改？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
+        closeOnClickModal: false,
+        closeOnPressEscape: false,
         type: 'warning'
       }).then(() => {
         window.sessionStorage.setItem('modPurchaseList', JSON.stringify(this.dataList))
