@@ -204,9 +204,10 @@
             </el-form-item>
           </el-col>
           <el-col :span="12" style="font-weight: 500; font-size: 16px">
-            &nbsp;&nbsp;&nbsp;总金额：<span style="color: #FF0052">￥{{allMoney}}</span> +
-            <el-input-number v-model="dataForm.date1" controls-position="right"
-                             :min="1" :max="10000" style="width: 100px" size="mini"></el-input-number> = x￥
+            总金额：<span style="color: #FF0052">￥{{allMoney}}</span> +
+            <el-input-number
+              v-model="dataForm.date1" controls-position="right"
+              :min="1" :max="10000" style="width: 100px" size="mini"></el-input-number> = x￥
           </el-col>
           <el-col :span="6">
             <el-form-item>
@@ -244,13 +245,13 @@ export default {
         setTimeout(() => {
           let youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
           let zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
-          this.chenxiHeight = Number(youHeight.substring(0, youHeight.length - 2)) - Number(zuoHeight.substring(0, zuoHeight.length - 2))
+          this.chenxiHeight = parseInt(youHeight) - parseInt(zuoHeight)
         }, 450)
       } else {
         setTimeout(() => {
           let youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
           let zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
-          this.chenxiHeight = Number(youHeight.substring(0, youHeight.length - 2)) - Number(zuoHeight.substring(0, zuoHeight.length - 2))
+          this.chenxiHeight = parseInt(youHeight) - parseInt(zuoHeight)
         }, 450)
       }
     },
@@ -261,7 +262,6 @@ export default {
   data () {
     return {
       cutOut: true, // 收起，显示
-      reduceHeight: 350,
       litterArr: [
         {content: 'A', isActive: false}, {content: 'N', isActive: false},
         {content: 'B', isActive: false}, {content: 'O', isActive: false},
@@ -287,7 +287,7 @@ export default {
 
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
-      chenxiHeight: 337,
+      chenxiHeight: 337, // 这个是测试出来的固定值，用于第一次初始化页面吧，如果以后页面的格式需要调整，可以测试一个初始值来填在这就行了
       pageIndex: 1,
       pageSize: 30, // 50 标准
       totalPage: 1,
@@ -328,7 +328,7 @@ export default {
     // console.log(this.chenxiHeight)
     var youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
     var zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
-    this.chenxiHeight = Number(youHeight.substring(0, youHeight.length - 2)) - Number(zuoHeight.substring(0, zuoHeight.length - 2))
+    this.chenxiHeight = parseInt(youHeight) - parseInt(zuoHeight)
   },
   methods: {
     // 特殊的计算除年龄的方法
