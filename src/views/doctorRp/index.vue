@@ -204,7 +204,7 @@
             </el-form-item>
           </el-col>
           <el-col :span="12" style="font-weight: 500; font-size: 16px">
-            &nbsp;&nbsp;&nbsp;总金额：￥0 -
+            &nbsp;&nbsp;&nbsp;总金额：<span style="color: #FF0052">￥{{allMoney}}</span> -
             <el-input-number v-model="dataForm.date1" controls-position="right"
                              :min="1" :max="10000" style="width: 100px" size="mini"></el-input-number> = x￥
           </el-col>
@@ -309,7 +309,8 @@ export default {
       },
       dataRule: {
         UserName: Currency('此为必填项')
-      }
+      },
+      allMoney: 0
     }
   },
   created () {
@@ -446,6 +447,7 @@ export default {
       }
       row.myNum = 1
       this.leftTableData.push(row)
+      this.allMoney = this.countTotalPrice(this.leftTableData)
     },
     // 当点击左边table的‘删除’按钮的时候
     delDrugs (row) {
@@ -455,12 +457,20 @@ export default {
           return false
         }
       })
+      this.allMoney = this.countTotalPrice(this.leftTableData)
     },
     consoleTable () {
       this.leftTableData.push() // 这个可能会非常懵逼，目的是每次改变任何的myNum的值都会重新渲染左边的table，你把push()拿掉就能找到问题在哪，这就是为什么push()没任何实际参数但还是要写一个在这
       console.log(this.leftTableData)
+      this.allMoney = this.countTotalPrice(this.leftTableData)
     },
-
+    countTotalPrice (obj) {
+      var sum = 0
+      obj.forEach(item => {
+        sum += item.SalePrice * item.myNum
+      })
+      return sum.toFixed(2)
+    },
     handleClick (tab, event) {
       // console.log(tab, event)
       // console.log(this.leftTableData)
