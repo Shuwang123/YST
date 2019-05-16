@@ -2,10 +2,10 @@
   <div class="mod-user">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.userName" placeholder="账号" clearable></el-input>
+        <el-input v-model="dataForm.userName" placeholder="查询账号" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.nickName" placeholder="账号别名（text）" clearable></el-input>
+        <el-input v-model="dataForm.nickName" placeholder="查询昵称" clearable></el-input>
       </el-form-item>
       <!--<el-form-item>-->
         <!--<el-input v-model="dataForm.id" placeholder="账号ID(系统自动生成的不可控)" clearable style="width: 100px"></el-input>-->
@@ -21,7 +21,7 @@
       }" ref="comStore" @eventStore="changeStoreData"></com-store>
 
       <el-form-item>
-        <el-select v-model="dataForm.roleId" placeholder="请选择角色ID" clearable>
+        <el-select v-model="dataForm.roleId" placeholder="请选择角色" clearable>
           <el-option v-for="item in roleArr" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>
@@ -47,14 +47,14 @@
       style="width: 100%;">
       <el-table-column type="index" label="序号" :align="$store.state.common.align" width="50px"></el-table-column>
       <!--<el-table-column prop="Id" header-align="center" :align="$store.state.common.align" label="ID" width="50"></el-table-column>-->
-      <el-table-column prop="UserName" header-align="center" :align="$store.state.common.align" label="账号" :show-tooltip-when-overflow="true"></el-table-column>
-      <el-table-column prop="NickName" header-align="center" :align="$store.state.common.align" label="昵称" width="100"></el-table-column>
-      <el-table-column prop="Phone" header-align="center" :align="$store.state.common.align" label="电话" width="150"></el-table-column>
+      <el-table-column prop="UserName" header-align="right" align="right" label="账号" width="119" :show-tooltip-when-overflow="true"></el-table-column>
+      <el-table-column prop="NickName" header-align="left" align="left" label="昵称" width="100"></el-table-column>
+      <el-table-column prop="Phone" header-align="center" :align="$store.state.common.align" label="电话" width="119"></el-table-column>
       <el-table-column prop="StoreName" header-align="center" :align="$store.state.common.align" label="门店" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="RoleName" header-align="center" :align="$store.state.common.align" label="角色"></el-table-column>
       <el-table-column header-align="center" :align="$store.state.common.align" label="创建时间" width="150">
         <template slot-scope="scope">
-          <span>{{ scope.row.CreatedOn | formatDate}}</span>
+          <span>{{ scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="StatusName" header-align="center" :align="$store.state.common.align" label="状态" width="100"></el-table-column>
@@ -90,19 +90,12 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import {formatDate} from '@/utils/validate'
 import AddOrUpdate from './add-or-update'
 // import UpdatePwd from './update-pwd'
 import ComStore from '../common/com-store'
 import API from '@/api'
 export default {
   name: 'user',
-  filters: {
-    formatDate (time) {
-      var date = new Date(time)
-      return formatDate(date, 'yyyy-MM-dd hh:mm')
-    }
-  },
   computed: {
   },
   components: {

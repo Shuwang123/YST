@@ -31,13 +31,17 @@
         <el-row>
           <el-col :span="12"><span>挂号单号：</span>{{registerAllData.Code}}</el-col>
           <el-col :span="12"><span>操作时间：</span>{{registerAllData.CreatedOnTime}}</el-col>
+          <!--<el-col :span="12"><span>操作时间：</span>{{registerAllData.CreatedOnTime | myDateFilter('yyyy-MM-dd hh:mm')}}</el-col>-->
           <el-col :span="12"><span>医生：</span>{{registerAllData.DoctorName}}</el-col>
           <el-col :span="12"><span>类型：</span>{{registerAllData.DiagnosisTypeName}}</el-col>
         </el-row>
         <el-row>
           <el-col :span="24"><span>挂号费：</span>{{registerAllData.RegisterAmount}}￥</el-col>
           <el-col :span="24"><span>诊疗费：</span>{{registerAllData.ConsultationAmount}}￥</el-col>
-          <el-col :span="24"><span>支付方式：</span></el-col>
+
+          <el-col :span="24"><span>支付状态：</span>{{registerAllData.RegisterStatusName}}</el-col>
+          <el-col :span="24"><span>付费方式：</span>{{registerAllData.PaymentWayName}}</el-col>
+          <el-col :span="24"><span>看诊状态：</span>{{registerAllData.RegisterOrderStatusName}}</el-col>
         </el-row>
       </div>
     </div>
@@ -54,7 +58,6 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import {formatDate} from '@/utils/validate'
 import '../common/icon/iconfont.css'
 export default {
   data () {
@@ -76,6 +79,7 @@ export default {
           if (result.code === '0000') {
             this.registerAllData = result.data
             this.dataListLoading = false
+            console.log(result.data)
           }
         })
       }

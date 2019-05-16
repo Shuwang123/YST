@@ -1,3 +1,6 @@
+/**
+ * cx 自己封装的一些验证，如果要完善，可以继续在这优化嘛
+ */
 // Currency ('提示文本') 只要求输入框有值就行
 // Phone ()             要求输入框中电话长度必须11位纯数字
 /**
@@ -174,7 +177,7 @@ export function isMoney (s) {
  * @param {*} s
  */
 export function isNum (s) {
-  var reg = /^([1-9]\d*|[0]{1,1})$/
+  var reg = /^([1-9]\d*|[0]{1, 1})$/
   return reg.test(s)
 }
 /**

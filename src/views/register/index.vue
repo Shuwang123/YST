@@ -152,7 +152,7 @@ export default {
         id: '',
         userName: '',
         nickName: '',
-        roleId: '', // 就是这个字段，这个列表应该只能是当前门店下所有的医生类型账号，这个地方要重新处理
+        roleId: '', // 就是这个字段，这个列表应该只能是当前门店下所有的医生类型账号，这个地方要重新处理，返回的账号应该全部只能是医生类型的？？？？？？？？？？？？？？？？？？？？
         canViewStores: this.$store.getters.getAccountCurrentHandleStore // 门店ID// storeId: this.dataForm.StoreId // 门店ID
       }
       API.adminUser.adminUserList(params).then(response => {

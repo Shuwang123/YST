@@ -155,6 +155,7 @@
                   </el-col>
                   <el-col :span="6" style="text-align: right;padding-right: 7px">
                     <el-button type="text" size="mini" @click="addDrugs(item)">添加</el-button>
+                    <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)">添加</el-button>-->
                   </el-col>
                 </el-row>
               </li>

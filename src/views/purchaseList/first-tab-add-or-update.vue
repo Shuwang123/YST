@@ -35,7 +35,7 @@
             <el-col :span="8"><p>地址：<span v-if="dataList !== null">{{dataList.Address}}</span></p></el-col>
           </el-row>
           <el-row>
-            <el-col :span="16"><p>创建时间：<span v-if="dataList !== null">{{dataList.CreatedTime}}</span></p></el-col>
+            <el-col :span="16"><p>创建时间：<span v-if="dataList !== null">{{dataList.CreatedTime | myDateFilter('yyyy-MM-dd hh:mm')}}</span></p></el-col>
             <el-col :span="8"><p>备注：<span v-if="dataList !== null">{{dataList.Remark}}</span></p></el-col>
           </el-row>
           <el-row>

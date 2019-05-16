@@ -46,29 +46,16 @@
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
-    <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate"></first-tab-add-or-update>
 
-    <input type="button" id="tts_btn" @click="doTTS()" value="播放"><div id="bdtts_div_id">
-    <audio id="tts_autio_id" autoplay="autoplay">
-      <source id="tts_source_id" src="http://tts.baidu.com/text2audio?lan=zh&ie=UTF-8&spd=2&text=1 2 3" type="audio/mpeg">
-      <embed id="tts_embed_id" height="0" width="0" src="">
-    </audio>
-  </div>
+    <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate"></first-tab-add-or-update>
   </div>
 </template>
 <script type="text/ecmascript-6">
-import { formatDate } from '@/utils/validate'
 import API from '@/api'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import { mapGetters } from 'vuex'
 export default {
   name: 'stockFirst',
-  filters: {
-    formatDate (time) {
-      var date = new Date(time)
-      return formatDate(date, 'yyyy-MM-dd hh:mm')
-    }
-  },
   props: ['fatherDataForm'],
   data () {
     return {
@@ -92,9 +79,6 @@ export default {
     }
   },
   methods: {
-    doTTS () {
-      document.getElementById('tts_autio_id').play()
-    },
     // 这个是查询某门店的：全部医生列表
     getDataList () {
       this.dataListLoading = true

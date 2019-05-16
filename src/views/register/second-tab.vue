@@ -13,8 +13,11 @@
       <el-table-column prop="MobilePhone" header-align="left" align="left" label="手机" width="110"></el-table-column>
       <el-table-column prop="DiagnosisTypeName" header-align="center" align="center" label="类型" width="70"></el-table-column>
       <el-table-column prop="Code" header-align="right" align="right" label="挂号单" width="140"></el-table-column>
-
-      <el-table-column prop="CreatedOnTime" header-align="left" align="left" label="时间" width="155"></el-table-column>
+      <el-table-column header-align="left" align="left" label="时间" width="150">
+        <template slot-scope="scope">
+          <span>{{ scope.row.CreatedOnTime | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="StoreName" header-align="center" align="center" label="来源" width=""></el-table-column>
       <el-table-column prop="DoctorName" header-align="center" align="center" label="医生" width="" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
@@ -39,18 +42,11 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import { formatDate } from '@/utils/validate'
 import API from '@/api'
 import SecondTabAddOrUpdate from './second-tab-add-or-update'
 import { mapGetters } from 'vuex'
 export default {
   name: 'stockFirst',
-  filters: {
-    formatDate (time) {
-      var date = new Date(time)
-      return formatDate(date, 'yyyy-MM-dd hh:mm')
-    }
-  },
   props: ['fatherDataForm'],
   data () {
     return {

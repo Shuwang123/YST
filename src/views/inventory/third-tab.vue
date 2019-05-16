@@ -27,6 +27,12 @@
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column header-align="center" align="center" label="历史时间" width="150">
+        <template slot-scope="scope">
+          <!--<span>{{ scope.row.CreatedOn}}</span>-->
+          <span>{{ scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="ProductCode" header-align="center" align="center" label="商品编码" width="80"></el-table-column>
       <el-table-column prop="ProductName" header-align="center" align="center" label="名称" width="70" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧？所以厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
@@ -38,7 +44,6 @@
       <el-table-column prop="Quantity" header-align="center" align="center" label="存量" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Price" header-align="center" align="center" label="进价" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="BatchNo" header-align="center" align="center" label="批次号" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="CreatedOn" header-align="center" align="center" label="时间" width="" :show-overflow-tooltip="true"></el-table-column>
     </el-table>
     <el-pagination
       @size-change="sizeChangeHandle"
@@ -53,18 +58,11 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import { formatDate } from '@/utils/validate'
 import API from '@/api'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import { mapGetters } from 'vuex'
 export default {
   name: 'stockFirst',
-  filters: {
-    formatDate (time) {
-      var date = new Date(time)
-      return formatDate(date, 'yyyy-MM-dd hh:mm')
-    }
-  },
   props: ['fatherDataForm'],
   data () {
     return {

@@ -61,18 +61,11 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import { formatDate } from '@/utils/validate'
 import API from '@/api'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import { mapGetters } from 'vuex'
 export default {
   name: 'stockFirst',
-  filters: {
-    formatDate (time) {
-      var date = new Date(time)
-      return formatDate(date, 'yyyy-MM-dd hh:mm')
-    }
-  },
   props: ['fatherDataForm'],
   data () {
     return {

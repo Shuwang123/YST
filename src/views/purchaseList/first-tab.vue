@@ -13,7 +13,11 @@
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50"></el-table-column>
       <el-table-column prop="Code" header-align="center" align="center" label="采购单号" width="100"></el-table-column>
-      <el-table-column prop="CreatedTime" header-align="center" align="center" label="采购时间" width="150"></el-table-column>
+      <el-table-column header-align="center" align="center" label="采购时间" width="150">
+        <template slot-scope="scope">
+          <span>{{ scope.row.CreatedTime | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
+        </template>
+      </el-table-column>
 
       <el-table-column prop="SupplierName" header-align="center" align="center" label="供应商" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="StoreName" header-align="center" align="center" label="采购门店"></el-table-column>
@@ -44,17 +48,10 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import { formatDate } from '@/utils/validate'
 import API from '@/api'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import { mapGetters } from 'vuex'
 export default {
-  filters: {
-    formatDate (time) {
-      var date = new Date(time)
-      return formatDate(date, 'yyyy-MM-dd hh:mm')
-    }
-  },
   name: 'drugs',
   props: ['fatherDataForm'],
   data () {

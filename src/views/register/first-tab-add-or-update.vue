@@ -410,7 +410,7 @@ export default {
 
             RegisterAmount: this.dataForm.RegisterAmount, // 挂号费
             ConsultationAmount: this.dataForm.ConsultationAmount, // 诊疗费
-            RegisterStatus: 1, // 上面两个费用的支付状态，1未支付 2已支付
+            RegisterStatus: 2, // 上面两个费用的支付状态，（默）1未支付 2已支付； 这儿的页面是前台挂号的嘛，99.99%都是已支付才挂号的所以直接一个2
 
             PaymentWay: this.dataForm.PaymentWay,
             Remark: this.dataForm.PaymentWay

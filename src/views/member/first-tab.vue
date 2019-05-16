@@ -35,11 +35,10 @@
       :cell-class-name="ownColumnStyle"
       style="width: 100%;">
       <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="StoreId" header-align="center" align="center" label="门店" width="50" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="StoreName" header-align="center" align="center" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Code" header-align="center" align="center" label="病历号" width="100" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="UserName" header-align="center" align="center" label="姓名" width="60" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column header-align="center" :align="$store.state.common.align" label="性别" width="60">
+      <el-table-column prop="UserName" header-align="center" align="center" label="姓名" width="70" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column header-align="center" :align="$store.state.common.align" label="性别" width="50">
         <template slot-scope="scope">
           <span v-if="scope.row.Sex === 1">男</span>
           <span v-else-if="scope.row.Sex === 2">女</span>
@@ -51,20 +50,20 @@
         </template>
       </el-table-column>
       <el-table-column prop="MobilePhone" header-align="center" align="center" width="110" label="电话"></el-table-column>
-      <el-table-column prop="Address" header-align="center" align="center" label="地址" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="AllergyHistory" header-align="center" align="center" label="过敏史" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="CreatedBy" header-align="center" align="center" label="创建人" width="70" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column header-align="center" :align="$store.state.common.align" label="创建时间" width="150">
+      <el-table-column prop="Address" header-align="left" align="left" label="地址" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="AllergyHistory" header-align="left" align="left" label="过敏史" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column header-align="center" align="center" label="创建时间" width="139">
         <template slot-scope="scope">
-          <span>{{ scope.row.CreatedOn | formatDate}}</span>
+          <span>{{ scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" :align="$store.state.common.align" label="更新时间" width="150">
+      <el-table-column prop="CreatedBy" header-align="center" align="center" label="创建人" width="65" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column header-align="center" align="center" label="更新时间" width="139">
         <template slot-scope="scope">
-          <span>{{ scope.row.UpdatedOn | formatDate}}</span>
+          <span>{{ scope.row.UpdatedOn | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="UpdatedBy" header-align="center" align="center" label="操作人" width="70" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="UpdatedBy" header-align="center" align="center" label="操作人" width="65" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">编辑</el-button>
@@ -93,10 +92,6 @@ import ComStore from '../common/com-store'
 export default {
   name: 'member',
   filters: {
-    formatDate (time) {
-      var day = new Date(time.substring(6, time.length - 2) * 1)
-      return formatDate(day, 'yyyy-MM-dd hh:mm')
-    },
     getAge (time) {
       var age = formatDate(new Date(time.substring(6, time.length - 2) * 1), 'yyyy-MM-dd')
       var now = formatDate(new Date(), 'yyyy-MM-dd')
@@ -104,6 +99,13 @@ export default {
       var ageArr = age.split('-')
       return `${nowArr[0] - ageArr[0]}`
     }
+    // countAge (time) {
+    //   var age = formatDate(new Date(time.substring(6, time.length - 2) * 1), 'yyyy-MM-dd')
+    //   var now = formatDate(new Date(), 'yyyy-MM-dd')
+    //   var nowArr = now.split('-')
+    //   var ageArr = age.split('-')
+    //   return `${nowArr[0] - ageArr[0]}`
+    // },
   },
   data () {
     return {

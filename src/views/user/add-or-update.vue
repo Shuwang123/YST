@@ -8,7 +8,7 @@
         <!--<el-input v-model="dataForm.Password" placeholder="填写密码或修改密码"></el-input>-->
       <!--</el-form-item>-->
       <el-form-item label="昵称" prop="NickName">
-        <el-input v-model="dataForm.NickName" placeholder="请填别名"></el-input>
+        <el-input v-model="dataForm.NickName" placeholder="请填写别名"></el-input>
       </el-form-item>
       <el-form-item label="电话" prop="Phone">
         <el-input v-model="dataForm.Phone" placeholder="请填写电话"></el-input>
@@ -23,8 +23,9 @@
         'isTrigger': false
       }" ref="comStoreOne" @eventStore="changeStoreData">
       </com-store>
+      <!--这申请账号时如果没有选择角色ID，默认0，提交后会导致申请账号失败-->
       <el-form-item label="角色ID" prop="RoleId">
-        <el-select v-model="dataForm.RoleId" placeholder="此账号的角色ID（一个账号只能对应一个角色）" style="width: 400px">
+        <el-select v-model="dataForm.RoleId" placeholder="一个账号只能对应单个角色且必填" style="width: 400px">
           <el-option v-for="item in roleArr" :key="item.value"
                      :value="item.value" :label="'['+item.value+'] '+item.label">
           </el-option>
