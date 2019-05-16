@@ -1,14 +1,14 @@
 <template>
   <el-dialog v-dialogDrag ref="dialog__wrapper" :title="id === 0 ? '申请账号' : '编辑账号'" :close-on-click-modal="false" :visible.sync="visible" @close="handleClose" id='add-or-update'>
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="用户名" prop="UserName" v-if="!id">
-        <el-input v-model="dataForm.UserName" placeholder="请填写用户名（算登陆账号，数字或字母以后不可更改）"></el-input>
+      <el-form-item label="登陆账号" prop="UserName" v-if="!id">
+        <el-input v-model="dataForm.UserName" placeholder="请填写用户名（登陆账号，限数字或字母以后不可更改）"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="Password" v-if="!id">
-        <el-input v-model="dataForm.Password" placeholder="填写密码或修改密码"></el-input>
-      </el-form-item>
-      <el-form-item label="别名" prop="NickName">
-        <el-input v-model="dataForm.NickName" placeholder="请填别名（汉字昵称）"></el-input>
+      <!--<el-form-item label="密码" prop="Password" v-if="!id">-->
+        <!--<el-input v-model="dataForm.Password" placeholder="填写密码或修改密码"></el-input>-->
+      <!--</el-form-item>-->
+      <el-form-item label="昵称" prop="NickName">
+        <el-input v-model="dataForm.NickName" placeholder="请填别名"></el-input>
       </el-form-item>
       <el-form-item label="电话" prop="Phone">
         <el-input v-model="dataForm.Phone" placeholder="请填写电话"></el-input>
@@ -62,7 +62,7 @@ export default {
       id: '',
       dataForm: {
         UserName: '',
-        Password: '',
+        // Password: '', // 申请账号的时候不需要提供密码了，后端统一初始化123456，这先注释放着
         NickName: '',
         Phone: '',
 
@@ -73,7 +73,7 @@ export default {
       roleArr: [], // 角色选项
       dataRule: {
         UserName: Currency('账号不能为空'),
-        Password: Currency('密码不能为空'),
+        // Password: Currency('密码不能为空'),
         NickName: Currency('别名必填'),
         Phone: Phone(1)
         // StoreId: Currency('门店必选'),
@@ -108,7 +108,7 @@ export default {
       this.roleArr = []
       this.dataForm = {
         UserName: '',
-        Password: '',
+        // Password: '',
         NickName: '',
         Phone: '',
         RoleId: 0, // 0
@@ -172,7 +172,7 @@ export default {
         if (valid) {
           var obj = {
             UserName: this.dataForm.UserName,
-            Password: this.dataForm.Password,
+            // Password: this.dataForm.Password,
             // Password: md5(this.dataForm.Password),
             NickName: this.dataForm.NickName,
             RoleId: this.dataForm.RoleId,
@@ -183,14 +183,14 @@ export default {
           }
           console.log(obj)
           var objEdit = {
+            Id: this.id,
             // UserName: this.dataForm.UserName,
             // Password: this.dataForm.Password,
             NickName: this.dataForm.NickName,
             RoleId: this.dataForm.RoleId,
             StoreId: this.dataForm.StoreId,
             CanViewStores: this.dataForm.CanViewStores,
-            Phone: this.dataForm.Phone,
-            Id: this.id
+            Phone: this.dataForm.Phone
           }
           console.log(objEdit)
           var tick = this.id ? API.adminUser.adminUserEdit(objEdit) : API.adminUser.adminUserAdd(obj)

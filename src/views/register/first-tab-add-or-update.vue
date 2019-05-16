@@ -201,7 +201,7 @@ export default {
       }
     },
 
-    // 如果这儿有点懵逼，往下翻还有个实际收费的blur的方法：realityBlur
+    // 如果这儿有点懵逼，往下翻还有个实际收费输入框的blur的方法：realityBlur
     'dataForm.reality': function (newval, oldval) {
       if (Number(newval) === 0) { return false }
       if (!this.regMoney.test(newval)) {
@@ -407,8 +407,11 @@ export default {
             UserId: this.dataForm.UserId, // 患者id
             OrderType: 1, // 1挂号 2退号
             DiagnosisType: this.dataForm.DiagnosisType, // 初诊 复诊
+
             RegisterAmount: this.dataForm.RegisterAmount, // 挂号费
             ConsultationAmount: this.dataForm.ConsultationAmount, // 诊疗费
+            RegisterStatus: 1, // 上面两个费用的支付状态，1未支付 2已支付
+
             PaymentWay: this.dataForm.PaymentWay,
             Remark: this.dataForm.PaymentWay
           }
