@@ -56,7 +56,9 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           var passMd5 = md5(this.ruleForm.pass)
-          console.log(passMd5)
+          // console.log(passMd5)
+          console.log(this.ruleForm.pass)
+          // API.common.login({userName: this.ruleForm.name, password: passMd5, remmberMe: false}).then(data => {
           API.common.login({userName: this.ruleForm.name, password: this.ruleForm.pass, remmberMe: false}).then(data => {
             // this.$ios.get('../static/data/data.json').then(result => {
             if (data.code === '0000') {

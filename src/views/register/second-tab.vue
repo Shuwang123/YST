@@ -18,7 +18,8 @@
       <el-table-column prop="StoreName" header-align="center" align="center" label="来源" width=""></el-table-column>
       <el-table-column prop="DoctorName" header-align="center" align="center" label="医生" width="" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column prop="StatusName" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="RegisterStatusName" header-align="center" align="center" label="挂号费状态" width="110" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="RegisterOrderStatusName" header-align="center" align="center" label="就诊状态" width="" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>

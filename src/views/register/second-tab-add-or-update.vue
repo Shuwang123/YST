@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'患者挂号详情'" :width="'678px'"
+    :title="'挂号详情'" :width="'678px'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose" class="registerIndex">
     <div class="ownScrollbar" style="min-height: 390px;overflow-y: scroll;"

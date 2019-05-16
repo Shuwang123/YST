@@ -16,7 +16,13 @@
     <el-table-column prop="SalePrice" header-align="center" align="center" label="单价" width="70"></el-table-column>
     <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="数量" min-width="150">
       <template slot-scope="scope">
-        <el-input-number v-model="scope.row.myNum" :step="1" @change="handleChange" :min="1" :max="1000" size="mini"></el-input-number> g
+        <el-input-number v-model="scope.row.myNum" :step="1" @change="handleChange" :min="1" :max="1000" size="mini"></el-input-number>
+        <div class="recipelAgeUnit">
+          <el-select v-model="categoryUnit" style="width: 45px" size="mini">
+            <el-option :label="'克'" :value="'g'"></el-option>
+            <el-option :label="'袋'" :value="'dai'"></el-option>
+          </el-select>
+        </div>
       </template>
     </el-table-column>
     <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="总价" min-width="70">
@@ -31,6 +37,11 @@
 <script>
 export default {
   name: 'table-one',
+  data () {
+    return {
+      categoryUnit: '克'
+    }
+  },
   methods: {
     addOrUpdateHandle (row) {
       // this.visible = false
@@ -44,6 +55,11 @@ export default {
 }
 </script>
 
-<style scoped>
-
+<style rel="stylesheet/scss" lang="scss" scoped>
+.recipelAgeUnit /deep/ {
+  display: inline-block;
+  .el-input__inner {
+    padding: 0 5px;
+  }
+}
 </style>

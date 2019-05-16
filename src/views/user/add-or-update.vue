@@ -172,8 +172,8 @@ export default {
         if (valid) {
           var obj = {
             UserName: this.dataForm.UserName,
-            // Password: this.dataForm.Password,
-            Password: md5(this.dataForm.Password),
+            Password: this.dataForm.Password,
+            // Password: md5(this.dataForm.Password),
             NickName: this.dataForm.NickName,
             RoleId: this.dataForm.RoleId,
             StoreId: this.dataForm.StoreId,

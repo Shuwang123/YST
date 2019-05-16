@@ -7,8 +7,9 @@
             <p style="text-align: center;font-size: 16px; padding: 5px 0 20px 0;">
               <!--꧁<span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;"> 处方笺 </span>꧂-->
               <span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;cursor: pointer"
-                    @click="cutOut = !cutOut" title="点击展开或收起"> 处方笺
-                <b style="font-weight: 700;font-size: 12px;color: #409EFF;text-decoration: underline">点击展开隐藏</b>
+                    @click="cutOut = !cutOut" :title="cutOut ? '点击收起' : '点击展开'"> 处方笺
+                <b style="font-weight: 700;font-size: 12px;color: #409EFF;
+                   text-decoration: underline">{{cutOut ? '点击收起' : '点击展开'}}</b>
               </span>
             </p>
             <el-row>
@@ -95,14 +96,17 @@
                       <el-input v-model="dataForm.name" placeholder="从起病到就诊时疾病的发生、发展及其他变化的经过和诊疗情况" style="width: 75%"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="24">
-                    <el-form-item label="诊断信息">
-                      <el-input v-model="dataForm.name" placeholder="请选择或输入诊断信息" style="width: 75%"></el-input>
-                    </el-form-item>
-                  </el-col>
+
                 </el-row>
               </div>
             </transition>
+            <el-row>
+              <el-col :span="24">
+                <el-form-item label="诊断信息">
+                  <el-input v-model="dataForm.name" placeholder="请选择或输入诊断信息" style="width: 75%"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
             <div style="border-bottom: 1px solid #E6E6E6; font-weight: 500">R:</div>
           </div>
           <!--左侧开方：直接用组件的引用名切换-->
@@ -435,11 +439,19 @@ export default {
       })
     },
 
-    // 当点击右侧药材列表的‘添加’按钮的时候
+    // 后面有三个方法会共同调用这个方法：计算总价
+    countTotalPrice (obj) {
+      var sum = 0
+      obj.forEach(item => {
+        sum += item.SalePrice * item.myNum
+      })
+      this.allMoney = (sum * this.phr).toFixed(2)
+    },
+    // 1.当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
       if (this.leftTableData.some(item => item.Id === row.Id)) {
         // this.$alert(`[${row.ShowName}] 已添加！`, '提示', {
-        this.$alert(`<b style="color: #409EFF;font-size: 14px">[${row.ShowName}]</b> 已添加！`, '提示', {
+        this.$alert(`<b style="color: #409EFF;font-size: 14px;font-weight: 500">[${row.ShowName}]</b> 已添加！`, '提示', {
           confirmButtonText: '确定',
           dangerouslyUseHTMLString: true,
           closeOnClickModal: true,
@@ -447,11 +459,11 @@ export default {
         })
         return false
       }
-      row.myNum = 1
+      row.myNum = 1 // 让后端加字段要改所有的类型的，这自己加，就没这种问题了myNum
       this.leftTableData.push(row)
       this.countTotalPrice(this.leftTableData)
     },
-    // 当点击左边table的‘删除’按钮的时候
+    // 2.当点击左边table的‘删除’按钮的时候
     delDrugs (row) {
       this.leftTableData.some((item, i) => {
         if (item.Id === row.Id) {
@@ -461,20 +473,13 @@ export default {
       })
       this.countTotalPrice(this.leftTableData)
     },
-    // 改变myNum
+    // 3.改变myNum
     consoleTable () {
-      this.leftTableData.push() // 这个可能会非常懵逼，目的是每次改变任何的myNum的值都会重新渲染左边的table，你把push()拿掉就能找到问题在哪，这就是为什么push()没任何实际参数但还是要写一个在这
+      this.leftTableData.push() // 这个可能会非常懵逼，目的是每次改变任何的myNum的值都会重新渲染左边的table，把push()拿掉就能找到问题在哪，这就是这个push()没任何实际参数但还是要写一个在这的原因
       this.countTotalPrice(this.leftTableData)
       // console.log(this.leftTableData)
     },
-    // 公用的计算总价的方法
-    countTotalPrice (obj) {
-      var sum = 0
-      obj.forEach(item => {
-        sum += item.SalePrice * item.myNum
-      })
-      this.allMoney = (sum * this.phr).toFixed(2)
-    },
+
     handleClick (tab, event) {
       // console.log(tab, event)
       // console.log(this.leftTableData)
@@ -549,9 +554,9 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-.recipelAgeUnit {
+.recipelAgeUnit /deep/ {
   display: inline-block;
-  /deep/ .el-input__inner {
+  .el-input__inner {
     padding: 0 5px;
   }
 }
