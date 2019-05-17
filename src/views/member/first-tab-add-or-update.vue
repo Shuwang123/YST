@@ -16,12 +16,12 @@
       </el-form-item>
       <el-form-item label="出生日期" prop="BirthDate">
         <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.BirthDate" placeholder="请选择出生日期" style="width: 160px"></el-date-picker>
-        <!--<el-input-number v-model="sizeForm.age" :min="1" :step="1" :max="12" style="width: 95px"></el-input-number>-->
-        <!--<el-input-number v-model="dataForm.BirthDate" :min="1" :step="1" :max="100" style="width: 95px"></el-input-number>-->
-        <!--<el-select v-model="dataForm.BirthDateUnit" style="width: 45px">-->
-          <!--<el-option :label="'岁'" :value="'岁'"></el-option>-->
-          <!--<el-option :label="'月'" :value="'月'"></el-option>-->
-        <!--</el-select>-->
+
+        <el-input v-model="dataForm.BirthDateAge" placeholder="只读" style="width: 60px" disabled></el-input>
+        <el-select v-model="dataForm.BirthDateUnit" style="width: 66px;margin-right: 10px" disabled>
+          <el-option label="岁" value="1"></el-option>
+          <el-option label="月" value="0"></el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="电话" prop="MobilePhone">
         <el-input v-model="dataForm.MobilePhone" placeholder="请输入电话" style="width: 160px"></el-input>
@@ -47,15 +47,9 @@
 <script type="text/ecmascript-6">
 import API from '@/api'
 import {Currency, Phone} from '../../utils/validate'
-import {formatDate} from '@/utils/validate'
+import {formatDate, calcAge} from '@/utils/validate'
 
 export default {
-  filters: {
-    formatDate (time) {
-      var day = new Date(time.substring(6, time.length - 2) * 1)
-      return formatDate(day, 'yyyy-MM-dd')
-    }
-  },
   components: {
   },
   data () {
@@ -67,6 +61,8 @@ export default {
         UserName: '',
         Sex: '1',
         BirthDate: '',
+        BirthDateAge: '',
+        BirthDateUnit: '1', // 必须是str类型的
         MobilePhone: '',
         AllergyHistory: '', // 病例史
         Address: ''
@@ -77,6 +73,32 @@ export default {
         MobilePhone: Phone(1)
       }
     }
+  },
+  watch: {
+    'dataForm.BirthDate': function (val, oldval) {
+      if (val === null) {
+        this.dataForm.BirthDateUnit = '1'
+        this.dataForm.BirthDateAge = ''
+      } else {
+        var allAge = calcAge(val) // !!!!!!这得到18岁 或 10月 1月
+        if (allAge.substr(allAge.length - 1) === '月') {
+          this.dataForm.BirthDateUnit = '0'
+        } else if (allAge.substr(allAge.length - 1) === '岁') {
+          this.dataForm.BirthDateUnit = '1'
+        }
+        this.dataForm.BirthDateAge = allAge.substring(0, allAge.length - 1) // !!!!!!只取数不要单位，其实也可以parseInt
+      }
+    }
+    // 'dataForm.BirthDateAge': function (val, oldval) { // 死循环，占时放弃了，当初想的解决方案是用户自己先选择模式，来去都单向才没死循环
+    //   if (val === '') {
+    //     this.dataForm.BirthDate = ''
+    //     this.dataForm.BirthDateUnit = '1'
+    //     // this.dataForm.BirthDateAge = ''
+    //   } else {
+    //     var timeStamp = calcTimeStamp(val, this.dataForm.BirthDateUnit) // !!!!!!这得到2019-10-02
+    //     this.dataForm.BirthDate = timeStamp
+    //   }
+    // }
   },
   methods: {
     // 新增，编辑时获取单行详情info
@@ -89,8 +111,17 @@ export default {
             if (result.code === '0000') {
               this.dataForm.UserName = result.data.UserName
               this.dataForm.Sex = String(result.data.Sex)
+
               this.dataForm.BirthDate = formatDate(new Date(result.data.BirthDate
                 .substring(6, result.data.BirthDate.length - 2) * 1), 'yyyy-MM-dd')
+              var allAge = calcAge(this.dataForm.BirthDate) // !!!!!!这得到18岁 或 10月 1月
+              if (allAge.substr(allAge.length - 1) === '月') {
+                this.dataForm.BirthDateUnit = '0'
+              } else if (allAge.substr(allAge.length - 1) === '岁') {
+                this.dataForm.BirthDateUnit = '1'
+              }
+              this.dataForm.BirthDateAge = allAge.substring(0, allAge.length - 1) // !!!!!!只获取数不要单位，其实也可以parseInt
+
               this.dataForm.MobilePhone = result.data.MobilePhone
               this.dataForm.AllergyHistory = result.data.AllergyHistory
               this.dataForm.Address = result.data.Address
@@ -109,6 +140,8 @@ export default {
         UserName: '',
         Sex: '1',
         BirthDate: '',
+        BirthDateAge: '',
+        BirthDateUnit: '1', // 必须是str类型的
         MobilePhone: '',
         AllergyHistory: '', // 病例史
         Address: ''

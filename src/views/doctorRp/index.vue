@@ -31,12 +31,11 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="年龄">
-                  <el-input-number v-model="dataForm.BirthDate" :min="1" :step="1" :max="100" style="width: 95px"></el-input-number>
-                  <!--<el-input-number v-model="dataForm.age" :min="1" :step="1" :max="12" style="width: 95px"></el-input-number>-->
+                  <el-input v-model="dataForm.BirthDate" placeholder="只读" style="width:70px" disabled></el-input>
                   <div class="recipelAgeUnit">
-                    <el-select v-model="dataForm.ageUnit" style="width: 45px">
-                      <el-option :label="'岁'" :value="'岁'"></el-option>
-                      <el-option :label="'月'" :value="'月'"></el-option>
+                    <el-select v-model="dataForm.ageUnit" style="width: 45px" disabled >
+                      <el-option label="岁" value="1"></el-option>
+                      <el-option label="月" value="0"></el-option>
                     </el-select>
                   </div>
                 </el-form-item>
@@ -228,7 +227,7 @@
 <script type="text/ecmascript-6">
 import API from '@/api'
 import '../common/icon/iconfont.css'
-import {formatDate} from '@/utils/validate'
+import {calcAge} from '@/utils/validate' // 自定义的计算年龄的方法，精确到月，至于精确到天，那种才生下来的娃，一个月不到不太可能中医
 import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
 import PatientListPop from './patient-list-pop'
 import TableOne from './table-one'
@@ -306,7 +305,7 @@ export default {
         Code: '',
 
         age: 1,
-        ageUnit: '岁',
+        ageUnit: '1', // 1岁 0月
         DiagnosisType: '1', // 看诊类型
         morbidityTime: '',
 
@@ -336,14 +335,6 @@ export default {
     this.chenxiHeight = parseInt(youHeight) - parseInt(zuoHeight)
   },
   methods: {
-    // 特殊的计算除年龄的方法
-    countAge (time) {
-      var age = formatDate(new Date(time.substring(6, time.length - 2) * 1), 'yyyy-MM-dd')
-      var now = formatDate(new Date(), 'yyyy-MM-dd')
-      var nowArr = now.split('-')
-      var ageArr = age.split('-')
-      return `${nowArr[0] - ageArr[0]}`
-    },
     // 打开会员弹窗
     openPatientList () {
       this.addOrUpdateVisible = true
@@ -353,9 +344,17 @@ export default {
     },
     // 只医生‘直接开方’才用：子组件点击载入 传给 父组件
     zairuFun (row) {
+      console.log(row)
+      // var allAge = calcAge(row.BirthDate) // !!!!!!这得到18岁 或 10月 1月
+      var allAge = row.BirthDate // !!!!!!这得到18岁 或 10月 1月
+      if (allAge.substr(allAge.length - 1) === '月') {
+        this.dataForm.ageUnit = '0'
+      } else if (allAge.substr(allAge.length - 1) === '岁') {
+        this.dataForm.ageUnit = '1'
+      }
       this.dataForm.UserName = row.UserName
       this.dataForm.Sex = row.Sex === 1 ? '男' : '女'
-      this.dataForm.BirthDate = this.countAge(row.BirthDate)
+      this.dataForm.BirthDate = allAge.substring(0, allAge.length - 1) // !!!!!!只获取数不要单位，其实也可以parseInt
       this.dataForm.MobilePhone = row.MobilePhone
       this.dataForm.Address = row.Address
       this.dataForm.UserId = row.Id
@@ -379,11 +378,17 @@ export default {
       }
       console.log(params)
       API.member.getMemberList(params).then(result => {
-        console.log(result.data)
+        console.log(result.data) // 如果是医生直接开方这儿会报错的因为是[][0].xx是报错的!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if (result.code === '0000') {
+          var allAge = calcAge(result.data[0].BirthDate) // !!!!!!这得到18岁 或 10月 1月
+          if (allAge.substr(allAge.length - 1) === '月') {
+            this.dataForm.ageUnit = '0'
+          } else if (allAge.substr(allAge.length - 1) === '岁') {
+            this.dataForm.ageUnit = '1'
+          }
           this.dataForm.UserName = result.data[0].UserName
           this.dataForm.Sex = result.data[0].Sex === 1 ? '男' : '女'
-          this.dataForm.BirthDate = this.countAge(result.data[0].BirthDate)
+          this.dataForm.BirthDate = allAge.substring(0, allAge.length - 1) // !!!!!!只取数不要单位，其实也可以parseInt
           this.dataForm.MobilePhone = result.data[0].MobilePhone
           this.dataForm.Address = result.data[0].Address
           this.dataForm.UserId = result.data[0].Id

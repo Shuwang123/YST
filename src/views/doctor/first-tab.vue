@@ -15,7 +15,7 @@
       <!--<el-table-column prop="UserCode" header-align="left" align="left" label="病历号" width="100" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="UserName" header-align="center" align="center" label="患者" width="70"></el-table-column>
       <el-table-column prop="Sex" header-align="center" align="center" label="性别" width="60"></el-table-column>
-      <el-table-column prop="BirthDateTime" header-align="center" align="center" label="年龄" width="60"></el-table-column>
+      <el-table-column prop="BirthDate" header-align="center" align="center" label="年龄" width="60"></el-table-column>
       <el-table-column prop="MobilePhone" header-align="center" align="center" label="电话" width="110"></el-table-column>
       <el-table-column prop="DiagnosisTypeName" header-align="center" align="center" label="初诊、复诊" min-width="100" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="RegisterAmount" header-align="center" align="center" label="挂号费" width=""></el-table-column>
@@ -44,17 +44,11 @@
   </div>
 </template>
 <script type="text/ecmascript-6">
-import { formatDate } from '@/utils/validate'
+import { calcAge } from '@/utils/validate'
 import API from '@/api'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import { mapGetters } from 'vuex'
 export default {
-  filters: {
-    formatDate (time) {
-      var date = new Date(time)
-      return formatDate(date, 'yyyy-MM-dd hh:mm')
-    }
-  },
   name: 'drugs',
   props: ['fatherDataForm'],
   data () {
@@ -95,7 +89,10 @@ export default {
         }
         API.register.getRegisterList(params).then(result => { // 获取待就诊列表（挂号列表为基础筛选：医生）或者以后还可能筛选挂号单本身的状态
           if (result.code === '0000') {
-            this.dataList = result.data
+            this.dataList = result.data.map(item => {
+              item.BirthDate = calcAge(item.BirthDate)
+              return item
+            })
             this.totalPage = result.total
           } else {
             this.$message.error(result.message)

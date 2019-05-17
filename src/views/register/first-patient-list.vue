@@ -30,9 +30,9 @@
           <span v-else-if="scope.row.Sex === 2">女</span>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" :align="$store.state.common.align" label="年龄(岁)" width="80">
+      <el-table-column header-align="center" :align="$store.state.common.align" label="年龄" width="80">
         <template slot-scope="scope">
-          <span>{{ scope.row.BirthDate | getAge}}</span>
+          <span>{{ scope.row.BirthDate}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="MobilePhone" header-align="center" align="center" width="150" label="电话"></el-table-column>
@@ -59,22 +59,12 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import {formatDate} from '@/utils/validate'
+import {calcAge} from '@/utils/validate'
 import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
 // import {treeDataTranslate} from '@/utils'
 import FirstPatientAdd from './first-patient-add'
 export default {
   components: { FirstPatientAdd },
-  filters: {
-    getAge (time) {
-      var age = formatDate(new Date(time.substring(6, time.length - 2) * 1), 'yyyy-MM-dd')
-      var now = formatDate(new Date(), 'yyyy-MM-dd')
-      var nowArr = now.split('-')
-      var ageArr = age.split('-')
-      // if (nowArr[0] - ageArr[0] >= 1) { console.log(nowArr[0] - ageArr[0]) }
-      return `${nowArr[0] - ageArr[0]}`
-    }
-  },
   data () {
     return {
       visible: false,
@@ -114,7 +104,11 @@ export default {
       }
       API.member.getMemberList(params).then(result => {
         if (result.code === '0000') {
-          this.dataList = result.data
+          // this.dataList = result.data
+          this.dataList = result.data.map(item => {
+            item.BirthDate = calcAge(item.BirthDate)
+            return item
+          })
           this.totalPage = result.total
         } else {
           this.$message.error(result.message)

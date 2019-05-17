@@ -9,6 +9,7 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column prop="UserName" header-align="center" align="center" label="患者" width="70"></el-table-column>
+      <el-table-column prop="BirthDate" header-align="center" align="center" label="年龄" width="70"></el-table-column>
       <el-table-column prop="UserCode" header-align="left" align="left" label="病历号" width="100"></el-table-column>
       <el-table-column prop="MobilePhone" header-align="left" align="left" label="手机" width="110"></el-table-column>
       <el-table-column prop="DiagnosisTypeName" header-align="center" align="center" label="类型" width="70"></el-table-column>
@@ -45,6 +46,8 @@
 import API from '@/api'
 import SecondTabAddOrUpdate from './second-tab-add-or-update'
 import { mapGetters } from 'vuex'
+import {calcAge} from '@/utils/validate'
+
 export default {
   name: 'stockFirst',
   props: ['fatherDataForm'],
@@ -94,7 +97,10 @@ export default {
       console.log(params)
       API.register.getRegisterList(params).then(result => {
         if (result.code === '0000') {
-          this.dataList = result.data
+          this.dataList = result.data.map(item => {
+            item.BirthDate = calcAge(item.BirthDate)
+            return item
+          })
           this.totalPage = result.total
         } else {
           this.$message.error(result.message)

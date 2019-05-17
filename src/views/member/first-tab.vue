@@ -44,11 +44,7 @@
           <span v-else-if="scope.row.Sex === 2">女</span>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" :align="$store.state.common.align" label="年龄" width="50">
-        <template slot-scope="scope">
-          <span>{{ scope.row.BirthDate | getAge}}</span>
-        </template>
-      </el-table-column>
+      <el-table-column prop="BirthDate" header-align="center" align="center" label="年龄" width="50" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="MobilePhone" header-align="center" align="center" width="110" label="电话"></el-table-column>
       <el-table-column prop="Address" header-align="left" align="left" label="地址" width="" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="AllergyHistory" header-align="left" align="left" label="过敏史" width="" :show-overflow-tooltip="true"></el-table-column>
@@ -85,28 +81,12 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import {formatDate} from '@/utils/validate'
+import {calcAge} from '@/utils/validate' // 自定义的计算年龄的方法，精确到月，至于精确到天，那种才生下来的娃，一个月不到不太可能中医
 import { mapGetters } from 'vuex'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import ComStore from '../common/com-store'
 export default {
   name: 'member',
-  filters: {
-    getAge (time) {
-      var age = formatDate(new Date(time.substring(6, time.length - 2) * 1), 'yyyy-MM-dd')
-      var now = formatDate(new Date(), 'yyyy-MM-dd')
-      var nowArr = now.split('-')
-      var ageArr = age.split('-')
-      return `${nowArr[0] - ageArr[0]}`
-    }
-    // countAge (time) {
-    //   var age = formatDate(new Date(time.substring(6, time.length - 2) * 1), 'yyyy-MM-dd')
-    //   var now = formatDate(new Date(), 'yyyy-MM-dd')
-    //   var nowArr = now.split('-')
-    //   var ageArr = age.split('-')
-    //   return `${nowArr[0] - ageArr[0]}`
-    // },
-  },
   data () {
     return {
       dataListLoading: false, // 加载
@@ -156,7 +136,10 @@ export default {
         console.log(params)
         API.member.getMemberList(params).then(result => {
           if (result.code === '0000') {
-            this.dataList = result.data
+            this.dataList = result.data.map(item => {
+              item.BirthDate = calcAge(item.BirthDate) // 这个方法不要太懵逼哈，@utils/validate.js里的自定义方法
+              return item
+            })
             this.totalPage = result.total
           } else {
             this.$message.error(result.message)

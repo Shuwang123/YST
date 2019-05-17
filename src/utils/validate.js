@@ -180,6 +180,10 @@ export function isNum (s) {
   var reg = /^([1-9]\d*|[0]{1, 1})$/
   return reg.test(s)
 }
+function padLeftZero (str) {
+  return ('00' + str).substr(str.length)
+}
+
 /**
  * 时间戳转时间格式
  * @param {*} s
@@ -204,6 +208,58 @@ export function formatDate (date, fmt) {
   return fmt
 }
 
-function padLeftZero (str) {
-  return ('00' + str).substr(str.length)
+// 2019.5.17新增 日期与年龄 的相互转换：出来的是 18岁或1月,传入时的时间格式要求是这些才行：/Date(1501231820930)/ 或 2019/10/02 或 2019-10-02
+export function calcAge (time) {
+  if (time.includes('/Date(')) { // 这种 /Date(1555124337033)/ 无法直接用，得先弄成1555124337033，且还要弄成数字类型，不能为字符串
+    time = Number(time.substring(6, time.length - 2)) // 从arr[i]~arr[j]
+  } else { // 这种 2019/4/12 10:01:09 和 '2019-04-23 00:35:55' 这种都能直接处理，那就直接传递呗，不处理了
+  }
+  var date = new Date(time)
+  var birthDate = formatDate(date, 'yyyy-MM-dd'), nowYear = formatDate(new Date(), 'yyyy-MM-dd') // 最后返回的类型是 2019-10-02 这种
+  var birthArr = birthDate.split('-'), nowArr = nowYear.split('-')
+  var lastUnit = '岁'
+  var lastAge = ''
+  if (nowArr[0] - birthArr[0] === 0) { // 2019-2019=0 这种肯定没有一岁的，只需要考虑月的问题
+    lastUnit = '月'
+    if (nowArr[1] - birthArr[1] === 0 || nowArr[1] - birthArr[1] === 1) { // 这种30天以内的，干脆就算成一个月吧
+      lastAge = 1
+    } else if (nowArr[1] - birthArr[1] > 1 && nowArr[2] - birthArr[2] < 0) {
+      lastAge = nowArr[1] - birthArr[1] - 1
+    } else if (nowArr[1] - birthArr[1] > 1 && nowArr[2] - birthArr[2] >= 0) {
+      lastAge = nowArr[1] - birthArr[1]
+    }
+  } else if (nowArr[0] - birthArr[0] === 1) { // 2019-2018=1 这种1岁多、刚好1岁、或几个月都有可能
+    if (nowArr[1] - birthArr[1] >= 1) {
+      lastUnit = '岁'
+      lastAge = 1
+    } else if (nowArr[1] - birthArr[1] === 0 && nowArr[2] - birthArr[2] >= 0) {
+      lastUnit = '岁'
+      lastAge = 1
+    } else {
+      lastUnit = '月'
+      lastAge = nowArr[1] - birthArr[1] + 12 - 1
+    }
+  } else if (nowArr[0] - birthArr[0] >= 2) { // 2019-2017=1 这种肯定是岁了，关键是判断1岁还是2岁，需要更具月份和日期确定+1-1
+    lastUnit = '岁'
+    if (nowArr[1] - birthArr[1] >= 1) {
+      lastAge = nowArr[0] - birthArr[0]
+    } else if (nowArr[1] - birthArr[1] === 0 && nowArr[2] - birthArr[2] >= 0) {
+      lastAge = nowArr[0] - birthArr[0]
+    } else {
+      lastAge = nowArr[0] - birthArr[0] - 1
+    }
+  } else {
+    lastUnit = '岁'
+    lastAge = 0
+  }
+  return `${lastAge}${lastUnit}`
 }
+// 2019.5.17新增 日期与年龄 的相互转换 （后来冒出死循环放弃了）
+// export function calcTimeStamp (num, ageUnit) { // '1'岁 '0'月
+//   var nowYearArr = formatDate(new Date(), 'yyyy-MM-dd').split('-')
+//   var BirthDate = ''
+//   if (ageUnit === '1') {
+//     BirthDate = `${nowYearArr[0] - num}-01-01`
+//   }
+//   return BirthDate
+// }

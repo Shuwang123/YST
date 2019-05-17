@@ -14,7 +14,7 @@
           <el-col :span="24"><span>病历号：</span>{{registerAllData.Code}}</el-col>
           <el-col :span="12"><span>姓名：</span>{{registerAllData.UserName}}</el-col>
           <el-col :span="12"><span>性别：</span>{{registerAllData.SexName}}</el-col>
-          <el-col :span="12"><span>年龄：</span>{{registerAllData.BirthDateTime}}</el-col>
+          <el-col :span="12"><span>年龄：</span>{{registerAllData.BirthDate}}</el-col>
           <el-col :span="12"><span>电话：</span>{{registerAllData.MobilePhone}}</el-col>
         </el-row>
         <el-row>
@@ -59,6 +59,7 @@
 <script type="text/ecmascript-6">
 import API from '@/api'
 import '../common/icon/iconfont.css'
+import {calcAge} from '@/utils/validate'
 export default {
   data () {
     return {
@@ -77,6 +78,7 @@ export default {
         this.dataListLoading = true
         API.register.getRegisterInfo({id: patientId}).then(result => {
           if (result.code === '0000') {
+            result.data.BirthDate = calcAge(result.data.BirthDate)
             this.registerAllData = result.data
             this.dataListLoading = false
             console.log(result.data)

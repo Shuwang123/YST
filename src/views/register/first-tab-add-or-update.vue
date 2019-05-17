@@ -154,7 +154,6 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import {formatDate} from '@/utils/validate'
 import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
 import '../common/icon/iconfont.css'
 // import {treeDataTranslate} from '@/utils'
@@ -301,16 +300,9 @@ export default {
   methods: {
     patientListFun (row) { // 患者列表，子层点击‘载入’时触发
       this.show = !this.show
-      function countAge (time) {
-        var age = formatDate(new Date(time.substring(6, time.length - 2) * 1), 'yyyy-MM-dd')
-        var now = formatDate(new Date(), 'yyyy-MM-dd')
-        var nowArr = now.split('-')
-        var ageArr = age.split('-')
-        return `${nowArr[0] - ageArr[0]}`
-      }
       this.dataForm.UserName = row.UserName
       this.dataForm.Sex = row.Sex === 1 ? '男' : '女'
-      this.dataForm.BirthDate = countAge(row.BirthDate)
+      this.dataForm.BirthDate = row.BirthDate
       this.dataForm.MobilePhone = row.MobilePhone
       this.dataForm.Address = row.Address
       this.dataForm.UserId = row.Id

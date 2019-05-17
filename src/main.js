@@ -29,7 +29,7 @@ Vue.config.productionTip = false
 Vue.prototype.isAuth = isAuth // 挂载权限方法
 
 import {formatDate} from '@/utils/validate' // cx 全局自定义时间转化：时间戳 和 格式日期之间，或时间戳 和 年龄之间等等
-// 管道符前的数据time、+ structure 结构参数（如：scope.row.CreatedOn | myDateFormat('yyyy-MM-dd hh:mm')）调用时
+// 管道符前的数据time、+ structure 结构参数（如：scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')）调用时
 // filter是过滤、format是格式化
 Vue.filter('myDateFilter', function (time, structure) {
   if (time.includes('/Date(')) {
@@ -41,23 +41,8 @@ Vue.filter('myDateFilter', function (time, structure) {
   return formatDate(date, structure) // 最后返回的类型是 2019-10-02 10:00 这种
 })
 // 当初打算接着在这写时间与年龄之间的转换，后来想了想感觉过滤器用在‘时间’和‘年龄’的转换上不是很符合常规思维，
-// 就换到@utils/validate.js里去了，用export公共接口的方式来实现，不过缺点嘛就是用之前得先在对应子组件import {} from './xx.js'
+// 就换到@utils/validate.js里去了，用export公共接口的方式来实现，不过缺点嘛就是用之前得先在对应子组件import {} from './xx.js' calcAge(time)
 
-// getAge (time) {
-//   var age = formatDate(new Date(), 'yyyy-MM-dd')
-//   var nowadays = formatDate(new Date(), 'yyyy-MM-dd')
-//   var nowArr = now.split('-')
-//   var ageArr = age.split('-')
-//   // if (nowArr[0] - ageArr[0] >= 1) { console.log(nowArr[0] - ageArr[0]) }
-//   return `${nowArr[0] - ageArr[0]}`
-// }
-// countAge (time) {
-//   var age = formatDate(new Date(time.substring(6, time.length - 2) * 1), 'yyyy-MM-dd')
-//   var nowadays = formatDate(new Date(), 'yyyy-MM-dd')
-//   var nowArr = now.split('-')
-//   var ageArr = age.split('-')
-//   return `${nowArr[0] - ageArr[0]}`
-// },
 new Vue({
   el: '#app',
   router,

@@ -13,13 +13,14 @@
       </el-form-item>
       <el-form-item label="出生日期" prop="BirthDate" style="margin-top: 15px">
         <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.BirthDate" placeholder="请选择出生日期" style="width: 160px"></el-date-picker>
-        <!--<el-input-number v-model="sizeForm.age" :min="1" :step="1" :max="12" style="width: 95px"></el-input-number>-->
-        <!--<el-input-number v-model="dataForm.BirthDate" :min="1" :step="1" :max="100" style="width: 95px"></el-input-number>-->
-        <!--<el-select v-model="dataForm.BirthDateUnit" style="width: 45px">-->
-        <!--<el-option :label="'岁'" :value="'岁'"></el-option>-->
-        <!--<el-option :label="'月'" :value="'月'"></el-option>-->
-        <!--</el-select>-->
+
+        <el-input v-model="dataForm.BirthDateAge" placeholder="只读" style="width: 60px" disabled></el-input>
+        <el-select v-model="dataForm.BirthDateUnit" style="width: 66px;margin-right: 10px" disabled>
+          <el-option label="岁" value="1"></el-option>
+          <el-option label="月" value="0"></el-option>
+        </el-select>
       </el-form-item>
+
       <el-form-item label="电话" prop="MobilePhone" style="margin-top: 15px">
         <el-input v-model="dataForm.MobilePhone" placeholder="请输入电话" style="width: 160px"></el-input>
       </el-form-item>
@@ -43,16 +44,9 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import {formatDate} from '@/utils/validate'
 import {Currency, Phone} from '../../utils/validate'
-// import {treeDataTranslate} from '@/utils'
+import {formatDate, calcAge} from '@/utils/validate'
 export default {
-  filters: {
-    formatDate (time) {
-      var day = new Date(time.substring(6, time.length - 2) * 1)
-      return formatDate(day, 'yyyy-MM-dd')
-    }
-  },
   data () {
     return {
       // visible: false,
@@ -61,6 +55,8 @@ export default {
         UserName: '',
         Sex: '1',
         BirthDate: '',
+        BirthDateAge: '',
+        BirthDateUnit: '1', // 必须是str类型的
         MobilePhone: '',
         AllergyHistory: '', // 病例史
         Address: ''
@@ -71,6 +67,22 @@ export default {
         MobilePhone: Phone(1)
       },
       dataList: null
+    }
+  },
+  watch: {
+    'dataForm.BirthDate': function (val, oldval) {
+      if (val === null) {
+        this.dataForm.BirthDateUnit = '1'
+        this.dataForm.BirthDateAge = ''
+      } else {
+        var allAge = calcAge(val) // !!!!!!这得到18岁 或 10月 1月
+        if (allAge.substr(allAge.length - 1) === '月') {
+          this.dataForm.BirthDateUnit = '0'
+        } else if (allAge.substr(allAge.length - 1) === '岁') {
+          this.dataForm.BirthDateUnit = '1'
+        }
+        this.dataForm.BirthDateAge = allAge.substring(0, allAge.length - 1) // !!!!!!只取数不要单位，其实也可以parseInt
+      }
     }
   },
   methods: {
@@ -84,6 +96,8 @@ export default {
         UserName: '',
         Sex: '1',
         BirthDate: '',
+        BirthDateAge: '',
+        BirthDateUnit: '1', // 必须是str类型的
         MobilePhone: '',
         AllergyHistory: '', // 病例史
         Address: ''
