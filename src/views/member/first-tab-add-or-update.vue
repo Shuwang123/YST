@@ -4,7 +4,7 @@
     :title="!dataForm.id ? '新增会员信息' : '编辑会员信息'" width="600px"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm"  label-width="80px" size="small" :inline="true">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px" size="small" :inline="true">
       <el-form-item label="姓名" prop="UserName">
         <el-input v-model="dataForm.UserName" placeholder="请输入姓名" style="width: 160px"></el-input>
       </el-form-item>

@@ -14,19 +14,20 @@
       <el-table-column prop="Code" header-align="left" align="left" label="挂号单号" width="100" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="UserCode" header-align="left" align="left" label="病历号" width="100" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="UserName" header-align="center" align="center" label="患者" width="70"></el-table-column>
-      <el-table-column prop="Sex" header-align="center" align="center" label="性别" width="60"></el-table-column>
+      <el-table-column prop="SexName" header-align="center" align="center" label="性别" width="60"></el-table-column>
       <el-table-column prop="BirthDate" header-align="center" align="center" label="年龄" width="60"></el-table-column>
       <el-table-column prop="MobilePhone" header-align="center" align="center" label="电话" width="110"></el-table-column>
       <el-table-column prop="DiagnosisTypeName" header-align="center" align="center" label="初诊、复诊" min-width="100" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="RegisterAmount" header-align="center" align="center" label="挂号费" width=""></el-table-column>
-      <el-table-column prop="ConsultationAmount" header-align="center" align="center" label="问诊费" width="" :show-overflow-tooltip="true"></el-table-column>
-      <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column prop="StatusName" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="ConsultationAmount" header-align="center" align="center" label="问诊费" width=""></el-table-column>
+
+      <el-table-column prop="RegisterStatusName" header-align="center" align="center" label="状态0" width="119"></el-table-column>
+      <el-table-column prop="RegisterOrderStatusName" header-align="center" align="center" label="状态1" width="" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="" label="操作" :width="status === 1 ? 280 : 150" header-align="center" align="center">
         <template slot-scope="scope">
           <!--<el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">就诊</el-button>-->
           <el-button type="text"
-            @click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&DoctorName=${scope.row.DoctorName}`)">
+            @click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&DoctorName=${scope.row.DoctorName}&DoctorId=${fatherDataForm.AccountId}`)">
             就诊</el-button>
         </template>
       </el-table-column>

@@ -26,7 +26,7 @@
       <el-table-column prop="RegisterOrderStatusName" header-align="center" align="center" label="就诊状态" width="" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
-          <el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
+          <el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">收费</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -39,16 +39,17 @@
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
-    <second-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataListChild"></second-tab-add-or-update>
+    <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataListChild"></first-tab-add-or-update>
   </div>
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import SecondTabAddOrUpdate from './second-tab-add-or-update'
+import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import { mapGetters } from 'vuex'
 import {calcAge} from '@/utils/validate'
 
 export default {
+  components: { FirstTabAddOrUpdate },
   name: 'stockFirst',
   props: ['fatherDataForm'],
   data () {
@@ -71,7 +72,6 @@ export default {
       totalPage: 1
     }
   },
-  components: { SecondTabAddOrUpdate },
   mounted () {
     window.onresize = () => {
       this.chenxiHeight = document.documentElement['clientHeight'] - 333 // 273 测试老半天

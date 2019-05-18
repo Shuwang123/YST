@@ -49,8 +49,9 @@ var router = new Router({
         {path: '/drugs/inventoryList', component: _import('inventory/index'), name: 'inventoryList', meta: {title: '库存详情', keepAlive: false}},
         /* 库存管理模块End */
 
-        /* 柜台模块：挂号Begin */
+        /* 柜台模块：挂号、收银、患者member、Begin */
         {path: '/register/register', component: _import('register/index'), name: 'register', meta: {title: '挂号', keepAlive: false}},
+        {path: '/register/cashier', component: _import('cashier/index'), name: 'cashier', meta: {title: '收银', keepAlive: false}},
         {path: '/register/member', component: _import('member/index'), name: 'member', meta: {title: '会员管理', keepAlive: false}},
         /* 柜台模块End */
 

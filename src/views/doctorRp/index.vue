@@ -1,6 +1,6 @@
 <template>
   <div class="doctor-recipel">
-    <el-form ref="form" :rules="dataRule" :model="dataForm" label-width="80px" size="mini">
+    <el-form ref="dataForm" :rules="dataRule" :model="dataForm" label-width="80px" size="mini">
       <el-container style="padding-left: 20px">
         <el-aside width="75%" style="border-right: 1px solid #DCDFE6; padding-right: 5px;min-width: 700px;">
           <div id="leftHeightPatient">
@@ -16,12 +16,11 @@
               <el-col :span="8">
                 <el-form-item label="姓名" prop="UserName">
                   <el-input v-model="dataForm.UserName" placeholder="选择患者" style="width: 94px" disabled></el-input>
-                  <!--<el-button type="warning" icon="iconfont icon-renwu-zengjia" @click="send()" size="mini"></el-button>-->
                   <!--{{$route.query.patientId}}-->
                   <span v-if="$route.query.MobilePhone === '0'"
-                    class="iconfont icon-renwu-zengjia" style="display: inline-block;width: 40px;height: 30px;
-                    font-size: 26px;font-weight: 900;color: #1EA57B; margin-left: 7px; vertical-align: top"
-                        @click="openPatientList(); $store.commit('setRegisterStep', 2)"></span>
+                        class="iconfont icon-renwu-zengjia" style="display: inline-block;width: 40px;height: 30px;font-size: 26px;font-weight: 900;color: #1EA57B; margin-left: 7px; vertical-align: top"
+                        @click="openPatientList(); $store.commit('setRegisterStep', 2)">
+                  </span>
                 </el-form-item>
               </el-col>
               <el-col :span="8">
@@ -61,7 +60,6 @@
                     </el-form-item>
                   </el-col>
                 </el-row>
-
                 <el-row>
                   <el-col :span="8">
                     <el-form-item label="看诊类型">
@@ -72,37 +70,39 @@
                     </el-form-item>
                   </el-col>
                 </el-row>
+
                 <el-row>
                   <el-col :span="8">
                     <el-form-item label="发病时间">
-                      <el-date-picker type="date" placeholder="请选择发病时间" v-model="dataForm.morbidityTime"  style="width: 144px"></el-date-picker>
+                      <el-date-picker type="date" placeholder="请选择发病时间" style="width: 144px"
+                                      v-model="dataForm.DiseaseTime" value-format="yyyy-MM-dd">
+                      </el-date-picker>
                     </el-form-item>
                   </el-col>
                   <el-col :span="8">
                     <el-form-item label="过敏史">
-                      <el-input v-model="dataForm.name" placeholder="请输入过敏史" style="width: 144px"></el-input>
+                      <el-input v-model="dataForm.AgoIllness" placeholder="请输入过敏史" style="width: 144px"></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
                 <el-row>
                   <el-col :span="24">
                     <el-form-item label="主诉">
-                      <el-input v-model="dataForm.name" placeholder="请选择或输入主诉" style="width: 75%"></el-input>
+                      <el-input v-model="dataForm.MainSuit" placeholder="请选择或输入主诉" style="width: 75%"></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="24">
                     <el-form-item label="现病史">
-                      <el-input v-model="dataForm.name" placeholder="从起病到就诊时疾病的发生、发展及其他变化的经过和诊疗情况" style="width: 75%"></el-input>
+                      <el-input v-model="dataForm.NowIllness" placeholder="从起病到就诊时疾病的发生、发展及其他变化的经过和诊疗情况" style="width: 75%"></el-input>
                     </el-form-item>
                   </el-col>
-
                 </el-row>
               </div>
             </transition>
             <el-row>
               <el-col :span="24">
-                <el-form-item label="诊断信息">
-                  <el-input v-model="dataForm.name" placeholder="请选择或输入诊断信息" style="width: 75%"></el-input>
+                <el-form-item label="诊断信息" prop="DiseaseInfo">
+                  <el-input v-model="dataForm.DiseaseInfo" placeholder="请选择或输入诊断信息" style="width: 75%"></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -120,16 +120,30 @@
             <component :is="this.leftTable" ref="leftCurrentTable" @tableEvent="delDrugs" @tableNumberEvent="consoleTable"></component>
             <!--v-if="addOrUpdateVisible" ref="patientListPop" @childEven="zairuFun"-->
             <!--<div>-->
-              <!--<el-table-column type="index" align="center" width="50" label="序号"></el-table-column>-->
-              <!--<el-table-column prop="Id" header-align="center" align="center" label="药品/规格" width="100"></el-table-column>-->
-              <!--<el-table-column prop="Code" header-align="center" align="center" label="剂量" width="100"></el-table-column>-->
-              <!--<el-table-column prop="CreatedTime" header-align="center" align="center" label="代数" width="150"></el-table-column>-->
-              <!--<el-table-column prop="SupplierName" header-align="center" align="center" label="单价" :show-overflow-tooltip="true"></el-table-column>-->
-              <!--<el-table-column prop="StoreName" header-align="center" align="center" label="金额"></el-table-column>-->
-              <!--<el-table-column prop="Quantity" header-align="center" align="center" label="用法" :show-overflow-tooltip="true"></el-table-column>-->
-              <!--<el-table-column prop="" label="操作" width="150" header-align="center" align="center">-->
+              <!--<el-table-column prop="" label="操作1" width="" header-align="center" align="center">-->
                 <!--<template slot-scope="scope">-->
-                  <!--<el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">就诊</el-button>-->
+                  <!--<el-button type="text" @click="addOrUpdateHandle(scope.row)">删除</el-button>-->
+                <!--</template>-->
+              <!--</el-table-column>-->
+              <!--<el-table-column prop="Code" header-align="center" align="center" label="编码" width="100"></el-table-column>-->
+              <!--<el-table-column prop="CategoryName" header-align="center" align="center" label="药态" width="70"></el-table-column>-->
+              <!--<el-table-column type="index" align="center" width="70" label="序号"></el-table-column>-->
+              <!--<el-table-column prop="ShowName" header-align="center" align="center" label="药名" width="80"></el-table-column>-->
+              <!--<el-table-column prop="SalePrice" header-align="center" align="center" label="单价" width="70"></el-table-column>-->
+              <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="数量" min-width="150">-->
+                <!--<template slot-scope="scope">-->
+                  <!--<el-input-number v-model="scope.row.myNum" :step="1" @change="handleChange" :min="1" :max="1000" size="mini"></el-input-number>-->
+                  <!--<div class="recipelAgeUnit">-->
+                    <!--<el-select v-model="categoryUnit" style="width: 45px" size="mini">-->
+                      <!--<el-option :label="'克'" :value="'g'"></el-option>-->
+                      <!--<el-option :label="'袋'" :value="'dai'"></el-option>-->
+                    <!--</el-select>-->
+                  <!--</div>-->
+                <!--</template>-->
+              <!--</el-table-column>-->
+              <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="总价" min-width="70">-->
+                <!--<template slot-scope="scope">-->
+                  <!--{{scope.row.SalePrice * scope.row.myNum}}-->
                 <!--</template>-->
               <!--</el-table-column>-->
             <!--</div>-->
@@ -147,7 +161,7 @@
           </el-tabs>
           <div class="rightUlStyle">
             <ul class="ownScrollbar">
-              <li v-for="item in rightUlData" :key="item.Id">
+              <li v-for="item in rightUlData" :key="item.Id" :title="item.ShowName">
                 <el-row>
                   <el-col :span="18">
                     <span v-text="item.ShowName === null ? '000' : item.ShowName"></span> id{{item.Id}}-[{{item.Quantity}}g]
@@ -174,7 +188,7 @@
               :page-size="pageSize"
               :total="totalPage"
               layout="prev, pager, next" :pager-count="5" small>
-              <!--layout="prev, pager, next, jumper, sizes, total" background :pager-count="2">-->
+              <!--layout="prev, pager, next, jumper, sizes, total" background>-->
             </el-pagination>
           </div>
         </el-main>
@@ -184,20 +198,20 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="总剂数">
-              <el-input-number v-model="phr" @change="countTotalPrice(leftTableData)" :min="1" :step="1" :max="30" style="width: 95px"></el-input-number>
+              <el-input-number v-model="Total" @change="countTotalPrice(leftTableData)" :min="1" :step="1" :max="30" style="width: 95px"></el-input-number>
             </el-form-item>
           </el-col>
           <el-col :span="6">
-            <el-form-item label="用药方法">
-              <el-select v-model="dataForm.ageUnit" style="width: 144px" placeholder="请选择用药方法">
-                <el-option :label="'一日一次饭后服'" :value="'岁'"></el-option>
-                <el-option :label="'一日一次饭前服…'" :value="'月'"></el-option>
+            <el-form-item label="用药方法" prop="DrugRate">
+              <el-select v-model="dataForm.DrugRate" style="width: 144px" placeholder="请选择用药方法">
+                <el-option :label="'一日一次饭后服'" :value="'一日一次饭后服'"></el-option>
+                <el-option :label="'一日一次饭前服…'" :value="'一日一次饭前服…'"></el-option>
               </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="6">
             <el-form-item label="医嘱">
-              <el-input v-model="dataForm.age" placeholder="请填写医嘱" style="width: 100%"></el-input>
+              <el-input v-model="dataForm.DoctorAdvice" placeholder="请填写医嘱" style="width: 100%"></el-input>
             </el-form-item>
           </el-col>
         </el-row>
@@ -206,12 +220,13 @@
             <el-form-item label="开方医生">
               <el-input v-model="$route.query.DoctorName" placeholder="onlyReady" style="width: 110px" :disabled="true"></el-input>
             </el-form-item>
+            {{$route.query.DoctorId}}
           </el-col>
           <el-col :span="12" style="font-weight: 500; font-size: 16px">
             总金额：<span style="color: #FF0052">￥{{allMoney}}</span> +
-            <el-input-number
-              v-model="dataForm.date1" controls-position="right"
-              :min="1" :max="10000" style="width: 100px" size="mini"></el-input-number> = x￥
+            <el-input-number v-model="dataForm.ConsultationAmount" controls-position="right"
+                             :min="1" :max="10000" style="width: 100px" size="mini">
+            </el-input-number> = x￥
           </el-col>
           <el-col :span="6">
             <el-form-item>
@@ -227,8 +242,7 @@
 <script type="text/ecmascript-6">
 import API from '@/api'
 import '../common/icon/iconfont.css'
-import {calcAge} from '@/utils/validate' // 自定义的计算年龄的方法，精确到月，至于精确到天，那种才生下来的娃，一个月不到不太可能中医
-import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
+import {calcAge, Currency, Letter, NumberInt, NumberFloat} from '@/utils/validate' // 自定义的计算年龄的方法，精确到月，至于精确到天，那种才生下来的娃，一个月不到不太可能中医
 import PatientListPop from './patient-list-pop'
 import TableOne from './table-one'
 import TableTwo from './table-two'
@@ -241,7 +255,7 @@ export default {
     TableThree
   },
   // Error in callback for watcher "$route": "TypeError: Cannot read property 'id' of undefined"
-  // 报错不要怕，因为没有创建路由的对应菜单造成的，应该无关紧要
+  // 报错不要怕，因为没有创建路由页面的对应菜单造成的，无关紧要
   watch: {
     'cutOut': function (newval, oldval) {
       if (newval === true) {
@@ -301,20 +315,29 @@ export default {
         BirthDate: '',
         MobilePhone: '',
         Address: '',
-        UserId: [],
+        UserId: '',
         Code: '',
+        ageUnit: '1', // val='1' label岁 '0'月
 
-        age: 1,
-        ageUnit: '1', // 1岁 0月
         DiagnosisType: '1', // 看诊类型
-        morbidityTime: '',
+        DiseaseTime: '', // 发病时间
+        AgoIllness: '', // 过敏史
+        MainSuit: '', // 主诉
+        NowIllness: '', // 现病史
+        DiseaseInfo: '', // 诊断信息
 
-        SpellName: ''
+        SpellName: '',
+        DrugRate: '', // 用药间隔
+        DoctorAdvice: '', // 医嘱
+        RegisterAmount: 0, // 挂号费
+        ConsultationAmount: 0 // 诊疗费
       },
       dataRule: {
-        UserName: Currency('此为必填项')
+        UserName: Currency('此为必填项'),
+        DiseaseInfo: Currency('此为必填项'),
+        DrugRate: Currency('此为必填项')
       },
-      phr: 1, // 剂数
+      Total: 1, // 剂数
       allMoney: 0
     }
   },
@@ -359,6 +382,8 @@ export default {
       this.dataForm.Address = row.Address
       this.dataForm.UserId = row.Id
       this.dataForm.Code = row.Code
+      this.dataForm.RegisterAmount = 0 // 这两个没用，就只是提交的时候直接提交
+      this.dataForm.ConsultationAmount = 0
     },
 
     // 通用封装的门店子组件绑定的父组件的返回方法（开方页面的上层已提前决定了门店，这儿还能改变门店吗？？？？？？？？？？？？？？？？？？？）
@@ -378,7 +403,7 @@ export default {
       }
       console.log(params)
       API.member.getMemberList(params).then(result => {
-        console.log(result.data) // 如果是医生直接开方这儿会报错的因为是[][0].xx是报错的!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        console.log(result.data) // 如果是医生直接开方这儿会报错的因为是[][0].xx空数组报错的!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if (result.code === '0000') {
           var allAge = calcAge(result.data[0].BirthDate) // !!!!!!这得到18岁 或 10月 1月
           if (allAge.substr(allAge.length - 1) === '月') {
@@ -393,6 +418,8 @@ export default {
           this.dataForm.Address = result.data[0].Address
           this.dataForm.UserId = result.data[0].Id
           this.dataForm.Code = result.data[0].Code
+          this.dataForm.RegisterAmount = 0 // 这两个没用，就只是提交的时候直接提交
+          this.dataForm.ConsultationAmount = 0
         } else {
           this.$message.error(result.message)
         }
@@ -451,10 +478,11 @@ export default {
       obj.forEach(item => {
         sum += item.SalePrice * item.myNum
       })
-      this.allMoney = (sum * this.phr).toFixed(2)
+      this.allMoney = (sum * this.Total).toFixed(2)
     },
     // 1.当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
+      console.log(row)
       if (this.leftTableData.some(item => item.Id === row.Id)) {
         // this.$alert(`[${row.ShowName}] 已添加！`, '提示', {
         this.$alert(`<b style="color: #409EFF;font-size: 14px;font-weight: 500">[${row.ShowName}]</b> 已添加！`, '提示', {
@@ -530,10 +558,11 @@ export default {
           this.getStoreCategorytypeStock()
           this.leftTableData = [] // 不只切换，还需要清空左边table信息
         }).catch(() => {
-          this.activeName = this.oldTabsName // 依靠oldTabsName切回上一步，table、ul、和tableData都不需要变
+          this.activeName = this.oldTabsName // 依靠oldTabsName切回上一步，table、ul、和tableData都不需要变了，就是取消切换药态的操作
         })
       }
     },
+    // A B C D...字母按钮
     activeLitter (txt, ind) {
       this.dataForm.SpellName = txt
       this.litterArr.forEach((item, indx) => {
@@ -554,7 +583,77 @@ export default {
     currentChangeHandle (val) {
       this.pageIndex = val
       this.getStoreCategorytypeStock()
+    },
+    // 开方提交
+    send () {
+      if (this.leftTableData.length === 0) {
+        this.$alert(`处方未编辑药材，还不能提交给药房！`, '提示', {
+          confirmButtonText: '确定',
+          dangerouslyUseHTMLString: true,
+          closeOnClickModal: true,
+          closeOnPressEscape: true
+        })
+        return false
+      }
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          var params = {
+            StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
+            AccountId: this.$route.query.DoctorId, // 医生
+            UserId: this.dataForm.UserId, // 患者
+            OrderType: '1',
+            DiagnosisType: this.dataForm.DiagnosisType,
+            RegisterStatus: '2',
+
+            RegisterAmount: this.dataForm.RegisterAmount,
+            ConsultationAmount: this.dataForm.ConsultationAmount,
+            PaymentWay: '1',
+            Remark: '',
+            DepartmentType: '1',
+            DiseaseInfo: this.dataForm.DiseaseInfo,
+            AgoIllness: this.dataForm.AgoIllness,
+            NowIllness: this.dataForm.NowIllness,
+            MainSuit: this.dataForm.MainSuit,
+            DiseaseTime: this.dataForm.DiseaseTime,
+            DoctorAdvice: this.dataForm.DoctorAdvice,
+            DrugRate: this.dataForm.DrugRate,
+            Total: this.Total,
+            ItemsJson: this.leftTableData.map(item => {
+              var obj = {
+                ProductId: item.Id,
+                ProductCode: item.Code,
+                ProductName: item.Name,
+                CostPrice: item.CostPrice,
+                SalePrice: item.SalePrice,
+                RealPrice: '',
+                Quantity: item.myNum,
+                SupplierId: '',
+                SupplierCode: item.SapSupplierCode // 库存的药材不是合并了的嘛，哪还能确定供应商啊
+              }
+              return obj
+            })
+          }
+          console.log(params)
+          var tick = API.register.registerSubmit(params)
+          tick.then((data) => {
+            if (data.code === '0000') {
+              this.$message({
+                message: `${'发送成功'}`,
+                type: 'success',
+                duration: 1500
+                // onClose: () => {
+                //   this.visible = false
+                //   this.$emit('refreshDataList')
+                // }
+              })
+            } else {
+              this.$message.error(data.message)
+            }
+          })
+        }
+      })
     }
+
   }
 }
 </script>

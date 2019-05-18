@@ -1,6 +1,6 @@
 <template>
   <div>
-    <el-table-column prop="" label="操作" width="" header-align="center" align="center">
+    <el-table-column prop="" label="操作1" width="" header-align="center" align="center">
       <template slot-scope="scope">
         <el-button type="text" @click="addOrUpdateHandle(scope.row)">删除</el-button>
       </template>

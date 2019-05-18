@@ -47,21 +47,18 @@
                            size="mini">查询</el-button>
               </el-form-item>
             </el-col>
-            <el-col :span="3" style="text-align: right;padding-right: 10px">
-              <el-button  type="primary" @click="$router.push(`/doctor/treatment`)" size="mini">辅助开方</el-button>
-            </el-col>
           </el-row>
         </el-form>
       </div>
 
       <el-tab-pane label="" name="first">
-        <span slot="label"><i class=""></i> 挂号</span>
+        <span slot="label"><i class="el-icon-document"></i> 待收费</span>
         <transition name="chenxi">
           <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="second">
-        <span slot="label"><i class=""></i> 挂号列表</span>
+        <span slot="label"><i class=""></i> 已收费</span>
         <transition name="chenxi">
           <second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>
         </transition>
