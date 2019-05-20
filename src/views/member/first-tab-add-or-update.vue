@@ -14,14 +14,18 @@
           <el-radio label="2">女</el-radio>
         </el-radio-group>
       </el-form-item>
-      <el-form-item label="出生日期" prop="BirthDate">
-        <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.BirthDate" placeholder="请选择出生日期" style="width: 160px"></el-date-picker>
 
-        <el-input v-model="dataForm.BirthDateAge" placeholder="只读" style="width: 60px" disabled></el-input>
-        <el-select v-model="dataForm.BirthDateUnit" style="width: 66px;margin-right: 10px" disabled>
+      <el-form-item label="年龄" prop="BirthDateAge">
+        <el-input v-model="dataForm.BirthDateAge" @blur="stampCalc(dataForm.BirthDateAge, dataForm.BirthDateUnit)" placeholder="只读" style="width: 91px" clearable></el-input>
+        <el-select v-model="dataForm.BirthDateUnit" @change="stampCalc(dataForm.BirthDateAge, dataForm.BirthDateUnit)" style="width: 66px;margin-right: 10px">
           <el-option label="岁" value="1"></el-option>
           <el-option label="月" value="0"></el-option>
         </el-select>
+      </el-form-item>
+      <el-form-item label="出生" prop="BirthDate">
+        <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.BirthDate"
+                        placeholder="请选择出生日期" style="width: 160px">
+        </el-date-picker>
       </el-form-item>
       <el-form-item label="电话" prop="MobilePhone">
         <el-input v-model="dataForm.MobilePhone" placeholder="请输入电话" style="width: 160px"></el-input>
@@ -46,8 +50,8 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import {Currency, Phone} from '../../utils/validate'
-import {formatDate, calcAge} from '@/utils/validate'
+import {Currency, Phone, NumberInt} from '../../utils/validate'
+import {formatDate, calcAge, calcTimeStamp} from '@/utils/validate'
 
 export default {
   components: {
@@ -69,6 +73,7 @@ export default {
       },
       dataRule: {
         UserName: Currency('此为必填项'),
+        BirthDateAge: NumberInt(),
         BirthDate: Currency('此为必填项'),
         MobilePhone: Phone(1)
       }
@@ -89,7 +94,7 @@ export default {
         this.dataForm.BirthDateAge = allAge.substring(0, allAge.length - 1) // !!!!!!只取数不要单位，其实也可以parseInt
       }
     }
-    // 'dataForm.BirthDateAge': function (val, oldval) { // 死循环，占时放弃了，当初想的解决方案是用户自己先选择模式，来去都单向才没死循环
+    // 'dataForm.BirthDateAge': function (val, oldval) { // 死循环，占时放弃了，当初想的解决方案是用户自己先选择模式，来去都单向才没死循环; 最后发现了新的解决办法，不会出现死循环了
     //   if (val === '') {
     //     this.dataForm.BirthDate = ''
     //     this.dataForm.BirthDateUnit = '1'
@@ -101,6 +106,25 @@ export default {
     // }
   },
   methods: {
+    // 通过age去计算时间戳
+    stampCalc (age, unit) {
+      if (unit === '1' && age > 120) { // 输入大小的限制，120岁最大
+        this.dataForm.BirthDateUnit = '1'
+        this.dataForm.BirthDateAge = ''
+        return false
+      } else if (unit === '0' && age > 12) { // 输入大小的限制，12月最大
+        this.dataForm.BirthDateUnit = '1'
+        this.dataForm.BirthDateAge = ''
+        return false
+      }
+
+      if (age === '' || age === '0' || !/^\d+$/.test(age)) {
+        this.dataForm.BirthDateUnit = '1'
+        this.dataForm.BirthDateAge = ''
+        return false
+      }
+      this.dataForm.BirthDate = calcTimeStamp(age, unit)
+    },
     // 新增，编辑时获取单行详情info
     init (id) {
       this.visible = true

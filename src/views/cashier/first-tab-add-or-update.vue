@@ -28,8 +28,8 @@
       </el-row>
       <div style="padding-left: 32px">
         <el-row>
-          <el-col :span="8"><span>操作时间：</span>{{registerAllData.CreatedOnTime}}</el-col>
-          <el-col :span="8"><span>医生：</span>{{registerAllData.DoctorName}}</el-col>
+          <el-col :span="9"><span>操作时间：</span>{{registerAllData.CreatedOnTime}}</el-col>
+          <el-col :span="7"><span>医生：</span>{{registerAllData.DoctorName}}</el-col>
           <el-col :span="8"><span>类型：</span>{{registerAllData.DiagnosisTypeName}}</el-col>
         </el-row>
         <div style="border: 1px solid #ccc;padding: 10px">

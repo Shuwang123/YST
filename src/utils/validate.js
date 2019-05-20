@@ -237,7 +237,7 @@ export function calcAge (time) {
       lastAge = 1
     } else {
       lastUnit = '月'
-      lastAge = nowArr[1] - birthArr[1] + 12 - 1
+      lastAge = nowArr[1] - birthArr[1] + 12
     }
   } else if (nowArr[0] - birthArr[0] >= 2) { // 2019-2017=1 这种肯定是岁了，关键是判断1岁还是2岁，需要更具月份和日期确定+1-1
     lastUnit = '岁'
@@ -254,12 +254,19 @@ export function calcAge (time) {
   }
   return `${lastAge}${lastUnit}`
 }
-// 2019.5.17新增 日期与年龄 的相互转换 （后来冒出死循环放弃了）
-// export function calcTimeStamp (num, ageUnit) { // '1'岁 '0'月
-//   var nowYearArr = formatDate(new Date(), 'yyyy-MM-dd').split('-')
-//   var BirthDate = ''
-//   if (ageUnit === '1') {
-//     BirthDate = `${nowYearArr[0] - num}-01-01`
-//   }
-//   return BirthDate
-// }
+// 2019.5.17新增 日期与年龄 的相互转换 （后来冒出死循环放弃了, 最后又发现可以了）
+export function calcTimeStamp (age, unit) { // '1'岁 '0'月
+  var nowYearArr = formatDate(new Date(), 'yyyy-MM-dd').split('-')
+  var BirthDate = ''
+  if (unit === '1') {
+    BirthDate = `${nowYearArr[0] - age}-${nowYearArr[1]}-01` // 为什么不用${nowYearArr[2]}做最后以为呢，万一平年闰年27 28 无法统一怎么办呢
+  } else if (unit === '0') {
+    if (nowYearArr[1] - age > 0) {
+      BirthDate = `${nowYearArr[0]}-${nowYearArr[1] - age}-01`
+    } else if (nowYearArr[1] - age <= 0) {
+      BirthDate = `${nowYearArr[0] - 1}-${12 + Number(nowYearArr[1]) - age}-01` // 这种类型没处理2019-3-01，应该是2019-03-01，后来发现能自动处理就没管了
+    }
+  }
+  console.log(BirthDate)
+  return BirthDate
+}

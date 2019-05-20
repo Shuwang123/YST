@@ -42,10 +42,10 @@ service.interceptors.response.use(response => {
         Message.error({message: message})
       })
     } else {
-      // Message.success({
-      //   message: '响应成功！1000',
-      //   duration: 1000
-      // })
+      Message.success({
+        message: '响应成功！1000',
+        duration: 1000
+      })
       // Message.success({message: response.data.message})
     }
   }
