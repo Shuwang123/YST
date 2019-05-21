@@ -75,4 +75,18 @@ export default {
   }
   /*& /deep/ .el-tabs__content {background-color: #F0F0F0}*/
 }
+.mod-drugs /deep/ .ownScrollbar {
+  /*.gutter {width: 7px !important;}*/
+  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar { width: 7px; }
+  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    background-color: #eee;
+  }
+  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-track {
+    border-radius: 0;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0);
+    background-color: rgba(0,0,0,0);
+  }
+}
 </style>

@@ -54,5 +54,10 @@ export default {
   setAccountCurrentHandleStore (state, content) {
     state.accountCurrentHandleStore = content // 先存给Vuex，同时下面顺手给sessionStorage
     setAccountData('accountCurrentHandleStore', content)
+  },
+  // 账号目前选中的默认门店（归属门店? 手选门店? 还是storeArr[0]门店?）
+  setAllDoctorIdArr (state, content) {
+    state.allDoctorIdArr = content // 先存给Vuex，同时下面顺手给sessionStorage
+    setAccountData('allDoctorIdArr', content)
   }
 }

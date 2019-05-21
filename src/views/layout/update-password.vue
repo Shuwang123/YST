@@ -4,7 +4,7 @@
     :visible.sync="visible"
     :append-to-body="true">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="94px">
-      <el-form-item label="账号">
+      <el-form-item label="当前账号">
         <span style="color: red">{{ $store.state.user.name }}</span>
       </el-form-item>
       <el-form-item label="原密码" prop="oldPassword">

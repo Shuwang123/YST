@@ -30,7 +30,7 @@
       :row-class-name="ownTableRowClassName"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       :cell-class-name="ownColumnStyle"
-      style="width: 100%;">
+      style="width: 100%;" class="ownScrollbar">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column type="index" label="排序" align="center" width="50"></el-table-column>
       <el-table-column prop="CategoryName" header-align="center" align="center" label="种类" width="80" :show-overflow-tooltip="true"></el-table-column>

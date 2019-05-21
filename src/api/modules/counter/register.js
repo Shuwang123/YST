@@ -2,7 +2,7 @@ import request from '../../request'
 import requestUrl from '../../requestUrl'
 import requestParam from '../../requestParam'
 
-// 获取医生list (这个接口没使用，原因：网址蹦了，后端写的新接口又无法使用，只得回去调用的崩掉之前的那个旧的)
+// 获取医生list (这个接口没使用，原因：网址蹦了，后端写的新接口本身又还没写完的时候蹦的，干脆回去调用崩掉之前的另一个旧的)
 export function getDoctors (params) {
   return request({
     url: requestUrl('/YstApiAccount/LoadData'),
@@ -33,6 +33,15 @@ export function getRegisterList (params) {
 export function getRegisterInfo (params) {
   return request({
     url: requestUrl('/YstApiSaleOrder/GetSaleOrderById'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 正常流程下的医生开方或者药房辅助开方，调用的 edit 接口
+export function sendRecipelToEdit (params) {
+  return request({
+    url: requestUrl('/YstApiSaleOrder/Edit'),
     method: 'post',
     data: requestParam(params)
   })

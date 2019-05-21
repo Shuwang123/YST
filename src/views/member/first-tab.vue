@@ -47,7 +47,7 @@
       <el-table-column prop="BirthDate" header-align="center" align="center" label="年龄" width="50" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="MobilePhone" header-align="center" align="center" width="110" label="电话"></el-table-column>
       <el-table-column prop="Address" header-align="left" align="left" label="地址" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="AllergyHistory" header-align="left" align="left" label="过敏史" width="" :show-overflow-tooltip="true"></el-table-column>
+      <!--<el-table-column prop="AllergyHistory" header-align="left" align="left" label="过敏史" width="" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column header-align="center" align="center" label="创建时间" width="139">
         <template slot-scope="scope">
           <span>{{ scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
@@ -90,7 +90,7 @@ export default {
   data () {
     return {
       dataListLoading: false, // 加载
-      chenxiHeight: document.documentElement['clientHeight'] - 273, // 心累，不要动
+      chenxiHeight: document.documentElement['clientHeight'] - 276, // 心累，不要动
       addOrUpdateVisible: false,
 
       pageSize: 10,
@@ -113,7 +113,7 @@ export default {
   },
   mounted () {
     window.onresize = () => {
-      this.chenxiHeight = document.documentElement['clientHeight'] - 273 // 273 测试老半天的值，苦逼，重新整理vue的计算属性和属性监听玩法
+      this.chenxiHeight = document.documentElement['clientHeight'] - 276 // 273 测试老半天的值，苦逼，重新整理vue的计算属性和属性监听玩法
     }
   },
   methods: {
@@ -195,7 +195,7 @@ export default {
   & /deep/ .on-row {
     color: #606266;
     & td {padding: 0;}
-    & td .cell{
+    & td .cell {
       height: 35px;
       line-height: 35px;
     }
@@ -203,7 +203,7 @@ export default {
   & /deep/ .off-row {
     color: #ccc;
     & td {padding: 0;}
-    & td .cell{
+    & td .cell {
       height: 35px;
       line-height: 35px;
     }

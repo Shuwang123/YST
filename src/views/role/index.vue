@@ -102,7 +102,7 @@ export default {
           }
           this.totalPage = response.total
         } else {
-          this.$message.error(response.message) // ??????
+          this.$message.error(response.message)
         }
         this.dataListLoading = false
       })

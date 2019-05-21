@@ -123,7 +123,7 @@ export default {
         id: '',
         userName: '',
         nickName: '',
-        roleId: '', // ?????????????????有问题哟!!!!!!!!!!!!!!!!!!!!!!!!
+        roleId: this.$store.getters.getAllDoctorIdArr.join(),
         canViewStores: this.$store.getters.getAccountCurrentHandleStore
       }
       API.adminUser.adminUserList(params).then(response => {
@@ -131,10 +131,8 @@ export default {
           this.storeDoctorArr = response.data.map(item => {
             return {Id: item.Id, NickName: item.NickName}
           })
-          this.dataForm.AccountId = response.data[0].Id
-          console.log('ls')
-          console.log(this.dataForm.AccountId)
-          this.dataForm.currentDoctorName = response.data[0].NickName // 这儿存在问题，如果是药房类型账号来判断当然没问题，但如账号本身就有医生那应该是直接选择自己id的，以后处理下，应该问题不大
+          this.dataForm.AccountId = response.data.length === 0 ? '' : response.data[0].Id
+          this.dataForm.currentDoctorName = response.data.length === 0 ? '' : response.data[0].NickName // 这儿存在问题，如果是药房类型账号来判断当然没问题，但如账号本身就有医生那应该是直接选择自己id的，以后处理下，应该问题不大
         } else {
           this.$message.error(response.message)
         }

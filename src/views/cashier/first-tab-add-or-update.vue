@@ -32,35 +32,37 @@
           <el-col :span="7"><span>医生：</span>{{registerAllData.DoctorName}}</el-col>
           <el-col :span="8"><span>类型：</span>{{registerAllData.DiagnosisTypeName}}</el-col>
         </el-row>
-        <div style="border: 1px solid #ccc;padding: 10px">
-          <el-row>
-            <el-col :span="8">收费类型</el-col>
-            <el-col :span="8">合计</el-col>
-            <el-col :span="8">收费状态</el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">挂号费</el-col>
-            <el-col :span="8">{{registerAllData.RegisterAmount}}￥</el-col>
-            <el-col :span="8">{{registerAllData.RegisterStatusName}}</el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">诊疗费</el-col>
-            <el-col :span="8">{{registerAllData.ConsultationAmount}}￥</el-col>
-            <el-col :span="8">{{registerAllData.RegisterStatusName}}</el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8">药费</el-col>
-            <el-col :span="8">{{registerAllData.ConsultationAmount}}￥</el-col>
-            <el-col :span="8">{{registerAllData.RegisterStatusName}}</el-col>
-          </el-row>
-          <!--<el-col :span="24"><span>支付状态：</span>{{registerAllData.RegisterStatusName}}</el-col>-->
-          <!--<el-col :span="24"><span>付费方式：</span>{{registerAllData.PaymentWayName}}</el-col>-->
-          <!--<el-col :span="24"><span>看诊状态：</span>{{registerAllData.RegisterOrderStatusName}}</el-col>-->
-        </div>
+        <el-row style="text-align: center; font-weight: 700; border: 1px solid #ccc; border-left: none; border-right: none;height: 35px;line-height: 35px">
+          <el-col :span="6">收费类型</el-col>
+          <el-col :span="6">合计</el-col>
+          <el-col :span="6">收费状态</el-col>
+          <el-col :span="6">操作</el-col>
+        </el-row>
+        <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 30px;line-height: 30px">
+          <el-col :span="6">挂号费</el-col>
+          <el-col :span="6">{{registerAllData.RegisterAmount}}￥</el-col>
+          <el-col :span="6">{{registerAllData.RegisterStatusName}}</el-col>
+          <el-col :span="6">- -</el-col>
+        </el-row>
+        <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 30px;line-height: 30px">
+          <el-col :span="6">诊疗费</el-col>
+          <el-col :span="6">{{registerAllData.ConsultationAmount}}￥</el-col>
+          <el-col :span="6">{{registerAllData.RegisterStatusName}}</el-col>
+          <el-col :span="6">- -</el-col>
+        </el-row>
+        <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 30px;line-height: 30px">
+          <el-col :span="6">药费</el-col>
+          <el-col :span="6">{{registerAllData.ConsultationAmount}}￥</el-col>
+          <el-col :span="6">{{registerAllData.RegisterStatusName}}</el-col>
+          <el-col :span="6">- -</el-col>
+        </el-row>
+        <!--<el-col :span="24"><span>支付状态：</span>{{registerAllData.RegisterStatusName}}</el-col>-->
+        <!--<el-col :span="24"><span>付费方式：</span>{{registerAllData.PaymentWayName}}</el-col>-->
+        <!--<el-col :span="24"><span>看诊状态：</span>{{registerAllData.RegisterOrderStatusName}}</el-col>-->
       </div>
-      <el-row>
-        <el-col :span="24">还需收费多少：30元…………………………………………………………………………………………还没写</el-col>
-      </el-row>
+      <!--<el-row>-->
+        <!--<el-col :span="24">还需收费多少：30元…………………………………………………………………………………………还没写</el-col>-->
+      <!--</el-row>-->
     </div>
     <div style="text-align: right; margin-top: 30px">
       <span slot="footer" class="dialog-footer">

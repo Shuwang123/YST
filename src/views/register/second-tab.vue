@@ -8,7 +8,9 @@
       row-class-name="storeStockListRow"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
-      <el-table-column prop="UserName" header-align="center" align="center" label="患者" width="70"></el-table-column>
+      <el-table-column prop="StoreName" header-align="center" align="center" label="门店" width="80"></el-table-column>
+      <el-table-column prop="DoctorName" header-align="center" align="center" label="医生" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="UserName" header-align="center" align="center" label="挂号患者" width="90"></el-table-column>
       <el-table-column prop="BirthDate" header-align="center" align="center" label="年龄" width="70"></el-table-column>
       <el-table-column prop="UserCode" header-align="left" align="left" label="病历号" width="100"></el-table-column>
       <el-table-column prop="MobilePhone" header-align="left" align="left" label="手机" width="110"></el-table-column>
@@ -19,8 +21,7 @@
           <span>{{ scope.row.CreatedOnTime | myDateFilter('MM-dd hh:mm')}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="StoreName" header-align="center" align="center" label="来源" width=""></el-table-column>
-      <el-table-column prop="DoctorName" header-align="center" align="center" label="医生" width="" :show-overflow-tooltip="true"></el-table-column>
+
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="RegisterStatusName" header-align="center" align="center" label="挂号费状态" width="110" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="RegisterOrderStatusName" header-align="center" align="center" label="就诊状态" width="" :show-overflow-tooltip="true"></el-table-column>
@@ -86,12 +87,13 @@ export default {
         PageSize: this.pageSize,
         IsPaging: this.IsPaging,
         StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店Id（必须）
-        AccountId: this.fatherDataForm.AccountId, // 账户Id,医生Id
+        AccountId: this.fatherDataForm.AccountId, // 医生Id，传'' 查询所有患者挂号列表出来（门店还有限制不要担心）
         Code: '', // 挂号单
         UserName: this.fatherDataForm.patientName, // 患者姓名
         MobilePhone: this.fatherDataForm.MobilePhone, // 患者电话
         WrokFrom: this.fatherDataForm.StartDate, // 开始时间
-        WrokTo: this.fatherDataForm.EndDate // 结束时间
+        WrokTo: this.fatherDataForm.EndDate, // 结束时间
+        Status: '2' // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部
       }
       // 获取挂号列表
       console.log(params)

@@ -11,8 +11,8 @@
           <el-row>
             <el-col style="padding: 0 50px">
               <el-steps :active="stepActive" process-status="success" finish-status="success" align-center>
-                <el-step title="待收货(已创建采购单)" description="录入实际到货量和采购价格"></el-step>
-                <el-step title="未入库" description="药房录入商品批次号"></el-step>
+                <el-step title="待收货(已创建采购单)" description="药房还未录入实际到货量和采购价格"></el-step>
+                <el-step title="未入库" description="药房还未录入商品批次号"></el-step>
                 <el-step title="已入库" description="整个采购计划已完毕"></el-step>
               </el-steps>
             </el-col>

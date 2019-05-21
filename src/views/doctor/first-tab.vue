@@ -13,7 +13,7 @@
       <el-table-column prop="DoctorName" header-align="center" align="center" label="医生" min-width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Code" header-align="left" align="left" label="挂号单号" width="100" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="UserCode" header-align="left" align="left" label="病历号" width="100" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column prop="UserName" header-align="center" align="center" label="患者" width="70"></el-table-column>
+      <el-table-column prop="UserName" header-align="center" align="center" label="医生的患者" width="100"></el-table-column>
       <el-table-column prop="SexName" header-align="center" align="center" label="性别" width="60"></el-table-column>
       <el-table-column prop="BirthDate" header-align="center" align="center" label="年龄" width="60"></el-table-column>
       <el-table-column prop="MobilePhone" header-align="center" align="center" label="电话" width="110"></el-table-column>
@@ -27,7 +27,7 @@
         <template slot-scope="scope">
           <!--<el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">就诊</el-button>-->
           <el-button type="text"
-            @click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&DoctorName=${scope.row.DoctorName}&DoctorId=${fatherDataForm.AccountId}`)">
+            @click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&DoctorName=${scope.row.DoctorName}&DoctorId=${fatherDataForm.AccountId}&registerFormId=${scope.row.Id}`)">
             就诊</el-button>
         </template>
       </el-table-column>
@@ -86,11 +86,12 @@ export default {
           MobilePhone: '', // 患者电话
           AccountId: this.fatherDataForm.AccountId, // 账户Id,医生Id
           WrokFrom: '', // 开始时间
-          WrokTo: '' // 结束时间
+          WrokTo: '', // 结束时间
+          Status: '2' // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部
         }
         API.register.getRegisterList(params).then(result => { // 获取待就诊列表（挂号列表为基础筛选：医生）或者以后还可能筛选挂号单本身的状态
           if (result.code === '0000') {
-            this.dataList = result.data.map(item => {
+            this.dataList = this.fatherDataForm.AccountId === '' ? [] : result.data.map(item => {
               item.BirthDate = calcAge(item.BirthDate)
               return item
             })

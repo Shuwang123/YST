@@ -62,5 +62,8 @@ new Vue({
     if (this.$store.getters.getAccountIsDoctor === '') {
       this.$store.commit('setIsDoctor', getAccountData('accountIsDoctor'))
     }
+    if (this.$store.getters.getAllDoctorIdArr === '') {
+      this.$store.commit('setAllDoctorIdArr', getAccountData('allDoctorIdArr'))
+    }
   }
 })

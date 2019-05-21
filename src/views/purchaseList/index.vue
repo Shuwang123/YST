@@ -5,11 +5,6 @@
       <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
         <!--<el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">-->
         <el-form :inline="true" :model="dataForm">
-          <el-form-item label="">
-            <el-select v-model="dataForm.SupplierId" placeholder="供应厂商" size="mini" clearable style="width: 120px">
-              <el-option v-for="item in SupplierIdArr" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>
-            </el-select>
-          </el-form-item>
           <com-store :paramsFather="{
             'label_0': '',
             'size_1': 'mini',
@@ -19,6 +14,11 @@
             'must_5': true,
             'isTrigger': true
           }" ref="comStore" @eventStore="changeStoreData"></com-store>
+          <el-form-item label="">
+            <el-select v-model="dataForm.SupplierId" placeholder="供应厂商" size="mini" clearable style="width: 120px">
+              <el-option v-for="item in SupplierIdArr" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item>
             <el-input v-model="dataForm.code" placeholder="采购单批次" size="mini" clearable></el-input>
           </el-form-item>

@@ -162,17 +162,31 @@
           <div class="rightUlStyle">
             <ul class="ownScrollbar">
               <li v-for="item in rightUlData" :key="item.Id" :title="item.ShowName">
-                <el-row>
-                  <el-col :span="18">
-                    <span v-text="item.ShowName === null ? '000' : item.ShowName"></span> id{{item.Id}}-[{{item.Quantity}}g]
+                <el-row style="clear: both">
+                  <!--<span v-text="item.ShowName === null ? '000' : item.ShowName"></span> {{item.Id}}余{{item.Quantity}}g/预{{item.RedLine}}-->
+
+                  <!--药材名+剩余量+操作-->
+                  <el-col :span="6">
+                    <span v-text="item.ShowName === null ? '000' : item.ShowName"
+                          style="display: inline-block; vertical-align: middle; width: 50px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">
+                    </span>
                   </el-col>
-                  <el-col :span="6" style="text-align: right;padding-right: 7px">
-                    <el-button type="text" size="mini" @click="addDrugs(item)">添加</el-button>
+                  <el-col :span="12" :style="{color: item.Quantity - item.RedLine > 0 ? '#333' : item.Quantity === 0 ? '#ccc' : '#e4392c'}">
+                    <span style="display: inline-block; vertical-align: middle;overflow: hidden; width: 100px; white-space: nowrap;text-overflow: ellipsis">
+                      {{item.Id}} {{item.Quantity}}/{{item.RedLine}}
+                    </span>
+                  </el-col>
+
+                  <el-col :span="6" v-if="item.Quantity > 0" style="text-align: right;padding-right: 3px">
+                    <el-button type="text" size="mini" @click="addDrugs(item)"
+                               style="font-size: 15px;font-weight: 600">添加</el-button>
                     <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)">添加</el-button>-->
                   </el-col>
+
                 </el-row>
               </li>
             </ul>
+
             <!--A B C D...字母按钮-->
             <ol>
               <li v-for="(item, ind) in litterArr" :key="item.content" :class="[item.isActive ? 'isActive' : '']"
@@ -223,10 +237,11 @@
             {{$route.query.DoctorId}}
           </el-col>
           <el-col :span="12" style="font-weight: 500; font-size: 16px">
-            总金额：<span style="color: #FF0052">￥{{allMoney}}</span> +
-            <el-input-number v-model="dataForm.ConsultationAmount" controls-position="right"
-                             :min="1" :max="10000" style="width: 100px" size="mini">
-            </el-input-number> = x￥
+            总金额：<span style="color: #e4393c">￥{{allMoney}}</span>
+            <span v-if="$route.query.MobilePhone === '0'"> +
+              <el-input-number v-model="dataForm.ConsultationAmount" :min="1" :max="1000" style="width: 100px" size="mini">
+              </el-input-number>￥<span style="color: #409EFF;font-size: 14px">(直接开方的患者未缴挂号费，请附加费用)</span>
+            </span>
           </el-col>
           <el-col :span="6">
             <el-form-item>
@@ -273,7 +288,12 @@ export default {
         }, 450)
       }
     },
-    'dataForm.SpellName': function () {
+    'dataForm.SpellName': function (val, oldval) {
+      if (val === '') { // 清空拼音时，不管啥子激活了的字母按钮都要重新去掉样式
+        this.litterArr.forEach(item => {
+          item.isActive = false
+        })
+      }
       this.getStoreCategorytypeStock()
     }
   },
@@ -342,7 +362,7 @@ export default {
     }
   },
   created () {
-    this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
+    this.pageInit() // 先初始化
   },
   mounted () {
     // console.log(document.getElementById('leftHeightPatient').style.height) ??? 为什么得到 空无空白
@@ -392,6 +412,11 @@ export default {
     },
     pageInit () {
       this.dataListLoading = true
+
+      if (this.$route.query.MobilePhone === '0000') { // 如果是直接开方，传递的电话就是0了，还请求屁的患者信息，因为请求结果肯定是[]没有的
+        return false
+      }
+
       // 请求会员信息，根据前一层路由传递的会员电话，其实会员信息正常是 只返回一条（自动填充患者的电话、年龄、性别、姓名、病历号...）
       var params = {
         PageIndex: this.pageIndex,
@@ -399,7 +424,7 @@ export default {
         IsPaging: true,
         UserName: '',
         StoreId: this.$store.getters.getAccountCurrentHandleStore,
-        MobilePhone: this.$route.query.MobilePhone
+        MobilePhone: this.$route.query.MobilePhone // 如果这儿接受到的是电话0，那代表是直接开方模式，0的查询结果自然为空咯
       }
       console.log(params)
       API.member.getMemberList(params).then(result => {
@@ -597,44 +622,81 @@ export default {
       }
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          var params = {
-            StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
-            AccountId: this.$route.query.DoctorId, // 医生
-            UserId: this.dataForm.UserId, // 患者
-            OrderType: '1',
-            DiagnosisType: this.dataForm.DiagnosisType,
-            RegisterStatus: '2',
+          // 此为普通流程的开方参数，常规流程的开方的参数应该传给edit接口
+          var paramsEdit = {
+            id: this.$route.query.registerFormId, //
+            DiagnosisType: this.dataForm.DiagnosisType, // 出诊、复诊
+            Remark: '', // 备注
+            FamilyIllness: '', // 家族史????
+            DepartmentType: '1', // 科室???????
+            PersonalIllness: '', // 个人史?????????
+            AgoIllness: '', // 既往史?????????????????
 
-            RegisterAmount: this.dataForm.RegisterAmount,
-            ConsultationAmount: this.dataForm.ConsultationAmount,
-            PaymentWay: '1',
-            Remark: '',
-            DepartmentType: '1',
-            DiseaseInfo: this.dataForm.DiseaseInfo,
-            AgoIllness: this.dataForm.AgoIllness,
-            NowIllness: this.dataForm.NowIllness,
-            MainSuit: this.dataForm.MainSuit,
-            DiseaseTime: this.dataForm.DiseaseTime,
-            DoctorAdvice: this.dataForm.DoctorAdvice,
-            DrugRate: this.dataForm.DrugRate,
-            Total: this.Total,
-            ItemsJson: this.leftTableData.map(item => {
+            MainSuit: this.dataForm.MainSuit, // 主诉
+            NowIllness: this.dataForm.NowIllness, // 现病史
+            DiseaseInfo: this.dataForm.DiseaseInfo, // 诊断信息
+            DiseaseTime: this.dataForm.DiseaseTime, // 发病时间
+            DrugRate: this.dataForm.DrugRate, // 用药频率
+            DoctorAdvice: this.dataForm.DoctorAdvice, // 医嘱
+            Total: this.Total, // 总剂数
+            ItemsJson: JSON.stringify(this.leftTableData.map(item => {
               var obj = {
                 ProductId: item.Id,
                 ProductCode: item.Code,
                 ProductName: item.Name,
                 CostPrice: item.CostPrice,
                 SalePrice: item.SalePrice,
-                RealPrice: '',
+                RealPrice: item.SalePrice,
                 Quantity: item.myNum,
-                SupplierId: '',
-                SupplierCode: item.SapSupplierCode // 库存的药材不是合并了的嘛，哪还能确定供应商啊
+                SupplierId: 0,
+                SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
               }
               return obj
-            })
+            }))
           }
-          console.log(params)
-          var tick = API.register.registerSubmit(params)
+          // 此为直接开方时的参数，直接开方的参数应该传给create接口
+          var paramsCreate = {
+            StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
+            AccountId: this.$route.query.DoctorId, // 医生
+            UserId: this.dataForm.UserId, // 患者
+            OrderType: '1',
+            DiagnosisType: this.dataForm.DiagnosisType,
+
+            RegisterStatus: '2',
+            RegisterAmount: '',
+            ConsultationAmount: this.dataForm.ConsultationAmount,
+            PaymentWay: '',
+            Remark: '',
+            DepartmentType: '',
+            AgoIllness: '',
+
+            DiseaseInfo: this.dataForm.DiseaseInfo, // 诊断结果
+            NowIllness: this.dataForm.NowIllness,
+            MainSuit: this.dataForm.MainSuit,
+
+            DiseaseTime: this.dataForm.DiseaseTime,
+            DoctorAdvice: this.dataForm.DoctorAdvice,
+            DrugRate: this.dataForm.DrugRate,
+            Total: this.Total,
+            ItemsJson: JSON.stringify(this.leftTableData.map(item => {
+              var obj = {
+                ProductId: item.Id,
+                ProductCode: item.Code,
+                ProductName: item.Name,
+                CostPrice: item.CostPrice,
+                SalePrice: item.SalePrice,
+                RealPrice: item.SalePrice,
+                Quantity: item.myNum,
+                SupplierId: 0,
+                SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
+              }
+              return obj
+            }))
+          }
+          console.log(paramsEdit) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
+          console.log(paramsCreate) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
+          // var tick = API.register.sendRecipelToEdit(paramsEdit)
+          var tick = this.$route.query.MobilePhone === '0' ? API.register.registerSubmit(paramsCreate) : API.register.sendRecipelToEdit(paramsEdit)
           tick.then((data) => {
             if (data.code === '0000') {
               this.$message({
@@ -694,8 +756,8 @@ export default {
     min-width: 190px;
     ul {
       width: 100%;
-      min-height: 550px; // 拿尺子对着电脑屏幕量过，就这个值吧
-      max-height: 550px;
+      min-height: 570px; // 拿尺子对着电脑屏幕量过，就这个值吧
+      max-height: 570px;
       overflow-y: scroll;
       background-color: #fff;
       box-shadow: 0 0 10px 1px #f1f2f7 inset;
@@ -704,7 +766,8 @@ export default {
         height: 30px;
         line-height: 30px;
         padding-left: 5px;
-        font-weight: 500;
+        font-weight: 600;
+        font-size: 15px;
       }
     }
     ol {
@@ -762,7 +825,7 @@ export default {
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
 .doctor-recipel /deep/ {
   .el-form-item {
-    margin-bottom: 0px;
+    margin-bottom: 7px;
   }
   .el-dialog__body {
     padding-top: 10px;

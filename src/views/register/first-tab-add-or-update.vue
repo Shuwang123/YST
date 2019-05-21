@@ -439,7 +439,7 @@ export default {
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 .registerIndex /deep/ .el-form-item {
-  margin-bottom: 0;
+  margin-bottom: 7px;
 }
 
 /*出诊 复诊样式覆盖*/

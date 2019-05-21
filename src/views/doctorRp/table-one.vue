@@ -16,7 +16,7 @@
     <el-table-column prop="SalePrice" header-align="center" align="center" label="单价" width="70"></el-table-column>
     <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="数量" min-width="150">
       <template slot-scope="scope">
-        <el-input-number v-model="scope.row.myNum" :step="1" @change="handleChange" :min="1" :max="1000" size="mini"></el-input-number>
+        <el-input-number v-model="scope.row.myNum" :step="1" @change="handleChange" :min="1" :max="scope.row.Quantity" size="mini"></el-input-number>
         <div class="recipelAgeUnit">
           <el-select v-model="categoryUnit" style="width: 45px" size="mini">
             <el-option :label="'克'" :value="'g'"></el-option>

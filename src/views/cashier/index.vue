@@ -14,34 +14,28 @@
                 'must_5': true,
                 'isTrigger': true
               }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
-
-              <span v-show="isVisible[1].child">
-                <el-form-item>
-                  <el-select v-model="dataForm.AccountId" placeholder="医生" clearable style="width: 100px">
-                    <el-option v-for="item in storeDoctorArr" :key="item.Id"
-                               :label="`${item.Id} ${item.NickName}`" :value="item.Id"></el-option>
-                  </el-select>
-                </el-form-item>
-                <el-form-item>
-                  <el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="患者/患者电话" clearable style="width: 119px"></el-input>
-                </el-form-item>
-                <!--<el-form-item>-->
-                  <!--<el-input v-model="dataForm.MobilePhone" placeholder="患者电话" clearable style="width: 119px"></el-input>-->
-                <!--</el-form-item>-->
-                <el-form-item>
-                  <el-date-picker
-                    size="mini"
-                    v-model="valueTime"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    value-format="yyyy-MM-dd"
-                    style="width: 260px">
-                  </el-date-picker>
-                </el-form-item>
-              </span>
-
+              <el-form-item>
+                <el-select v-model="dataForm.AccountId" placeholder="医生" clearable style="width: 100px">
+                  <el-option v-for="item in storeDoctorArr" :key="item.Id"
+                             :label="`${item.Id} ${item.NickName}`" :value="item.Id">
+                  </el-option>
+                </el-select>
+              </el-form-item>
+              <el-form-item>
+                <el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="患者/患者电话" clearable style="width: 119px"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-date-picker
+                  size="mini"
+                  v-model="valueTime"
+                  type="daterange"
+                  range-separator="至"
+                  start-placeholder="开始日期"
+                  end-placeholder="结束日期"
+                  value-format="yyyy-MM-dd"
+                  style="width: 260px">
+                </el-date-picker>
+              </el-form-item>
               <el-form-item>
                 <el-button @click="isVisible[0].child ===  true ? $refs.firstTab.getDataList() : $refs.secondTab.getDataList()"
                            size="mini">查询</el-button>
@@ -57,12 +51,21 @@
           <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
+
       <el-tab-pane label="" name="second">
         <span slot="label"><i class=""></i> 已收费</span>
         <transition name="chenxi">
           <second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>
         </transition>
       </el-tab-pane>
+
+      <!--<el-tab-pane label="" name="second">-->
+        <!--<span slot="label"><i class=""></i> 已出库</span>-->
+        <!--<transition name="chenxi">-->
+          <!--<second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>-->
+        <!--</transition>-->
+      <!--</el-tab-pane>-->
+
     </el-tabs>
   </div>
 </template>
@@ -74,7 +77,9 @@ import ComStore from '../common/com-store'
 export default {
   watch: {
     'dataForm.AccountId': function () {
-      if (this.isVisible[1].child === true) {
+      if (this.isVisible[0].child === true) {
+        this.$refs.firstTab.getDataList()
+      } else if (this.isVisible[1].child === true) {
         this.$refs.secondTab.getDataList()
       }
     },
@@ -141,16 +146,16 @@ export default {
       }
     },
     // 当门店改变时，获取门店下所有医生（只是给表头的查询下拉option赋初始值而已）
-    getStoreAllDoctor () {
-      var params = { // 这个接口貌似请求失败了？？？？？？？？？？？？？？？？？？？？？？？？？5.7号，别忘了
+    getStoreAllDoctor () { // 给 option 的
+      var params = {
         PageIndex: 1,
         PageSize: 10000,
         IsPaging: true,
         id: '',
         userName: '',
         nickName: '',
-        roleId: '', // 就是这个字段，这个列表应该只能是当前门店下所有的医生类型账号，这个地方要重新处理，返回的账号应该全部只能是医生类型的？？？？？？？？？？？？？？？？？？？？
-        canViewStores: this.$store.getters.getAccountCurrentHandleStore // 门店ID// storeId: this.dataForm.StoreId // 门店ID
+        roleId: this.$store.getters.getAllDoctorIdArr.join(),
+        canViewStores: this.$store.getters.getAccountCurrentHandleStore // 门店ID// storeId: this.dataForm.StoreId
       }
       API.adminUser.adminUserList(params).then(response => {
         if (response.code === '0000') {
@@ -183,10 +188,10 @@ export default {
           if (item.child === true) {
             if (index === 0) {
               this.num = 0
-              this.$refs.firstTab.getDataList()
+              this.$refs.firstTab.getDataList() // 待收费列表
             } else if (index === 1) {
               this.num = 1
-              this.$refs.secondTab.getDataList() // 挂号列表
+              this.$refs.secondTab.getDataList() // 已收费列表
             }
             return false
           }

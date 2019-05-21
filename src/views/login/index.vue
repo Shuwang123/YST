@@ -64,13 +64,14 @@ export default {
             if (data.code === '0000') {
               function funMenu () { return API.common.leftMenuTreeList() } // 返回登陆后menu权限
               function funLoginInfo () { return API.purchase.getLoginInfo() } // 返回登陆后store的相关内容
-              this.$ios.all([funMenu(), funLoginInfo()]).then(this.$ios.spread((response, result) => {
-                if (response.code === '0000' && result.code === '0000') {
-                  // console.log(response)
+              // [76, Id, Id, ...]全是医生类型角色的Id
+              function getAllDoctorTypeId () { return API.role.jueseList({pageIndex: 1, pageSize: 1000, isPaging: true, Name: ''}) }
+              this.$ios.all([funMenu(), funLoginInfo(), getAllDoctorTypeId()]).then(this.$ios.spread((response, result, doctorId) => {
+                if (response.code === '0000' && result.code === '0000' && doctorId.code === '0000') {
                   setStore('userInfo', response.data) // 保存当前账号的 菜单树
                   this.$router.push({name: 'dashboard'})
 
-                  // 陈希2019.5.5 新增start 登陆详情处理，把登陆后返回的store相关信息保存在session
+                  // 2019.5.5 新增start 登陆详情处理，把登陆后返回的store相关信息保存在session 陈希
                   // "AccountId": 1,
                   // "UserName": "superman",
                   // "NickName": "系统管理员",
@@ -81,11 +82,21 @@ export default {
                   // "CanViewStores": "",
                   // "StoreCode": "",
                   // "View": true
+                  console.log(response)
                   console.log(result)
                   this.$store.commit('setAccountLoginInfoAll', result.data) // ①当前账号的 门店所有详情(先存给Vuex，后在Vuex的commit中存给store，同时转存给session)
-                  var isDoctor = result.data.RoleName === '医生' ? true : false
+                  var isDoctor = result.data.RoleName.includes('医生') // es6返回true或false
                   this.$store.commit('setIsDoctor', isDoctor) // ②判断是否是医生
                   // setAccountData('accountCurrentHandleStore', '') // ③当前的手动选择门店，这个后来感觉应该在采购单等往后的模块处理就放弃了
+
+                  // 2019.5.20 又tm新增了一个，存储角色类型为医生时所对应的全部医生类型的Id 角色：只针对医生类型：[医生Aid，医生Bid，医生Cid]
+                  var doctorArr = []
+                  doctorId.data.forEach(item => {
+                    if (item.Name.includes('医生')) {
+                      doctorArr.push(item.Id)
+                    }
+                  })
+                  this.$store.commit('setAllDoctorIdArr', doctorArr)
                 } else {
                   this.$message.error('获取菜单失败')
                 }

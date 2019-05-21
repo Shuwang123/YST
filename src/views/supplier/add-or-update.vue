@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="!dataForm.roleId ? '新增' : '修改'"
+    :title="!dataForm.roleId ? '还没写' : '还没写'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm"  label-width="80px">
@@ -9,25 +9,25 @@
         <!--<el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="true"></el-input>-->
         <!--&lt;!&ndash;<el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="dataForm.Id == 0"></el-input>&ndash;&gt;-->
       <!--</el-form-item>-->
-      <el-form-item label="角色名称" prop="Name">
-        <el-input v-model="dataForm.Name" placeholder="角色名称Name"></el-input>
-      </el-form-item>
-      <el-form-item label="备注" prop="description">
-        <el-input v-model="dataForm.Description" placeholder="描述"></el-input>
-      </el-form-item>
-      <el-form-item size="mini" label="授权">
-        <el-tree
-          show-checkbox
-          :data="dataTree"
-          :props="defaultProps"
-          ref="menuListTree"
-          node-key="key"
-          :default-expand-all="true"
-          :default-expanded-keys="[1,2,3]"
-          :default-checked-keys="checkedKey"
-          >
-        </el-tree>
-      </el-form-item>
+      <!--<el-form-item label="角色名称" prop="Name">-->
+        <!--<el-input v-model="dataForm.Name" placeholder="角色名称Name"></el-input>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item label="备注" prop="description">-->
+        <!--<el-input v-model="dataForm.Description" placeholder="描述"></el-input>-->
+      <!--</el-form-item>-->
+      <!--<el-form-item size="mini" label="授权">-->
+        <!--<el-tree-->
+          <!--show-checkbox-->
+          <!--:data="dataTree"-->
+          <!--:props="defaultProps"-->
+          <!--ref="menuListTree"-->
+          <!--node-key="key"-->
+          <!--:default-expand-all="true"-->
+          <!--:default-expanded-keys="[1,2,3]"-->
+          <!--:default-checked-keys="checkedKey"-->
+          <!--&gt;-->
+        <!--</el-tree>-->
+      <!--</el-form-item>-->
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>

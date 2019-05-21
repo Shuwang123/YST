@@ -9,6 +9,7 @@ const getters = {
 
   getAccountLoginInfoAll: state => state.accountLoginInfoAll,
   getAccountIsDoctor: state => state.accountIsDoctor,
-  getAccountCurrentHandleStore: state => state.accountCurrentHandleStore
+  getAccountCurrentHandleStore: state => state.accountCurrentHandleStore,
+  getAllDoctorIdArr: state => state.allDoctorIdArr
 }
 export default getters

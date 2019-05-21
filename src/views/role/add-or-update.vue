@@ -1,10 +1,10 @@
 <template>
-  <el-dialog
+  <el-dialog class="owneldialogpaddingbottom"
     v-dialogDrag
     :title="!dataForm.roleId ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm"  label-width="80px">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px">
       <!--<el-form-item label="角色编码" prop="roleCode">-->
         <!--<el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="true"></el-input>-->
         <!--&lt;!&ndash;<el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="dataForm.Id == 0"></el-input>&ndash;&gt;-->
@@ -15,7 +15,8 @@
       <el-form-item label="备注" prop="description">
         <el-input v-model="dataForm.Description" placeholder="描述"></el-input>
       </el-form-item>
-      <el-form-item size="mini" label="授权">
+      <el-form-item class="ownScrollbar" size="mini" label="授权"
+                    style="min-height: 350px;max-height: 350px;overflow-y: scroll;">
         <el-tree
           show-checkbox
           :data="dataTree"
@@ -176,3 +177,22 @@ export default {
   }
 }
 </script>
+<style rel="stylesheet/scss" lang="scss" scoped>
+.owneldialogpaddingbottom /deep/ {
+  .el-dialog__body {padding-bottom: 0}
+  .ownScrollbar {margin-bottom: 0}
+}
+.ownScrollbar::-webkit-scrollbar {
+  width: 7px;
+}
+.ownScrollbar::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+  background-color: #DDDEE0;
+}
+.ownScrollbar::-webkit-scrollbar-track {
+  border-radius: 0;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0);
+  background-color: rgba(0,0,0,0);
+}
+</style>
