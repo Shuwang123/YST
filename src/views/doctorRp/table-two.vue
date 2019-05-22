@@ -27,7 +27,7 @@
     </el-table-column>
     <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="总价" min-width="70">
       <template slot-scope="scope">
-        {{scope.row.SalePrice * scope.row.myNum}}
+        {{Number(scope.row.SalePrice * scope.row.myNum).toFixed(2)}}
       </template>
     </el-table-column>
     <!--<el-table-column prop="SalePrice" header-align="center" align="center" label="总价" width="70"></el-table-column>-->

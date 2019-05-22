@@ -151,7 +151,7 @@
         </el-aside>
 
         <!--右侧药材：tabs标签页切换引导组件切换-->
-        <el-main width="25%" style="padding: 10px; border-bottom: 1px solid #DCDFE6;">
+        <el-main width="25%" style="padding: 10px 10px 60px; border-bottom: 1px solid #DCDFE6;">
           <el-input v-model="dataForm.SpellName" @blur="dataForm.SpellName = ''"
                     :placeholder="`请输入要查询的药材, 门店：${$store.getters.getAccountCurrentHandleStore}`"
                     style="min-width: 190px; width: 100%" size="small" clearable><i slot="prefix" class="el-input__icon el-icon-search"></i>
@@ -212,7 +212,7 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="总剂数">
-              <el-input-number v-model="Total" @change="countTotalPrice(leftTableData)" :min="1" :step="1" :max="30" style="width: 95px"></el-input-number>
+              <el-input-number v-model="Total" @change="countTotalPrice(leftTableData)" :min="1" :step="1" :max="30" style="width: 95px"></el-input-number> 剂
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -236,11 +236,11 @@
             </el-form-item>
             {{$route.query.DoctorId}}
           </el-col>
-          <el-col :span="12" style="font-weight: 500; font-size: 16px">
-            总金额：<span style="color: #e4393c">￥{{allMoney}}</span>
+          <el-col :span="12" style="font-weight: 500; font-size: 16px; padding-top: 10px">
+            &nbsp;&nbsp;&nbsp;总金额：<span style="color: #e4393c">￥{{allMoney}}</span>
             <span v-if="$route.query.MobilePhone === '0'"> +
-              <el-input-number v-model="dataForm.ConsultationAmount" :min="1" :max="1000" style="width: 100px" size="mini">
-              </el-input-number>￥<span style="color: #409EFF;font-size: 14px">(直接开方的患者未缴挂号费，请附加费用)</span>
+              <el-input-number v-model="dataForm.ConsultationAmount" :min="1" :max="1000" style="width: 100px" size="mini"></el-input-number> =
+              <span style="color: #e4393c;font-size: 16px">￥{{(Number(allMoney) + dataForm.ConsultationAmount).toFixed(2)}}</span>
             </span>
           </el-col>
           <el-col :span="6">
@@ -289,7 +289,7 @@ export default {
       }
     },
     'dataForm.SpellName': function (val, oldval) {
-      if (val === '') { // 清空拼音时，不管啥子激活了的字母按钮都要重新去掉样式
+      if (val === '') { // 只有清空SpellName，激活了的字母按钮都要清空样式
         this.litterArr.forEach(item => {
           item.isActive = false
         })
@@ -411,12 +411,22 @@ export default {
       // if (isMultiple === false) { this.dataForm.StoreId = choseStoreId }
     },
     pageInit () {
-      this.dataListLoading = true
+      // 先请求药品种类提供给下拉列表
+      API.drugs.getDrugsCategory().then(result => {
+        if (result.code === '0000') {
+          this.drugsCategoryArr = result.data.filter((item, ind) => {
+            return ind > 0
+          })
+        }
+      })
+      // 后初始化页面的右上角：
+      this.getStoreCategorytypeStock() // 这往上的代码都必须执行，不能写在下面的代码的后面，以免被return false影响
 
-      if (this.$route.query.MobilePhone === '0000') { // 如果是直接开方，传递的电话就是0了，还请求屁的患者信息，因为请求结果肯定是[]没有的
+      // 如果是直接开方，传递的电话就是0了，还请求屁的患者信息，因为请求结果肯定是[]没有的
+      if (this.$route.query.MobilePhone === '0') {
         return false
       }
-
+      this.dataListLoading = true
       // 请求会员信息，根据前一层路由传递的会员电话，其实会员信息正常是 只返回一条（自动填充患者的电话、年龄、性别、姓名、病历号...）
       var params = {
         PageIndex: this.pageIndex,
@@ -450,16 +460,6 @@ export default {
         }
         this.dataListLoading = false
       })
-      // 先请求药品种类提供给下拉列表
-      API.drugs.getDrugsCategory().then(result => {
-        if (result.code === '0000') {
-          this.drugsCategoryArr = result.data.filter((item, ind) => {
-            return ind > 0
-          })
-        }
-      })
-      // 后初始化页面的右上角：
-      this.getStoreCategorytypeStock()
     },
     // 右侧‘添加’药材的小模块：获取 对应门店 对应药态下的 对应药材库
     getStoreCategorytypeStock () {
@@ -662,7 +662,7 @@ export default {
             OrderType: '1',
             DiagnosisType: this.dataForm.DiagnosisType,
 
-            RegisterStatus: '2',
+            RegisterStatus: '1',
             RegisterAmount: '',
             ConsultationAmount: this.dataForm.ConsultationAmount,
             PaymentWay: '',
@@ -702,11 +702,10 @@ export default {
               this.$message({
                 message: `${'发送成功'}`,
                 type: 'success',
-                duration: 1500
-                // onClose: () => {
-                //   this.visible = false
-                //   this.$emit('refreshDataList')
-                // }
+                duration: 1500,
+                onClose: () => {
+                  this.$router.push({path: '/doctor/treatment'})
+                }
               })
             } else {
               this.$message.error(data.message)
@@ -756,8 +755,8 @@ export default {
     min-width: 190px;
     ul {
       width: 100%;
-      min-height: 570px; // 拿尺子对着电脑屏幕量过，就这个值吧
-      max-height: 570px;
+      min-height: 550px; // 拿尺子对着电脑屏幕量过，就这个值吧
+      max-height: 550px;
       overflow-y: scroll;
       background-color: #fff;
       box-shadow: 0 0 10px 1px #f1f2f7 inset;
@@ -797,30 +796,15 @@ export default {
     }
   }
   .rightPageCounter {
-    padding-top: 5px;
     position: absolute;
     left: 0;
-    bottom: 5px;
+    bottom: 10px;
     width: 90%;
     margin: 0 auto;
     text-align: center;
     background-color: #fff;
   }
-}
-.mod {
-  &-purchaseList /deep/ {
-    margin-left: 10px;
-    /*max-height: 810px;*/
-    overflow: hidden;
-    .el-pagination {
-      margin-top: 15px;
-      text-align: left;
-    }
-    .nav{
-      position: absolute;
-      width: 100%;
-    }
-  }
+  .el-pagination.el-pagination--small {padding: 0 5px}
 }
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
 .doctor-recipel /deep/ {

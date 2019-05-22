@@ -14,13 +14,13 @@
             'isTrigger': true
           }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
           <el-form-item>
-            <el-select @change="doctorHandle()" v-model="dataForm.AccountId" placeholder="医生" style="width: 100px">
+            <el-select @change="doctorHandle()" v-model="dataForm.AccountId" placeholder="医生" :disabled="$store.getters.getAccountIsDoctor ? true : false" style="width: 100px">
               <el-option v-for="item in storeDoctorArr" :key="item.Id"
                          :label="`${item.Id}-${item.NickName}`" :value="item.Id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button v-if="$store.getters.getAccountIsDoctor"
+            <el-button v-if="$store.getters.getAccountIsDoctor" :disabled="dataForm.AccountId === '' ? true : false"
             @click="$router.push(`/doctor/recipel?MobilePhone=0&DoctorName=${dataForm.currentDoctorName}&DoctorId=${dataForm.AccountId}`)">
               直接就诊</el-button>
           </el-form-item>
@@ -132,9 +132,20 @@ export default {
             return {Id: item.Id, NickName: item.NickName}
           })
           this.dataForm.AccountId = response.data.length === 0 ? '' : response.data[0].Id
-          this.dataForm.currentDoctorName = response.data.length === 0 ? '' : response.data[0].NickName // 这儿存在问题，如果是药房类型账号来判断当然没问题，但如账号本身就有医生那应该是直接选择自己id的，以后处理下，应该问题不大
+          this.dataForm.currentDoctorName = response.data.length === 0 ? '' : response.data[0].NickName
+          // 这儿存在问题，如果是药房类型账号来判断当然没问题，但如账号本身就有医生那应该是直接选择自己id的，以后处理下，应该问题不大
         } else {
           this.$message.error(response.message)
+        }
+        // 假如是医生类型的账号，得自动选择当前登陆的医生(如果门店下没医生自己，那就谁也不选!!!)，并且把html部分的下拉功能禁用!!!(2019.5.22解决)
+        if (this.$store.getters.getAccountIsDoctor) {
+          if (response.data.some(item => item.Id === Number(this.$store.getters.getAccountLoginInfoAll.AccountId))) {
+            this.dataForm.AccountId = this.$store.getters.getAccountLoginInfoAll.AccountId
+            this.dataForm.currentDoctorName = this.$store.getters.getAccountLoginInfoAll.NickName
+          } else {
+            this.dataForm.AccountId = ''
+            this.dataForm.currentDoctorName = ''
+          }
         }
         this.$refs.firstTab.getDataList() // 初始化或者是说任何情况下确定AccountId这个字段完整了后，才继续更新子层页面的展示内容（这有点玄）!!!!!!!!!!
       })
