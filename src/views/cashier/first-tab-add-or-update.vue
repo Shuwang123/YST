@@ -1,11 +1,63 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'划价收费'" :width="isAddActive === false ? '750px' : '1100px'"
+    :title="'划价收费'" :width="isAddActive === false ? '650px' : '1190px'"
     :close-on-click-modal="false"
-    :visible.sync="visible" @close="handleClose" class="registerIndex">
+    :visible.sync="visible" @close="handleClose" class="charge-info">
     <el-container>
-      <el-aside :width="isAddActive === false ? '100%' : '60%'">
+
+      <el-aside v-if="isAddActive"  :width="isAddActive === false ? '100%' : '47%'" style="padding: 0 15px !important;border-right: 1px solid #E6E6E6">
+        <el-row><el-col :span="24"><p>处方编号：<span v-text="registerAllData.Code" style="border-bottom: 1px solid #333;"></span></p></el-col></el-row>
+        <el-row style="text-align: center;font-size: 20px;margin: 20px 0"><el-col :span="24"><b>{{registerAllData.StoreName}}处方笺</b></el-col></el-row>
+        <!--header-->
+        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
+          <el-col :span="8">门诊号：{{registerAllData.StoreName}}</el-col>
+          <el-col :span="8">科室：{{registerAllData.DepartmentTypeName}}</el-col>
+          <el-col :span="8">日期：{{registerAllData.CreatedOnTime.substring(0, 10)}}</el-col>
+        </el-row>
+        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
+          <el-col :span="8">姓名：{{registerAllData.UserName}}</el-col>
+          <el-col :span="8">性别：{{registerAllData.SexName}}</el-col>
+          <el-col :span="8">年龄：{{registerAllData.BirthDate}}</el-col>
+        </el-row>
+        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
+          <el-col :span="24">诊断结果：{{registerAllData.DiseaseInfo}}</el-col>
+        </el-row>
+
+        <!--循环-->
+        <el-row style="font-size: 18px;margin: 5px 0">
+          <el-col :span="12">RP：</el-col>
+          <el-col :span="12" style="text-align: right;">{{registerAllData.Total}} 剂</el-col>
+        </el-row>
+        <el-row style="text-align: center;min-height: 300px">
+          <el-col :span="12" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
+            <span style="display: inline-block;width: 100px;text-align: right">{{item.ProductName}}</span>
+            <span style="display: inline-block;width: 100px;text-align: left">{{item.RefundableQty}} {{item.Unit}}</span>
+          </el-col>
+        </el-row>
+
+        <!--footer-->
+        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
+          <el-col :span="24">用法及医嘱：{{registerAllData.DrugRate}} ; {{registerAllData.DoctorAdvice}}</el-col>
+        </el-row>
+        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
+          <el-col :span="24">地址：{{registerAllData.Address}}</el-col>
+        </el-row>
+        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
+          <el-col :span="6">药费：{{registerAllData.OrderAmount}}</el-col>
+          <el-col :span="6">挂号费：{{registerAllData.RegisterAmount}}</el-col>
+          <el-col :span="6">诊疗费：{{registerAllData.ConsultationAmount}}</el-col>
+          <el-col :span="6">总金额：{{registerAllData.TotalAmount}}￥</el-col>
+        </el-row>
+        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
+          <el-col :span="6">审核：{{registerAllData.Total}}</el-col>
+          <el-col :span="6">调配：{{registerAllData.Total}}</el-col>
+          <el-col :span="6">核发：{{registerAllData.Total}}</el-col>
+          <el-col :span="6">医生：{{registerAllData.DoctorName}}</el-col>
+        </el-row>
+      </el-aside>
+
+      <el-main>
         <div class="ownScrollbar" style="min-height: 390px;overflow-y: scroll;"
              v-loading="dataListLoading">
           <el-row>
@@ -13,14 +65,9 @@
           </el-row>
           <div style="padding-left: 32px">
             <el-row>
-              <el-col :span="24"><span>挂号单号：</span>{{registerAllData.Code}}</el-col>
-              <el-col :span="8"><span>姓名：</span>{{registerAllData.UserName}}</el-col>
-              <el-col :span="8"><span>性别：</span>{{registerAllData.SexName}}</el-col>
               <el-col :span="8"><span>病历号：</span>{{registerAllData.Code}}</el-col>
-              <el-col :span="8"><span>年龄：</span>{{registerAllData.BirthDate}}</el-col>
               <el-col :span="8"><span>电话：</span>{{registerAllData.MobilePhone}}</el-col>
               <el-col :span="8"><span>会员：</span>{{registerAllData.MobilePhone}}</el-col>
-              <el-col :span="24"><span>患者地址：</span></el-col>
             </el-row>
           </div>
 
@@ -30,11 +77,8 @@
           </el-row>
           <div style="padding-left: 32px">
             <el-row>
-              <el-col :span="9"><span>操作时间：</span>{{registerAllData.CreatedOnTime}}</el-col>
-              <el-col :span="7"><span>医生：</span>{{registerAllData.DoctorName}}</el-col>
-              <el-col :span="8"><span>类型：</span>{{registerAllData.DiagnosisTypeName}}</el-col>
+              <el-col :span="24"><span>类型：</span>{{registerAllData.DiagnosisTypeName}}</el-col>
             </el-row>
-
             <!-- 模拟表头-->
             <el-row style="text-align: center; font-weight: 700; border: 1px solid #ccc; border-left: none; border-right: none;height: 35px;line-height: 35px">
               <el-col :span="6">收费类型</el-col>
@@ -60,57 +104,46 @@
               <el-col :span="6">{{registerAllData.TotalAmount}}￥</el-col>
               <el-col :span="6">{{registerAllData.StatusName ? registerAllData.StatusName : '无'}}</el-col>
               <el-col :span="6">
-                <span @click="seeRecipelInfo" style="color: #409EFF;cursor: pointer;text-align: center">{{isAddActive === false ? '查看' : '收起'}}详情</span>
+                <!--<span style="color: #409EFF;cursor: pointer;text-align: center">- -</span>-->
+                <span @click="seeRecipelInfo" style="color: #409EFF;cursor: pointer;text-align: center">{{isAddActive === false ? '处方' : '处方'}}详情</span>
               </el-col>
             </el-row>
-            <!--<el-col :span="24"><span>支付状态：</span>{{registerAllData.RegisterStatusName}}</el-col>-->
-            <!--<el-col :span="24"><span>付费方式：</span>{{registerAllData.PaymentWayName}}</el-col>-->
-            <!--<el-col :span="24"><span>看诊状态：</span>{{registerAllData.RegisterOrderStatusName}}</el-col>-->
           </div>
-          <!--<el-row>-->
-          <!--<el-col :span="24">还需收费多少：30元…………………………………………………………………………………………还没写</el-col>-->
-          <!--</el-row>-->
-          <!--<el-form ref="dataForm" :rules="dataRule" :model="dataForm" label-width="70px" size="mini" :inline="true">-->
-          <!--<el-form-item label="支付方式">&lt;!&ndash;患者支付方式&ndash;&gt;-->
-          <!--<el-select v-model="dataForm.PaymentWay" style="width: 100px" placeholder="支付方式">-->
-          <!--<el-option v-for="item in optionsPaymentType" :key="item.value"-->
-          <!--:label="item.label" :value="item.value"></el-option>-->
-          <!--</el-select>-->
-          <!--</el-form-item>-->
-          <!--<el-row style="margin-top: 10px;font-weight: 500; font-size: 16px">-->
-          <!--<el-col :span="8">-->
-          <!--<el-form-item label="总共金额">-->
-          <!--<el-input v-model="sum" placeholder="总金额" style="width: 100px" disabled size="small"></el-input> ￥-->
-          <!--</el-form-item>-->
-          <!--</el-col>-->
-          <!--<el-col :span="8">-->
-          <!--<el-form-item label="实收" prop="reality">-->
-          <!--<el-input @blur="realityBlur" v-model="dataForm.reality" style="width: 90px" clearable="" size="small" :disabled="shiji"></el-input> ￥-->
-          <!--&lt;!&ndash;<el-input v-model="dataForm.reality" style="width: 90px" clearable="" size="small" :disabled="shiji"></el-input> ￥&ndash;&gt;-->
-          <!--</el-form-item>-->
-          <!--</el-col>-->
-          <!--<el-col :span="8">-->
-          <!--<el-form-item label="找零" prop="give">-->
-          <!--<el-input v-model="dataForm.give" style="width: 90px" clearable size="small" :disabled="shiji"></el-input> ￥-->
-          <!--</el-form-item>-->
-          <!--</el-col>-->
-          <!--</el-row>-->
-          <!--</el-form>-->
+
+          <el-form ref="dataForm" :rules="dataRule" :model="dataForm" label-width="70px" size="mini" :inline="true">
+            <el-row style="margin-top: 30px;text-align: center;font-weight: 500; font-size: 16px">
+              <el-col :span="12">
+                <el-form-item label="总共金额">
+                  <el-input v-model="registerAllData.TotalAmount" placeholder="总金额" style="width: 100px" disabled size="small"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12" style="margin-bottom: 10px">
+                <el-form-item label="支付方式"><!--患者支付方式-->
+                  <el-select v-model="dataForm.PaymentWay" style="width: 100px" placeholder="支付方式">
+                    <el-option v-for="item in optionsPaymentType" :key="item.value"
+                    :label="item.label" :value="item.value"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+
+              <el-col :span="12">
+                <el-form-item label="实收" prop="reality">
+                  <el-input @blur="realityBlur" v-model="dataForm.reality" style="width: 100px" clearable="" size="small" :disabled="shiji"></el-input>
+                  <!--<el-input v-model="dataForm.reality" style="width: 90px" clearable="" size="small" :disabled="shiji"></el-input> ￥-->
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="找零" prop="give">
+                  <el-input v-model="dataForm.give" style="width: 100px" clearable size="small" :disabled="shiji"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form>
         </div>
-      </el-aside>
-
-      <el-main v-if="isAddActive" style="padding: 0 0 0 5px !important; border-left: 1px solid #E6E6E6">
-        <el-row style="text-align: center;font-size: 18px;margin-bottom: 10px"><el-col :span="24"><b>处方详情展示</b></el-col></el-row>
-        <el-row style="text-align: center">
-          <el-col :span="12" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
-            <span style="display: inline-block;margin-right: 10px">{{item.ProductName}}</span>
-            <span style="display: inline-block">{{item.RefundableQty}}{{item.Unit}}</span>
-          </el-col>
-        </el-row>
       </el-main>
-    </el-container>
 
-    <div style="text-align: right; margin-top: 30px">
+    </el-container>
+    <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dataFormSubmitA()">收费</el-button>
         <el-button type="primary" @click="dataFormSubmitA()">打印</el-button>
@@ -149,7 +182,7 @@ export default {
           label: '银行卡'
         }
       ],
-      isAddActive: false,
+      isAddActive: true,
 
       registerAllData: '', // 挂号单全部信息
       addOrUpdateVisible: false // dataRule: {UserName: Currency('此为必填项')},
@@ -166,7 +199,7 @@ export default {
             result.data.BirthDate = calcAge(result.data.BirthDate)
             this.registerAllData = result.data
             this.dataListLoading = false
-            console.log(result.data)
+            console.log('查看', result.data)
           }
         })
       }
@@ -209,7 +242,7 @@ export default {
       // }
     },
     handleClose () {
-      this.isAddActive = false
+      this.isAddActive = true
     },
     // 表单提交
     dataFormSubmitA () {
@@ -250,7 +283,7 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-.registerIndex /deep/ .el-form-item {
+.charge-info /deep/ .el-form-item {
   margin-bottom: 0;
 }
 .ownScrollbar /deep/ {
@@ -264,7 +297,11 @@ export default {
 }
 
 /*出诊 复诊样式覆盖*/
-.registerIndex /deep/ {
+.charge-info /deep/ {
+  .el-dialog__body {
+
+  }
+
   .el-radio-button--mini .el-radio-button__inner {
     padding: 7px 9px;
   }
@@ -284,7 +321,7 @@ export default {
   background-color: #DDDEE0;
 }
 .ownScrollbar::-webkit-scrollbar-track,
-.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-track {
+.charge-info /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-track {
   border-radius: 0;
   box-shadow: inset 0 0 5px rgba(0,0,0,0);
   background-color: rgba(0,0,0,0);

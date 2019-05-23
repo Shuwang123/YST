@@ -645,7 +645,7 @@ export default {
               var obj = {
                 ProductId: item.Id,
                 ProductCode: item.Code,
-                ProductName: item.Name,
+                ProductName: item.ShowName,
                 CostPrice: item.CostPrice,
                 SalePrice: item.SalePrice,
                 RealPrice: item.SalePrice,
@@ -656,7 +656,7 @@ export default {
               return obj
             }))
           }
-          // 此为直接开方时的参数，直接开方的参数应该传给create接口
+          // ‘直接开方’参数，直接开方的参数应该传给create接口
           var paramsCreate = {
             StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
             AccountId: this.$route.query.DoctorId, // 医生
@@ -684,7 +684,7 @@ export default {
               var obj = {
                 ProductId: item.Id,
                 ProductCode: item.Code,
-                ProductName: item.Name,
+                ProductName: item.ShowName,
                 CostPrice: item.CostPrice,
                 SalePrice: item.SalePrice,
                 RealPrice: item.SalePrice,
