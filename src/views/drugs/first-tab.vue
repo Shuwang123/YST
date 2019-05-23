@@ -34,31 +34,43 @@
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column type="index" label="排序" align="center" width="50"></el-table-column>
       <el-table-column prop="CategoryName" header-align="center" align="center" label="种类" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Code" header-align="center" align="center" label="编码" width="90" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Code" header-align="center" align="center" label="编码" width="85" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Id" header-align="center" align="center" label="ID" width="50"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="药典" width="70" :show-overflow-tooltip="true">
+      <el-table-column header-align="right" align="right" label="药典" width="70" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span style="text-decoration: underline">{{scope.row.Name}}</span>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" align="center" label="库存" width="70" :show-overflow-tooltip="true">
+      <el-table-column header-align="left" align="left" label="库存" width="70" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span style="text-decoration: underline">{{scope.row.ShowName}}</span>
-          <!--<span v-if="scope.row.WebStatus === 2" style="color: #ccc;text-decoration: underline">{{scope.row.ShowName}}</span>color: #409EFF;-->
         </template>
       </el-table-column>
-      <el-table-column prop="SpellName" header-align="center" align="center" width="50" label="拼音"></el-table-column>
-      <el-table-column prop="Keywords" header-align="center" align="center" label="别名" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Unit" header-align="center" align="center" label="单位" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column header-align="left" align="left" label="拼音/别名" min-width="100" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <span style="">[{{scope.row.SpellName}}] {{scope.row.Keywords}}</span>
+        </template>
+      </el-table-column>
+
+      <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="50" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Specification" header-align="center" align="center" label="规格" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="CostPrice" header-align="center" align="center" label="进货单价" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="SalePrice" header-align="center" align="center" label="零售价" :show-overflow-tooltip="true"></el-table-column>
+
+      <el-table-column header-align="center" align="center" label="进货价" min-width="70" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <span style="">{{scope.row.CostPrice.toFixed(2)}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column header-align="center" align="center" label="零售价" min-width="70" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <span style="">{{scope.row.SalePrice.toFixed(2)}}</span>
+        </template>
+      </el-table-column>
 
       <!--<el-table-column prop="BrandName" header-align="center" align="center" label="物品" width="80" :show-overflow-tooltip="true"></el-table-column>-->
       <!--<el-table-column prop="StoreName" header-align="center" align="center" label="仓库" width="80" :show-overflow-tooltip="true"></el-table-column>-->
       <!--<el-table-column prop="ContractPrice" header-align="center" align="center" label="合同价" width="80" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column prop="RedLine" header-align="center" align="center" label="预警量" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="WebStatus" header-align="center" align="center" label="状态" width="50" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="RedLine" header-align="center" align="center" label="预警量" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <!--<el-table-column prop="WebStatus" header-align="center" align="center" label="状态" width="50" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="WebStatusName" header-align="center" align="center" label="状态" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="" label="操作" width="119" header-align="center" align="center">
         <template slot-scope="scope">
@@ -236,7 +248,7 @@ export default {
     },
     // 根据'未上架'状态和‘列标’，‘判断此列中的对应单元格’高亮还是暗色（返回的class是加载td上的，所以是一个一个的往td上加的就能控制，不像上面的行直接加给的tr，看清细节）
     ownColumnStyle ({row, column, rowIndex, columnIndex}) { // 0123开始columnIndex
-      if (columnIndex === 4 || columnIndex === 5 || columnIndex === 15) {
+      if (columnIndex === 4 || columnIndex === 5 || columnIndex === 13) {
         if (row.WebStatus === 1) {
           return 'highlightColumn'
         } else if (row.WebStatus === 2) {

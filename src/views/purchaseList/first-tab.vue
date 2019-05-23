@@ -12,15 +12,15 @@
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50"></el-table-column>
+      <el-table-column prop="StoreName" header-align="center" align="center" label="采购门店" width="100"></el-table-column>
       <el-table-column prop="Code" header-align="center" align="center" label="采购单号" width="100"></el-table-column>
-      <el-table-column header-align="center" align="center" label="采购时间" width="150">
+      <el-table-column prop="SupplierName" header-align="center" align="center" label="供应商" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column header-align="center" align="center" label="采购时间" min-width="110">
         <template slot-scope="scope">
           <span>{{ scope.row.CreatedTime | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
         </template>
       </el-table-column>
 
-      <el-table-column prop="SupplierName" header-align="center" align="center" label="供应商" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="StoreName" header-align="center" align="center" label="采购门店"></el-table-column>
       <el-table-column prop="Quantity" header-align="center" align="center" label="采购总量" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="CreatedByName" header-align="center" align="center" label="操作人" width="" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>

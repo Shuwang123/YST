@@ -101,10 +101,10 @@ export default {
 
         ShowName: '', // 自己药库的名
         SpellName: '',
-        Unit: '',
+        Unit: 'g',
         Specification: '',
         SalePrice: '',
-        RedLine: '',
+        RedLine: 0,
 
         Keywords0: '',
         Keywords1: '',
@@ -147,7 +147,7 @@ export default {
                     SpellName: result.data.SpellName,
                     Unit: result.data.Unit,
                     Specification: result.data.Specification,
-                    SalePrice: result.data.SalePrice,
+                    SalePrice: result.data.SalePrice.toFixed(2),
                     RedLine: result.data.RedLine,
                     Keywords0: result.data.Keywords.split(',')[0],
                     Keywords1: result.data.Keywords.split(',')[1],
@@ -175,10 +175,10 @@ export default {
         CategoryName: '饮片',
         ShowName: '', // 自己药库的名
         SpellName: '',
-        Unit: '',
+        Unit: 'g',
         Specification: '',
         SalePrice: '',
-        RedLine: '',
+        RedLine: 0,
         Keywords0: '',
         Keywords1: '',
         Keywords2: '',

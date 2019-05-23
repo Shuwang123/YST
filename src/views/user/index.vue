@@ -1,15 +1,6 @@
 <template>
   <div class="mod-user">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item>
-        <el-input v-model="dataForm.userName" placeholder="查询账号" clearable></el-input>
-      </el-form-item>
-      <el-form-item>
-        <el-input v-model="dataForm.nickName" placeholder="查询昵称" clearable></el-input>
-      </el-form-item>
-      <!--<el-form-item>-->
-        <!--<el-input v-model="dataForm.id" placeholder="账号ID(系统自动生成的不可控)" clearable style="width: 100px"></el-input>-->
-      <!--</el-form-item>-->
       <com-store :paramsFather="{
         'label_0': '',
         'size_1': '',
@@ -19,6 +10,15 @@
         'must_5': false,
         'isTrigger': false
       }" ref="comStore" @eventStore="changeStoreData"></com-store>
+      <el-form-item>
+        <el-input v-model="dataForm.userName" placeholder="查询账号" clearable></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="dataForm.nickName" placeholder="查询昵称" clearable></el-input>
+      </el-form-item>
+      <!--<el-form-item>-->
+        <!--<el-input v-model="dataForm.id" placeholder="账号ID(系统自动生成的不可控)" clearable style="width: 100px"></el-input>-->
+      <!--</el-form-item>-->
 
       <el-form-item>
         <el-select v-model="dataForm.roleId" placeholder="请选择角色" clearable>
@@ -47,18 +47,18 @@
       style="width: 100%;">
       <el-table-column type="index" label="序号" :align="$store.state.common.align" width="50px"></el-table-column>
       <!--<el-table-column prop="Id" header-align="center" :align="$store.state.common.align" label="ID" width="50"></el-table-column>-->
-      <el-table-column prop="UserName" header-align="right" align="right" label="账号" width="119" :show-tooltip-when-overflow="true"></el-table-column>
+      <el-table-column prop="StoreName" header-align="center" :align="$store.state.common.align" label="所属门店" width="100" :show-tooltip-when-overflow="true"></el-table-column>
+      <el-table-column prop="UserName" header-align="right" align="right" label="注册账号" width="119"></el-table-column>
       <el-table-column prop="NickName" header-align="left" align="left" label="昵称" width="100"></el-table-column>
-      <el-table-column prop="Phone" header-align="center" :align="$store.state.common.align" label="电话" width="119"></el-table-column>
-      <el-table-column prop="StoreName" header-align="center" :align="$store.state.common.align" label="门店" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="RoleName" header-align="center" :align="$store.state.common.align" label="角色"></el-table-column>
-      <el-table-column header-align="center" :align="$store.state.common.align" label="创建时间" width="150">
+      <el-table-column prop="RoleName" header-align="center" :align="$store.state.common.align" label="角色" min-width="100"></el-table-column>
+      <el-table-column prop="Phone" header-align="center" :align="$store.state.common.align" label="联系电话" min-width="119"></el-table-column>
+      <el-table-column header-align="center" :align="$store.state.common.align" label="创建时间" min-width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="StatusName" header-align="center" :align="$store.state.common.align" label="状态" width="100"></el-table-column>
-      <el-table-column prop="Status" header-align="center" :align="$store.state.common.align" label="1,3" width="100"></el-table-column>
+      <!--<el-table-column prop="Status" header-align="center" :align="$store.state.common.align" label="1,3" width="100"></el-table-column>-->
       <el-table-column label="操作" width="260" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain icon="el-icon-edit"

@@ -3,8 +3,9 @@
     <el-dialog
       v-dialogDrag
       :title="'商品导入'"
-      :close-on-click-modal="false"
-      :visible.sync="visible" @close="handleClose">
+      :close-on-click-modal="false" width="970px"
+      :visible.sync="visible"
+      @close="handleClose">
       <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="0" :inline="true">
         <el-form-item label="" prop="SpellName">
           <el-input v-model="dataForm.SpellName" placeholder="拼音搜索" size="mini" clearable>
@@ -23,13 +24,13 @@
           style="width: 100%;">
           <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
           <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
-          <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="100" label="商品编码" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="CategoryName" header-align="center" :align="$store.state.common.align" width="100" label="药态" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="100" label="商品编码" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="ShowName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
           <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
           <!--<el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->
-          <el-table-column prop="Quantity" header-align="center" :align="$store.state.common.align" label="库存总量" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column prop="CostPrice" header-align="center" :align="$store.state.common.align" label="库存上次的成本价" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="Quantity" header-align="center" :align="$store.state.common.align" label="库存 (余量)" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="CostPrice" header-align="center" :align="$store.state.common.align" label="上一次的进价" width="116"></el-table-column>
           <el-table-column prop="RedLine" header-align="center" :align="$store.state.common.align" label="预警量" :show-overflow-tooltip="true"></el-table-column>
         </el-table>
         <el-pagination

@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'采购单详情'" :width="isAddActive === false ? '60%' : '85%'"
+    :title="'采购单详情'" :width="isAddActive === false ? '900px' : '85%'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <!--<el-col><div style="border-top: 1px dashed #ccc;padding-top: 10px;font-weight: 900">别名（选填）</div></el-col>-->
@@ -62,14 +62,14 @@
             </el-table-column>
             <el-table-column v-else :key="Math.random()" prop="Quantity" header-align="center" align="center" label="采购数量"></el-table-column>
 
-            <el-table-column prop="CostPrice" header-align="center" align="center" label="上次采购价格"></el-table-column>
+            <el-table-column prop="CostPrice" header-align="center" align="center" label="上次采购价"></el-table-column>
 
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="此次采购价格" width="110">
+            <el-table-column v-if="editType === 'A'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="此次采购价" width="110">
               <template slot-scope="scope">
                 <el-input-number v-model="scope.row.CostPrice" :precision="2" :step="0.01" :min="0.01" :max="1000" size="mini" controls-position="right" style="width: 100px"></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column v-else prop="CostPrice" header-align="center" align="center" label="此次采购价格"></el-table-column>
+            <el-table-column v-else prop="CostPrice" header-align="center" align="center" label="此次采购价"></el-table-column>
 
             <el-table-column v-if="editType === 'A'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="售价填写" width="110">
               <template slot-scope="scope">

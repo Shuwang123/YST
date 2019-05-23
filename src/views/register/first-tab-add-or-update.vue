@@ -46,7 +46,7 @@
             <el-row>
               <el-col :span="24">
                 <el-form-item label="填写地址">
-                  <el-input v-model="dataForm.Address" placeholder="请输入地址详情" style="width: 465px" clearable></el-input>
+                  <el-input v-model="dataForm.Address" placeholder="请输入地址详情" style="width: 465px" disabled></el-input>
                 </el-form-item>
               </el-col>
             </el-row>

@@ -20,7 +20,8 @@
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-button v-if="$store.getters.getAccountIsDoctor" :disabled="dataForm.AccountId === '' ? true : false"
+            <!--<el-button v-if="$store.getters.getAccountIsDoctor" :disabled="dataForm.AccountId === '' ? true : false"-->
+            <el-button :disabled="dataForm.AccountId === '' ? true : false"
             @click="$router.push(`/doctor/recipel?MobilePhone=0&DoctorName=${dataForm.currentDoctorName}&DoctorId=${dataForm.AccountId}`)">
               直接就诊</el-button>
           </el-form-item>

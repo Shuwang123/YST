@@ -37,29 +37,24 @@
       <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="StoreName" header-align="center" align="center" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Code" header-align="center" align="center" label="病历号" width="100" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="UserName" header-align="center" align="center" label="姓名" width="70" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column header-align="center" :align="$store.state.common.align" label="性别" width="50">
+      <el-table-column header-align="center" align="center" label="姓名" min-width="129">
         <template slot-scope="scope">
-          <span v-if="scope.row.Sex === 1">男</span>
-          <span v-else-if="scope.row.Sex === 2">女</span>
+          <span>{{scope.row.UserName}} / {{scope.row.Sex === 1 ? '男' : '女'}} / {{scope.row.BirthDate}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="BirthDate" header-align="center" align="center" label="年龄" width="50" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="MobilePhone" header-align="center" align="center" width="110" label="电话"></el-table-column>
-      <el-table-column prop="Address" header-align="left" align="left" label="地址" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="MobilePhone" header-align="center" align="center" min-width="110" label="电话"></el-table-column>
+      <el-table-column prop="Address" header-align="center" align="center" label="地址" min-width="130" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="AllergyHistory" header-align="left" align="left" label="过敏史" width="" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="创建时间" width="139">
+      <el-table-column header-align="center" align="center" label="创建时间 / 创建人" min-width="170">
         <template slot-scope="scope">
-          <span>{{ scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
+          <span>{{scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}} / {{scope.row.UpdatedBy}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="CreatedBy" header-align="center" align="center" label="创建人" width="65" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column header-align="center" align="center" label="更新时间" width="139">
+      <el-table-column header-align="center" align="center" label="更新时间 / 操作人" min-width="170">
         <template slot-scope="scope">
-          <span>{{ scope.row.UpdatedOn | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
+          <span>{{scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}} / {{scope.row.CreatedBy}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="UpdatedBy" header-align="center" align="center" label="操作人" width="65" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">编辑</el-button>

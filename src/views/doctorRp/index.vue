@@ -167,17 +167,18 @@
 
                   <!--药材名+剩余量+操作-->
                   <el-col :span="6">
-                    <span v-text="item.ShowName === null ? '000' : item.ShowName"
+                    <span v-text="item.ShowName === null ? '无' : item.ShowName"
                           style="display: inline-block; vertical-align: middle; width: 50px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">
                     </span>
                   </el-col>
                   <el-col :span="12" :style="{color: item.Quantity - item.RedLine > 0 ? '#333' : item.Quantity === 0 ? '#ccc' : '#e4392c'}">
-                    <span style="display: inline-block; vertical-align: middle;overflow: hidden; width: 100px; white-space: nowrap;text-overflow: ellipsis">
-                      {{item.Id}} {{item.Quantity}}/{{item.RedLine}}
+                    <span style="display: inline-block; vertical-align: middle;text-align: center;overflow: hidden; width: 100px; white-space: nowrap;text-overflow: ellipsis">
+                      {{item.Quantity}} / {{item.RedLine}}
+                      <!--{{item.Id}} {{item.Quantity}}/{{item.RedLine}}-->
                     </span>
                   </el-col>
 
-                  <el-col :span="6" v-if="item.Quantity > 0" style="text-align: right;padding-right: 3px">
+                  <el-col :span="6" v-if="item.Quantity > 0" style="text-align: right;padding-right: 7px">
                     <el-button type="text" size="mini" @click="addDrugs(item)"
                                style="font-size: 15px;font-weight: 600">添加</el-button>
                     <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)">添加</el-button>-->
@@ -626,6 +627,7 @@ export default {
           var paramsEdit = {
             id: this.$route.query.registerFormId, //
             DiagnosisType: this.dataForm.DiagnosisType, // 出诊、复诊
+            RegisterStatus: '2', // 已支付（在编辑 追加的情况下，理论上是肯定收费了就不需要传递这个字段了的，但是后端有其他考虑，所以这儿还需要把这个字段传递到后端）
             Remark: '', // 备注
             FamilyIllness: '', // 家族史????
             DepartmentType: '1', // 科室???????
@@ -662,7 +664,7 @@ export default {
             OrderType: '1',
             DiagnosisType: this.dataForm.DiagnosisType,
 
-            RegisterStatus: '1',
+            RegisterStatus: '1', // 未支付
             RegisterAmount: '',
             ConsultationAmount: this.dataForm.ConsultationAmount,
             PaymentWay: '',
@@ -697,6 +699,7 @@ export default {
           console.log(paramsCreate) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
           // var tick = API.register.sendRecipelToEdit(paramsEdit)
           var tick = this.$route.query.MobilePhone === '0' ? API.register.registerSubmit(paramsCreate) : API.register.sendRecipelToEdit(paramsEdit)
+          console.log(this.$route.query.MobilePhone)
           tick.then((data) => {
             if (data.code === '0000') {
               this.$message({

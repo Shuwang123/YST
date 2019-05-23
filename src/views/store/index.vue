@@ -24,19 +24,19 @@
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column type="index" label="序号" align="center" width="50"></el-table-column>
-      <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50"></el-table-column>
+      <el-table-column prop="Name" header-align="center" align="center" label="门店名称" width="100" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Id" header-align="center" align="center" label="门店ID" width="70"></el-table-column>
       <!--<el-table-column prop="Code" header-align="center" align="center" width="100px" label="门店编码"></el-table-column>-->
-      <el-table-column prop="Name" header-align="center" align="center" label="门店名称" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="FullName" header-align="center" align="center" label="统一地区" width="170"></el-table-column>
-      <el-table-column prop="Address" header-align="center" align="center" label="详细地址" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Contact" header-align="center" align="center" label="联系人" width="100"></el-table-column>
-      <el-table-column prop="Phone" header-align="center" align="center" label="电话号码" width="150"></el-table-column>
-      <el-table-column header-align="center" align="center" label="创建时间" width="150">
+      <el-table-column prop="FullName" header-align="right" align="right" label="地区" width="170" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Address" header-align="left" align="left" label="地址详情" width="170" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Contact" header-align="center" align="center" label="联系人" min-width="100"></el-table-column>
+      <el-table-column prop="Phone" header-align="center" align="center" label="联系电话" min-width="119"></el-table-column>
+      <el-table-column header-align="center" align="center" label="创建时间" min-width="150">
         <template slot-scope="scope">
           <span>{{ scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="" label="操作" width="190" header-align="center" align="center">
+      <el-table-column prop="" label="操作" header-align="center" align="center" width="210">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain icon="el-icon-edit"
                      @click="addOrUpdateHandle(scope.row.Id)">编辑

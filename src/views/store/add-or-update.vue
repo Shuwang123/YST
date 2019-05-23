@@ -1,7 +1,7 @@
 <template>
   <el-dialog
-    v-dialogDrag
-    :title="!dataForm.id ? '新增' : '修改'"
+    v-dialogDrag width="700px"
+    :title="!dataForm.id ? '新增' : '编辑'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm"  label-width="80px">
@@ -68,27 +68,24 @@ export default {
     init (id) {
       this.visible = true
       this.dataForm.id = id || 0
-      this.$nextTick(() => {
-
-        if (this.dataForm.id) {
-          API.store.getStoreRow({id: this.dataForm.id}).then(result => {
-            if (result.code === '0000') {
-              this.dataForm = {
-                id: result.data.Id,
-                Name: result.data.Name,
-                AreaId: result.data.AreaId,
-                AddressInfo: result.data.Address,
-                Contact: result.data.Contact,
-                Phone: result.data.Phone
-              }
+      // 门店这的弹窗细心点会发现弹窗明显会慢一些，因为地址组件那个东东的缘故，js所执行的地区的那对象太大了，2019.05.23去掉了这的this.$nextTick(()=>{}),如果以后有啥问题，可以从这思考
+      if (this.dataForm.id) {
+        API.store.getStoreRow({id: this.dataForm.id}).then(result => {
+          if (result.code === '0000') {
+            this.dataForm = {
+              id: result.data.Id,
+              Name: result.data.Name,
+              AreaId: result.data.AreaId,
+              AddressInfo: result.data.Address,
+              Contact: result.data.Contact,
+              Phone: result.data.Phone
             }
-            this.$refs.comAddress.getAddress(this.dataForm.AreaId) // 调用自定义的全国统一地址子组件，上面有nextTick别看漏了
-          })
-        } else {
-          this.$refs.comAddress.getAddress()
-        }
-
-      })
+          }
+          this.$refs.comAddress.getAddress(this.dataForm.AreaId) // 调用自定义的全国统一地址子组件，上面有nextTick别看漏了
+        })
+      } else {
+        this.$refs.comAddress.getAddress()
+      }
     },
 
     handleClose () {

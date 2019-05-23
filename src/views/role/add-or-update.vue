@@ -1,7 +1,7 @@
 <template>
   <el-dialog class="owneldialogpaddingbottom"
     v-dialogDrag
-    :title="!dataForm.roleId ? '新增' : '修改'"
+    :title="!dataForm.roleId ? '新增' : '修改'" width="700px"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px">

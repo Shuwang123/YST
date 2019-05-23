@@ -1,5 +1,8 @@
 <template>
-  <el-dialog v-dialogDrag ref="dialog__wrapper" :title="id === 0 ? '申请账号' : '编辑账号'" :close-on-click-modal="false" :visible.sync="visible" @close="handleClose" id='add-or-update'>
+  <el-dialog v-dialogDrag ref="dialog__wrapper" width="700px"
+             :title="id === 0 ? '申请账号' : '编辑账号'"
+             :close-on-click-modal="false" :visible.sync="visible"
+             @close="handleClose" id='add-or-update'>
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="登陆账号" prop="UserName" v-if="!id">
         <el-input v-model="dataForm.UserName" placeholder="请填写用户名（登陆账号，限数字或字母以后不可更改）"></el-input>

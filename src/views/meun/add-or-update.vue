@@ -1,6 +1,6 @@
 <template>
   <el-dialog
-    v-dialogDrag :title="!dataForm.id ? '新增' : '修改'"
+    v-dialogDrag :title="!dataForm.id ? '新增' : '修改'" width="700px"
     :close-on-click-modal="false" :visible.sync="visible"
     @close="handleClose">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">

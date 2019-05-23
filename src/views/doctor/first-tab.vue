@@ -10,24 +10,40 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column prop="Id" header-align="center" align="center" label="ID" width="60" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="DoctorName" header-align="center" align="center" label="医生" min-width="70" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Code" header-align="left" align="left" label="挂号单号" width="100" :show-overflow-tooltip="true"></el-table-column>
-      <!--<el-table-column prop="UserCode" header-align="left" align="left" label="病历号" width="100" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column prop="UserName" header-align="center" align="center" label="医生的患者" width="100"></el-table-column>
-      <el-table-column prop="SexName" header-align="center" align="center" label="性别" width="60"></el-table-column>
-      <el-table-column prop="BirthDate" header-align="center" align="center" label="年龄" width="60"></el-table-column>
-      <el-table-column prop="MobilePhone" header-align="center" align="center" label="电话" width="110"></el-table-column>
-      <el-table-column prop="DiagnosisTypeName" header-align="center" align="center" label="初诊、复诊" min-width="100" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="RegisterAmount" header-align="center" align="center" label="挂号费" width=""></el-table-column>
-      <el-table-column prop="ConsultationAmount" header-align="center" align="center" label="问诊费" width=""></el-table-column>
-
-      <el-table-column prop="RegisterStatusName" header-align="center" align="center" label="状态0" width="119"></el-table-column>
-      <el-table-column prop="RegisterOrderStatusName" header-align="center" align="center" label="状态1" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column header-align="center" align="center" label="门店 / 医生" min-width="100">
+        <template slot-scope="scope">
+          <span>{{scope.row.StoreName}} / {{scope.row.DoctorName}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="UserCode" header-align="center" align="center" label="病历号" min-width="100"></el-table-column>
+      <el-table-column prop="Code" header-align="center" align="center" label="挂号单" min-width="100"></el-table-column>
+      <el-table-column header-align="center" align="center" label="挂号患者" min-width="150">
+        <template slot-scope="scope">
+          <span>{{scope.row.UserName}} / {{scope.row.SexName}} / {{scope.row.BirthDate}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="MobilePhone" header-align="center" align="center" label="手机" min-width="110"></el-table-column>
+      <el-table-column header-align="center" align="center" label="时间" min-width="109">
+        <template slot-scope="scope">
+          <span>{{ scope.row.CreatedOnTime | myDateFilter('MM-dd hh:mm')}}</span>
+        </template>
+      </el-table-column>
+      <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
+      <el-table-column header-align="center" align="center" label="挂号费 / 诊疗费" min-width="119">
+        <template slot-scope="scope">
+          <span>￥ {{scope.row.RegisterAmount}} + {{scope.row.ConsultationAmount}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column header-align="center" align="center" label="收费状态" min-width="190">
+        <template slot-scope="scope">
+          <span>{{scope.row.DiagnosisTypeName}} / {{scope.row.RegisterStatusName}} / {{scope.row.RegisterOrderStatusName}}</span>
+        </template>
+      </el-table-column>
       <el-table-column prop="" label="操作" :width="status === 1 ? 280 : 150" header-align="center" align="center">
         <template slot-scope="scope">
           <!--<el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">就诊</el-button>-->
           <el-button type="text"
-            @click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&DoctorName=${scope.row.DoctorName}&DoctorId=${fatherDataForm.AccountId}&registerFormId=${scope.row.Id}`)">
+                     @click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&DoctorName=${scope.row.DoctorName}&DoctorId=${fatherDataForm.AccountId}&registerFormId=${scope.row.Id}`)">
             就诊</el-button>
         </template>
       </el-table-column>

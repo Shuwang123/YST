@@ -53,11 +53,11 @@
           <!--<el-input-number v-model="scope.row.SalePrice" :precision="2" :step="0.1" :min="0.1" :max="100" size="mini" controls-position="right"></el-input-number>-->
         <!--</template>-->
       <!--</el-table-column>-->
-      <el-table-column prop="CostPrice" header-align="center" :align="$store.state.common.align" label="库存上次的成本价" :show-overflow-tooltip="true"></el-table-column>
-
-      <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="数量" min-width="110">
+      <el-table-column prop="Quantity" header-align="center" :align="$store.state.common.align" label="库存 (余量)" min-width="110"></el-table-column>
+      <el-table-column prop="CostPrice" header-align="center" :align="$store.state.common.align" label="上一次的进价" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="采购量" min-width="110">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.Quantity" :precision="2" :step="1" :min="1" :max="10000" size="mini"></el-input-number>
+          <el-input-number v-model="scope.row.myNum" :precision="2" :step="1" :min="1" :max="10000" size="mini"></el-input-number>
         </template>
       </el-table-column>
       <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->
@@ -326,6 +326,9 @@ export default {
         this.dataList = []
         this.purchaseFormal = []
       } else {
+        arr.forEach(item => {
+          item.myNum = '1' // 添加字段myNum为初始采购量，默认最小值1
+        })
         this.dataList = arr
         this.purchaseFormal = arr
       }
@@ -377,7 +380,7 @@ export default {
               SapProductCode: item.Code,
               // CostPrice: item.SalePrice,
               CostPrice: item.CostPrice,
-              Quantity: item.Quantity,
+              Quantity: item.myNum,
               SupplierId: this.dataForm.supplierId,
               SupplierCode: this.dataForm.supplierCode
             }

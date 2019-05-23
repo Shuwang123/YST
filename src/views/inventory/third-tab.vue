@@ -27,23 +27,21 @@
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column header-align="center" align="center" label="历史时间" width="150">
+      <el-table-column prop="ProductCode" header-align="center" align="center" label="商品编码" width="90"></el-table-column>
+      <el-table-column prop="SupplierName" header-align="center" align="center" label="供应商" min-width=""></el-table-column>
+      <el-table-column prop="ProductName" header-align="center" align="center" label="名称" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧？所以厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
+
+      <el-table-column prop="Specification" header-align="center" align="center" label="规格" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Quantity" header-align="center" align="center" label="存量" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Price" header-align="center" align="center" label="进价" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="BatchNo" header-align="center" align="center" label="批次号" min-width="110" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column header-align="center" align="center" label="历史时间" min-width="119">
         <template slot-scope="scope">
           <!--<span>{{ scope.row.CreatedOn}}</span>-->
           <span>{{ scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="ProductCode" header-align="center" align="center" label="商品编码" width="80"></el-table-column>
-      <el-table-column prop="ProductName" header-align="center" align="center" label="名称" width="70" :show-overflow-tooltip="true"></el-table-column>
-      <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧？所以厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
-
-      <el-table-column prop="Quantity" header-align="center" align="center" label="规格" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="SupplierName" header-align="center" align="center" label="供应商" width=""></el-table-column>
-
-      <el-table-column prop="Specification" header-align="center" align="center" label="规格" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Quantity" header-align="center" align="center" label="存量" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Price" header-align="center" align="center" label="进价" width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="BatchNo" header-align="center" align="center" label="批次号" width="" :show-overflow-tooltip="true"></el-table-column>
     </el-table>
     <el-pagination
       @size-change="sizeChangeHandle"
