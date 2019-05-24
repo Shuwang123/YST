@@ -1,6 +1,6 @@
 /* 设置35的table行高，针对进销存药品太多时，提升页面视觉效果 */
-.el-table {
-  & /deep/ .all-row {
+.el-table /deep/ {
+  .all-row {
     color: #606266;
     & td {padding: 0;}
     & td .cell{

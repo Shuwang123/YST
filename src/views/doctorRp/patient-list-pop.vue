@@ -25,7 +25,7 @@
         :data="dataList"
         stripe
         v-loading="dataListLoading"
-        row-class-name="storeStockListRow"
+        row-class-name="all-row"
         :header-cell-style="$cxObj.tableHeaderStyle30px"
         style="width: 100%;">
         <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50" :show-overflow-tooltip="true"></el-table-column>
