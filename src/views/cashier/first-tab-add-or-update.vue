@@ -6,80 +6,97 @@
     :visible.sync="visible" @close="handleClose" class="charge-info">
     <el-container>
 
-      <el-aside v-if="isAddActive"  :width="isAddActive === false ? '100%' : '47%'" style="padding: 0 15px !important;border-right: 1px solid #E6E6E6">
-        <el-row><el-col :span="24"><p>处方编号：<span v-text="registerAllData.Code" style="border-bottom: 1px solid #333;"></span></p></el-col></el-row>
-        <el-row style="text-align: center;font-size: 20px;margin: 20px 0"><el-col :span="24"><b>{{registerAllData.StoreName}}处方笺</b></el-col></el-row>
+      <el-aside v-if="isAddActive"  :width="isAddActive === false ? '100%' : '47%'" style="padding: 0 15px !important;border-right: 1px solid #ccc">
+        <el-row>
+          <el-col :span="12">
+            <!-- style="border-bottom: 1px solid #333;"-->
+            <p>处方编号：<span v-text="registerAllData.Code"></span></p>
+          </el-col>
+          <el-col :span="12" style="text-align: right">
+            <p>订单时间：<span v-text="registerAllData.CreatedOnTime"></span></p>
+          </el-col>
+        </el-row>
         <!--header-->
-        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
-          <el-col :span="8">门诊号：{{registerAllData.StoreName}}</el-col>
+        <el-row style="text-align: left;font-size: 20px;margin: 20px 0"><el-col :span="24"><b>{{registerAllData.StoreName}}处方笺</b></el-col></el-row>
+        <el-row>
+          <el-col :span="16">患者信息：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</el-col>
           <el-col :span="8">科室：{{registerAllData.DepartmentTypeName}}</el-col>
-          <el-col :span="8">日期：{{registerAllData.CreatedOnTime.substring(0, 10)}}</el-col>
         </el-row>
-        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
-          <el-col :span="8">姓名：{{registerAllData.UserName}}</el-col>
-          <el-col :span="8">性别：{{registerAllData.SexName}}</el-col>
-          <el-col :span="8">年龄：{{registerAllData.BirthDate}}</el-col>
-        </el-row>
-        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
-          <el-col :span="24">诊断结果：{{registerAllData.DiseaseInfo}}</el-col>
-        </el-row>
-
-        <!--循环-->
-        <el-row style="font-size: 18px;margin: 5px 0">
-          <el-col :span="12">RP：</el-col>
-          <el-col :span="12" style="text-align: right;">{{registerAllData.Total}} 剂</el-col>
-        </el-row>
-        <el-row style="text-align: center;min-height: 300px">
-          <el-col :span="12" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
-            <span style="display: inline-block;width: 100px;text-align: right">{{item.ProductName}}</span>
-            <span style="display: inline-block;width: 100px;text-align: left">{{item.RefundableQty}} {{item.Unit}}</span>
+        <el-row>
+          <el-col :span="24">
+            <span style="display: inline-block;width: 70px;vertical-align: bottom;">诊断结果：</span>
+            <span style="display: inline-block;width: 83%;vertical-align: bottom;min-height: 20px;border-bottom: 1px solid #333;">{{registerAllData.DiseaseInfo}}</span>
           </el-col>
         </el-row>
 
-        <!--footer-->
-        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
-          <el-col :span="24">用法及医嘱：{{registerAllData.DrugRate}} ; {{registerAllData.DoctorAdvice}}</el-col>
+        <!--循环-->
+        <el-row style="margin: 5px 0">
+          <!--<el-col :span="12" style="font-size: 16px;">RP：[{{registerAllData.StatusName}}]</el-col>-->
+          <el-col :span="12" style="font-size: 16px;">RP：[药态?]</el-col>
+          <el-col :span="12" style="text-align: right;padding-right: 10px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
         </el-row>
-        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
-          <el-col :span="24">地址：{{registerAllData.Address}}</el-col>
+        <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;">
+          <el-col :span="8" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
+            <span style="display: inline-block;width: 70px;text-align: right">{{item.ProductName}}</span>
+            <span style="display: inline-block;width: 70px;text-align: left">{{item.RefundableQty}} {{item.Unit}}</span>
+          </el-col>
         </el-row>
-        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
-          <el-col :span="6">药费：{{registerAllData.OrderAmount}}</el-col>
-          <el-col :span="6">挂号费：{{registerAllData.RegisterAmount}}</el-col>
-          <el-col :span="6">诊疗费：{{registerAllData.ConsultationAmount}}</el-col>
-          <el-col :span="6">总金额：{{registerAllData.TotalAmount}}￥</el-col>
+
+        <!--footer height: 30px;line-height: 30px-->
+        <el-row style="">
+          <el-row style="height: 30px;line-height: 30px">
+            <el-col :span="24">帖数：一剂 {{registerAllData.TotalAmount}} ￥，共 {{registerAllData.Total}} 剂，挂号费
+              {{registerAllData.RegisterAmount}}，诊疗费 {{registerAllData.ConsultationAmount}}，总金额 {{registerAllData.OrderAmount}} ￥
+            </el-col>
+          </el-row>
+          <el-col :span="12">
+            <el-row>
+              <el-col :span="24">
+                <span style="display: inline-block;width: 17%;vertical-align: top;">用法：</span>
+                <!--<span style="display: inline-block;width: 81%;vertical-align: bottom;min-height: 20px;">先吃饭后吃药，加点水不放糖，水温50°，好好睡觉不要打游戏，不听的话你又要来看我</span>-->
+                <span style="display: inline-block;width: 81%;vertical-align: bottom;min-height: 20px;">{{registerAllData.DrugRate}}</span>
+              </el-col>
+              <el-col :span="24">
+                <span style="display: inline-block;width: 17%;vertical-align: top;">医嘱：</span>
+                <!--<span style="display: inline-block;width: 81%;vertical-align: bottom;min-height: 20px;">先吃饭后吃药，加点水不放糖，水温50°，好好睡觉不要打游戏，不听的话你又要来看我</span>-->
+                <span style="display: inline-block;width: 81%;vertical-align: bottom;min-height: 20px;">{{registerAllData.DoctorAdvice}}</span>
+              </el-col>
+            </el-row>
+          </el-col>
+          <el-col :span="10" :offset="2">
+            <el-row>
+              <el-col :span="24">收货人：{{registerAllData.UserName}} {{registerAllData.MobilePhone}}</el-col>
+              <el-col :span="24">
+                <span style="display: inline-block;width: 20%;vertical-align: top;">地址：</span>
+                <!--<span style="display: inline-block;width: 76%;vertical-align: bottom;min-height: 20px;">先吃饭后吃药，加点水不放糖，水温50°，好好睡觉不要打游戏，不听的话你又要来看我</span>-->
+                <span style="display: inline-block;width: 76%;vertical-align: bottom;min-height: 20px;">{{registerAllData.Address}}</span>
+              </el-col>
+            </el-row>
+          </el-col>
         </el-row>
-        <el-row style="border-bottom: 1px solid #333;height: 30px;line-height: 30px">
-          <el-col :span="6">审核：{{registerAllData.Total}}</el-col>
-          <el-col :span="6">调配：{{registerAllData.Total}}</el-col>
-          <el-col :span="6">核发：{{registerAllData.Total}}</el-col>
+        <el-row style="margin-top: 10px">
           <el-col :span="6">医生：{{registerAllData.DoctorName}}</el-col>
+          <el-col :span="6">审核：</el-col>
+          <el-col :span="6">调配：</el-col>
+          <el-col :span="6">核发：</el-col>
         </el-row>
+
       </el-aside>
 
       <el-main>
         <div class="ownScrollbar" style="min-height: 390px;overflow-y: scroll;"
              v-loading="dataListLoading">
-          <el-row>
-            <el-col><div style="padding-top: 5px; font-size: 16px; font-weight: 900;color: #1CA579">就诊信息：</div></el-col>
-          </el-row>
-          <div style="padding-left: 32px">
+          <div style="">
             <el-row>
-              <el-col :span="8"><span>病历号：</span>{{registerAllData.Code}}</el-col>
-              <el-col :span="8"><span>电话：</span>{{registerAllData.MobilePhone}}</el-col>
-              <el-col :span="8"><span>会员：</span>{{registerAllData.MobilePhone}}</el-col>
+              <el-col :span="24">病历号：{{registerAllData.UserCode}}</el-col>
             </el-row>
           </div>
 
-          <!--分割线-->
           <el-row>
             <el-col><div style="padding-top: 5px;font-size: 16px;font-weight: 900;color: #1CA579">收费项目：</div></el-col>
           </el-row>
           <div style="padding-left: 32px">
-            <el-row>
-              <el-col :span="24"><span>类型：</span>{{registerAllData.DiagnosisTypeName}}</el-col>
-            </el-row>
-            <!-- 模拟表头-->
+            <!--表头-->
             <el-row style="text-align: center; font-weight: 700; border: 1px solid #ccc; border-left: none; border-right: none;height: 35px;line-height: 35px">
               <el-col :span="6">收费类型</el-col>
               <el-col :span="6">合计</el-col>
@@ -101,7 +118,7 @@
             </el-row>
             <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 30px;line-height: 30px;clear: both">
               <el-col :span="6">药费</el-col>
-              <el-col :span="6">{{registerAllData.TotalAmount}}￥</el-col>
+              <el-col :span="6">{{registerAllData.OrderAmount}}￥</el-col>
               <el-col :span="6">{{registerAllData.StatusName ? registerAllData.StatusName : '无'}}</el-col>
               <el-col :span="6">
                 <!--<span style="color: #409EFF;cursor: pointer;text-align: center">- -</span>-->
@@ -113,8 +130,8 @@
           <el-form ref="dataForm" :rules="dataRule" :model="dataForm" label-width="70px" size="mini" :inline="true">
             <el-row style="margin-top: 30px;text-align: center;font-weight: 500; font-size: 16px">
               <el-col :span="12">
-                <el-form-item label="总共金额">
-                  <el-input v-model="registerAllData.TotalAmount" placeholder="总金额" style="width: 100px" disabled size="small"></el-input>
+                <el-form-item label="总金额">
+                  <el-input v-model="registerAllData.OrderAmount" placeholder="总金额" style="width: 100px" disabled size="small"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12" style="margin-bottom: 10px">
@@ -128,13 +145,13 @@
 
               <el-col :span="12">
                 <el-form-item label="实收" prop="reality">
-                  <el-input @blur="realityBlur" v-model="dataForm.reality" style="width: 100px" clearable="" size="small" :disabled="shiji"></el-input>
+                  <el-input @blur="realityBlur" v-model="dataForm.reality" style="width: 100px" size="small"></el-input>
                   <!--<el-input v-model="dataForm.reality" style="width: 90px" clearable="" size="small" :disabled="shiji"></el-input> ￥-->
                 </el-form-item>
               </el-col>
               <el-col :span="12">
                 <el-form-item label="找零" prop="give">
-                  <el-input v-model="dataForm.give" style="width: 100px" clearable size="small" :disabled="shiji"></el-input>
+                  <el-input v-model="dataForm.give" style="width: 100px" clearable size="small" disabled></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -143,32 +160,41 @@
       </el-main>
 
     </el-container>
+
     <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dataFormSubmitA()">收费</el-button>
+        <el-button type="primary" @click="dataFormSubmitA()">确认收费</el-button>
         <el-button type="primary" @click="dataFormSubmitA()">打印</el-button>
         <el-button @click="visible = false">关闭</el-button>
       </span>
     </div>
-    <first-tab-add-or-update-info v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataListChild"></first-tab-add-or-update-info>
   </el-dialog>
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
 import '../common/icon/iconfont.css'
-import {calcAge} from '@/utils/validate'
+import {calcAge, Currency} from '@/utils/validate'
 
 export default {
   data () {
     return {
       visible: false,
       dataListLoading: false, // 加载
+      addOrUpdateVisible: false, // 暂时没用
+      isAddActive: true,
 
+      registerAllData: '', // 挂号单全部信息
+      regMoney: /^\d+\.?\d{0,2}$/,
       dataForm: {
+        reality: '', // 实收
+        give: '', // 找零
         PaymentWay: 1 // 支付方式
       },
-      optionsPaymentType: [
-        { // 患者支付类型
+      dataRule: {
+        reality: Currency('此为必填项')
+      },
+      optionsPaymentType: [ // 患者支付类型
+        {
           value: 1,
           label: '现金'
         }, {
@@ -181,14 +207,41 @@ export default {
           value: 4,
           label: '银行卡'
         }
-      ],
-      isAddActive: true,
-
-      registerAllData: '', // 挂号单全部信息
-      addOrUpdateVisible: false // dataRule: {UserName: Currency('此为必填项')},
+      ]
+    }
+  },
+  watch: {
+    'dataForm.reality': function (newval, oldval) {
+      if (Number(newval) === 0) { return false }
+      if (!this.regMoney.test(newval)) {
+        this.$alert('你输入的金额不合规范! ', '输入提示', {
+          confirmButtonText: '确定',
+          callback: () => {
+            this.dataForm.reality = ''
+            this.dataForm.give = ''
+            return false
+          }
+        })
+      }
+      if (Number(newval) < this.registerAllData.OrderAmount) { // 这：实收小于总金额就退出，然后呢应该还需要清空错误的输入和错误提示吧，其实搭配了下面的realityBlur方法的，别看漏了，我自己也懵逼
+        return false
+      } else {
+        this.dataForm.give = Math.round((newval - this.registerAllData.OrderAmount) * 100) / 100 // 保留小数后两位
+      }
     }
   },
   methods: {
+    realityBlur () {
+      if (Number(this.dataForm.reality) < this.registerAllData.OrderAmount) {
+        this.dataForm.reality = ''
+        this.dataForm.give = ''
+        this.$message({
+          type: 'warning',
+          duration: '5000',
+          message: `提示: 实际的收费金额应 ≥ 挂号费!`
+        })
+      }
+    },
     // 根据表单的Id，获取对应挂号单的详情
     init (formId) {
       if (formId) {
@@ -199,7 +252,7 @@ export default {
             result.data.BirthDate = calcAge(result.data.BirthDate)
             this.registerAllData = result.data
             this.dataListLoading = false
-            console.log('查看', result.data)
+            // console.log('查看', result.data)
           }
         })
       }
@@ -207,78 +260,53 @@ export default {
     seeRecipelInfo () {
       this.isAddActive = !this.isAddActive // 点击'[添加药材]'按钮
     },
-    chargeTypeChange (val) {
-      // switch (val) {
-      //   case '0元号':
-      //     this.dataForm.RegisterAmount = 0
-      //     this.dataForm.ConsultationAmount = 0
-      //     this.RegisterBool = true
-      //     this.ConsultationBool = true
-      //     break
-      //   case '只挂号':
-      //     this.dataForm.RegisterAmount = ''
-      //     this.dataForm.ConsultationAmount = 0
-      //     this.RegisterBool = false
-      //     this.ConsultationBool = true
-      //     break
-      //   case '挂号+诊疗':
-      //     this.dataForm.RegisterAmount = ''
-      //     this.dataForm.ConsultationAmount = ''
-      //     this.RegisterBool = false
-      //     this.ConsultationBool = false
-      //     break
-      //   case '只诊疗':
-      //     this.dataForm.RegisterAmount = 0
-      //     this.dataForm.ConsultationAmount = ''
-      //     this.RegisterBool = true
-      //     this.ConsultationBool = false
-      //     break
-      //   case '疗程':
-      //     this.dataForm.RegisterAmount = 0
-      //     this.dataForm.ConsultationAmount = 0
-      //     this.RegisterBool = true
-      //     this.ConsultationBool = true
-      //     break
-      // }
-    },
     handleClose () {
       this.isAddActive = true
+      this.dataForm = {
+        reality: '', // 实收
+        give: '', // 找零
+        PaymentWay: 1 // 支付方式
+      }
     },
-    // 表单提交
+    // 收银提交接口
     dataFormSubmitA () {
-      // this.$refs['dataForm'].validate((valid) => {
-      //   if (valid) {
-      //     var params = {
-      //       StoreId: this.$store.getters.getAccountCurrentHandleStore,
-      //       AccountId: this.doctorId, // 医生id
-      //       UserId: this.dataForm.UserId, // 患者id
-      //       OrderType: 1, // 1挂号 2退号
-      //       DiagnosisType: this.dataForm.DiagnosisType, // 初诊 复诊
-      //       RegisterAmount: this.dataForm.RegisterAmount, // 挂号费
-      //       ConsultationAmount: this.dataForm.ConsultationAmount, // 诊疗费
-      //       PaymentWay: this.dataForm.PaymentWay,
-      //       Remark: this.dataForm.PaymentWay
-      //     }
-      //     console.log(params)
-      //     API.register.registerSubmit(params).then(result => {
-      //       if (result.code === '0000') {
-      //         this.$message({
-      //           message: `${'挂号成功'}`,
-      //           type: 'success',
-      //           duration: 3000
-      //         })
-      //         this.visible = false
-      //       } else {
-      //         this.$message.error(result.message)
-      //       }
-      //     })
-      //   } else {
-      //     this.$alert('挂号信息不完整! ', '提示', {
-      //       confirmButtonText: '确定'
-      //     })
-      //   }
-      // })
+      this.$refs['dataForm'].validate((valid) => {
+        if (valid) {
+          if (this.dataForm.reality === 0 && this.registerAllData.OrderAmount > 0) {
+            this.$alert('实收金额未填! ', '提示', {
+              confirmButtonText: '确定'
+            })
+            return false
+          }
+          var params = {
+            id: this.registerAllData.Id,
+            PaymentWay: this.dataForm.PaymentWay, // 支付方式
+            ActualAmount: this.registerAllData.OrderAmount // 实收金额 this.dataForm.reality 不是这个
+          }
+          console.log(params)
+          API.register.cashierSubmit(params).then(result => {
+            if (result.code === '0000') {
+              this.$message({
+                message: `${'提交成功'}`,
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.visible = false
+                  this.$emit('refreshDataList')
+                }
+              })
+            } else {
+              this.$message.error(result.message)
+            }
+          })
+        } else {
+          this.$alert('实收金额未填! ', '提示', {
+            confirmButtonText: '确定'
+          })
+        }
+      })
     }
+
   }
 }
 </script>

@@ -19,7 +19,7 @@
         </el-row>
         <el-row>
           <el-col :span="12"><span>会员：</span>{{registerAllData.MobilePhone}}</el-col>
-          <el-col :span="12"><span>地址：</span></el-col>
+          <el-col :span="12"><span>地址：</span>{{registerAllData.AreaId}}</el-col>
         </el-row>
       </div>
 

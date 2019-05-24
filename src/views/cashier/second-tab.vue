@@ -40,6 +40,7 @@
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
+          <el-button type="text" size="mini" @click="comfireDispensing">确认发药</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -62,6 +63,7 @@ import { mapGetters } from 'vuex'
 import {calcAge} from '@/utils/validate'
 
 export default {
+  components: { SecondTabAddOrUpdate },
   name: 'stockFirst',
   props: ['fatherDataForm'],
   data () {
@@ -84,7 +86,6 @@ export default {
       totalPage: 1
     }
   },
-  components: { SecondTabAddOrUpdate },
   mounted () {
     window.onresize = () => {
       this.chenxiHeight = document.documentElement['clientHeight'] - 333 // 273 测试老半天
@@ -149,6 +150,10 @@ export default {
         type: 'warning'
       }).then(() => {
       })
+    },
+    // 收费后确认发药出库
+    comfireDispensing () {
+
     }
   }
 }

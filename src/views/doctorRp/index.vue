@@ -296,6 +296,12 @@ export default {
         })
       }
       this.getStoreCategorytypeStock()
+    },
+    Total (val, oldval) {
+      if (val === undefined) {
+        console.log(val)
+        this.Total = 1
+      }
     }
   },
   data () {

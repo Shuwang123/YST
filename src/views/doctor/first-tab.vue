@@ -10,6 +10,7 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column prop="Id" header-align="center" align="center" label="ID" width="60" :show-overflow-tooltip="true"></el-table-column>
+      <!--<el-table-column prop="Address" header-align="center" align="center" label="地址" width="60" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column header-align="center" align="center" label="门店 / 医生" min-width="100">
         <template slot-scope="scope">
           <span>{{scope.row.StoreName}} / {{scope.row.DoctorName}}</span>

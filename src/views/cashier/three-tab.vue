@@ -39,7 +39,7 @@
       </el-table-column>
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
-          <el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">收费</el-button>
+          <el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -52,17 +52,17 @@
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
-    <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></first-tab-add-or-update>
+    <three-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></three-tab-add-or-update>
   </div>
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import FirstTabAddOrUpdate from './first-tab-add-or-update'
+import ThreeTabAddOrUpdate from './three-tab-add-or-update'
 import { mapGetters } from 'vuex'
 import {calcAge} from '@/utils/validate'
 
 export default {
-  components: { FirstTabAddOrUpdate },
+  components: { ThreeTabAddOrUpdate },
   name: 'stockFirst',
   props: ['fatherDataForm'],
   data () {
@@ -105,7 +105,7 @@ export default {
         MobilePhone: this.fatherDataForm.MobilePhone, // 患者电话
         WrokFrom: this.fatherDataForm.StartDate, // 开始时间
         WrokTo: this.fatherDataForm.EndDate, // 结束时间
-        Status: '3' // -1作废1初始 2只支付挂号费 待就诊（候诊）3 已就诊-(待收费) 5已收费6已发货  -2全部
+        Status: '6' // -1作废1初始 2只支付挂号费 待就诊（候诊）3 已就诊-(待收费) 5已收费6已发货  -2全部
       }
       // 获取挂号列表
       console.log(params)

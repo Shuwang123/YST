@@ -35,19 +35,19 @@
           <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
-      <el-tab-pane label="" name="second">
+      <el-tab-pane label="" name="second" disabled>
         <span slot="label"><i class=""></i> xx</span>
         <transition name="chenxi">
           <first-tab v-if="isVisible[1].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
-      <el-tab-pane label="" name="third">
+      <el-tab-pane label="" name="third" disabled>
         <span slot="label"><i class=""></i> xx</span>
         <transition name="chenxi">
           <first-tab v-if="isVisible[2].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
-      <el-tab-pane label="" name="four">
+      <el-tab-pane label="" name="four" disabled>
         <span slot="label"><i class=""></i> xx</span>
         <transition name="chenxi">
           <first-tab v-if="isVisible[3].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>

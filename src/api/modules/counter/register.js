@@ -38,10 +38,19 @@ export function getRegisterInfo (params) {
   })
 }
 
-// 正常流程下的医生开方或者药房辅助开方，调用的 edit 接口
+// 正常流程下的医生开方或者药房辅助开方，调用的 edit 接口(‘直接开方’调用的create接口)
 export function sendRecipelToEdit (params) {
   return request({
     url: requestUrl('/YstApiSaleOrder/Edit'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 收银接口
+export function cashierSubmit (params) {
+  return request({
+    url: requestUrl('/YstApiSaleOrder/PaymentSaleOrder'),
     method: 'post',
     data: requestParam(params)
   })

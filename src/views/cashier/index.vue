@@ -59,12 +59,12 @@
         </transition>
       </el-tab-pane>
 
-      <!--<el-tab-pane label="" name="second">-->
-        <!--<span slot="label"><i class=""></i> 已出库</span>-->
-        <!--<transition name="chenxi">-->
-          <!--<second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>-->
-        <!--</transition>-->
-      <!--</el-tab-pane>-->
+      <el-tab-pane label="" name="three">
+        <span slot="label"><i class=""></i> 已出库</span>
+        <transition name="chenxi">
+          <three-tab v-if="isVisible[2].child" ref="threeTab" :fatherDataForm="dataForm"></three-tab>
+        </transition>
+      </el-tab-pane>
 
     </el-tabs>
   </div>
@@ -73,19 +73,29 @@
 import API from '@/api'
 import FirstTab from './first-tab'
 import SecondTab from './second-tab'
+import ThreeTab from './three-tab'
 import ComStore from '../common/com-store'
+
 export default {
+  components: {
+    ComStore,
+    FirstTab,
+    SecondTab,
+    ThreeTab,
+  },
   watch: {
     'dataForm.AccountId': function () {
       if (this.isVisible[0].child === true) {
         this.$refs.firstTab.getDataList()
       } else if (this.isVisible[1].child === true) {
         this.$refs.secondTab.getDataList()
+      } else if (this.isVisible[2].child === true) {
+        this.$refs.threeTab.getDataList()
       }
     },
     'dataForm.patientNameOrMobilePhone': function (val, oldval) {
       var reg = /\d{11}/ig
-      if (reg.test(val) === true && val.length === 11) { // 验证通过表示输入的是手机号
+      if (reg.test(val) === true && val.length === 11) { // 验证通过表示 输入的 手机号
         this.dataForm.patientName = ''
         this.dataForm.MobilePhone = val
       } else {
@@ -118,16 +128,12 @@ export default {
       },
       isVisible: [
         {child: true},
+        {child: false},
         {child: false}
       ],
       valueTime: [],
       storeDoctorArr: []
     }
-  },
-  components: {
-    ComStore,
-    FirstTab,
-    SecondTab
   },
   methods: {
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
@@ -139,8 +145,10 @@ export default {
         this.$nextTick(() => { // 等待watch那计算完毕才执行查询
           if (this.isVisible[0].child === true) {
             this.$refs.firstTab.getDataList()
-          } else {
+          } else if (this.isVisible[1].child === true) {
             this.$refs.secondTab.getDataList()
+          } else if (this.isVisible[2].child === true) {
+            this.$refs.threeTab.getDataList()
           }
         })
       }
@@ -182,16 +190,21 @@ export default {
             return index === 1 ? {child: true} : {child: false}
           })
           break
+        case 'three':
+          this.isVisible = this.isVisible.map((item, index) => {
+            return index === 2 ? {child: true} : {child: false}
+          })
+          break
       }
       this.$nextTick(() => {
         this.isVisible.forEach((item, index) => {
           if (item.child === true) {
             if (index === 0) {
-              this.num = 0
               this.$refs.firstTab.getDataList() // 待收费列表
             } else if (index === 1) {
-              this.num = 1
               this.$refs.secondTab.getDataList() // 已收费列表
+            } else if (index === 2) {
+              this.$refs.threeTab.getDataList() // 已发货列表
             }
             return false
           }

@@ -39,7 +39,7 @@
           <span style="display: inline-block;width: 70px;text-align: left">{{item.RefundableQty}} {{item.Unit}}</span>
         </el-col>
         <i style="position: absolute;right: 33%;bottom: 50%;transform: rotate(-23deg);border: 2px solid #e4393c;box-shadow: 0 0 10px 1px #e4393c;
-                  color: #e4393c;font-size: 30px;padding: 10px 10px;border-radius: 30px;opacity: .9">{{registerAllData.OrderAmount}}元，已收费</i>
+                  color: #e4393c;font-size: 30px;padding: 10px 10px;border-radius: 30px;opacity: .9">{{registerAllData.OrderAmount}}元，已发药</i>
       </el-row>
 
       <!--footer height: 30px;line-height: 30px-->
