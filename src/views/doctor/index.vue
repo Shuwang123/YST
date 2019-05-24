@@ -35,10 +35,10 @@
           <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
-      <el-tab-pane label="" name="second" disabled>
-        <span slot="label"><i class=""></i> xx</span>
+      <el-tab-pane label="" name="second">
+        <span slot="label"><i class=""></i> 已开方患者</span>
         <transition name="chenxi">
-          <first-tab v-if="isVisible[1].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
+          <second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>
         </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="third" disabled>
@@ -59,6 +59,7 @@
 <script type="text/ecmascript-6">
 import API from '@/api'
 import FirstTab from './first-tab'
+import SecondTab from './second-tab'
 import ComStore from '../common/com-store'
 export default {
   data () {
@@ -87,6 +88,7 @@ export default {
   },
   components: {
     FirstTab,
+    SecondTab,
     ComStore
   },
   watch: {
@@ -152,7 +154,11 @@ export default {
       })
     },
     doctorHandle () {
-      this.$refs.firstTab.getDataList()
+      if (this.isVisible[0].child === true) {
+        this.$refs.firstTab.getDataList()
+      } else if (this.isVisible[1].child === true) {
+        this.$refs.secondTab.getDataList()
+      }
     },
     handleClick (tab, event) {
       // console.log(tab, event)
@@ -178,27 +184,20 @@ export default {
           })
           break
       }
-      // // console.log(this.isVisible)
-      // this.$nextTick(() => {
-      //   this.isVisible.forEach((item, index) => {
-      //     if (item.child === true) {
-      //       if (index === 0) {
-      //         this.num = 0
-      //         this.$refs.firstTab.getDataList(this.num)
-      //       } else if (index === 1) {
-      //         this.num = 1
-      //         this.$refs.firstTab.getDataList(this.num) // 待收货
-      //       } else if (index === 2) {
-      //         this.num = 4
-      //         this.$refs.firstTab.getDataList(this.num) // 已到货未入库
-      //       } else if (index === 3) {
-      //         this.num = 10
-      //         this.$refs.firstTab.getDataList(this.num) // 已入库（已完成）
-      //       }
-      //     }
-      //     return false
-      //   })
-      // })
+      this.$nextTick(() => {
+        this.isVisible.forEach((item, index) => {
+          if (item.child === true) {
+            if (index === 0) {
+              this.$refs.firstTab.getDataList() // 待诊列表
+            } else if (index === 1) {
+              this.$refs.secondTab.getDataList() // 已就诊列表记录（医生自己的）
+            } else if (index === 2) {
+              this.$refs.threeTab.getDataList()
+            }
+            return false
+          }
+        })
+      })
     }
   }
 }
