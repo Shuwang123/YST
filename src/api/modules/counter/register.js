@@ -47,10 +47,19 @@ export function sendRecipelToEdit (params) {
   })
 }
 
-// 收银接口
+// 收银接口,确认收取消费
 export function cashierSubmit (params) {
   return request({
     url: requestUrl('/YstApiSaleOrder/PaymentSaleOrder'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 已收取药费list下，按钮确认出库接口, 销售订单确认提交
+export function saleOrderSubmit (params) {
+  return request({
+    url: requestUrl('/YstApiSaleOrder/StockSaleOrder'),
     method: 'post',
     data: requestParam(params)
   })

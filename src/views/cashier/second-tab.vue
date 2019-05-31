@@ -153,7 +153,24 @@ export default {
     },
     // 收费后确认发药出库
     comfireDispensing () {
-
+      this.$confirm(`确定出库吗?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        API.register.saleOrderSubmit({saleOrderCode: this.dataList.需要一个字段，挂号列表添加订单编码}).then(result => {
+          if (result.code === '0000') {
+          //   this.dataList = result.data.map(item => {
+          //     item.BirthDate = calcAge(item.BirthDate)
+          //     return item
+          //   })
+          //   this.totalPage = result.total
+          // } else {
+          //   this.$message.error(result.message) 记得响应成功后刷新列表
+          }
+          this.dataListLoading = false
+        })
+      })
     }
   }
 }

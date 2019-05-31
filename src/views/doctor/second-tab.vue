@@ -35,7 +35,7 @@
           <span>￥ {{scope.row.RegisterAmount}} + {{scope.row.ConsultationAmount}}</span>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" align="center" label="收费状态" min-width="190">
+      <el-table-column header-align="center" align="center" label="收费状态" min-width="190" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{scope.row.DiagnosisTypeName}} / {{scope.row.RegisterStatusName}} / {{scope.row.RegisterOrderStatusName}}</span>
         </template>
