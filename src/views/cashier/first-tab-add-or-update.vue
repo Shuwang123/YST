@@ -12,7 +12,7 @@
             <!-- style="border-bottom: 1px solid #333;"-->
             <p>处方编号：<span v-text="registerAllData.Code"></span></p>
           </el-col>
-          <el-col :span="12" style="text-align: right">
+          <el-col :span="12" style="text-align: right;padding-right: 10px">
             <p>订单时间：<span v-text="registerAllData.CreatedOnTime"></span></p>
           </el-col>
         </el-row>
@@ -31,9 +31,9 @@
 
         <!--循环-->
         <el-row style="margin: 5px 0">
-          <!--<el-col :span="12" style="font-size: 16px;">RP：[{{registerAllData.StatusName}}]</el-col>-->
-          <el-col :span="12" style="font-size: 16px;">RP：[药态?]</el-col>
-          <el-col :span="12" style="text-align: right;padding-right: 10px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
+          <!--<el-col :span="12" style="font-size: 16px;">RP：[{{registerAllData.StatusName}}]</el-col> 下面行写了个vif，控制台报错找不0属性，后来加了v-if-->
+          <el-col :span="12" v-if="registerAllData.SaleOrderItems">RP：{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}</el-col>
+          <el-col :span="12" style="text-align: right;padding-right: 15px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
         </el-row>
         <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;">
           <el-col :span="8" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
@@ -45,9 +45,8 @@
         <!--footer height: 30px;line-height: 30px-->
         <el-row style="">
           <el-row style="height: 30px;line-height: 30px">
-            <el-col :span="24">帖数：一剂 {{registerAllData.TotalAmount}} ￥，共 {{registerAllData.Total}} 剂，挂号费
-              {{registerAllData.RegisterAmount}}，诊疗费 {{registerAllData.ConsultationAmount}}，总金额 {{registerAllData.OrderAmount}} ￥
-            </el-col>
+            <!--<el-col :span="24">帖数：一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，挂号费 ￥{{registerAllData.RegisterAmount}}，诊疗费 ￥{{registerAllData.ConsultationAmount}}，总金额 ￥{{registerAllData.OrderAmount}}</el-col>-->
+            <el-col :span="24">帖数：一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.OrderAmount}}</el-col>
           </el-row>
           <el-col :span="12">
             <el-row>
@@ -118,7 +117,7 @@
             </el-row>
             <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 30px;line-height: 30px;clear: both">
               <el-col :span="6">药费</el-col>
-              <el-col :span="6">{{registerAllData.OrderAmount}}￥</el-col>
+              <el-col :span="6">{{registerAllData.TotalAmount * registerAllData.Total}}￥</el-col>
               <el-col :span="6">{{registerAllData.StatusName ? registerAllData.StatusName : '无'}}</el-col>
               <el-col :span="6">
                 <!--<span style="color: #409EFF;cursor: pointer;text-align: center">- -</span>-->
@@ -128,13 +127,13 @@
           </div>
 
           <el-form ref="dataForm" :rules="dataRule" :model="dataForm" label-width="70px" size="mini" :inline="true">
-            <el-row style="margin-top: 30px;text-align: center;font-weight: 500; font-size: 16px">
-              <el-col :span="12">
-                <el-form-item label="总金额">
-                  <el-input v-model="registerAllData.OrderAmount" placeholder="总金额" style="width: 100px" disabled size="small"></el-input>
+            <el-row style="margin-top: 30px;text-align: left;font-weight: 500; font-size: 16px">
+              <el-col :span="24">
+                <el-form-item label="待收金额">
+                  <el-input v-model="residualPrice" placeholder="总金额" style="width: 100px" disabled size="small"></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="12" style="margin-bottom: 10px">
+              <el-col :span="24" style="margin-bottom: 10px">
                 <el-form-item label="支付方式"><!--患者支付方式-->
                   <el-select v-model="dataForm.PaymentWay" style="width: 100px" placeholder="支付方式">
                     <el-option v-for="item in optionsPaymentType" :key="item.value"
@@ -146,7 +145,6 @@
               <el-col :span="12">
                 <el-form-item label="实收" prop="reality">
                   <el-input @blur="realityBlur" v-model="dataForm.reality" style="width: 100px" size="small"></el-input>
-                  <!--<el-input v-model="dataForm.reality" style="width: 90px" clearable="" size="small" :disabled="shiji"></el-input> ￥-->
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -207,11 +205,14 @@ export default {
           value: 4,
           label: '银行卡'
         }
-      ]
+      ],
+      // 残留的价格，挂号费已支付未支付的状态会影响这个值去 ± OerderAmount(2表示挂号费已支付，1表示未支付)
+      residualPrice: 0 // 2019.06.01 新增字段，优化代码
     }
   },
   watch: {
     'dataForm.reality': function (newval, oldval) {
+      console.log(this.residualPrice)
       if (Number(newval) === 0) { return false }
       if (!this.regMoney.test(newval)) {
         this.$alert('你输入的金额不合规范! ', '输入提示', {
@@ -223,16 +224,16 @@ export default {
           }
         })
       }
-      if (Number(newval) < this.registerAllData.OrderAmount) { // 这：实收小于总金额就退出，然后呢应该还需要清空错误的输入和错误提示吧，其实搭配了下面的realityBlur方法的，别看漏了，我自己也懵逼
+      if (Number(newval) < this.residualPrice) { // 这：实收小于总金额就退出，然后呢应该还需要清空错误的输入和错误提示吧，其实搭配了下面的realityBlur方法的，别看漏了，我自己也懵逼
         return false
       } else {
-        this.dataForm.give = Math.round((newval - this.registerAllData.OrderAmount) * 100) / 100 // 保留小数后两位
+        this.dataForm.give = Math.round((newval - this.residualPrice) * 100) / 100 // 保留小数后两位
       }
     }
   },
   methods: {
     realityBlur () {
-      if (Number(this.dataForm.reality) < this.registerAllData.OrderAmount) {
+      if (Number(this.dataForm.reality) < this.residualPrice) {
         this.dataForm.reality = ''
         this.dataForm.give = ''
         this.$message({
@@ -252,7 +253,15 @@ export default {
             result.data.BirthDate = calcAge(result.data.BirthDate)
             this.registerAllData = result.data
             this.dataListLoading = false
-            // console.log('查看', result.data)
+            console.log('查看', result.data)
+
+            // 2019.06.01 残留的价格，挂号费已支付未支付的状态会影响这个值去 ± OerderAmount(2表示挂号费已支付，1表示未支付)
+            if (this.registerAllData.RegisterStatus === 2) {
+              this.residualPrice = Number((this.registerAllData.OrderAmount - this.registerAllData.RegisterAmount - this.registerAllData.ConsultationAmount).toFixed(2))
+            } else if (this.registerAllData.RegisterStatus === 1) {
+              this.residualPrice = this.registerAllData.OrderAmount
+            }
+            console.log(this.residualPrice)
           }
         })
       }
@@ -272,7 +281,7 @@ export default {
     dataFormSubmitA () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          if (this.dataForm.reality === 0 && this.registerAllData.OrderAmount > 0) {
+          if (this.dataForm.reality === 0 && this.residualPrice > 0) {
             this.$alert('实收金额未填! ', '提示', {
               confirmButtonText: '确定'
             })
@@ -281,7 +290,7 @@ export default {
           var params = {
             id: this.registerAllData.Id,
             PaymentWay: this.dataForm.PaymentWay, // 支付方式
-            ActualAmount: this.registerAllData.OrderAmount // 实收金额 this.dataForm.reality 不是这个
+            ActualAmount: this.residualPrice // 实收金额 this.dataForm.reality 不是这个
           }
           console.log(params)
           API.register.cashierSubmit(params).then(result => {

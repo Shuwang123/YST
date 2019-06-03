@@ -8,7 +8,7 @@
       row-class-name="storeStockListRow"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
-      <el-table-column header-align="center" align="center" label="门店 / 医生" min-width="100">
+      <el-table-column header-align="center" align="center" label="门店 / 医生" min-width="114" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{scope.row.StoreName}} / {{scope.row.DoctorName}}</span>
         </template>
@@ -21,18 +21,20 @@
         </template>
       </el-table-column>
       <el-table-column prop="MobilePhone" header-align="center" align="center" label="手机" min-width="110"></el-table-column>
-      <el-table-column header-align="center" align="center" label="时间" min-width="109">
+      <el-table-column header-align="center" align="center" label="时间" min-width="119">
         <template slot-scope="scope">
-          <span>{{ scope.row.CreatedOnTime | myDateFilter('MM-dd hh:mm')}}</span>
+          <span>{{ scope.row.CreatedOnTime | myDateFilter('MM-dd hh:mm:ss')}}</span>
         </template>
       </el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="挂号费 / 诊疗费" min-width="119">
+      <!--<el-table-column header-align="center" align="center" label="挂号费 / 诊疗费" min-width="147">-->
+      <el-table-column header-align="center" align="left" label="总金额" min-width="147">
         <template slot-scope="scope">
-          <span>￥ {{scope.row.RegisterAmount}} + {{scope.row.ConsultationAmount}}</span>
+          <span>￥ {{scope.row.RegisterAmount}} / {{scope.row.ConsultationAmount}} / {{scope.row.OrderAmount}}</span>
+          <!--<span><span style="display: inline-block;width: 35px;text-align: right;margin-right: 5px">￥</span>{{scope.row.OrderAmount}}</span>-->
         </template>
       </el-table-column>
-      <el-table-column header-align="center" align="center" label="收费状态" min-width="260">
+      <el-table-column header-align="center" align="center" label="收费状态" min-width="260" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{scope.row.DiagnosisTypeName}} / {{scope.row.RegisterStatusName ? scope.row.RegisterStatusName : ''}} / {{scope.row.RegisterOrderStatusName}}</span>
         </template>
@@ -40,7 +42,7 @@
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
-          <el-button type="text" size="mini" @click="comfireDispensing">确认发药</el-button>
+          <el-button type="text" size="mini" @click="comfireDispensing(scope.row.Code)">确认发药</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -151,24 +153,20 @@ export default {
       }).then(() => {
       })
     },
-    // 收费后确认发药出库
-    comfireDispensing () {
+    // 收费后确认药材出库
+    comfireDispensing (Code) {
       this.$confirm(`确定出库吗?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        API.register.saleOrderSubmit({saleOrderCode: this.dataList.需要一个字段，挂号列表添加订单编码}).then(result => {
+        console.log(Code)
+        API.register.saleOrderSubmit({saleOrderCode: Code}).then(result => {
           if (result.code === '0000') {
-          //   this.dataList = result.data.map(item => {
-          //     item.BirthDate = calcAge(item.BirthDate)
-          //     return item
-          //   })
-          //   this.totalPage = result.total
-          // } else {
-          //   this.$message.error(result.message) 记得响应成功后刷新列表
+            this.getDataList()
+          } else {
+            this.$message.error(result.message)
           }
-          this.dataListLoading = false
         })
       })
     }

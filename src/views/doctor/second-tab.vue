@@ -24,15 +24,17 @@
         </template>
       </el-table-column>
       <el-table-column prop="MobilePhone" header-align="center" align="center" label="手机" min-width="110"></el-table-column>
-      <el-table-column header-align="center" align="center" label="时间" min-width="109">
+      <el-table-column header-align="center" align="center" label="时间" min-width="119">
         <template slot-scope="scope">
-          <span>{{ scope.row.CreatedOnTime | myDateFilter('MM-dd hh:mm')}}</span>
+          <span>{{ scope.row.CreatedOnTime | myDateFilter('MM-dd hh:mm:ss')}}</span>
         </template>
       </el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="挂号费 / 诊疗费" min-width="119">
+      <!--<el-table-column header-align="center" align="center" label="挂号费 / 诊疗费" min-width="147">-->
+      <el-table-column header-align="center" align="left" label="总金额" min-width="147">
         <template slot-scope="scope">
-          <span>￥ {{scope.row.RegisterAmount}} + {{scope.row.ConsultationAmount}}</span>
+          <span>￥ {{scope.row.RegisterAmount}} / {{scope.row.ConsultationAmount}} / {{scope.row.OrderAmount}}</span>
+          <!--<span><span style="display: inline-block;width: 35px;text-align: right;margin-right: 5px">￥</span>{{scope.row.OrderAmount}}</span>-->
         </template>
       </el-table-column>
       <el-table-column header-align="center" align="center" label="收费状态" min-width="190" :show-overflow-tooltip="true">
@@ -43,7 +45,7 @@
       <el-table-column prop="" label="操作" :width="status === 1 ? 280 : 150" header-align="center" align="center">
         <template slot-scope="scope">
           <!--<el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">就诊</el-button>-->
-          <el-button type="text">查看</el-button>
+          <el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
           <el-button type="text"
                      @click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&DoctorName=${scope.row.DoctorName}&DoctorId=${fatherDataForm.AccountId}&registerFormId=${scope.row.Id}`)">
             再次就诊</el-button>
@@ -59,13 +61,13 @@
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
-    <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataListChild"></first-tab-add-or-update>
+    <second-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataListChild"></second-tab-add-or-update>
   </div>
 </template>
 <script type="text/ecmascript-6">
 import { calcAge } from '@/utils/validate'
 import API from '@/api'
-import FirstTabAddOrUpdate from './first-tab-add-or-update'
+import SecondTabAddOrUpdate from './second-tab-add-or-update'
 import { mapGetters } from 'vuex'
 export default {
   name: 'drugs',
@@ -84,7 +86,7 @@ export default {
       status: 0 // 采购单的状态、1 4 10 -1
     }
   },
-  components: { FirstTabAddOrUpdate },
+  components: { SecondTabAddOrUpdate },
   mounted () {
     window.onresize = () => {
       this.chenxiHeight = document.documentElement['clientHeight'] - 273 // 273 测试老半天
@@ -136,10 +138,10 @@ export default {
       this.pageIndex = val
       this.getDataList(this.status)
     },
-    addOrUpdateHandle (id, type) {
+    addOrUpdateHandle (patientId) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id, type)
+        this.$refs.addOrUpdate.init(patientId)
       })
     },
     handelDelete (id) {

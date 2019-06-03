@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'划价收费'" :width="'615px'"
+    :title="'已开处方'" :width="'615px'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose" class="charge-info">
     <div style="width: 580px">
@@ -38,14 +38,15 @@
           <span style="display: inline-block;width: 70px;text-align: right">{{item.ProductName}}</span>
           <span style="display: inline-block;width: 70px;text-align: left">{{item.RefundableQty}} {{item.Unit}}</span>
         </el-col>
-        <i style="position: absolute;right: 33%;bottom: 50%;transform: rotate(-23deg);border: 2px solid #e4393c;box-shadow: 0 0 10px 1px #e4393c;
-                  color: #e4393c;font-size: 30px;padding: 10px 10px;border-radius: 30px;opacity: .9">{{registerAllData.OrderAmount}}元，已收款</i>
+        <!--<i style="position: absolute;right: 33%;bottom: 50%;transform: rotate(-23deg);border: 2px solid #e4393c;box-shadow: 0 0 10px 1px #e4393c;-->
+                  <!--color: #e4393c;font-size: 30px;padding: 10px 10px;border-radius: 30px;opacity: .9">{{registerAllData.OrderAmount}}元，已收款</i>-->
       </el-row>
 
       <!--footer height: 30px;line-height: 30px-->
       <el-row style="">
         <el-row style="height: 30px;line-height: 30px">
-          <el-col :span="24">帖数：一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，订单总金额 ￥{{registerAllData.OrderAmount}}</el-col>
+          <el-col :span="24">帖数：一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，挂号费 ￥{{registerAllData.RegisterAmount}}，诊疗费 ￥{{registerAllData.ConsultationAmount}}，总金额 ￥{{registerAllData.OrderAmount}}
+          </el-col>
         </el-row>
         <el-col :span="12">
           <el-row>
@@ -82,7 +83,7 @@
 
     <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dataFormSubmitA()">打印</el-button>
+        <!--<el-button type="primary" @click="dataFormSubmitA()">打印</el-button>-->
         <el-button @click="visible = false">关闭</el-button>
       </span>
     </div>
@@ -100,47 +101,10 @@ export default {
       addOrUpdateVisible: false, // 暂时没用
       isAddActive: true,
 
-      registerAllData: '', // 挂号单全部信息
-      regMoney: /^\d+\.?\d{0,2}$/,
-      dataForm: {
-        reality: '', // 实收
-        give: '', // 找零
-        PaymentWay: 1 // 支付方式
-      }
-    }
-  },
-  watch: {
-    'dataForm.reality': function (newval, oldval) {
-      if (Number(newval) === 0) { return false }
-      if (!this.regMoney.test(newval)) {
-        this.$alert('你输入的金额不合规范! ', '输入提示', {
-          confirmButtonText: '确定',
-          callback: () => {
-            this.dataForm.reality = ''
-            this.dataForm.give = ''
-            return false
-          }
-        })
-      }
-      if (Number(newval) < this.registerAllData.OrderAmount) { // 这：实收小于总金额就退出，然后呢应该还需要清空错误的输入和错误提示吧，其实搭配了下面的realityBlur方法的，别看漏了，我自己也懵逼
-        return false
-      } else {
-        this.dataForm.give = Math.round((newval - this.registerAllData.OrderAmount) * 100) / 100 // 保留小数后两位
-      }
+      registerAllData: '' // 挂号单全部信息
     }
   },
   methods: {
-    realityBlur () {
-      if (Number(this.dataForm.reality) < this.registerAllData.OrderAmount) {
-        this.dataForm.reality = ''
-        this.dataForm.give = ''
-        this.$message({
-          type: 'warning',
-          duration: '5000',
-          message: `提示: 实际的收费金额应 ≥ 挂号费!`
-        })
-      }
-    },
     // 根据表单的Id，获取对应挂号单的详情
     init (formId) {
       if (formId) {
@@ -207,43 +171,43 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-.registerIndex /deep/ .el-form-item {
-  margin-bottom: 0;
-}
-.ownScrollbar /deep/ {
-  span {
-    display: inline-block;
-    width: 70px;
-    text-align: right;
-    height: 30px;
-    line-height: 30px;
+  .registerIndex /deep/ .el-form-item {
+    margin-bottom: 0;
   }
-}
+  .ownScrollbar /deep/ {
+    span {
+      display: inline-block;
+      width: 70px;
+      text-align: right;
+      height: 30px;
+      line-height: 30px;
+    }
+  }
 
-/*出诊 复诊样式覆盖*/
-.registerIndex /deep/ {
-  .el-radio-button--mini .el-radio-button__inner {
-    padding: 7px 9px;
+  /*出诊 复诊样式覆盖*/
+  .registerIndex /deep/ {
+    .el-radio-button--mini .el-radio-button__inner {
+      padding: 7px 9px;
+    }
+    /*只要半场动画*/
+    .v-enter {opacity: 0}
+    .v-enter-active {transition: all .4s ease}
+    .v-leave-active {position:absolute}
   }
-  /*只要半场动画*/
-  .v-enter {opacity: 0}
-  .v-enter-active {transition: all .4s ease}
-  .v-leave-active {position:absolute}
-}
-.ownScrollbar::-webkit-scrollbar,
-.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar {
-  width: 7px;
-}
-.ownScrollbar::-webkit-scrollbar-thumb,
-.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
-  background-color: #DDDEE0;
-}
-.ownScrollbar::-webkit-scrollbar-track,
-.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-track {
-  border-radius: 0;
-  box-shadow: inset 0 0 5px rgba(0,0,0,0);
-  background-color: rgba(0,0,0,0);
-}
+  .ownScrollbar::-webkit-scrollbar,
+  .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar {
+    width: 7px;
+  }
+  .ownScrollbar::-webkit-scrollbar-thumb,
+  .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    background-color: #DDDEE0;
+  }
+  .ownScrollbar::-webkit-scrollbar-track,
+  .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-track {
+    border-radius: 0;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0);
+    background-color: rgba(0,0,0,0);
+  }
 </style>

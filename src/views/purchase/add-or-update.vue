@@ -26,11 +26,15 @@
           <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
           <el-table-column prop="CategoryName" header-align="center" :align="$store.state.common.align" width="100" label="药态" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="100" label="商品编码" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column prop="ShowName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
+          <el-table-column header-align="center" :align="$store.state.common.align" label="药材名称">
+            <template slot-scope="scope">
+              <span :style="{color: scope.row.Quantity < scope.row.RedLine ? '#e4393c' : '#333'}">{{ scope.row.ShowName }}</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
           <!--<el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->
           <el-table-column prop="Quantity" header-align="center" :align="$store.state.common.align" label="库存 (余量)" :show-overflow-tooltip="true"></el-table-column>
-          <el-table-column prop="CostPrice" header-align="center" :align="$store.state.common.align" label="上一次的进价" width="116"></el-table-column>
+          <!--<el-table-column prop="CostPrice" header-align="center" :align="$store.state.common.align" label="上一次的进价" width="116"></el-table-column>-->
           <el-table-column prop="RedLine" header-align="center" :align="$store.state.common.align" label="预警量" :show-overflow-tooltip="true"></el-table-column>
         </el-table>
         <el-pagination

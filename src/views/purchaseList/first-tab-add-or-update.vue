@@ -164,7 +164,7 @@ export default {
   },
   methods: {
     comFunction () {
-      // 这儿请求起点药材的接口要改成，请求对应门店库存的接口 后来 又改回老接口了
+      // 这请求起点 药材的接口要改成，请求对应门店库存的接口（这个后来崩了） 后来 又改回老接口了
       API.drugs.getDrugsList({
         Name: '',
         PageIndex: 1,
@@ -310,8 +310,11 @@ export default {
         Items: JSON.stringify(this.dataList.Items.map(item => {
           return {
             ProductId: item.ProductId,
-            CostPrice: item.CostPrice,
-            Quantity: item.Quantity,
+            LastCostPrice: item.LastCostPrice, // 上一次的采购价????????????????
+            CostPrice: item.CostPrice, // 这个应该是手填（本次采购价）
+            StoreSalePrice: item.StoreSalePrice, // 这个应该是手填（门店售价）
+
+            Quantity: item.Quantity, // 采购量手填
             SapProductCode: item.SapProductCode,
             SupplierId: this.dataList.SupplierId,
             SupplierCode: this.dataList.SupplierCode // 这儿接口9返回的item.SupplierId用为零，导致不得不去获取总表的那个返回值

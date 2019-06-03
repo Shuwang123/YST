@@ -10,7 +10,7 @@
           <!-- style="border-bottom: 1px solid #333;"-->
           <p>处方编号：<span v-text="registerAllData.Code"></span></p>
         </el-col>
-        <el-col :span="12" style="text-align: right">
+        <el-col :span="12" style="text-align: right;padding-right: 10px">
           <p>订单时间：<span v-text="registerAllData.CreatedOnTime"></span></p>
         </el-col>
       </el-row>
@@ -30,8 +30,8 @@
       <!--循环-->
       <el-row style="margin: 5px 0">
         <!--<el-col :span="12" style="font-size: 16px;">RP：[{{registerAllData.StatusName}}]</el-col>-->
-        <el-col :span="12" style="font-size: 16px;">RP：[药态?]</el-col>
-        <el-col :span="12" style="text-align: right;padding-right: 10px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
+        <el-col :span="12" v-if="registerAllData.SaleOrderItems">RP：{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}</el-col>
+        <el-col :span="12" style="text-align: right;padding-right: 15px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
       </el-row>
       <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;position: relative">
         <el-col :span="8" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
@@ -45,9 +45,7 @@
       <!--footer height: 30px;line-height: 30px-->
       <el-row style="">
         <el-row style="height: 30px;line-height: 30px">
-          <el-col :span="24">帖数：一剂 {{registerAllData.TotalAmount}} ￥，共 {{registerAllData.Total}} 剂，挂号费
-            {{registerAllData.RegisterAmount}}，诊疗费 {{registerAllData.ConsultationAmount}}，总金额 {{registerAllData.OrderAmount}} ￥
-          </el-col>
+          <el-col :span="24">帖数：一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，订单总金额 ￥{{registerAllData.OrderAmount}}</el-col>
         </el-row>
         <el-col :span="12">
           <el-row>

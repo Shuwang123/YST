@@ -56,7 +56,7 @@ export function cashierSubmit (params) {
   })
 }
 
-// 已收取药费list下，按钮确认出库接口, 销售订单确认提交
+// 已收药费list下，确认出库接口, 销售订单确认提交
 export function saleOrderSubmit (params) {
   return request({
     url: requestUrl('/YstApiSaleOrder/StockSaleOrder'),

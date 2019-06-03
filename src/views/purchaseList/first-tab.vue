@@ -158,7 +158,6 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        console.log('俺睡觉了快递费')
         console.log(id)
         API.purchase.handleStatus4({ids: id}).then((result) => {
           if (result.code === '0000') {

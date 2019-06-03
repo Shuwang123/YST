@@ -24,9 +24,9 @@
         </template>
       </el-table-column>
       <el-table-column prop="MobilePhone" header-align="center" align="center" label="手机" min-width="110"></el-table-column>
-      <el-table-column header-align="center" align="center" label="时间" min-width="109">
+      <el-table-column header-align="center" align="center" label="时间" min-width="119">
         <template slot-scope="scope">
-          <span>{{ scope.row.CreatedOnTime | myDateFilter('MM-dd hh:mm')}}</span>
+          <span>{{ scope.row.CreatedOnTime | myDateFilter('MM-dd hh:mm:ss')}}</span>
         </template>
       </el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->

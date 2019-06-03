@@ -54,10 +54,11 @@
         <!--</template>-->
       <!--</el-table-column>-->
       <el-table-column prop="Quantity" header-align="center" :align="$store.state.common.align" label="库存 (余量)" min-width="110"></el-table-column>
-      <el-table-column prop="CostPrice" header-align="center" :align="$store.state.common.align" label="上一次的进价" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="采购量" min-width="110">
+      <!--<el-table-column prop="CostPrice" header-align="center" :align="$store.state.common.align" label="上一次的进价" :show-overflow-tooltip="true"></el-table-column>-->
+      <el-table-column header-align="center" :align="$store.state.common.align" label="采购量" min-width="110">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.myNum" :precision="2" :step="1" :min="1" :max="10000" size="mini"></el-input-number>
+          <el-input-number v-model="scope.row.myNum" :precision="2" :step="1"
+                           @change="handleChange" :min="0.1" :max="10000" size="mini"></el-input-number>
         </template>
       </el-table-column>
       <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->
@@ -320,14 +321,14 @@ export default {
     selectionChangeHandle (val) {
       this.dataListSelections = val
     },
-    // 这儿哟，子组件第一个勾选会跑到父组件的bug 连续x=x=arr造成的
+    // 这儿哟，子组件第一个勾选会跑到父组件的bug 连续x=x=arr造成的，好像是，后来感觉好像又不是
     getDataList (arr) {
       if (String(arr) === '[]' || arr === undefined) {
         this.dataList = []
         this.purchaseFormal = []
       } else {
         arr.forEach(item => {
-          item.myNum = '1' // 添加字段myNum为初始采购量，默认最小值1
+          item.myNum = '1' // 添加字段myNum为初始采购量，默认最小值1，后来考虑到0.5kg，干脆弄出了最小值0.1得了，不过初始值为1
         })
         this.dataList = arr
         this.purchaseFormal = arr
@@ -363,6 +364,10 @@ export default {
         }
       })
     },
+    handleChange () {
+      this.dataList.push()
+      // this.purchaseFormal 正式购买
+    },
     // 正式提交采购单
     savePurchase () {
       if (String(this.dataList) !== [] && String(this.dataList) !== '') {
@@ -379,7 +384,7 @@ export default {
               ProductId: item.Id,
               SapProductCode: item.Code,
               // CostPrice: item.SalePrice,
-              CostPrice: item.CostPrice,
+              CostPrice: item.LastCostPrice,
               Quantity: item.myNum,
               SupplierId: this.dataForm.supplierId,
               SupplierCode: this.dataForm.supplierCode

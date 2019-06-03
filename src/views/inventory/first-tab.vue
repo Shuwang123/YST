@@ -38,15 +38,15 @@
       <el-table-column prop="ProductName" header-align="center" align="center" label="药名" min-width="80"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧？所以厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
 
-      <el-table-column prop="Quantity" header-align="center" align="center" label="库存" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Quantity" header-align="center" align="center" label="库存 (余量)" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="OccupyQuantity" header-align="center" align="center" label="锁定" min-width="80"></el-table-column>
       <el-table-column prop="UsableQuantity" header-align="center" align="center" label="可用" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="AvgCostPrice" header-align="center" align="center" label="平均成本" min-width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Amount" header-align="center" align="center" label="成本总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="SalePrice" header-align="center" align="center" label="售价" min-width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="SaleAmount" header-align="center" align="center" label="售价总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <!--<el-table-column prop="Amount" header-align="center" align="center" label="成本总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
+      <el-table-column prop="StoreSalePrice" header-align="center" align="center" label="售价" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <!--<el-table-column prop="SaleAmount" header-align="center" align="center" label="售价总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="RedLine" header-align="center" align="center" label="预警值" min-width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="ProfitPercent" header-align="center" align="center" label="毛利" width="100" :show-overflow-tooltip="true"></el-table-column>
+      <!--<el-table-column prop="ProfitPercent" header-align="center" align="center" label="毛利" width="100" :show-overflow-tooltip="true"></el-table-column>-->
     </el-table>
     <el-pagination
       @size-change="sizeChangeHandle"

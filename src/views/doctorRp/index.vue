@@ -235,7 +235,7 @@
             <el-form-item label="开方医生">
               <el-input v-model="$route.query.DoctorName" placeholder="onlyReady" style="width: 110px" :disabled="true"></el-input>
             </el-form-item>
-            {{$route.query.DoctorId}}
+            <!--{{$route.query.DoctorId}}-->
           </el-col>
           <el-col :span="12" style="font-weight: 500; font-size: 16px; padding-top: 10px">
             &nbsp;&nbsp;&nbsp;总金额：<span style="color: #e4393c">￥{{allMoney}}</span>
@@ -409,8 +409,8 @@ export default {
       this.dataForm.Address = row.Address
       this.dataForm.UserId = row.Id
       this.dataForm.Code = row.Code
-      this.dataForm.RegisterAmount = 0 // 这两个没用，就只是提交的时候直接提交
-      this.dataForm.ConsultationAmount = 0
+      // this.dataForm.RegisterAmount = 0 // 这两个没用，就只是提交的时候直接提交
+      // this.dataForm.ConsultationAmount = 0
     },
 
     // 通用封装的门店子组件绑定的父组件的返回方法（开方页面的上层已提前决定了门店，这儿还能改变门店吗？？？？？？？？？？？？？？？？？？？）

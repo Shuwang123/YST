@@ -8,7 +8,7 @@
       row-class-name="storeStockListRow"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
-      <el-table-column header-align="center" align="center" label="门店 / 医生" min-width="100">
+      <el-table-column header-align="center" align="center" label="门店 / 医生" min-width="114" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{scope.row.StoreName}} / {{scope.row.DoctorName}}</span>
         </template>
@@ -21,18 +21,20 @@
         </template>
       </el-table-column>
       <el-table-column prop="MobilePhone" header-align="center" align="center" label="手机" min-width="110"></el-table-column>
-      <el-table-column header-align="center" align="center" label="时间" min-width="109">
+      <el-table-column header-align="center" align="center" label="时间" min-width="119">
         <template slot-scope="scope">
-          <span>{{ scope.row.CreatedOnTime | myDateFilter('MM-dd hh:mm')}}</span>
+          <span>{{ scope.row.CreatedOnTime | myDateFilter('MM-dd hh:mm:ss')}}</span>
         </template>
       </el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="挂号费 / 诊疗费" min-width="119">
+      <!--<el-table-column header-align="center" align="center" label="挂号费 / 诊疗费" min-width="147">-->
+      <el-table-column header-align="center" align="left" label="总金额" min-width="147">
         <template slot-scope="scope">
-          <span>￥ {{scope.row.RegisterAmount}} + {{scope.row.ConsultationAmount}}</span>
+          <span>￥ {{scope.row.RegisterAmount}} / {{scope.row.ConsultationAmount}} / {{scope.row.OrderAmount}}</span>
+          <!--<span><span style="display: inline-block;width: 35px;text-align: right;margin-right: 5px">￥</span>{{scope.row.OrderAmount}}</span>-->
         </template>
       </el-table-column>
-      <el-table-column header-align="center" align="center" label="收费状态" min-width="260">
+      <el-table-column header-align="center" align="center" label="收费状态" min-width="260" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{scope.row.DiagnosisTypeName}} / {{scope.row.RegisterStatusName ? scope.row.RegisterStatusName : ''}} / {{scope.row.StatusName}}</span>
         </template>
