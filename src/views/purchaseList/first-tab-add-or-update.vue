@@ -8,24 +8,24 @@
     <el-container>
       <el-aside :width="isAddActive === false ? '100%' : '60%'">
         <div class="ownScrollbar" style="min-height: 500px;max-height: 500px;overflow-y: scroll;">
+
+          <!--头部状态-->
           <el-row>
             <el-col style="padding: 0 50px">
               <el-steps :active="stepActive" process-status="success" finish-status="success" align-center>
-                <el-step title="待收货(已创建采购单)" description="药房还未录入实际到货量和采购价格"></el-step>
+                <el-step title="待收货(已创建采购单)" description="药房还未录入实际到货量、采购价、门店售价"></el-step>
                 <el-step title="未入库" description="药房还未录入商品批次号"></el-step>
                 <el-step title="已入库" description="整个采购计划已完毕"></el-step>
               </el-steps>
             </el-col>
           </el-row>
+          <!--头部采购单其他信息-->
           <el-row>
             <el-col :span="8"><p>采购人：<span v-if="dataList !== null">{{dataList.CreatedByName}}</span></p></el-col>
             <el-col :span="8"><p>供应商：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
             <el-col :span="8">
               <p style="width: 190px;">门店：
-                <span v-if="dataList !== null"
-                  style="display: inline-block; vertical-align: bottom; width: 134px; overflow: hidden; text-overflow:ellipsis;white-space:nowrap;">
-                {{dataList.StoreName}}
-              </span>
+                <span v-if="dataList !== null" style="display: inline-block; vertical-align: bottom; width: 134px; overflow: hidden; text-overflow:ellipsis;white-space:nowrap;">{{dataList.StoreName}}</span>
               </p>
             </el-col>
           </el-row>
@@ -35,13 +35,14 @@
             <el-col :span="8"><p>地址：<span v-if="dataList !== null">{{dataList.Address}}</span></p></el-col>
           </el-row>
           <el-row>
-            <el-col :span="16"><p>创建时间：<span v-if="dataList !== null">{{dataList.CreatedTime | myDateFilter('yyyy-MM-dd hh:mm')}}</span></p></el-col>
-            <el-col :span="8"><p>备注：<span v-if="dataList !== null">{{dataList.Remark}}</span></p></el-col>
+            <el-col :span="8"><p>创建时间：<span v-if="dataList !== null">{{dataList.CreatedTime | myDateFilter('yyyy-MM-dd hh:mm:ss')}}</span></p></el-col>
+            <el-col :span="15"><p>备注：<span v-if="dataList !== null">{{dataList.Remark}}</span></p></el-col>
           </el-row>
           <el-row>
             <el-col><div style="padding-top: 5px;font-weight: 900;color: #1CA579">药品：<b v-text="categoryName"></b></div></el-col>
           </el-row>
 
+          <!--主体：列表展示-->
           <el-table  v-if="dataList !== null" :key="Math.random()"
                      :data="dataList.Items"
                      stripe
@@ -49,34 +50,42 @@
                      row-class-name="purchaseListRow"
                      :header-cell-style="$cxObj.tableHeaderStyle40px"
                      style="width: 100%;">
+            <!--<el-table-column prop="Id" align="center" label="ID" width="50"></el-table-column>-->
             <el-table-column type="index" align="center" label="序号" width="50"></el-table-column>
             <el-table-column prop="ProductId" align="center" label="商品" width="50"></el-table-column>
-            <!--<el-table-column prop="Id" align="center" label="ID" width="50"></el-table-column>-->
             <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称"></el-table-column>
             <el-table-column prop="CategoryName" header-align="center" align="center" label="药态"></el-table-column>
 
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="采购数量" width="120">
+            <!--采购数量-->
+            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="采购数量" header-align="center" :align="$store.state.common.align" width="120">
               <template slot-scope="scope">
                 <el-input-number v-model="scope.row.Quantity" :step="1" :min="1" :max="1000" size="mini" controls-position="right" style="width: 105px"></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column v-else :key="Math.random()" prop="Quantity" header-align="center" align="center" label="采购数量"></el-table-column>
+            <el-table-column v-else prop="Quantity" :key="Math.random()" label="采购数量" header-align="center" align="center"></el-table-column>
 
-            <el-table-column prop="CostPrice" header-align="center" align="center" label="上次采购价"></el-table-column>
+            <el-table-column prop="LastCostPirce" header-align="center" align="center" label="上次采购价"></el-table-column>
 
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="此次采购价" width="110">
+            <!--就是添加药材的进价!!!-->
+            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="此次采购价" header-align="center" :align="$store.state.common.align" width="110">
               <template slot-scope="scope">
                 <el-input-number v-model="scope.row.CostPrice" :precision="2" :step="0.01" :min="0.01" :max="1000" size="mini" controls-position="right" style="width: 100px"></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column v-else prop="CostPrice" header-align="center" align="center" label="此次采购价"></el-table-column>
+            <el-table-column v-else prop="CostPrice" header-align="center" label="此次采购价" align="center"></el-table-column>
 
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="售价填写" width="110">
+            <!--门店售价填写-->
+            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="售价填写" prop="" header-align="center" :align="$store.state.common.align" width="110">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.SalePrice" :precision="2" :step="0.01" :min="0.01" :max="1000" size="mini" controls-position="right" style="width: 100px"></el-input-number>
+                <el-input-number v-model="scope.row.StoreSalePrice" :precision="2" :step="0.01" :min="0.01" :max="1000" size="mini" controls-position="right" style="width: 100px"></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column v-if="dataList.Status === 4" prop="SalePrice" header-align="center" align="center" label="售价"></el-table-column>
+            <el-table-column v-if="editType !== 'A'" prop="StoreSalePrice" label="售价" header-align="center" align="center"></el-table-column>
+            <!--<el-table-column v-if="dataList.Status !== -1 && editType !== 'A'" prop="StoreSalePrice" label="售价" header-align="center" align="center"></el-table-column>-->
+
+
+
+            <!--翻页：批号录入-->
             <!--<el-table-column prop="Amount" header-align="center" align="center" label="总价"></el-table-column>-->
             <el-table-column v-if="editType === 'B'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="批号填写" width="150">
               <template slot-scope="scope">
@@ -85,6 +94,7 @@
               </template>
             </el-table-column>
             <el-table-column v-if="dataList.Status === 10" prop="ProductBatchNo" header-align="center" align="center" label="批号"></el-table-column>
+
             <el-table-column v-if="editType === 'A'" prop="" label="操作" width="50" header-align="center" align="center">
               <template slot-scope="scope">
                 <el-button type="text" @click="leftRemove(scope.row.ProductId)">移除</el-button>
@@ -94,6 +104,7 @@
         </div>
       </el-aside>
 
+      <!--右侧：追加药材-->
       <el-main v-if="isAddActive" style="padding: 0 0 0 5px !important; border-left: 1px solid #E6E6E6">
         <!--<el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="0" :inline="true">-->
         <el-form class="purchaseListInfo" :model="dataForm" ref="dataForm" label-width="0" :inline="true">
@@ -129,6 +140,8 @@
         </el-form>
       </el-main>
     </el-container>
+
+    <!--底部：footer按钮-->
     <span v-if="editType !== ''" slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
       <el-button v-if="editType === 'A'" type="primary" @click="dataFormAdd()">新增药材</el-button>
@@ -310,11 +323,14 @@ export default {
         Items: JSON.stringify(this.dataList.Items.map(item => {
           return {
             ProductId: item.ProductId,
-            LastCostPrice: item.LastCostPrice, // 上一次的采购价????????????????
-            CostPrice: item.CostPrice, // 这个应该是手填（本次采购价）
-            StoreSalePrice: item.StoreSalePrice, // 这个应该是手填（门店售价）
+
+            LastCostPirce: item.LastCostPrice, // 这还提交上一次采购价其实没啥用了，不过后一个tab里填写入库编码的时候还可以瞄一下，有点点小用吧
+
+            CostPrice: item.CostPrice, // 进价售价：
+            StoreSalePrice: item.StoreSalePrice, // 门店售价：这三个值，直接来源于添加药材那，用来作为初始值在创建采购单的时候直接传递给后端
 
             Quantity: item.Quantity, // 采购量手填
+
             SapProductCode: item.SapProductCode,
             SupplierId: this.dataList.SupplierId,
             SupplierCode: this.dataList.SupplierCode // 这儿接口9返回的item.SupplierId用为零，导致不得不去获取总表的那个返回值

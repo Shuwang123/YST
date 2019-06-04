@@ -45,7 +45,7 @@
     <div class="slz-footer">
       <el-pagination background :total="allMenus"
         :current-page="objMenu.pageIndex" @current-change="getNewMenuList"
-        :page-size="objMenu.pageSize" :page-sizes="[10,20,30,100]" @size-change="getNewPageSizes"
+        :page-size="objMenu.pageSize" :page-sizes="[10,13,20,30,100]" @size-change="getNewPageSizes"
         layout="prev,pager,next,jumper,sizes,total">
       </el-pagination>
     </div>
@@ -79,7 +79,7 @@ export default {
       objMenu: {
         name: '',
         pageIndex: 1, // 当前页索引
-        pageSize: 10, // 页码大小10 20 30 100
+        pageSize: 13, // 页码大小10 20 30 100
         IsPaging: true // 后端需求的数据，是否分页
       },
       allMenus: 0 // 分页功能 // 表中数据总量

@@ -161,7 +161,7 @@
           </el-tabs>
           <div class="rightUlStyle">
             <ul class="ownScrollbar">
-              <li v-for="item in rightUlData" :key="item.Id" :title="item.ShowName">
+              <li v-for="item in rightUlData" :key="item.Id" :title="item.ShowName+' [余量'+item.Quantity+']'">
                 <el-row style="clear: both">
                   <!--<span v-text="item.ShowName === null ? '000' : item.ShowName"></span> {{item.Id}}余{{item.Quantity}}g/预{{item.RedLine}}-->
 
@@ -172,7 +172,8 @@
                     </span>
                   </el-col>
                   <el-col :span="12" :style="{color: item.Quantity - item.RedLine > 0 ? '#333' : item.Quantity === 0 ? '#ccc' : '#e4392c'}">
-                    <span style="display: inline-block; vertical-align: middle;text-align: center;overflow: hidden; width: 100px; white-space: nowrap;text-overflow: ellipsis">
+                    <span style="display: inline-block; vertical-align: middle;text-align: left;padding-left: 10px;
+                                 overflow: hidden;width: 100px; white-space: nowrap;text-overflow: ellipsis">
                       {{item.Quantity}} / {{item.RedLine}}
                       <!--{{item.Id}} {{item.Quantity}}/{{item.RedLine}}-->
                     </span>
@@ -263,12 +264,14 @@ import PatientListPop from './patient-list-pop'
 import TableOne from './table-one'
 import TableTwo from './table-two'
 import TableThree from './table-three'
+import TableFour from './table-four'
 export default {
   components: {
     PatientListPop,
     TableOne,
     TableTwo,
-    TableThree
+    TableThree,
+    TableFour
   },
   // Error in callback for watcher "$route": "TypeError: Cannot read property 'id' of undefined"
   // 报错不要怕，因为没有创建路由页面的对应菜单造成的，无关紧要
@@ -563,6 +566,10 @@ export default {
             this.leftTable = 'TableThree'
             this.rightUl = 'ul-one'
             break
+          case '1004':
+            this.leftTable = 'TableFour'
+            this.rightUl = 'ul-one'
+            break
         }
         this.oldTabsName = this.activeName
         this.getStoreCategorytypeStock()
@@ -583,6 +590,10 @@ export default {
               break
             case '1003':
               this.leftTable = 'TableThree'
+              this.rightUl = 'ul-one'
+              break
+            case '1004':
+              this.leftTable = 'TableFour'
               this.rightUl = 'ul-one'
               break
           }

@@ -46,7 +46,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[10, 13, 20, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
@@ -65,7 +65,7 @@ export default {
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载v-loading
 
-      pageSize: 10,
+      pageSize: 13,
       pageIndex: 1,
       totalPage: 1,
       dataForm: {

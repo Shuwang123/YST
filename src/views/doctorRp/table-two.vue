@@ -36,7 +36,7 @@
 
 <script>
 export default {
-  name: 'table-one',
+  name: 'table-two',
   data () {
     return {
       categoryUnit: '克'

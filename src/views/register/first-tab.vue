@@ -43,7 +43,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[10, 17, 20, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
@@ -61,11 +61,11 @@ export default {
   props: ['fatherDataForm'],
   data () {
     return {
-      chenxiHeight: document.documentElement['clientHeight'] - 333, // 心累，不要动
+      chenxiHeight: document.documentElement['clientHeight'] - 303, // 心累，不要动
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
       pageIndex: 1,
-      pageSize: 10,
+      pageSize: 17,
       totalPage: 1,
       IsPaging: true,
       dataForm: {
@@ -77,7 +77,7 @@ export default {
   components: { FirstTabAddOrUpdate },
   mounted () {
     window.onresize = () => {
-      this.chenxiHeight = document.documentElement['clientHeight'] - 333 // 273 测试老半天
+      this.chenxiHeight = document.documentElement['clientHeight'] - 303 // 273 测试老半天
     }
   },
   methods: {

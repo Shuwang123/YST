@@ -27,8 +27,15 @@
       <el-table-column prop="Name" header-align="center" align="center" label="门店名称" width="100" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Id" header-align="center" align="center" label="门店ID" width="70"></el-table-column>
       <!--<el-table-column prop="Code" header-align="center" align="center" width="100px" label="门店编码"></el-table-column>-->
-      <el-table-column prop="FullName" header-align="right" align="right" label="地区" width="170" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Address" header-align="left" align="left" label="地址详情" width="170" :show-overflow-tooltip="true"></el-table-column>
+
+      <!--<el-table-column prop="FullName" header-align="right" align="right" label="地区" width="170" :show-overflow-tooltip="true"></el-table-column>-->
+      <!--<el-table-column prop="Address" header-align="left" align="left" label="地址详情" width="170" :show-overflow-tooltip="true"></el-table-column>-->
+      <el-table-column header-align="center" align="left" label="地区：详细地址" min-width="150" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <span>{{scope.row.FullName}}：{{scope.row.Address}}</span>
+        </template>
+      </el-table-column>
+
       <el-table-column prop="Contact" header-align="center" align="center" label="联系人" min-width="100"></el-table-column>
       <el-table-column prop="Phone" header-align="center" align="center" label="联系电话" min-width="119"></el-table-column>
       <el-table-column header-align="center" align="center" label="创建时间" min-width="150">
@@ -55,7 +62,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[10, 13, 20, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
@@ -80,7 +87,7 @@ export default {
       storePayInfoVisible: false, // ?????这是卅子
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
-      pageSize: 10,
+      pageSize: 13,
       pageIndex: 1,
       totalPage: 1,
       dataForm: {

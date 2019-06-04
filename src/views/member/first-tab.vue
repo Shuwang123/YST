@@ -66,7 +66,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[10, 17, 20, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
@@ -88,7 +88,7 @@ export default {
       chenxiHeight: document.documentElement['clientHeight'] - 276, // 心累，不要动
       addOrUpdateVisible: false,
 
-      pageSize: 10,
+      pageSize: 17,
       pageIndex: 1,
       isPaging: true,
       dataForm: {

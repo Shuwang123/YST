@@ -17,7 +17,7 @@
       <el-table-column prop="SupplierName" header-align="center" align="center" label="供应商" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column header-align="center" align="center" label="采购时间" min-width="110">
         <template slot-scope="scope">
-          <span>{{ scope.row.CreatedTime | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
+          <span>{{ scope.row.CreatedTime | myDateFilter('yyyy-MM-dd hh:mm:ss')}}</span>
         </template>
       </el-table-column>
 
@@ -39,7 +39,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[10, 18, 20, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
@@ -61,7 +61,7 @@ export default {
       dataListLoading: false, // 加载
 
       pageIndex: 1,
-      pageSize: 10,
+      pageSize: 18,
       totalPage: 1,
       dataList: [],
       dataListSelections: [],

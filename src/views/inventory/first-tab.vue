@@ -41,9 +41,9 @@
       <el-table-column prop="Quantity" header-align="center" align="center" label="库存 (余量)" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="OccupyQuantity" header-align="center" align="center" label="锁定" min-width="80"></el-table-column>
       <el-table-column prop="UsableQuantity" header-align="center" align="center" label="可用" min-width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="AvgCostPrice" header-align="center" align="center" label="平均成本" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="AvgCostPrice" header-align="center" align="center" label="成本 (avg)" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Amount" header-align="center" align="center" label="成本总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column prop="StoreSalePrice" header-align="center" align="center" label="售价" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="StoreSalePrice" header-align="center" align="center" label="门店售价" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="SaleAmount" header-align="center" align="center" label="售价总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="RedLine" header-align="center" align="center" label="预警值" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="ProfitPercent" header-align="center" align="center" label="毛利" width="100" :show-overflow-tooltip="true"></el-table-column>-->
@@ -52,7 +52,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[10, 17, 20, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
@@ -69,11 +69,11 @@ export default {
   props: ['fatherDataForm'],
   data () {
     return {
-      chenxiHeight: document.documentElement['clientHeight'] - 333, // 心累，不要动
+      chenxiHeight: document.documentElement['clientHeight'] - 303, // 心累，不要动
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
       pageIndex: 1,
-      pageSize: 10,
+      pageSize: 17,
       IsPaging: true,
 
       OrderArr: [
@@ -93,7 +93,7 @@ export default {
   components: { FirstTabAddOrUpdate },
   mounted () {
     window.onresize = () => {
-      this.chenxiHeight = document.documentElement['clientHeight'] - 333 // 273 测试老半天
+      this.chenxiHeight = document.documentElement['clientHeight'] - 303 // 273 测试老半天
     }
   },
   methods: {

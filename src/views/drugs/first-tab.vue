@@ -33,7 +33,7 @@
       style="width: 100%;" class="ownScrollbar">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column type="index" label="排序" align="center" width="50"></el-table-column>
-      <el-table-column prop="CategoryName" header-align="center" align="center" label="种类" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="CategoryName" header-align="center" align="left" label="种类" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Code" header-align="center" align="center" label="编码" width="85" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Id" header-align="center" align="center" label="ID" width="50"></el-table-column>-->
       <el-table-column header-align="right" align="right" label="药典" width="70" :show-overflow-tooltip="true">
@@ -55,11 +55,11 @@
       <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="50" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Specification" header-align="center" align="center" label="规格" width="" :show-overflow-tooltip="true"></el-table-column>
 
-      <el-table-column header-align="center" align="center" label="进货价" min-width="70" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <span style="">{{scope.row.CostPrice.toFixed(2)}}</span>
-        </template>
-      </el-table-column>
+      <!--<el-table-column header-align="center" align="center" label="进货价" min-width="70" :show-overflow-tooltip="true">-->
+        <!--<template slot-scope="scope">-->
+          <!--<span style="">{{scope.row.CostPrice.toFixed(2)}}</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <el-table-column header-align="center" align="center" label="零售价" min-width="70" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span style="">{{scope.row.SalePrice.toFixed(2)}}</span>
@@ -71,8 +71,8 @@
       <!--<el-table-column prop="ContractPrice" header-align="center" align="center" label="合同价" width="80" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="RedLine" header-align="center" align="center" label="预警量" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="WebStatus" header-align="center" align="center" label="状态" width="50" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column prop="WebStatusName" header-align="center" align="center" label="状态" width="70" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="" label="操作" width="119" header-align="center" align="center">
+      <el-table-column prop="WebStatusName" header-align="center" align="center" label="状态" min-width="70" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <span style="padding-right: 12px;border-right: 1px solid #ccc;cursor: pointer">
             <span type="text" @click="addOrUpdateHandle(scope.row.Id)">编辑</span>
@@ -89,7 +89,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[10, 20, 50, 100]"
+      :page-sizes="[10, 18, 20, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
@@ -112,7 +112,7 @@ export default {
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
 
-      pageSize: 20,
+      pageSize: 18,
       pageIndex: 1,
       totalPage: 1,
       dataForm: {
@@ -248,7 +248,7 @@ export default {
     },
     // 根据'未上架'状态和‘列标’，‘判断此列中的对应单元格’高亮还是暗色（返回的class是加载td上的，所以是一个一个的往td上加的就能控制，不像上面的行直接加给的tr，看清细节）
     ownColumnStyle ({row, column, rowIndex, columnIndex}) { // 0123开始columnIndex
-      if (columnIndex === 4 || columnIndex === 5 || columnIndex === 13) {
+      if (columnIndex === 5 || columnIndex === 4 || columnIndex === 12) {
         if (row.WebStatus === 1) {
           return 'highlightColumn'
         } else if (row.WebStatus === 2) {

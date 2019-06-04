@@ -383,9 +383,13 @@ export default {
             return {
               ProductId: item.Id,
               SapProductCode: item.Code,
-              // CostPrice: item.SalePrice,
-              CostPrice: item.LastCostPrice,
+
+              CostPrice: item.SalePrice,
+              LastCostPirce: item.LastCostPrice,   // 不是很好理解，先写在这吧
+              StoreSalePrice: item.StoreSalePrice, // 这三个值，直接来源于添加药材那，用来作为初始值在创建采购单的时候直接传递给后端
+
               Quantity: item.myNum,
+
               SupplierId: this.dataForm.supplierId,
               SupplierCode: this.dataForm.supplierCode
             }
