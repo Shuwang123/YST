@@ -45,7 +45,7 @@
       <!--<el-table-column prop="CategoryName" header-align="center" align="center" label="种类" width="70" :show-overflow-tooltip="true"></el-table-column>-->
 
       <el-table-column prop="Quantity" header-align="center" align="center" label="改变前" min-width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="ChangeQuantity" header-align="center" align="center" label="改变" min-width="80"></el-table-column>
+      <el-table-column prop="ChangeQuantity" header-align="center" align="center" label="增加 / 扣减" min-width="80"></el-table-column>
       <el-table-column prop="CurrentQuantity" header-align="center" align="center" label="剩余" min-width="80" :show-overflow-tooltip="true"></el-table-column>
 
       <el-table-column prop="BillTypeName" header-align="center" align="center" label="账单类型" min-width="80" :show-overflow-tooltip="true"></el-table-column>
