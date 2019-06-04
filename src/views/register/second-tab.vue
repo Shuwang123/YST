@@ -8,7 +8,7 @@
       row-class-name="storeStockListRow"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
-      <el-table-column header-align="center" align="center" label="门店 / 医生" min-width="100">
+      <el-table-column header-align="center" align="center" label="门店 / 医生" min-width="100" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{scope.row.StoreName}} / {{scope.row.DoctorName}}</span>
         </template>

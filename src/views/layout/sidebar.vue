@@ -40,7 +40,7 @@ import {mapMutations} from 'vuex'
 import isEmpty from 'lodash/isEmpty'
 import {getStore, treeDataTranslate} from '@/utils'
 import API from '@/api'
-import '../common/icon/iconfont.css'
+import '../common/icon/iconfont.css' // origin：
 export default {
   components: {
     SubMenuNav
@@ -197,6 +197,18 @@ export default {
       }
     }
     & p {color: #fff;font-size: 16px;padding-top: 10px;text-align: center}
+  }
+
+  /*2019.06.04 cx:控制自体图标无法对齐的问题*/
+  /deep/ .el-submenu__title {
+    .site-sidebar__menu-icon.el-icon-view {
+      position: relative;
+      left: -5px;
+      +span {
+        position: relative;
+        left: -10px;
+      }
+    }
   }
 }
 .site-sidebar__inner::-webkit-scrollbar {
