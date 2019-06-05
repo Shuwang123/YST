@@ -384,9 +384,10 @@ export default {
               ProductId: item.Id,
               SapProductCode: item.Code,
 
-              CostPrice: item.SalePrice,
-              LastCostPirce: item.LastCostPrice,   // 不是很好理解，先写在这吧
-              StoreSalePrice: item.StoreSalePrice, // 这三个值，直接来源于添加药材那，用来作为初始值在创建采购单的时候直接传递给后端
+              LastCostPirce: item.LastCostPrice, // 只用作之后去初始化值（之后是只读，只给看的上一次进价）
+
+              CostPrice: item.CostPrice, // 只用作之后去初始化值（之后可以继续改进价）
+              StoreSalePrice: item.StoreSalePrice, // 只用作之后去初始化值（之后可以继续改门店售价）
 
               Quantity: item.myNum,
 

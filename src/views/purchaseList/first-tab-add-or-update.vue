@@ -101,6 +101,9 @@
               </template>
             </el-table-column>
           </el-table>
+          <p style="font-size: 16px;height: 40px;line-height: 40px">采购单总金额：￥
+            <span style="color: #e4393c">{{OrderTotalPrice.toFixed(2)}}</span>
+          </p>
         </div>
       </el-aside>
 
@@ -172,7 +175,8 @@ export default {
       categoryId: '',
 
       isAddActive: false,
-      dataListAdd: []
+      dataListAdd: [],
+      OrderTotalPrice: 0 // 采购单总价显示
     }
   },
   methods: {
@@ -283,6 +287,11 @@ export default {
         API.purchase.getPurchaseInfo({id: id}).then(result => {
           if (result.code === '0000') {
             this.dataList = result.data
+            // 2019.06.01 展示采购单总价
+            this.dataList.Items.forEach(item => {
+              this.OrderTotalPrice += item.Quantity * item.CostPrice
+            })
+
             this.categoryId = this.dataList.Items[0].CategoryId
             this.categoryName = this.dataList.Items[0].CategoryName // 返回的采购单详情里每个药材对象中都包含药态，所以这儿取下巧
             switch (result.data.Status) {
@@ -307,6 +316,7 @@ export default {
     handleClose () {
       this.editType = ''
       this.isAddActive = false
+      this.OrderTotalPrice = 0
     },
     dataFormSubmitA () { // 编辑的提交 采购数量和价格
       var params = {

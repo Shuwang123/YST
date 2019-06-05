@@ -1,111 +1,59 @@
 <template>
-  <div class="doctor-recipel">
+  <el-dialog
+    v-dialogDrag
+    :title="openType === 'add' ? '创建协定方' : openType === 'see' ? '查看协定方' : '编辑协定方'" :width="'1200px'"
+    :close-on-click-modal="false"
+    :visible.sync="visible" @close="handleClose" class="registerIndex">
     <el-form ref="dataForm" :rules="dataRule" :model="dataForm" label-width="80px" size="mini">
-      <el-container style="padding-left: 20px">
-        <el-aside width="75%" style="border-right: 1px solid #DCDFE6; padding-right: 5px;min-width: 700px;">
+      <el-container class="doctor-recipel" style="padding-left: 20px">
+        <el-aside width="67%" style="border-right: 1px solid #DCDFE6; padding-right: 5px;min-width: 700px;">
           <div id="leftHeightPatient">
             <p style="text-align: center;font-size: 16px; padding: 5px 0 20px 0;">
-              <!--꧁<span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;"> 处方笺 </span>꧂-->
               <span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;cursor: pointer"
-                    @click="cutOut = !cutOut" :title="cutOut ? '点击收起' : '点击展开'"> 处方笺
+                    @click="cutOut = !cutOut" :title="cutOut ? '点击收起' : '点击展开'"> 医生协定方
                 <b style="font-weight: 700;font-size: 12px;color: #409EFF;
                    text-decoration: underline">{{cutOut ? '点击收起' : '点击展开'}}</b>
               </span>
             </p>
-            <el-row>
-              <el-col :span="8">
-                <el-form-item label="姓名" prop="UserName">
-                  <el-input v-model="dataForm.UserName" placeholder="选择患者" style="width: 94px" disabled></el-input>
-                  <!--{{$route.query.patientId}}-->
-                  <span v-if="$route.query.MobilePhone === '0'"
-                        class="iconfont icon-renwu-zengjia" style="display: inline-block;width: 40px;height: 30px;font-size: 26px;font-weight: 900;color: #1EA57B; margin-left: 7px; vertical-align: top"
-                        @click="openPatientList(); $store.commit('setRegisterStep', 2)">
-                  </span>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="性别">
-                  <el-input v-model="dataForm.Sex" placeholder="只读" style="width: 80px" disabled></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="年龄">
-                  <el-input v-model="dataForm.BirthDate" placeholder="只读" style="width:70px" disabled></el-input>
-                  <div class="recipelAgeUnit">
-                    <el-select v-model="dataForm.ageUnit" style="width: 45px" disabled >
-                      <el-option label="岁" value="1"></el-option>
-                      <el-option label="月" value="0"></el-option>
-                    </el-select>
-                  </div>
-                </el-form-item>
-              </el-col>
-            </el-row>
 
             <transition>
               <div v-show="cutOut">
                 <el-row>
-                  <el-col :span="8">
-                    <el-form-item label="电话">
-                      <el-input v-model="dataForm.MobilePhone" placeholder="只读" style="width: 140px" disabled></el-input>
+                  <el-col :span="12">
+                    <el-form-item label="名称">
+                      <el-input v-model="dataForm.AgoIllness" placeholder="请输入名称" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="地址">
-                      <el-input v-model="dataForm.Address" placeholder="请输入地址" style="width: 140px" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="病历号">
-                      <el-input v-model="dataForm.Code" placeholder="请输入病历号" style="width: 140px" disabled></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-                <el-row>
-                  <el-col :span="8">
-                    <el-form-item label="看诊类型">
-                      <el-radio-group v-model="dataForm.DiagnosisType">
-                        <el-radio-button label="1">初诊</el-radio-button>
-                        <el-radio-button label="2">复诊</el-radio-button>
-                      </el-radio-group>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
-
-                <el-row>
-                  <el-col :span="8">
-                    <el-form-item label="发病时间">
-                      <el-date-picker type="date" placeholder="请选择发病时间" style="width: 144px"
-                                      v-model="dataForm.DiseaseTime" value-format="yyyy-MM-dd">
-                      </el-date-picker>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="过敏史">
-                      <el-input v-model="dataForm.AgoIllness" placeholder="请输入过敏史" style="width: 144px"></el-input>
+                  <el-col :span="12">
+                    <el-form-item label="科室">
+                      <el-input v-model="dataForm.AgoIllness" placeholder="请输入科室" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
                 <el-row>
                   <el-col :span="24">
-                    <el-form-item label="主诉">
-                      <el-input v-model="dataForm.MainSuit" placeholder="请选择或输入主诉" style="width: 75%"></el-input>
+                    <el-form-item label="主治">
+                      <el-input v-model="dataForm.MainSuit" placeholder="请输入主治" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="24">
-                    <el-form-item label="现病史">
-                      <el-input v-model="dataForm.NowIllness" placeholder="从起病到就诊时疾病的发生、发展及其他变化的经过和诊疗情况" style="width: 75%"></el-input>
+                    <el-form-item label="功效">
+                      <el-input v-model="dataForm.NowIllness" placeholder="请输入功效" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="说明">
+                      <el-input v-model="dataForm.NowIllness" placeholder="请输入说明" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
+                    </el-form-item>
+                  </el-col>
+                  <el-col :span="12">
+                    <el-form-item label="用法" prop="DiseaseInfo">
+                      <el-input v-model="dataForm.DiseaseInfo" placeholder="请输入用法" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
               </div>
             </transition>
-            <el-row>
-              <el-col :span="24">
-                <el-form-item label="诊断信息" prop="DiseaseInfo">
-                  <el-input v-model="dataForm.DiseaseInfo" placeholder="请选择或输入诊断信息" style="width: 75%"></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
             <div style="border-bottom: 1px solid #E6E6E6; font-weight: 500">R:</div>
           </div>
           <!--左侧开方：直接用组件的引用名切换-->
@@ -118,40 +66,11 @@
             :header-cell-style="$cxObj.tableHeaderStyle30px"
             style="width: 100%;">
             <component :is="this.leftTable" ref="leftCurrentTable" @tableEvent="delDrugs" @tableNumberEvent="consoleTable"></component>
-            <!--v-if="addOrUpdateVisible" ref="patientListPop" @childEven="zairuFun"-->
-            <!--<div>-->
-              <!--<el-table-column prop="" label="操作1" width="" header-align="center" align="center">-->
-                <!--<template slot-scope="scope">-->
-                  <!--<el-button type="text" @click="addOrUpdateHandle(scope.row)">删除</el-button>-->
-                <!--</template>-->
-              <!--</el-table-column>-->
-              <!--<el-table-column prop="Code" header-align="center" align="center" label="编码" width="100"></el-table-column>-->
-              <!--<el-table-column prop="CategoryName" header-align="center" align="center" label="药态" width="70"></el-table-column>-->
-              <!--<el-table-column type="index" align="center" width="70" label="序号"></el-table-column>-->
-              <!--<el-table-column prop="ShowName" header-align="center" align="center" label="药名" width="80"></el-table-column>-->
-              <!--<el-table-column prop="SalePrice" header-align="center" align="center" label="单价" width="70"></el-table-column>-->
-              <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="数量" min-width="150">-->
-                <!--<template slot-scope="scope">-->
-                  <!--<el-input-number v-model="scope.row.myNum" :step="1" @change="handleChange" :min="1" :max="1000" size="mini"></el-input-number>-->
-                  <!--<div class="recipelAgeUnit">-->
-                    <!--<el-select v-model="categoryUnit" style="width: 45px" size="mini">-->
-                      <!--<el-option :label="'克'" :value="'g'"></el-option>-->
-                      <!--<el-option :label="'袋'" :value="'dai'"></el-option>-->
-                    <!--</el-select>-->
-                  <!--</div>-->
-                <!--</template>-->
-              <!--</el-table-column>-->
-              <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="总价" min-width="70">-->
-                <!--<template slot-scope="scope">-->
-                  <!--{{scope.row.SalePrice * scope.row.myNum}}-->
-                <!--</template>-->
-              <!--</el-table-column>-->
-            <!--</div>-->
           </el-table>
         </el-aside>
 
         <!--右侧药材：tabs标签页切换引导组件切换-->
-        <el-main width="25%" style="padding: 10px 10px 60px; border-bottom: 1px solid #DCDFE6;">
+        <el-main width="30%" style="padding: 10px 10px 0; border-bottom: 1px solid #DCDFE6;">
           <el-input v-model="dataForm.SpellName" @blur="dataForm.SpellName = ''"
                     :placeholder="`请输入要查询的药材, 门店：${$store.getters.getAccountCurrentHandleStore}`"
                     style="min-width: 190px; width: 100%" size="small" clearable><i slot="prefix" class="el-input__icon el-icon-search"></i>
@@ -196,78 +115,40 @@
               </li>
             </ol>
           </div>
-          <div class="rightPageCounter">
-            <el-pagination @size-change="sizeChangeHandle"
-              @current-change="currentChangeHandle"
-              :current-page="pageIndex"
-              :page-sizes="[10,20,50,100]"
-              :page-size="pageSize"
-              :total="totalPage"
-              layout="prev, pager, next" :pager-count="5" small>
-              <!--layout="prev, pager, next, jumper, sizes, total" background>-->
-            </el-pagination>
+
+          <div class="rightPageCounterContainer">
+            <div class="rightPageCounter">
+              <el-pagination @size-change="sizeChangeHandle"
+                             @current-change="currentChangeHandle"
+                             :current-page="pageIndex"
+                             :page-sizes="[10,20,50,100]"
+                             :page-size="pageSize"
+                             :total="totalPage"
+                             layout="prev, pager, next" :pager-count="5" small>
+                <!--layout="prev, pager, next, jumper, sizes, total" background>-->
+              </el-pagination>
+            </div>
           </div>
         </el-main>
       </el-container>
-
-      <el-footer height="100px" style="padding-top: 7px">
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="总剂数">
-              <el-input-number v-model="Total" @change="countTotalPrice(leftTableData)" :min="1" :step="1" :max="30" style="width: 95px"></el-input-number> 剂
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="用药方法" prop="DrugRate">
-              <el-select v-model="dataForm.DrugRate" style="width: 144px" placeholder="请选择用药方法">
-                <el-option :label="'一日一次饭后服'" :value="'一日一次饭后服'"></el-option>
-                <el-option :label="'一日一次饭前服…'" :value="'一日一次饭前服…'"></el-option>
-              </el-select>
-            </el-form-item>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item label="医嘱">
-              <el-input v-model="dataForm.DoctorAdvice" placeholder="请填写医嘱" style="width: 100%"></el-input>
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="6">
-            <el-form-item label="开方医生">
-              <el-input v-model="$route.query.DoctorName" placeholder="onlyReady" style="width: 110px" :disabled="true"></el-input>
-            </el-form-item>
-            <!--{{$route.query.DoctorId}}-->
-          </el-col>
-          <el-col :span="12" style="font-weight: 500; font-size: 16px; padding-top: 10px">
-            &nbsp;&nbsp;&nbsp;总金额：<span style="color: #e4393c">￥{{allMoney}}</span>
-            <span v-if="$route.query.MobilePhone === '0'"> +
-              <el-input-number v-model="dataForm.ConsultationAmount" :min="1" :max="1000" style="width: 100px" size="mini"></el-input-number> =
-              <span style="color: #e4393c;font-size: 16px">￥{{(Number(allMoney) + dataForm.ConsultationAmount).toFixed(2)}}</span>
-            </span>
-          </el-col>
-          <el-col :span="6">
-            <el-form-item>
-              <el-button type="primary" icon="iconfont icon-ico_zhongyaofangguanli_zhongyaoqingling" @click="send()" size="medium">&nbsp;发送给药房</el-button>
-            </el-form-item>
-          </el-col>
-        </el-row>
-      </el-footer>
     </el-form>
-    <patient-list-pop v-if="addOrUpdateVisible" ref="patientListPop" @childEven="zairuFun"></patient-list-pop>
-  </div>
+
+    <span slot="footer" class="dialog-footer">
+      <el-button type="primary" @click="send()" size="medium">保存协定方</el-button>
+      <el-button @click="visible = false">取消</el-button>
+    </span>
+  </el-dialog>
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
 import '../common/icon/iconfont.css'
 import {calcAge, Currency, Letter, NumberInt, NumberFloat} from '@/utils/validate' // 自定义的计算年龄的方法，精确到月，至于精确到天，那种才生下来的娃，一个月不到不太可能中医
-import PatientListPop from './patient-list-pop'
 import TableOne from './table-one'
 import TableTwo from './table-two'
 import TableThree from './table-three'
 import TableFour from './table-four'
 export default {
   components: {
-    PatientListPop,
     TableOne,
     TableTwo,
     TableThree,
@@ -299,12 +180,6 @@ export default {
         })
       }
       this.getStoreCategorytypeStock()
-    },
-    Total (val, oldval) {
-      if (val === undefined) {
-        console.log(val)
-        this.Total = 1
-      }
     }
   },
   data () {
@@ -333,9 +208,8 @@ export default {
       rightUl: '', // 右侧列表
       rightUlData: [], // 右侧列表的数据
 
-      addOrUpdateVisible: false,
       dataListLoading: false, // 加载
-      chenxiHeight: 337, // 这个是测试出来的固定值，用于第一次初始化页面吧，如果以后页面的格式需要调整，可以测试一个初始值来填在这就行了
+      chenxiHeight: 390, // 这个是测试出来的固定值，用于第一次初始化页面吧，如果以后页面的格式需要调整，可以测试一个初始值来填在这就行了
       pageIndex: 1,
       pageSize: 30, // 50 标准
       totalPage: 1,
@@ -367,60 +241,38 @@ export default {
         DiseaseInfo: Currency('此为必填项'),
         DrugRate: Currency('此为必填项')
       },
-      Total: 1, // 剂数
-      allMoney: 0
+      visible: false,
+      openType: 'add' // add see edit
+
     }
   },
-  created () {
-    this.pageInit() // 先初始化
-  },
   mounted () {
-    // console.log(document.getElementById('leftHeightPatient').style.height) ??? 为什么得到 空无空白
-    // window.onresize = () => {
-    //   var newHeight = document.documentElement['clientHeight'] - 350
-    //   this.chenxiHeight = newHeight > 350 ? newHeight : 350 // 273 测试老半天
-    // }
-    // console.log(youHeight)
-    // console.log(zuoHeight)
-    // console.log(this.chenxiHeight)
     var youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
     var zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
     this.chenxiHeight = parseInt(youHeight) - parseInt(zuoHeight)
   },
   methods: {
-    // 打开会员弹窗
-    openPatientList () {
-      this.addOrUpdateVisible = true
-      this.$nextTick(() => {
-        this.$refs.patientListPop.init()
-      })
-    },
-    // 只医生‘直接开方’才用：子组件点击载入 传给 父组件
-    zairuFun (row) {
-      console.log(row)
-      // var allAge = calcAge(row.BirthDate) // !!!!!!这得到18岁 或 10月 1月
-      var allAge = row.BirthDate // !!!!!!这得到18岁 或 10月 1月
-      if (allAge.substr(allAge.length - 1) === '月') {
-        this.dataForm.ageUnit = '0'
-      } else if (allAge.substr(allAge.length - 1) === '岁') {
-        this.dataForm.ageUnit = '1'
-      }
-      this.dataForm.UserName = row.UserName
-      this.dataForm.Sex = row.Sex === 1 ? '男' : '女'
-      this.dataForm.BirthDate = allAge.substring(0, allAge.length - 1) // !!!!!!只获取数不要单位，其实也可以parseInt
-      this.dataForm.MobilePhone = row.MobilePhone
-      this.dataForm.Address = row.Address
-      this.dataForm.UserId = row.Id
-      this.dataForm.Code = row.Code
-      // this.dataForm.RegisterAmount = 0 // 这两个没用，就只是提交的时候直接提交
-      // this.dataForm.ConsultationAmount = 0
-    },
 
     // 通用封装的门店子组件绑定的父组件的返回方法（开方页面的上层已提前决定了门店，这儿还能改变门店吗？？？？？？？？？？？？？？？？？？？）
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       // if (isMultiple === false) { this.dataForm.StoreId = choseStoreId }
     },
-    pageInit () {
+    handleClose () {
+      this.visible = false
+      this.$store.commit('setRegisterStep', 1)
+    },
+    pageInit (agreementRecipelId, type) {
+      this.visible = true
+      this.dataListLoading = true
+      this.openType = type
+      if (agreementRecipelId) {
+        // API.xx.then(result => {
+        //   if (result.code === '0000') {
+        //
+        //   }
+        // })
+      }
+
       // 先请求药品种类提供给下拉列表
       API.drugs.getDrugsCategory().then(result => {
         if (result.code === '0000') {
@@ -436,40 +288,7 @@ export default {
       if (this.$route.query.MobilePhone === '0') {
         return false
       }
-      this.dataListLoading = true
-      // 请求会员信息，根据前一层路由传递的会员电话，其实会员信息正常是 只返回一条（自动填充患者的电话、年龄、性别、姓名、病历号...）
-      var params = {
-        PageIndex: this.pageIndex,
-        PageSize: this.pageSize,
-        IsPaging: true,
-        UserName: '',
-        StoreId: this.$store.getters.getAccountCurrentHandleStore,
-        MobilePhone: this.$route.query.MobilePhone // 如果这儿接受到的是电话0，那代表是直接开方模式，0的查询结果自然为空咯
-      }
-      console.log(params)
-      API.member.getMemberList(params).then(result => {
-        console.log(result.data) // 如果是医生直接开方这儿会报错的因为是[][0].xx空数组报错的!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        if (result.code === '0000') {
-          var allAge = calcAge(result.data[0].BirthDate) // !!!!!!这得到18岁 或 10月 1月
-          if (allAge.substr(allAge.length - 1) === '月') {
-            this.dataForm.ageUnit = '0'
-          } else if (allAge.substr(allAge.length - 1) === '岁') {
-            this.dataForm.ageUnit = '1'
-          }
-          this.dataForm.UserName = result.data[0].UserName
-          this.dataForm.Sex = result.data[0].Sex === 1 ? '男' : '女'
-          this.dataForm.BirthDate = allAge.substring(0, allAge.length - 1) // !!!!!!只取数不要单位，其实也可以parseInt
-          this.dataForm.MobilePhone = result.data[0].MobilePhone
-          this.dataForm.Address = result.data[0].Address
-          this.dataForm.UserId = result.data[0].Id
-          this.dataForm.Code = result.data[0].Code
-          this.dataForm.RegisterAmount = 0 // 这两个没用，就只是提交的时候直接提交
-          this.dataForm.ConsultationAmount = 0
-        } else {
-          this.$message.error(result.message)
-        }
-        this.dataListLoading = false
-      })
+      this.dataListLoading = false
     },
     // 右侧‘添加’药材的小模块：获取 对应门店 对应药态下的 对应药材库
     getStoreCategorytypeStock () {
@@ -487,17 +306,7 @@ export default {
           this.dataList = result.data // 这个dataList有啥子用哟？好像没用起来
           this.rightUlData = result.data
           this.totalPage = result.total
-          // console.log(result.data)
-
-          // if (this.dataListViews.length === 0) {
-          //   this.dataListViews = this.dataListViews.concat(result.data) // 会打散拼接到尾巴，旧数组不变
-          // } else if (this.dataListViews.some(item => item.Code === result.data[0].Code || item.Code === result.data[this.pageSize - 1]).Code) {
-          //   this.dataListViews = this.dataListViews.concat([])
-          // } else {
-          //   this.dataListViews = this.dataListViews.concat(result.data)
-          // }
         } else {
-          // this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
           this.dataList = []
           this.rightUlData = []
           this.totalPage = 0
@@ -507,14 +316,6 @@ export default {
       })
     },
 
-    // 后面有三个方法会共同调用这个方法：计算总价
-    countTotalPrice (obj) {
-      var sum = 0
-      obj.forEach(item => {
-        sum += item.SalePrice * item.myNum
-      })
-      this.allMoney = (sum * this.Total).toFixed(2)
-    },
     // 1.当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
       console.log(row)
@@ -530,7 +331,6 @@ export default {
       }
       row.myNum = 1 // 让后端加字段要改所有的类型的，这自己加，就没这种问题了myNum
       this.leftTableData.push(row)
-      this.countTotalPrice(this.leftTableData)
     },
     // 2.当点击左边table的‘删除’按钮的时候
     delDrugs (row) {
@@ -540,18 +340,13 @@ export default {
           return false
         }
       })
-      this.countTotalPrice(this.leftTableData)
     },
     // 3.改变myNum
     consoleTable () {
       this.leftTableData.push() // 这个可能会非常懵逼，目的是每次改变任何的myNum的值都会重新渲染左边的table，把push()拿掉就能找到问题在哪，这就是这个push()没任何实际参数但还是要写一个在这的原因
-      this.countTotalPrice(this.leftTableData)
-      // console.log(this.leftTableData)
     },
 
     handleClick (tab, event) {
-      // console.log(tab, event)
-      // console.log(this.leftTableData)
       if (this.leftTableData.length === 0) { // 没开任何药材时直接切换直接加载呗，都没药材记录还提示啥子嘛
         switch (tab.name) {
           case '1001':
@@ -616,7 +411,8 @@ export default {
         }
       })
     },
-    // 每页数
+
+    // 每页数 (右侧的药材添加列表可以有分页哈，是指的那个)
     sizeChangeHandle (val) {
       this.pageSize = val
       this.pageIndex = 1
@@ -696,7 +492,6 @@ export default {
             DiseaseTime: this.dataForm.DiseaseTime,
             DoctorAdvice: this.dataForm.DoctorAdvice,
             DrugRate: this.dataForm.DrugRate,
-            Total: this.Total,
             ItemsJson: JSON.stringify(this.leftTableData.map(item => {
               var obj = {
                 ProductId: item.Id,
@@ -714,7 +509,6 @@ export default {
           }
           console.log(paramsEdit) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
           console.log(paramsCreate) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
-          // var tick = API.register.sendRecipelToEdit(paramsEdit)
           var tick = this.$route.query.MobilePhone === '0' ? API.register.registerSubmit(paramsCreate) : API.register.sendRecipelToEdit(paramsEdit)
           console.log(this.$route.query.MobilePhone)
           tick.then((data) => {
@@ -749,7 +543,6 @@ export default {
 .doctor-recipel /deep/ {
   background-color: #fff;
   margin: 0 10px;
-  border: 1px solid #DCDFE6;
   .el-radio-button--mini .el-radio-button__inner {
     padding: 7px 9px;
   }
@@ -781,8 +574,8 @@ export default {
     min-width: 190px;
     ul {
       width: 100%;
-      min-height: 550px; // 拿尺子对着电脑屏幕量过，就这个值吧
-      max-height: 550px;
+      min-height: 480px; // 拿尺子对着电脑屏幕量过，就这个值吧
+      max-height: 480px;
       overflow-y: scroll;
       background-color: #fff;
       box-shadow: 0 0 10px 1px #f1f2f7 inset;
@@ -821,14 +614,11 @@ export default {
       }
     }
   }
-  .rightPageCounter {
-    position: absolute;
-    left: 0;
-    bottom: 10px;
-    width: 90%;
-    margin: 0 auto;
+  .rightPageCounterContainer {
     text-align: center;
-    background-color: #fff;
+    .rightPageCounter {
+      display: inline-block;
+    }
   }
   .el-pagination.el-pagination--small {padding: 0 5px}
 }

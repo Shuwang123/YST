@@ -146,9 +146,9 @@
 
     <transition mode="out-in">
       <!--two div-->
-    <div v-if="!show">
-      <first-patient-list v-if="addOrUpdateVisible" ref="patientList" @childEven="patientListFun"></first-patient-list>
-    </div>
+      <div v-if="!show">
+        <first-patient-list v-if="addOrUpdateVisible" ref="patientList" @childEven="patientListFun"></first-patient-list>
+      </div>
     </transition>
   </el-dialog>
 </template>

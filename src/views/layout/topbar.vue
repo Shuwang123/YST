@@ -75,7 +75,7 @@ export default {
             this.DELETE_CONTENT_TABS([])
             removeStore('userInfo')
             // 2019.5.8 cx新增移除登陆账号的三个信息：账号详情+账号是否是医生类型+账号当前锁定的手选门店
-            // (本来的确是三个的)，但后来发现只需要移除当前锁定的手选门店字段，其他两个在登陆时会用覆盖的方式解决，想了解去(login/index.vue)看代码
+            // (本来的确是三个的)，但后来发现只需要移除当前锁定的手选门店字段，其他两个在登陆时会用覆盖的方式解决，想了解去(login/first-tab-add-or-update.vue)看代码
             // 并且还发现这儿就算把session删了，还是没达到目的，因为session是手工删除了，但其实退出操作时浏览器实际上并没有关闭的，导致你的Vuex并没有销毁，所以Vuex也要处理掉
             // removeAccountData('accountCurrentHandleStore') 后来发现自己的代码结构太优秀，连这句都可以省了
             this.$store.commit('setAccountCurrentHandleStore', null)

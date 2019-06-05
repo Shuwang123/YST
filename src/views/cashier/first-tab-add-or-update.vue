@@ -128,31 +128,69 @@
 
           <el-form ref="dataForm" :rules="dataRule" :model="dataForm" label-width="70px" size="mini" :inline="true">
             <el-row style="margin-top: 30px;text-align: left;font-weight: 500; font-size: 16px">
-              <el-col :span="24">
+              <el-col :span="12">
                 <el-form-item label="待收金额">
                   <el-input v-model="residualPrice" placeholder="总金额" style="width: 100px" disabled size="small"></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="24" style="margin-bottom: 10px">
-                <el-form-item label="支付方式"><!--患者支付方式-->
-                  <el-select v-model="dataForm.PaymentWay" style="width: 100px" placeholder="支付方式">
-                    <el-option v-for="item in optionsPaymentType" :key="item.value"
-                    :label="item.label" :value="item.value"></el-option>
+              <el-col :span="12">
+                <el-form-item label="折扣率">
+                  <el-select v-model="dazhe" style="width: 100px">
+                    <el-option v-for="item in dazheArr" :key="item.value"
+                               :label="item.label" :value="item.value"></el-option>
                   </el-select>
                 </el-form-item>
               </el-col>
+            </el-row>
 
+            <el-row>
               <el-col :span="12">
+                <el-form-item label="代煎">
+                  <el-input v-model="daijian" style="width: 100px" size="small"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="制丸">
+                  <el-input v-model="zhiwan" style="width: 100px" size="small"></el-input>
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="12">
+                <el-form-item label="快递">
+                  <el-input v-model="kuaidi" style="width: 100px" size="small"></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="12">
+                <el-form-item label="其他">
+                  <el-input v-model="qita" style="width: 100px" size="small"></el-input>
+                  <!--<el-input-number v-model="dataForm.reality" :max="10" label="描述文字"></el-input-number>-->
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-row>
+              <el-col :span="8" style="margin-bottom: 10px">
+                <el-form-item label="支付方式"><!--患者支付方式-->
+                  <el-select v-model="dataForm.PaymentWay" style="width: 100px" placeholder="支付方式">
+                    <el-option v-for="item in optionsPaymentType" :key="item.value"
+                               :label="item.label" :value="item.value"></el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
                 <el-form-item label="实收" prop="reality">
                   <el-input @blur="realityBlur" v-model="dataForm.reality" style="width: 100px" size="small"></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="8">
                 <el-form-item label="找零" prop="give">
                   <el-input v-model="dataForm.give" style="width: 100px" clearable size="small" disabled></el-input>
                 </el-form-item>
               </el-col>
             </el-row>
+
           </el-form>
         </div>
       </el-main>
@@ -206,6 +244,29 @@ export default {
           label: '银行卡'
         }
       ],
+      dazhe: 1.00,
+      dazheArr: [ // 打折options模版
+        {
+          value: 1.00,
+          label: '不打折'
+        }, {
+          value: 0.95,
+          label: '95折'
+        }, {
+          value: 0.90,
+          label: '9折'
+        }, {
+          value: 0.80,
+          label: '8折'
+        }, {
+          value: 0.70,
+          label: '7折'
+        }
+      ],
+      daijian: 0,
+      zhiwan: 0,
+      kuaidi: 0,
+      qita: 0,
       // 残留的价格，挂号费已支付未支付的状态会影响这个值去 ± OerderAmount(2表示挂号费已支付，1表示未支付)
       residualPrice: 0 // 2019.06.01 新增字段，优化代码
     }
