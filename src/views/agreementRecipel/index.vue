@@ -115,7 +115,7 @@ export default {
   methods: {
     // 添加协定方
     addAgreement () {
-      this.$refs.firstTab.addOrUpdateHandle(undefined, 'add')
+      this.$refs.firstTab.addOrUpdateHandle(undefined, 'add', this.dataForm.AccountId)
     },
 
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店

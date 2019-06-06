@@ -21,7 +21,7 @@
                 <el-row>
                   <el-col :span="12">
                     <el-form-item label="名称">
-                      <el-input v-model="dataForm.AgoIllness" placeholder="请输入名称" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
+                      <el-input v-model="dataForm.PrescriptionName" placeholder="请输入名称" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
@@ -33,22 +33,22 @@
                 <el-row>
                   <el-col :span="24">
                     <el-form-item label="主治">
-                      <el-input v-model="dataForm.MainSuit" placeholder="请输入主治" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
+                      <el-input v-model="dataForm.MainCure" placeholder="请输入主治" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="24">
                     <el-form-item label="功效">
-                      <el-input v-model="dataForm.NowIllness" placeholder="请输入功效" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
+                      <el-input v-model="dataForm.Effect" placeholder="请输入功效" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
                     <el-form-item label="说明">
-                      <el-input v-model="dataForm.NowIllness" placeholder="请输入说明" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
+                      <el-input v-model="dataForm.Explain" placeholder="请输入说明" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
                     </el-form-item>
                   </el-col>
                   <el-col :span="12">
-                    <el-form-item label="用法" prop="DiseaseInfo">
-                      <el-input v-model="dataForm.DiseaseInfo" placeholder="请输入用法" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
+                    <el-form-item label="用法" prop="DrugRate">
+                      <el-input v-model="dataForm.DrugRate" placeholder="请输入用法" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
                     </el-form-item>
                   </el-col>
                 </el-row>
@@ -65,7 +65,8 @@
             row-class-name="purchaseListRow"
             :header-cell-style="$cxObj.tableHeaderStyle30px"
             style="width: 100%;">
-            <component :is="this.leftTable" ref="leftCurrentTable" @tableEvent="delDrugs" @tableNumberEvent="consoleTable"></component>
+            <component :is="this.leftTable" ref="leftCurrentTable" @tableEvent="delDrugs" @tableNumberEvent="consoleTable"
+                       :fatherDataForm="openType"></component>
           </el-table>
         </el-aside>
 
@@ -76,7 +77,7 @@
                     style="min-width: 190px; width: 100%" size="small" clearable><i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
           <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane v-for="item in drugsCategoryArr" :key="item.id" :label="item.text" :name="item.id"></el-tab-pane>
+            <el-tab-pane v-for="item in drugsCategoryArr" :key="item.id" :label="item.text" :name="item.id" :disabled="openType === 'see' ? true : false"></el-tab-pane>
           </el-tabs>
           <div class="rightUlStyle">
             <ul class="ownScrollbar xx">
@@ -98,9 +99,9 @@
                     </span>
                   </el-col>
 
-                  <el-col :span="6" v-if="item.Quantity > 0" style="text-align: right;padding-right: 7px">
+                  <el-col :span="6" style="text-align: right;padding-right: 7px">
                     <el-button type="text" size="mini" @click="addDrugs(item)"
-                               style="font-size: 15px;font-weight: 600">添加</el-button>
+                               style="font-size: 15px;font-weight: 600" :disabled="openType === 'see' ? true : false">添加</el-button>
                     <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)">添加</el-button>-->
                   </el-col>
 
@@ -134,15 +135,16 @@
     </el-form>
 
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="send()" size="medium">保存协定方</el-button>
-      <el-button @click="visible = false">取消</el-button>
+      <el-button v-if="openType !== 'see'" type="primary" @click="send()" size="medium">保存协定方</el-button>
+      <el-button v-if="openType !== 'see'" @click="visible = false">取消</el-button>
+      <el-button v-if="openType === 'see'" @click="visible = false">关闭</el-button>
     </span>
   </el-dialog>
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
 import '../common/icon/iconfont.css'
-import {calcAge, Currency, Letter, NumberInt, NumberFloat} from '@/utils/validate' // 自定义的计算年龄的方法，精确到月，至于精确到天，那种才生下来的娃，一个月不到不太可能中医
+import {Currency} from '@/utils/validate' // 自定义的计算年龄的方法，精确到月，至于精确到天，那种才生下来的娃，一个月不到不太可能中医
 import TableOne from './table-one'
 import TableTwo from './table-two'
 import TableThree from './table-three'
@@ -214,36 +216,24 @@ export default {
       pageSize: 30, // 50 标准
       totalPage: 1,
       dataForm: {
-        UserName: '',
-        Sex: '',
-        BirthDate: '',
-        MobilePhone: '',
-        Address: '',
-        UserId: '',
-        Code: '',
-        ageUnit: '1', // val='1' label岁 '0'月
+        agreementRecipelId: '', // 协定方id
 
-        DiagnosisType: '1', // 看诊类型
-        DiseaseTime: '', // 发病时间
-        AgoIllness: '', // 过敏史
-        MainSuit: '', // 主诉
-        NowIllness: '', // 现病史
-        DiseaseInfo: '', // 诊断信息
+        // StoreId: '', // 门店
+        AccountId: '', // 医生
 
-        SpellName: '',
-        DrugRate: '', // 用药间隔
-        DoctorAdvice: '', // 医嘱
-        RegisterAmount: 0, // 挂号费
-        ConsultationAmount: 0 // 诊疗费
+        MainCure: '', // 主治
+        Effect: '', // 功效
+        Explain: '', // 说明
+        PrescriptionName: '', // 处方名
+        DrugRate: '', // 用法
+        OrderType: 10 // 创建协定方
       },
       dataRule: {
         UserName: Currency('此为必填项'),
-        DiseaseInfo: Currency('此为必填项'),
         DrugRate: Currency('此为必填项')
       },
       visible: false,
       openType: 'add' // add see edit
-
     }
   },
   mounted () {
@@ -252,25 +242,55 @@ export default {
     this.chenxiHeight = parseInt(youHeight) - parseInt(zuoHeight)
   },
   methods: {
-
     // 通用封装的门店子组件绑定的父组件的返回方法（开方页面的上层已提前决定了门店，这儿还能改变门店吗？？？？？？？？？？？？？？？？？？？）
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       // if (isMultiple === false) { this.dataForm.StoreId = choseStoreId }
     },
     handleClose () {
       this.visible = false
-      this.$store.commit('setRegisterStep', 1)
+      this.dataForm = {
+        agreementRecipelId: '', // 协定方id
+        AccountId: '', // 医生
+        MainCure: '', // 主治
+        Effect: '', // 功效
+        Explain: '', // 说明
+        PrescriptionName: '', // 处方名
+        DrugRate: '', // 用法
+        OrderType: 10 // 创建协定方
+      }
+      this.leftTableData = []
     },
-    pageInit (agreementRecipelId, type) {
+    pageInit (agreementRecipelId, type, AccountId) { // type 'add see edit'
       this.visible = true
       this.dataListLoading = true
       this.openType = type
-      if (agreementRecipelId) {
-        // API.xx.then(result => {
-        //   if (result.code === '0000') {
-        //
-        //   }
-        // })
+      this.dataForm.AccountId = AccountId
+
+      if (agreementRecipelId) { // 查看、和 编辑 都需要初始化
+        this.dataForm.agreementRecipelId = agreementRecipelId
+        API.register.getRegisterInfo({id: this.dataForm.agreementRecipelId}).then(result => {
+          if (result.code === '0000') {
+            console.log(result.data)
+            this.dataForm = {
+              agreementRecipelId: result.data.agreementRecipelId, // 协定方id
+              // StoreId: '', // 门店
+              AccountId: result.data.AccountId, // 医生
+              MainCure: result.data.MainCure, // 主治
+              Effect: result.data.Effect, // 功效
+              Explain: result.data.Explain, // 说明
+              PrescriptionName: result.data.PrescriptionName, // 处方名
+              DrugRate: result.data.DrugRate // 用法
+            }
+            this.leftTableData = result.data.SaleOrderItems.map(item => {
+              item.myNum = item.Quantity
+              item.ShowName = item.ProductName
+              item.Code = item.BarCode
+              return item
+            })
+            // console.log(this.dataForm.agreementRecipelId)
+            console.log(this.leftTableData)
+          }
+        })
       }
 
       // 先请求药品种类提供给下拉列表
@@ -319,7 +339,7 @@ export default {
     // 1.当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
       console.log(row)
-      if (this.leftTableData.some(item => item.Id === row.Id)) {
+      if (this.leftTableData.some(item => item.ShowName === row.ShowName)) {
         // this.$alert(`[${row.ShowName}] 已添加！`, '提示', {
         this.$alert(`<b style="color: #409EFF;font-size: 14px;font-weight: 500">[${row.ShowName}]</b> 已添加！`, '提示', {
           confirmButtonText: '确定',
@@ -425,6 +445,8 @@ export default {
     },
     // 开方提交
     send () {
+      // 你不是医生，无权创建协定方？？？？？？？？？？？？？？？需要限制吗，通过，vuex里的状态来判断
+
       if (this.leftTableData.length === 0) {
         this.$alert(`处方未编辑药材，还不能提交给药房！`, '提示', {
           confirmButtonText: '确定',
@@ -436,24 +458,18 @@ export default {
       }
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          // 此为普通流程的开方参数，常规流程的开方的参数应该传给edit接口
+          // 编辑协定方，调用旧的正常开方里编辑挂号信息的接口，是另一个接口，编辑挂号信息
           var paramsEdit = {
-            id: this.$route.query.registerFormId, //
-            DiagnosisType: this.dataForm.DiagnosisType, // 出诊、复诊
-            RegisterStatus: '2', // 已支付（在编辑 追加的情况下，理论上是肯定收费了就不需要传递这个字段了的，但是后端有其他考虑，所以这儿还需要把这个字段传递到后端）
-            Remark: '', // 备注
-            FamilyIllness: '', // 家族史????
-            DepartmentType: '1', // 科室???????
-            PersonalIllness: '', // 个人史?????????
-            AgoIllness: '', // 既往史?????????????????
+            id: this.dataForm.agreementRecipelId, // 协定方id，查看和编辑时候都有（不过这儿只可能是编辑提交）
+            // StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
+            // AccountId: this.dataForm.AccountId, // 医生id
+            // OrderType: '10', // 创建协定方
 
-            MainSuit: this.dataForm.MainSuit, // 主诉
-            NowIllness: this.dataForm.NowIllness, // 现病史
-            DiseaseInfo: this.dataForm.DiseaseInfo, // 诊断信息
-            DiseaseTime: this.dataForm.DiseaseTime, // 发病时间
-            DrugRate: this.dataForm.DrugRate, // 用药频率
-            DoctorAdvice: this.dataForm.DoctorAdvice, // 医嘱
-            Total: this.Total, // 总剂数
+            MainCure: this.dataForm.MainCure, // 主治
+            Effect: this.dataForm.Effect, // 功效
+            Explain: this.dataForm.Explain, // 说明
+            PrescriptionName: this.dataForm.PrescriptionName, // 处方名
+            DrugRate: this.dataForm.DrugRate, // 用法
             ItemsJson: JSON.stringify(this.leftTableData.map(item => {
               var obj = {
                 ProductId: item.Id,
@@ -469,29 +485,18 @@ export default {
               return obj
             }))
           }
-          // ‘直接开方’参数，直接开方的参数应该传给create接口
+
+          // 创建协定方，调用旧的创建挂号单的接口
           var paramsCreate = {
             StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
-            AccountId: this.$route.query.DoctorId, // 医生
-            UserId: this.dataForm.UserId, // 患者
-            OrderType: '1',
-            DiagnosisType: this.dataForm.DiagnosisType,
+            AccountId: this.dataForm.AccountId, // 医生id
+            OrderType: '10', // 创建协定方
 
-            RegisterStatus: '1', // 未支付
-            RegisterAmount: '',
-            ConsultationAmount: this.dataForm.ConsultationAmount,
-            PaymentWay: '',
-            Remark: '',
-            DepartmentType: '',
-            AgoIllness: '',
-
-            DiseaseInfo: this.dataForm.DiseaseInfo, // 诊断结果
-            NowIllness: this.dataForm.NowIllness,
-            MainSuit: this.dataForm.MainSuit,
-
-            DiseaseTime: this.dataForm.DiseaseTime,
-            DoctorAdvice: this.dataForm.DoctorAdvice,
-            DrugRate: this.dataForm.DrugRate,
+            MainCure: this.dataForm.MainCure, // 主治
+            Effect: this.dataForm.Effect, // 功效
+            Explain: this.dataForm.Explain, // 说明
+            PrescriptionName: this.dataForm.PrescriptionName, // 处方名
+            DrugRate: this.dataForm.DrugRate, // 用法
             ItemsJson: JSON.stringify(this.leftTableData.map(item => {
               var obj = {
                 ProductId: item.Id,
@@ -507,18 +512,18 @@ export default {
               return obj
             }))
           }
-          console.log(paramsEdit) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
-          console.log(paramsCreate) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
-          var tick = this.$route.query.MobilePhone === '0' ? API.register.registerSubmit(paramsCreate) : API.register.sendRecipelToEdit(paramsEdit)
-          console.log(this.$route.query.MobilePhone)
+          console.log(paramsEdit) // 编辑协定方后 = 挂号编辑提交
+          console.log(paramsCreate) // 创建协定方后 = 挂号创建提交
+          var tick = this.openType === 'add' ? API.register.registerSubmit(paramsCreate) : API.register.sendRecipelToEdit(paramsEdit)
           tick.then((data) => {
             if (data.code === '0000') {
               this.$message({
-                message: `${'发送成功'}`,
+                message: `${'成功'}`,
                 type: 'success',
                 duration: 1500,
                 onClose: () => {
-                  this.$router.push({path: '/doctor/treatment'})
+                  this.visible = false
+                  this.$emit('refreshDataList')
                 }
               })
             } else {

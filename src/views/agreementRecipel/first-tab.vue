@@ -18,24 +18,24 @@
       <!--</el-table-column>-->
       <!--<el-table-column prop="UserCode" header-align="center" align="center" label="科室" min-width="100"></el-table-column>-->
       <el-table-column prop="Code" header-align="center" align="center" label="编码" min-width="100"></el-table-column>
-      <el-table-column prop="Code" header-align="center" align="center" label="处方名" min-width="100"></el-table-column>
-      <el-table-column header-align="center" align="center" label="主治" min-width="150">
-        <template slot-scope="scope">
-          <span>{{scope.row.UserName}} / {{scope.row.SexName}} / {{scope.row.BirthDate}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="MobilePhone" header-align="center" align="center" label="功效" min-width="110"></el-table-column>
+
+      <el-table-column prop="PrescriptionName" header-align="center" align="center" label="处方名" min-width="100"></el-table-column>
+      <el-table-column prop="MainCure" header-align="center" align="center" label="主治" min-width="110"></el-table-column>
+      <el-table-column prop="Effect" header-align="center" align="center" label="功效" min-width="110"></el-table-column>
+      <el-table-column prop="DrugRate" header-align="center" align="center" label="用法" min-width="110"></el-table-column>
+      <el-table-column prop="Explain" header-align="center" align="center" label="说明" min-width="110"></el-table-column>
+
       <el-table-column header-align="center" align="center" label="更新时间" min-width="119">
         <template slot-scope="scope">
           <span>{{ scope.row.CreatedOnTime | myDateFilter('MM-dd hh:mm:ss')}}</span>
         </template>
       </el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="来源" min-width="119">
-        <template slot-scope="scope">
-          <span>￥ {{scope.row.RegisterAmount}} + {{scope.row.ConsultationAmount}}</span>
-        </template>
-      </el-table-column>
+      <!--<el-table-column header-align="center" align="center" label="总价" min-width="119">-->
+        <!--<template slot-scope="scope">-->
+          <!--<span>￥ {{scope.row.OrderAmount}}</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <!--<el-table-column header-align="center" align="center" label="处方名" min-width="190">-->
         <!--<template slot-scope="scope">-->
           <!--<span>{{scope.row.DiagnosisTypeName}} / {{scope.row.RegisterStatusName}} / {{scope.row.RegisterOrderStatusName}}</span>-->
@@ -43,8 +43,8 @@
       <!--</el-table-column>-->
       <el-table-column prop="" label="操作" :width="status === 1 ? 300 : 190" header-align="center" align="center">
         <template slot-scope="scope">
-          <el-button type="text" @click="addOrUpdateHandle(scope.row.Id, 'see')">查看</el-button>
-          <el-button type="text" @click="addOrUpdateHandle(scope.row.Id, 'edit')">编辑</el-button>
+          <el-button type="text" @click="addOrUpdateHandle(scope.row.Id, 'see', fatherDataForm.AccountId)">查看</el-button>
+          <el-button type="text" @click="addOrUpdateHandle(scope.row.Id, 'edit',  fatherDataForm.AccountId)">编辑</el-button>
           <el-button type="text">删除</el-button>
         </template>
       </el-table-column>
@@ -104,7 +104,8 @@ export default {
           AccountId: this.fatherDataForm.AccountId, // 账户Id,医生Id
           WrokFrom: '', // 开始时间
           WrokTo: '', // 结束时间
-          Status: '6' // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部
+          Status: '', // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部 ''表示协定方
+          OrderType: '10' // 10表示协定方
         }
         API.register.getRegisterList(params).then(result => { // 获取待就诊列表（挂号列表为基础筛选：医生）或者以后还可能筛选挂号单本身的状态
           if (result.code === '0000') {
@@ -135,10 +136,10 @@ export default {
       this.pageIndex = val
       this.getDataList(this.status)
     },
-    addOrUpdateHandle (id, type) {
+    addOrUpdateHandle (id, type, AccountId) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.pageInit(id, type)
+        this.$refs.addOrUpdate.pageInit(id, type, AccountId)
       })
     },
     handelDelete (id) {

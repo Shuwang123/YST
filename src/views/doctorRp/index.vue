@@ -151,7 +151,11 @@
         </el-aside>
 
         <!--右侧药材：tabs标签页切换引导组件切换-->
-        <el-main width="25%" style="padding: 10px 10px 60px; border-bottom: 1px solid #DCDFE6;">
+        <el-main width="25%" style="padding: 0 10px 40px; border-bottom: 1px solid #DCDFE6;">
+          <div style="margin: 5px 0">
+            <el-button type="danger" size="mini" @click="openAgreementRecipelList">协定方</el-button>
+            <el-button type="danger" size="mini">经典方</el-button>
+          </div>
           <el-input v-model="dataForm.SpellName" @blur="dataForm.SpellName = ''"
                     :placeholder="`请输入要查询的药材, 门店：${$store.getters.getAccountCurrentHandleStore}`"
                     style="min-width: 190px; width: 100%" size="small" clearable><i slot="prefix" class="el-input__icon el-icon-search"></i>
@@ -254,12 +258,14 @@
       </el-footer>
     </el-form>
     <patient-list-pop v-if="addOrUpdateVisible" ref="patientListPop" @childEven="zairuFun"></patient-list-pop>
+    <agreement-dialog v-if="addOrUpdateVisibleAgreement" ref="agreementPop" @childAgreementEven="zairuFunAgreement" :indexDoctorId="$route.query.DoctorId"></agreement-dialog>
   </div>
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
 import '../common/icon/iconfont.css'
 import {calcAge, Currency, Letter, NumberInt, NumberFloat} from '@/utils/validate' // 自定义的计算年龄的方法，精确到月，至于精确到天，那种才生下来的娃，一个月不到不太可能中医
+import AgreementDialog from './agreement-dialog'
 import PatientListPop from './patient-list-pop'
 import TableOne from './table-one'
 import TableTwo from './table-two'
@@ -267,6 +273,7 @@ import TableThree from './table-three'
 import TableFour from './table-four'
 export default {
   components: {
+    AgreementDialog,
     PatientListPop,
     TableOne,
     TableTwo,
@@ -333,6 +340,7 @@ export default {
       rightUl: '', // 右侧列表
       rightUlData: [], // 右侧列表的数据
 
+      addOrUpdateVisibleAgreement: false,
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
       chenxiHeight: 337, // 这个是测试出来的固定值，用于第一次初始化页面吧，如果以后页面的格式需要调整，可以测试一个初始值来填在这就行了
@@ -414,6 +422,54 @@ export default {
       this.dataForm.Code = row.Code
       // this.dataForm.RegisterAmount = 0 // 这两个没用，就只是提交的时候直接提交
       // this.dataForm.ConsultationAmount = 0
+    },
+
+    // 打开协定方列表接口
+    openAgreementRecipelList () {
+      this.addOrUpdateVisibleAgreement = true
+      this.$nextTick(() => {
+        this.$refs.agreementPop.init()
+      })
+    },
+    zairuFunAgreement (agreementId) {
+      console.log(agreementId)
+      API.register.getRegisterInfo({id: agreementId}).then(result => {
+        if (result.code === '0000') {
+          console.log(result.data)
+          // this.dataForm = {
+          //   agreementRecipelId: result.data.agreementRecipelId, // 协定方id
+          //   // StoreId: '', // 门店
+          //   AccountId: result.data.AccountId, // 医生
+          //   MainCure: result.data.MainCure, // 主治
+          //   Effect: result.data.Effect, // 功效
+          //   Explain: result.data.Explain, // 说明
+          //   PrescriptionName: result.data.PrescriptionName, // 处方名
+          //   DrugRate: result.data.DrugRate // 用法
+          // }
+          switch (result.data.SaleOrderItems[0].CategoryName.substring(4)) {
+            case '饮片':
+              this.activeName = '1001'
+              break
+            case '颗粒':
+              this.activeName = '1002'
+              break
+            case '精品饮片':
+              this.activeName = '1003'
+              break
+            case '三九颗粒':
+              this.activeName = '1004'
+              break
+          }
+          this.leftTableData = result.data.SaleOrderItems.map(item => {
+            item.myNum = item.Quantity
+            item.ShowName = item.ProductName
+            item.Code = item.BarCode
+            return item
+          })
+          // console.log(this.dataForm.agreementRecipelId)
+          console.log(this.leftTableData)
+        }
+      })
     },
 
     // 通用封装的门店子组件绑定的父组件的返回方法（开方页面的上层已提前决定了门店，这儿还能改变门店吗？？？？？？？？？？？？？？？？？？？）
