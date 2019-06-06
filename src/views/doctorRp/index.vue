@@ -154,7 +154,7 @@
         <el-main width="25%" style="padding: 0 10px 40px; border-bottom: 1px solid #DCDFE6;">
           <div style="margin: 5px 0">
             <el-button type="danger" size="mini" @click="openAgreementRecipelList">协定方</el-button>
-            <el-button type="danger" size="mini">经典方</el-button>
+            <el-button type="danger" size="mini" :disabled="true">经典方</el-button>
           </div>
           <el-input v-model="dataForm.SpellName" @blur="dataForm.SpellName = ''"
                     :placeholder="`请输入要查询的药材, 门店：${$store.getters.getAccountCurrentHandleStore}`"

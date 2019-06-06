@@ -7,7 +7,7 @@
     </el-table-column>
 
     <el-table-column prop="Code" header-align="center" align="center" label="编码" width="100"></el-table-column>
-    <el-table-column prop="CategoryName" header-align="center" align="center" label="药态" width="70"></el-table-column>
+    <el-table-column prop="CategoryName" header-align="center" align="center" label="药态" width="70" :show-overflow-tooltip="true"></el-table-column>
     <el-table-column type="index" align="center" width="70" label="序号"></el-table-column>
     <el-table-column prop="ShowName" header-align="center" align="center" label="药名" width="80"></el-table-column>
 
