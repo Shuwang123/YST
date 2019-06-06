@@ -104,7 +104,8 @@ export default {
           AccountId: this.fatherDataForm.AccountId, // 账户Id,医生Id
           WrokFrom: '', // 开始时间
           WrokTo: '', // 结束时间
-          Status: '2' // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部
+          Status: '2', // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部
+          OrderType: '1' // 40表示协定方
         }
         API.register.getRegisterList(params).then(result => { // 获取待就诊列表（挂号列表为基础筛选：医生）或者以后还可能筛选挂号单本身的状态
           if (result.code === '0000') {

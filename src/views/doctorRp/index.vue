@@ -165,31 +165,32 @@
           </el-tabs>
           <div class="rightUlStyle">
             <ul class="ownScrollbar xx">
-              <li v-for="item in rightUlData" :key="item.Id" :title="item.ShowName+' [余量'+item.Quantity+']'">
-                <el-row style="clear: both">
-                  <!--<span v-text="item.ShowName === null ? '000' : item.ShowName"></span> {{item.Id}}余{{item.Quantity}}g/预{{item.RedLine}}-->
+              <li v-for="item in rightUlData" :key="item.Id">
+                <el-tooltip class="item" effect="light" :content="item.ShowName+' [余量'+item.Quantity+']'" placement="left">
+                  <el-row style="clear: both">
+                    <!--<span v-text="item.ShowName === null ? '000' : item.ShowName"></span> {{item.Id}}余{{item.Quantity}}g/预{{item.RedLine}}-->
 
-                  <!--药材名+剩余量+操作-->
-                  <el-col :span="6">
+                    <!--药材名+剩余量+操作-->
+                    <el-col :span="6">
                     <span v-text="item.ShowName === null ? '无' : item.ShowName"
                           style="display: inline-block; vertical-align: middle; width: 50px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">
                     </span>
-                  </el-col>
-                  <el-col :span="12" :style="{color: item.Quantity - item.RedLine > 0 ? '#333' : item.Quantity === 0 ? '#ccc' : '#e4392c'}">
+                    </el-col>
+                    <el-col :span="12" :style="{color: item.Quantity - item.RedLine > 0 ? '#333' : item.Quantity === 0 ? '#ccc' : '#e4392c'}">
                     <span style="display: inline-block; vertical-align: middle;text-align: left;padding-left: 10px;
                                  overflow: hidden;width: 100px; white-space: nowrap;text-overflow: ellipsis">
                       {{item.Quantity}} / {{item.RedLine}}
                       <!--{{item.Id}} {{item.Quantity}}/{{item.RedLine}}-->
                     </span>
-                  </el-col>
+                    </el-col>
 
-                  <el-col :span="6" v-if="item.Quantity > 0" style="text-align: right;padding-right: 7px">
-                    <el-button type="text" size="mini" @click="addDrugs(item)"
-                               style="font-size: 15px;font-weight: 600">添加</el-button>
-                    <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)">添加</el-button>-->
-                  </el-col>
-
-                </el-row>
+                    <el-col :span="6" v-if="item.Quantity > 0" style="text-align: right;padding-right: 7px">
+                      <el-button type="text" size="mini" @click="addDrugs(item)"
+                                 style="font-size: 15px;font-weight: 600">添加</el-button>
+                      <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)">添加</el-button>-->
+                    </el-col>
+                  </el-row>
+                </el-tooltip>
               </li>
             </ul>
 
@@ -343,7 +344,7 @@ export default {
       addOrUpdateVisibleAgreement: false,
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
-      chenxiHeight: 337, // 这个是测试出来的固定值，用于第一次初始化页面吧，如果以后页面的格式需要调整，可以测试一个初始值来填在这就行了
+      chenxiHeight: 350, // 这个是测试出来的固定值，用于第一次初始化页面吧，如果以后页面的格式需要调整，可以测试一个初始值来填在这就行了
       pageIndex: 1,
       pageSize: 30, // 50 标准
       totalPage: 1,

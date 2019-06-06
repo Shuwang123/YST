@@ -104,7 +104,7 @@ export default {
         WrokFrom: '', // 开始时间
         WrokTo: '', // 结束时间
         Status: '', // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部 ''表示协定方
-        OrderType: '10' // 10表示协定方
+        OrderType: '40' // 10表示协定方
       }
       console.log(params)
       API.register.getRegisterList(params).then(result => { // 获取协定方列表

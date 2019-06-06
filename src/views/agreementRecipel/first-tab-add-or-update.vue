@@ -81,31 +81,32 @@
           </el-tabs>
           <div class="rightUlStyle">
             <ul class="ownScrollbar xx">
-              <li v-for="item in rightUlData" :key="item.Id" :title="item.ShowName+' [余量'+item.Quantity+']'">
-                <el-row style="clear: both">
-                  <!--<span v-text="item.ShowName === null ? '000' : item.ShowName"></span> {{item.Id}}余{{item.Quantity}}g/预{{item.RedLine}}-->
+              <li v-for="item in rightUlData" :key="item.Id">
+                <el-tooltip class="item" effect="light" :content="item.ShowName+' [余量'+item.Quantity+']'" placement="left">
+                  <el-row style="clear: both">
+                    <!--<span v-text="item.ShowName === null ? '000' : item.ShowName"></span> {{item.Id}}余{{item.Quantity}}g/预{{item.RedLine}}-->
 
-                  <!--药材名+剩余量+操作-->
-                  <el-col :span="6">
+                    <!--药材名+剩余量+操作-->
+                    <el-col :span="6">
                     <span v-text="item.ShowName === null ? '无' : item.ShowName"
                           style="display: inline-block; vertical-align: middle; width: 50px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">
                     </span>
-                  </el-col>
-                  <el-col :span="12" :style="{color: item.Quantity - item.RedLine > 0 ? '#333' : item.Quantity === 0 ? '#ccc' : '#e4392c'}">
+                    </el-col>
+                    <el-col :span="12" :style="{color: item.Quantity - item.RedLine > 0 ? '#333' : item.Quantity === 0 ? '#ccc' : '#e4392c'}">
                     <span style="display: inline-block; vertical-align: middle;text-align: left;padding-left: 10px;
                                  overflow: hidden;width: 100px; white-space: nowrap;text-overflow: ellipsis">
                       {{item.Quantity}} / {{item.RedLine}}
                       <!--{{item.Id}} {{item.Quantity}}/{{item.RedLine}}-->
                     </span>
-                  </el-col>
+                    </el-col>
 
-                  <el-col :span="6" style="text-align: right;padding-right: 7px">
-                    <el-button type="text" size="mini" @click="addDrugs(item)"
-                               style="font-size: 15px;font-weight: 600" :disabled="openType === 'see' ? true : false">添加</el-button>
-                    <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)">添加</el-button>-->
-                  </el-col>
-
-                </el-row>
+                    <el-col :span="6" v-if="item.Quantity > 0" style="text-align: right;padding-right: 7px">
+                      <el-button type="text" size="mini" @click="addDrugs(item)"
+                                 style="font-size: 15px;font-weight: 600">添加</el-button>
+                      <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)">添加</el-button>-->
+                    </el-col>
+                  </el-row>
+                </el-tooltip>
               </li>
             </ul>
 
@@ -226,7 +227,7 @@ export default {
         Explain: '', // 说明
         PrescriptionName: '', // 处方名
         DrugRate: '', // 用法
-        OrderType: 10 // 创建协定方
+        OrderType: '40' // 创建协定方
       },
       dataRule: {
         UserName: Currency('此为必填项'),
@@ -256,7 +257,7 @@ export default {
         Explain: '', // 说明
         PrescriptionName: '', // 处方名
         DrugRate: '', // 用法
-        OrderType: 10 // 创建协定方
+        OrderType: '40' // 创建协定方
       }
       this.leftTableData = []
     },
@@ -463,7 +464,7 @@ export default {
             id: this.dataForm.agreementRecipelId, // 协定方id，查看和编辑时候都有（不过这儿只可能是编辑提交）
             // StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
             // AccountId: this.dataForm.AccountId, // 医生id
-            // OrderType: '10', // 创建协定方
+            // OrderType: '40', // 创建协定方
 
             MainCure: this.dataForm.MainCure, // 主治
             Effect: this.dataForm.Effect, // 功效
@@ -490,7 +491,7 @@ export default {
           var paramsCreate = {
             StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
             AccountId: this.dataForm.AccountId, // 医生id
-            OrderType: '10', // 创建协定方
+            OrderType: '40', // 创建协定方
 
             MainCure: this.dataForm.MainCure, // 主治
             Effect: this.dataForm.Effect, // 功效
