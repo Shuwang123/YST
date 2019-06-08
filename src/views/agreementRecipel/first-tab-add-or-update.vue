@@ -176,8 +176,8 @@ export default {
         }, 450)
       }
     },
-    'dataForm.SpellName': function (val, oldval) {
-      if (val === '') { // 只有清空SpellName，激活了的字母按钮都要清空样式
+    'dataForm.SpellName': function (val, oldval) { // 只有清空SpellName，激活了的字母按钮都要清空样式
+      if (val === '') {
         this.litterArr.forEach(item => {
           item.isActive = false
         })
@@ -217,6 +217,7 @@ export default {
       pageSize: 30, // 50 标准
       totalPage: 1,
       dataForm: {
+        SpellName: '',
         agreementRecipelId: '', // 协定方id
 
         // StoreId: '', // 门店
@@ -250,6 +251,7 @@ export default {
     handleClose () {
       this.visible = false
       this.dataForm = {
+        SpellName: '',
         agreementRecipelId: '', // 协定方id
         AccountId: '', // 医生
         MainCure: '', // 主治
@@ -267,12 +269,24 @@ export default {
       this.openType = type
       this.dataForm.AccountId = AccountId
 
+      // 先请求药品种类提供给下拉列表
+      API.drugs.getDrugsCategory().then(result => {
+        if (result.code === '0000') {
+          this.drugsCategoryArr = result.data.filter((item, ind) => {
+            return ind > 0
+          })
+        }
+      })
+      // 后初始化页面的右上角：
+      this.getStoreCategorytypeStock() // 这往上的代码都必须执行，不能写在下面的代码的后面，以免被return false影响
+
       if (agreementRecipelId) { // 查看、和 编辑 都需要初始化
         this.dataForm.agreementRecipelId = agreementRecipelId
         API.register.getRegisterInfo({id: this.dataForm.agreementRecipelId}).then(result => {
           if (result.code === '0000') {
             console.log(result.data)
             this.dataForm = {
+              SpellName: '',
               agreementRecipelId: result.data.agreementRecipelId, // 协定方id
               // StoreId: '', // 门店
               AccountId: result.data.AccountId, // 医生
@@ -294,23 +308,13 @@ export default {
         })
       }
 
-      // 先请求药品种类提供给下拉列表
-      API.drugs.getDrugsCategory().then(result => {
-        if (result.code === '0000') {
-          this.drugsCategoryArr = result.data.filter((item, ind) => {
-            return ind > 0
-          })
-        }
-      })
-      // 后初始化页面的右上角：
-      this.getStoreCategorytypeStock() // 这往上的代码都必须执行，不能写在下面的代码的后面，以免被return false影响
-
       // 如果是直接开方，传递的电话就是0了，还请求屁的患者信息，因为请求结果肯定是[]没有的
-      if (this.$route.query.MobilePhone === '0') {
-        return false
-      }
+      // if (this.$route.query.MobilePhone === '0') {
+      //   return false
+      // }
       this.dataListLoading = false
     },
+
     // 右侧‘添加’药材的小模块：获取 对应门店 对应药态下的 对应药材库
     getStoreCategorytypeStock () {
       API.drugs.getDrugsList({
@@ -333,7 +337,7 @@ export default {
           this.totalPage = 0
           this.$message({ message: `${result.message}`, type: 'warning', duration: 3000 })
         }
-        this.dataListLoading = false
+        // this.dataListLoading = false
       })
     },
 

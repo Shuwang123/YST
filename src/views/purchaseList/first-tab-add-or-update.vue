@@ -146,6 +146,7 @@
 
     <!--底部：footer按钮-->
     <span v-if="editType !== ''" slot="footer" class="dialog-footer">
+      <el-button @click="excelExports">导出Excel</el-button>
       <el-button @click="visible = false">取消</el-button>
       <el-button v-if="editType === 'A'" type="primary" @click="dataFormAdd()">新增药材</el-button>
       <el-button v-if="editType === 'A'" type="primary" @click="dataFormSubmitA()">保存</el-button>
@@ -176,7 +177,8 @@ export default {
 
       isAddActive: false,
       dataListAdd: [],
-      OrderTotalPrice: 0 // 采购单总价显示
+      OrderTotalPrice: 0, // 采购单总价显示
+      excelJSONData: []
     }
   },
   methods: {
@@ -287,6 +289,9 @@ export default {
         API.purchase.getPurchaseInfo({id: id}).then(result => {
           if (result.code === '0000') {
             this.dataList = result.data
+            this.excelJSONData = result.data.Items
+            console.log(result.data.Items)
+
             // 2019.06.01 展示采购单总价
             this.dataList.Items.forEach(item => {
               this.OrderTotalPrice += item.Quantity * item.CostPrice
@@ -312,6 +317,47 @@ export default {
           }
         })
       }
+    },
+    excelExports () {
+      const jsonData = this.excelJSONData.map(item => {
+        return {
+          dCategory: item.CategoryName,
+          dCode: item.ProductCode,
+          dName: item.ProductName,
+          dNumber: item.Quantity,
+          dStoreSalePrice: item.StoreSalePrice,
+          dInventoryQuantity: item.InventoryQuantity
+        }
+      })
+      // 列标题
+      let str = '<tr><td>药态</td><td>编码</td><td>药名</td><td>采购量</td><td>采购价</td><td>库存余量</td></tr>'
+      // 循环遍历，每行加入tr标签，每个单元格加td标签
+      for (let i = 0; i < jsonData.length; i++) {
+        str += '<tr>'
+        for (let item in jsonData[i]) {
+          // 增加\t为了不让表格显示科学计数法或者其他格式
+          str += `<td>${jsonData[i][item] + '\t'}</td>`
+        }
+        str += '</tr>'
+      }
+
+      // Worksheet名
+      let worksheet = 'Sheet1'
+      let uri = 'data:application/vnd.ms-excel;base64,'
+      // 下载的表格模板数据
+      let template = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
+     xmlns:x="urn:schemas-microsoft-com:office:excel"
+     xmlns="http://www.w3.org/TR/REC-html40">
+          <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+          <x:Name>${worksheet}</x:Name>
+          <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
+          </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+          </head>
+          <body><table>${str}</table></body>
+     </html>`
+
+      // 下载模板
+      window.location.href = uri + window.btoa(unescape(encodeURIComponent(template)))
     },
     handleClose () {
       this.editType = ''
