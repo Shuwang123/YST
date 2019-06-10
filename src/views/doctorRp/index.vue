@@ -437,37 +437,32 @@ export default {
       API.register.getRegisterInfo({id: agreementId}).then(result => {
         if (result.code === '0000') {
           console.log(result.data)
-          // this.dataForm = {
-          //   agreementRecipelId: result.data.agreementRecipelId, // 协定方id
-          //   // StoreId: '', // 门店
-          //   AccountId: result.data.AccountId, // 医生
-          //   MainCure: result.data.MainCure, // 主治
-          //   Effect: result.data.Effect, // 功效
-          //   Explain: result.data.Explain, // 说明
-          //   PrescriptionName: result.data.PrescriptionName, // 处方名
-          //   DrugRate: result.data.DrugRate // 用法
-          // }
-          switch (result.data.SaleOrderItems[0].CategoryName.substring(4)) {
-            case '饮片':
-              this.activeName = '1001'
-              break
-            case '颗粒':
-              this.activeName = '1002'
-              break
-            case '精品饮片':
-              this.activeName = '1003'
-              break
-            case '三九颗粒':
-              this.activeName = '1004'
-              break
-          }
+          // this.dataForm.SpellName = ''
+          // this.dataForm.agreementRecipelId = result.data.Id // 协定方id
+          // StoreId: '' // 门店
+          // this.dataForm.AccountId = result.data.AccountId // 医生
+          // this.dataForm.MainCure = result.data.MainCure // 主治
+          // this.dataForm.Effect = result.data.Effect // 功效
+          // this.dataForm.Explain = result.data.Explain // 说明
+          // this.dataForm.PrescriptionName = result.data.PrescriptionName // 处方名
+          // this.dataForm.DrugRate = result.data.DrugRate // 用法
+
+          // 左边table 字段转换下
           this.leftTableData = result.data.SaleOrderItems.map(item => {
+            item.CategoryName = item.CategoryName.substring(4)
+            item.Id = item.ProductId // 这个字段为什么要转换，可能看起来很懵逼，就是后端的接口一会那个字段一会这个字段搞出来的，如果不转化一下，编辑提交的情况下有bug
             item.myNum = item.Quantity
             item.ShowName = item.ProductName
-            item.Code = item.BarCode
+            item.Code = item.ProductCode
             return item
           })
-          // console.log(this.dataForm.agreementRecipelId)
+
+          // 根据协定方的药态，控制右边药态的初始选中值
+          this.oldTabsName = String(result.data.SaleOrderItems[0].CategoryId)
+          this.activeName = String(result.data.SaleOrderItems[0].CategoryId)
+
+          this.getStoreCategorytypeStock()
+          this.countTotalPrice(this.leftTableData) // 载入协定方后立马计算价格
           console.log(this.leftTableData)
         }
       })
@@ -575,7 +570,7 @@ export default {
     // 1.当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
       console.log(row)
-      if (this.leftTableData.some(item => item.Id === row.Id)) {
+      if (this.leftTableData.some(item => item.Code === row.Code)) {
         // this.$alert(`[${row.ShowName}] 已添加！`, '提示', {
         this.$alert(`<b style="color: #409EFF;font-size: 14px;font-weight: 500">[${row.ShowName}]</b> 已添加！`, '提示', {
           confirmButtonText: '确定',
@@ -591,8 +586,8 @@ export default {
     },
     // 2.当点击左边table的‘删除’按钮的时候
     delDrugs (row) {
-      this.leftTableData.some((item, i) => {
-        if (item.Id === row.Id) {
+      this.leftTableData.forEach((item, i) => {
+        if (item.ProductCode === row.ProductCode) {
           this.leftTableData.splice(i, 1)
           return false
         }
@@ -630,6 +625,7 @@ export default {
         }
         this.oldTabsName = this.activeName
         this.getStoreCategorytypeStock()
+        this.countTotalPrice(this.leftTableData) // 切换药态后立马清空价格
       } else { // 有的时候提示是否确定切换tabs
         this.$confirm('切换药品将清空已经加入的药品, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -657,6 +653,7 @@ export default {
           this.oldTabsName = this.activeName
           this.getStoreCategorytypeStock()
           this.leftTableData = [] // 不只切换，还需要清空左边table信息
+          this.countTotalPrice(this.leftTableData) // 切换药态后立马清空价格
         }).catch(() => {
           this.activeName = this.oldTabsName // 依靠oldTabsName切回上一步，table、ul、和tableData都不需要变了，就是取消切换药态的操作
         })

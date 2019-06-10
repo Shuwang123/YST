@@ -100,7 +100,7 @@
                     </span>
                     </el-col>
 
-                    <el-col :span="6" v-if="item.Quantity > 0" style="text-align: right;padding-right: 7px">
+                    <el-col :span="6" style="text-align: right;padding-right: 7px">
                       <el-button type="text" size="mini" @click="addDrugs(item)"
                                  style="font-size: 15px;font-weight: 600">添加</el-button>
                       <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)">添加</el-button>-->
@@ -262,6 +262,8 @@ export default {
         OrderType: '40' // 创建协定方
       }
       this.leftTableData = []
+      this.oldTabsName = '1001'
+      this.activeName = '1001'
     },
     pageInit (agreementRecipelId, type, AccountId) { // type 'add see edit'
       this.visible = true
@@ -277,35 +279,43 @@ export default {
           })
         }
       })
-      // 后初始化页面的右上角：
-      this.getStoreCategorytypeStock() // 这往上的代码都必须执行，不能写在下面的代码的后面，以免被return false影响
 
       if (agreementRecipelId) { // 查看、和 编辑 都需要初始化
         this.dataForm.agreementRecipelId = agreementRecipelId
         API.register.getRegisterInfo({id: this.dataForm.agreementRecipelId}).then(result => {
           if (result.code === '0000') {
             console.log(result.data)
-            this.dataForm = {
-              SpellName: '',
-              agreementRecipelId: result.data.agreementRecipelId, // 协定方id
-              // StoreId: '', // 门店
-              AccountId: result.data.AccountId, // 医生
-              MainCure: result.data.MainCure, // 主治
-              Effect: result.data.Effect, // 功效
-              Explain: result.data.Explain, // 说明
-              PrescriptionName: result.data.PrescriptionName, // 处方名
-              DrugRate: result.data.DrugRate // 用法
-            }
-            this.leftTableData = result.data.SaleOrderItems.map(item => {
-              item.myNum = item.Quantity
-              item.ShowName = item.ProductName
-              item.Code = item.BarCode
-              return item
-            })
-            // console.log(this.dataForm.agreementRecipelId)
-            console.log(this.leftTableData)
+            this.dataForm.SpellName = ''
+            this.dataForm.agreementRecipelId = result.data.Id // 协定方id
+            // StoreId: '' // 门店
+            // this.dataForm.AccountId = result.data.AccountId // 医生
+            this.dataForm.MainCure = result.data.MainCure // 主治
+            this.dataForm.Effect = result.data.Effect // 功效
+            this.dataForm.Explain = result.data.Explain // 说明
+            this.dataForm.PrescriptionName = result.data.PrescriptionName // 处方名
+            this.dataForm.DrugRate = result.data.DrugRate // 用法
           }
+          // 左边table 字段转换下
+          this.leftTableData = result.data.SaleOrderItems.map(item => {
+            item.CategoryName = item.CategoryName.substring(4)
+            item.Id = item.ProductId // 这个字段为什么要转换，可能看起来很懵逼，就是后端的接口一会那个字段一会这个字段搞出来的，如果不转化一下，编辑提交的情况下有bug
+            item.myNum = item.Quantity
+            item.ShowName = item.ProductName
+            item.Code = item.ProductCode
+            return item
+          })
+
+          this.getStoreCategorytypeStock()
+
+          // 根据协定方的药态，控制右边药态的初始选中值
+          this.oldTabsName = String(result.data.SaleOrderItems[0].CategoryId)
+          this.activeName = String(result.data.SaleOrderItems[0].CategoryId)
+          // console.log(this.dataForm.agreementRecipelId)
+          // console.log(this.leftTableData)
         })
+      } else {
+        // 后初始化页面的右上角：
+        this.getStoreCategorytypeStock() // 这往上的代码都必须执行，不能写在下面的代码的后面，以免被return false影响
       }
 
       // 如果是直接开方，传递的电话就是0了，还请求屁的患者信息，因为请求结果肯定是[]没有的
@@ -344,7 +354,7 @@ export default {
     // 1.当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
       console.log(row)
-      if (this.leftTableData.some(item => item.ShowName === row.ShowName)) {
+      if (this.leftTableData.some(item => item.Code === row.Code)) {
         // this.$alert(`[${row.ShowName}] 已添加！`, '提示', {
         this.$alert(`<b style="color: #409EFF;font-size: 14px;font-weight: 500">[${row.ShowName}]</b> 已添加！`, '提示', {
           confirmButtonText: '确定',
@@ -359,8 +369,9 @@ export default {
     },
     // 2.当点击左边table的‘删除’按钮的时候
     delDrugs (row) {
-      this.leftTableData.some((item, i) => {
-        if (item.Id === row.Id) {
+      console.log(this.leftTableData, row)
+      this.leftTableData.forEach((item, i) => {
+        if (item.ProductCode === row.ProductCode) {
           this.leftTableData.splice(i, 1)
           return false
         }
@@ -453,7 +464,7 @@ export default {
       // 你不是医生，无权创建协定方？？？？？？？？？？？？？？？需要限制吗，通过，vuex里的状态来判断
 
       if (this.leftTableData.length === 0) {
-        this.$alert(`处方未编辑药材，还不能提交给药房！`, '提示', {
+        this.$alert(`处方为空不能提交！`, '提示', {
           confirmButtonText: '确定',
           dangerouslyUseHTMLString: true,
           closeOnClickModal: true,
@@ -461,6 +472,7 @@ export default {
         })
         return false
       }
+      console.log(this.leftTableData)
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           // 编辑协定方，调用旧的正常开方里编辑挂号信息的接口，是另一个接口，编辑挂号信息

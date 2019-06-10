@@ -346,17 +346,18 @@ export default {
       let uri = 'data:application/vnd.ms-excel;base64,'
       // 下载的表格模板数据
       let template = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
-     xmlns:x="urn:schemas-microsoft-com:office:excel"
-     xmlns="http://www.w3.org/TR/REC-html40">
-          <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
-          <x:Name>${worksheet}</x:Name>
-          <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
-          </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
-          </head>
-          <body><table>${str}</table></body>
-     </html>`
+      xmlns:x="urn:schemas-microsoft-com:office:excel"
+      xmlns="http://www.w3.org/TR/REC-html40">
+           <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+           <x:Name>${worksheet}</x:Name>
+           <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
+           </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+           </head>
+           <body><table>${str}</table></body>
+      </html>`
 
       // 下载模板
+      // btoa()方法用于创建一base-64编码的字符串。该方法使用 "A-Z", "a-z", "0-9", "+", "/" 和 "=" 字符来编码字符串
       window.location.href = uri + window.btoa(unescape(encodeURIComponent(template)))
     },
     handleClose () {
