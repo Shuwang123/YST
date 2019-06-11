@@ -13,7 +13,7 @@
             'must_5': true,
             'isTrigger': true
           }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
-          <el-form-item>
+          <el-form-item v-if="isVisible[0].child">
             <el-select @change="doctorHandle()" v-model="dataForm.AccountId" placeholder="医生" :disabled="$store.getters.getAccountIsDoctor ? true : false" style="width: 100px">
               <el-option v-for="item in storeDoctorArr" :key="item.Id"
                          :label="`${item.Id}-${item.NickName}`" :value="item.Id"></el-option>
@@ -29,9 +29,9 @@
 
           <el-form-item>
             <!--<el-button v-if="$store.getters.getAccountIsDoctor" :disabled="dataForm.AccountId === '' ? true : false"-->
-            <el-button type="primary" :disabled="dataForm.AccountId === '' ? true : false"
-                       @click="addAgreement">
-              添加协定方</el-button>
+            <el-button type="primary"
+                       @click="isVisible[0].child ? addAgreement() : addClassics()">
+              {{isVisible[0].child ? '添加协定方' : '添加经典方'}}</el-button>
           </el-form-item>
         </el-form>
       </div>
@@ -43,7 +43,7 @@
           <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
-      <el-tab-pane label="" name="second" disabled>
+      <el-tab-pane label="" name="second" :disabled="$store.getters.getAccountIsDoctor ? true : false">
         <span slot="label"><i class=""></i> 经典方列表</span>
         <transition name="chenxi">
           <second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>
@@ -117,8 +117,12 @@ export default {
     addAgreement () {
       this.$refs.firstTab.addOrUpdateHandle(undefined, 'add', this.dataForm.AccountId)
     },
+    // 添加经典方
+    addClassics () {
+      this.$refs.secondTab.addOrUpdateHandle(undefined, 'add')
+    },
 
-    changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
+    changeStoreData (choseStoreId, isMultiple) { // 任何账号 都有唯一的归属门店
       if (isMultiple === false) {
         this.dataForm.AccountId = ''
         this.dataForm.currentDoctorName = ''
@@ -163,7 +167,12 @@ export default {
             this.dataForm.currentDoctorName = ''
           }
         }
-        this.$refs.firstTab.getDataList() // 初始化或者是说任何情况下确定AccountId这个字段完整了后，才继续更新子层页面的展示内容（这有点玄）!!!!!!!!!!
+        // this.$refs.firstTab.getDataList() // 初始化或者是说任何情况下确定AccountId这个字段完整了后，才继续更新子层页面的展示内容（这有点玄）!!!!!!!!!!
+        if (this.isVisible[0].child === true) {
+          this.$refs.firstTab.getDataList()
+        } else if (this.isVisible[1].child === true) {
+          this.$refs.secondTab.getDataList()
+        }
       })
     },
     doctorHandle () {
@@ -201,9 +210,9 @@ export default {
         this.isVisible.forEach((item, index) => {
           if (item.child === true) {
             if (index === 0) {
-              this.$refs.firstTab.getDataList() // 待诊列表
+              this.$refs.firstTab.getDataList() // 协定方列表
             } else if (index === 1) {
-              this.$refs.secondTab.getDataList() // 已就诊列表记录（医生自己的）
+              this.$refs.secondTab.getDataList() // 经典方列表
             } else if (index === 2) {
               this.$refs.threeTab.getDataList()
             }

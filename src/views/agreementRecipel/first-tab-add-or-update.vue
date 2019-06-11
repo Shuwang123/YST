@@ -65,7 +65,7 @@
             row-class-name="purchaseListRow"
             :header-cell-style="$cxObj.tableHeaderStyle30px"
             style="width: 100%;">
-            <component :is="this.leftTable" ref="leftCurrentTable" @tableEvent="delDrugs" @tableNumberEvent="consoleTable"
+            <component :is="leftTable" ref="leftCurrentTable" @tableEvent="delDrugs" @tableNumberEvent="consoleTable"
                        :fatherDataForm="openType"></component>
           </el-table>
         </el-aside>
@@ -102,7 +102,7 @@
 
                     <el-col :span="6" style="text-align: right;padding-right: 7px">
                       <el-button type="text" size="mini" @click="addDrugs(item)"
-                                 style="font-size: 15px;font-weight: 600">添加</el-button>
+                                 style="font-size: 15px;font-weight: 600" v-if="openType === 'see' ? false : true">添加</el-button>
                       <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)">添加</el-button>-->
                     </el-col>
                   </el-row>

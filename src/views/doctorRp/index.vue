@@ -153,8 +153,8 @@
         <!--右侧药材：tabs标签页切换引导组件切换-->
         <el-main width="25%" style="padding: 0 10px 40px; border-bottom: 1px solid #DCDFE6;">
           <div style="margin: 5px 0">
-            <el-button type="danger" size="mini" @click="openAgreementRecipelList">协定方</el-button>
-            <el-button type="danger" size="mini" :disabled="true">经典方</el-button>
+            <el-button type="danger" size="mini" @click="openAgreementRecipelList('40')">协定方</el-button>
+            <el-button type="danger" size="mini" @click="openAgreementRecipelList('41')">经典方</el-button>
           </div>
           <el-input v-model="dataForm.SpellName" @blur="dataForm.SpellName = ''"
                     :placeholder="`请输入要查询的药材, 门店：${$store.getters.getAccountCurrentHandleStore}`"
@@ -426,10 +426,10 @@ export default {
     },
 
     // 打开协定方列表接口
-    openAgreementRecipelList () {
+    openAgreementRecipelList (typeNum) {
       this.addOrUpdateVisibleAgreement = true
       this.$nextTick(() => {
-        this.$refs.agreementPop.init()
+        this.$refs.agreementPop.init(typeNum)
       })
     },
     zairuFunAgreement (agreementId) {

@@ -82,7 +82,8 @@ export default {
       totalPage: 1,
 
       dataList: null,
-      show3: true
+      show3: true,
+      num: 40
     }
   },
   methods: {
@@ -100,11 +101,11 @@ export default {
         Code: '', // 挂号单
         UserName: '', // 患者姓名
         MobilePhone: '', // 患者电话
-        AccountId: this.indexDoctorId, // 账户Id,医生Id
+        AccountId: this.num === '40' ? this.indexDoctorId : '', // 账户Id,医生Id 如果是经典方，那时属于门店，不需要绑定医生id；而协定方是绑定给医生id+门店的
         WrokFrom: '', // 开始时间
         WrokTo: '', // 结束时间
         Status: '', // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部 ''表示协定方
-        OrderType: '40' // 10表示协定方
+        OrderType: this.num // 40表示协定方 41表示经典方
       }
       console.log(params)
       API.register.getRegisterList(params).then(result => { // 获取协定方列表
@@ -121,7 +122,8 @@ export default {
       })
     },
     // 获取某个采购单详情info
-    init () {
+    init (typeNum) {
+      this.num = typeNum
       this.visible = true
       this.getDataList()
     },
