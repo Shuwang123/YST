@@ -146,11 +146,16 @@
 
     <!--底部：footer按钮-->
     <span v-if="editType !== ''" slot="footer" class="dialog-footer">
-      <el-button @click="excelExports">导出Excel</el-button>
       <el-button @click="visible = false">取消</el-button>
       <el-button v-if="editType === 'A'" type="primary" @click="dataFormAdd()">新增药材</el-button>
       <el-button v-if="editType === 'A'" type="primary" @click="dataFormSubmitA()">保存</el-button>
       <el-button v-else-if="editType === 'B'" type="primary" @click="dataFormSubmitB()">确定入库</el-button>
+    </span>
+    <span v-else-if="stepActive === 0" slot="footer" class="dialog-footer">
+      <el-button @click="excelExports('purchase')">导出Excel(采购单)</el-button>
+    </span>
+    <span v-else-if="stepActive === 2" slot="footer" class="dialog-footer">
+      <el-button @click="excelExports('caiwu')">导出Excel(财务入库单)</el-button>
     </span>
   </el-dialog>
 </template>
@@ -177,8 +182,7 @@ export default {
 
       isAddActive: false,
       dataListAdd: [],
-      OrderTotalPrice: 0, // 采购单总价显示
-      excelJSONData: []
+      OrderTotalPrice: 0 // 采购单总价显示
     }
   },
   methods: {
@@ -289,8 +293,7 @@ export default {
         API.purchase.getPurchaseInfo({id: id}).then(result => {
           if (result.code === '0000') {
             this.dataList = result.data
-            this.excelJSONData = result.data.Items
-            console.log(result.data.Items)
+            // console.log(result.data.Items)
 
             // 2019.06.01 展示采购单总价
             this.dataList.Items.forEach(item => {
@@ -318,32 +321,62 @@ export default {
         })
       }
     },
-    excelExports () {
-      const jsonData = this.excelJSONData.map(item => {
-        return {
-          dCategory: item.CategoryName,
-          dCode: item.ProductCode,
-          dName: item.ProductName,
-          dNumber: item.Quantity,
-          dStoreSalePrice: item.StoreSalePrice,
-          dInventoryQuantity: item.InventoryQuantity
-        }
-      })
-      // 列标题
-      let str = '<tr><td>药态</td><td>编码</td><td>药名</td><td>采购量</td><td>采购价</td><td>库存余量</td></tr>'
+    excelExports (excelType) {
+      var jsonData = []
+      var str = '' // 列标题
+      if (excelType === 'purchase') { // 药房采购单导出，发给厂商用的
+        jsonData = this.dataList.Items.map(item => {
+          return {
+            dCategory: item.CategoryName,
+            dCode: item.ProductCode,
+            dName: item.ProductName,
+            dNumber: item.Quantity,
+            dStoreSalePrice: item.StoreSalePrice,
+            dInventoryQuantity: item.InventoryQuantity
+          }
+        })
+        str = '<tr><td>药态</td><td>编码</td><td>药名</td><td>采购量</td><td>采购价</td><td>库存余量</td></tr>'
+      } else if (excelType === 'caiwu') { // 入库后入库单导出，给财务拿去算账的
+        jsonData = this.dataList.Items.map(item => {
+          return {
+            dCode: item.ProductCode, // 商品编码
+            dName: item.ProductName, // 药品名称
+            dSpecification: item.Specification, // 规格
+            dSupplierName: this.dataList.SupplierName, // 供应商 （生成厂家）// dProductBatchNo: item.ProductBatchNo, // 批号??? BatchNo
+
+            dUnit: item.Unit, // 单位
+            dQuantity: item.Quantity, // 数量
+            dCostPrice: item.CostPrice, // 单价
+            dActualShipAmount: item.ActualShipAmount // 金额
+            // dCreatedTime: this.dataList.CreatedTime | this.myDateFilter('yyyy-MM-dd hh:mm:ss'), // 生成时间
+            // dTimeTo: this.dataList.CreatedTime | this.myDateFilter('yyyy-MM-dd hh:mm:ss'), // 有效期至
+            // dZhijian: '合格' // 质检情况
+          }
+        })
+        str = `<tr>
+                <th colspan="8"><h3>重庆渝北一善堂中医门诊部(入库单)</h3></th>
+              </tr>
+              <tr>
+                <td height="20">编号</td> <td height="20">药材名</td>
+                <td height="20">规格</td> <td height="20">生产厂家</td>
+                <td height="20">单位</td> <td height="20">数  量</td>
+                <td height="20">单价</td> <td height="20">金   额</td>
+              </tr>`
+      }
+
       // 循环遍历，每行加入tr标签，每个单元格加td标签
       for (let i = 0; i < jsonData.length; i++) {
         str += '<tr>'
         for (let item in jsonData[i]) {
           // 增加\t为了不让表格显示科学计数法或者其他格式
-          str += `<td>${jsonData[i][item] + '\t'}</td>`
+          str += `<td align="left" height="20">${jsonData[i][item] + '\t'}</td>`
         }
         str += '</tr>'
       }
 
       // Worksheet名
       let worksheet = 'Sheet1'
-      let uri = 'data:application/vnd.ms-excel;base64,'
+      let uri = 'data:application/vnd.ms-excel;base64,' // 使用浏览器的功能
       // 下载的表格模板数据
       let template = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
       xmlns:x="urn:schemas-microsoft-com:office:excel"
@@ -353,7 +386,7 @@ export default {
            <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
            </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
            </head>
-           <body><table>${str}</table></body>
+           <body><table align="left" border="1">${str}</table></body>
       </html>`
 
       // 下载模板

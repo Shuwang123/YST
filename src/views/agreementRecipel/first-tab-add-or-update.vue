@@ -24,11 +24,11 @@
                       <el-input v-model="dataForm.PrescriptionName" placeholder="请输入名称" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="12">
-                    <el-form-item label="科室">
-                      <el-input v-model="dataForm.AgoIllness" placeholder="请输入科室" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
-                    </el-form-item>
-                  </el-col>
+                  <!--<el-col :span="12">-->
+                    <!--<el-form-item label="科室">-->
+                      <!--<el-input v-model="dataForm.AgoIllness" placeholder="请输入科室" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>-->
+                    <!--</el-form-item>-->
+                  <!--</el-col>-->
                 </el-row>
                 <el-row>
                   <el-col :span="24">
