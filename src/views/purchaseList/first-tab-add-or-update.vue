@@ -335,7 +335,14 @@ export default {
             dInventoryQuantity: item.InventoryQuantity
           }
         })
-        str = '<tr><td>药态</td><td>编码</td><td>药名</td><td>采购量</td><td>采购价</td><td>库存余量</td></tr>'
+        str = `<tr>
+                <th colspan="6"><h3>重庆渝北一善堂中医门诊部(采购单)</h3></th>
+              </tr>
+              <tr>
+                <td height="20">药态</td> <td height="20">编码</td>
+                <td height="20">药名</td> <td height="20">采购量</td>
+                <td height="20">采购价</td> <td height="20">库存余量</td>
+              </tr>`
       } else if (excelType === 'caiwu') { // 入库后入库单导出，给财务拿去算账的
         jsonData = this.dataList.Items.map(item => {
           return {
