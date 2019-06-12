@@ -80,6 +80,140 @@
           <el-col :span="6">核发：</el-col>
         </el-row>
 
+        <div id="chenxiPrint" style="display: none">
+          <table width="100%" style="font-size: 12px">
+
+            <!--头部-->
+            <tbody>
+              <tr>
+                <td>处方编号：<span v-text="registerAllData.Code"></span></td>
+                <td colspan="2" align="right">订单时间：<span v-text="registerAllData.CreatedOnTime"></span></td>
+              </tr>
+              <tr>
+                <td height="50" style="font-size: 20px;margin: 20px 0"><b>{{registerAllData.StoreName}}处方笺</b></td>
+              </tr>
+              <tr height="26">
+                <td>患者信息：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</td>
+                <td width="50%">
+                  <p style="padding-left: 70px">科室：<span>{{registerAllData.DepartmentTypeName}}</span></p>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="2">
+                  <div style="position: relative;margin-left: 60px;border-bottom: 1px solid #333">
+                    <span style="position: absolute;bottom: 0;left: -60px; width: 60px">诊断结果：</span>
+                    <p style="margin-bottom: 3px">{{registerAllData.DiseaseInfo ? registerAllData.DiseaseInfo : '空'}}</p>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td v-if="registerAllData.SaleOrderItems">RP：{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}</td>
+                <td align="right" height="26">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</td>
+              </tr>
+            </tbody>
+
+            <!--药材列表loop-->
+            <tbody>
+              <tr>
+                <td colspan="2">
+                  <ul style="list-style-type: none;padding: 0;margin: 0;min-height: 260px;border-bottom: 1px solid #333;">
+                    <li v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId"
+                        style="float: left;width: 33%;text-align: center;height: 24px;line-height: 24px">
+                      <span style="display: inline-block;width: 70px;text-align: right;margin-right: 5px">{{item.ProductName}}</span>
+                      <span style="display: inline-block;">{{item.RefundableQty}}</span> {{item.Unit}}
+                    </li>
+                  </ul>
+                </td>
+              </tr>
+            </tbody>
+
+            <!--底部-->
+            <tbody>
+              <tr>
+                <td colspan="2" height="26">
+                  <div style="position: relative;margin-left: 36px">
+                    <span style="position: absolute;bottom: 0;left: -36px; width: 36px">帖数：</span>
+                    <p>一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.OrderAmount}}</p>
+                  </div>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td width="48%">
+                  <div style="position: relative;margin-left: 36px">
+                    <span style="position: absolute;top: 0;left: -36px; width: 36px">用法：</span>
+                    <p>{{registerAllData.DrugRate}}jdaljflj警方拉上来的房间啦手机放到了</p>
+                  </div>
+                </td>
+                <td width="48%" style="margin-left: 4%">
+                  <div style="position: relative;margin-left: 98px">
+                    <span style="position: absolute;top: 0;left: -48px; width: 48px">收货人：</span>
+                    <p>{{registerAllData.UserName}} {{registerAllData.MobilePhone}}</p>
+                  </div>
+                </td>
+              </tr>
+              <tr valign="top">
+                <td width="48%">
+                  <div style="position: relative;margin-left: 36px">
+                    <span style="position: absolute;top: 0;left: -36px; width: 36px">医嘱：</span>
+                    <p>{{registerAllData.DoctorAdvice}}jdaljflj警方拉上来的房间啦手机放到了</p>
+                  </div>
+                </td>
+                <td width="48%" style="margin-left: 4%">
+                  <div style="position: relative;margin-left: 96px">
+                    <span style="position: absolute;top: 0;left: -36px; width: 36px">地址：</span>
+                    <p>{{registerAllData.Address}}爱上的发顺丰大声的发生的发生的发生的发生的发生地方</p>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+
+              <!--签字-->
+              <tr>
+                <td height="26">医生：<span v-text="registerAllData.Code">{{registerAllData.DoctorName}}</span></td>
+                <td colspan="2"><p style="padding-left: 50px">审核：<span></span></p></td>
+              </tr>
+              <tr>
+                <td height="26">调配：<span></span></td>
+                <td colspan="2"><p style="padding-left: 50px">核发：<span></span></p></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!--&lt;!&ndash;cx新增start&ndash;&gt;vertical-align: bottom;-->
+        <!--<div id="chenxiPrint" style="padding: 20px 15px;display: none;">-->
+          <!--<ul style="list-style-type: none;background-color: #fff;overflow: hidden;margin: 0;padding: 0">-->
+            <!--<li style="width: 50%;height: 30px;line-height: 30px;float: left">-->
+              <!--<span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">订单时间未付款</span><br>-->
+              <!--<span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">药品类型饮片</span>-->
+            <!--</li>-->
+            <!--<li style="width: 50%;height: 60px;line-height: 60px;float: left">-->
+              <!--<img width="140" height="57" style="margin-left: 20px">-->
+            <!--</li>-->
+            <!--<li style="width: 50%;height: 30px;line-height: 30px;float: left"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">姓名</span></li>-->
+            <!--<li style="width: 50%;height: 30px;line-height: 30px;float: left"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">手机号</span></li>-->
+            <!--<li style="width: 50%;height: 30px;line-height: 30px;float: left"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">性别</span>女</li>-->
+            <!--<li style="width: 50%;height: 30px;line-height: 30px;float: left"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">年龄</span></li>-->
+            <!--<li style="width: 50%;height: 30px;line-height: 30px;float: left"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">诊断结果</span></li>-->
+            <!--<li style="width: 50%;height: 30px;line-height: 30px;float: left"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">付数</span></li>-->
+            <!--<li style="width: 100%;margin-bottom: 5px"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">服药说明</span><b style="border-bottom: 1px solid #000;display: inline-block;width: 70%;min-height: 20px;vertical-align: bottom;font-weight: 400"></b></li>-->
+            <!--<ol style="list-style-type: none;margin: 0;padding: 0 0 0 5%;overflow: hidden;clear: both;min-height: 210px">-->
+              <!--<li style="width: 15%;height: 25px;line-height: 25px;float: left;text-align: right;"></li>-->
+              <!--<li style="width: 15%;height: 25px;line-height: 25px;float: left;text-align: left;margin-left: 5px"></li>-->
+            <!--</ol>-->
+            <!--<li style="width: 50%;height: 30px;line-height: 30px;float: left"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">收货人</span></li>-->
+            <!--<li style="width: 50%;height: 30px;line-height: 30px;float: left"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">手机</span></li>-->
+            <!--<li style="width: 100%;height: 30px;line-height: 30px;clear: both"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">收货地址</span>{$order.address}</li>-->
+            <!--<li style="width: 100%;height: 30px;line-height: 30px;"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">固定座机</span>如有疑问请随时联系善郎中助理：023-67603551（周1~7 08:30~20:30）</li>-->
+            <!--<li style="width: 100%;height: 30px;line-height: 30px;"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">其他时间</span>请联系：17823775224、19922937120</li>-->
+            <!--<li style="width: 50%;float: left;text-align: center;min-height: 90px;line-height: 0;"><p style="margin: 3px 0">公众号</p><img width="70" height="70"></li>-->
+            <!--<li style="width: 50%;float: left;text-align: center;min-height: 90px;"><p style="margin: 3px 0">客服微信</p><img width="70" height="70"></li>-->
+            <!--<li style="width: 50%;height: 30px;line-height: 30px;float: left"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">医生</span></li>-->
+            <!--<li style="width: 50%;height: 30px;line-height: 30px;float: left"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">审方</span></li>-->
+            <!--<li style="width: 50%;height: 30px;line-height: 30px;float: left"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">调配</span></li>-->
+            <!--<li style="width: 50%;height: 30px;line-height: 30px;float: left"><span style="display: inline-block;width: 64px;margin-right: 10px;text-align: right">发药</span></li>-->
+          <!--</ul>-->
+        <!--</div>-->
       </el-aside>
 
       <el-main>
@@ -199,8 +333,8 @@
 
     <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dataFormSubmitA()">确认收费</el-button>
-        <el-button type="primary" @click="dataFormSubmitA()">打印</el-button>
+        <el-button type="primary" @click="dataFormSubmitA()">确认收费并打印</el-button>
+        <el-button type="primary" @click="chenxiPrint()">直接打印</el-button>
         <el-button @click="visible = false">关闭</el-button>
       </span>
     </div>
@@ -369,13 +503,36 @@ export default {
               this.$message.error(result.message)
             }
           })
+          this.chenxiPrint() // 提交后打印
         } else {
           this.$alert('实收金额未填! ', '提示', {
             confirmButtonText: '确定'
           })
         }
       })
+    },
+    // 打印功能
+    chenxiPrint () {
+      var printHTML = document.getElementById('chenxiPrint').innerHTML // 获取要打印的内容
+      var page = window.open('', '_blank') // 打开一个新窗口，用于打印
+      page.document.write(printHTML) // 写入打印页面的内容
+      page.print() // 打印
+      var userAgent = navigator.userAgent
+      if ((userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1) || (userAgent.indexOf('Edge') > -1) || (userAgent.indexOf('Trident') > -1 && userAgent.indexOf('rv:11.0') > -1)) {
+        // IE浏览器
+        page.document.execCommand('print')
+      } else {
+        console.log('not IE')
+      }
+      page.close() // 关闭打印窗口
+      // var myPrint = document.getElementById('chenxiPrint').innerHTML
+      // // console.log(myPrint)
+      // var bodyHTML = document.body.innerHTML
+      // window.document.body.innerHTML = myPrint
+      // window.print()
+      // window.document.body.innerHTML = bodyHTML
     }
+    // 打印功能结束
 
   }
 }

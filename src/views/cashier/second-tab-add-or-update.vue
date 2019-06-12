@@ -130,7 +130,7 @@ export default {
     }
   },
   methods: {
-    realityBlur () {
+    realityBlur() {
       if (Number(this.dataForm.reality) < this.registerAllData.OrderAmount) {
         this.dataForm.reality = ''
         this.dataForm.give = ''
@@ -142,7 +142,7 @@ export default {
       }
     },
     // 根据表单的Id，获取对应挂号单的详情
-    init (formId) {
+    init(formId) {
       if (formId) {
         this.visible = true
         this.dataListLoading = true
@@ -156,10 +156,10 @@ export default {
         })
       }
     },
-    seeRecipelInfo () {
+    seeRecipelInfo() {
       this.isAddActive = !this.isAddActive // 点击'[添加药材]'按钮
     },
-    handleClose () {
+    handleClose() {
       this.isAddActive = true
       this.dataForm = {
         reality: '', // 实收
@@ -168,7 +168,7 @@ export default {
       }
     },
     // 收银提交接口
-    dataFormSubmitA () {
+    dataFormSubmitA() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           if (this.dataForm.reality === 0 && this.registerAllData.OrderAmount > 0) {
@@ -202,7 +202,6 @@ export default {
         }
       })
     }
-
   }
 }
 </script>

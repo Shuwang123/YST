@@ -266,16 +266,17 @@ export default {
         }, {
           value: '只挂号',
           label: '只挂号'
-        }, {
-          value: '挂号+诊疗',
-          label: '挂号+诊疗'
-        }, {
-          value: '只诊疗',
-          label: '只诊疗'
-        }, {
-          value: '疗程',
-          label: '疗程'
         }
+        // , {
+        //   value: '挂号+诊疗',
+        //   label: '挂号+诊疗'
+        // }, {
+        //   value: '只诊疗',
+        //   label: '只诊疗'
+        // }, {
+        //   value: '疗程',
+        //   label: '疗程'
+        // }
       ],
       optionsPaymentType: [
         { // 患者支付类型
