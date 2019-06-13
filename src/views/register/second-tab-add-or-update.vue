@@ -44,10 +44,66 @@
           <el-col :span="24"><span>看诊状态：</span>{{registerAllData.RegisterOrderStatusName}}</el-col>
         </el-row>
       </div>
+
+      <!--打印层-->
+      <div id="chenxiPrint" style="display: none">
+      <!--<div id="chenxiPrint">-->
+        <table width="100%" style="font-size: 12px;margin-top: -15px">
+          <tbody>
+            <tr>
+              <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆一善堂中医门诊部收据</h3></td>
+            </tr>
+            <tr>
+              <td colspan="2" height="24">患者：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</td>
+              <td colspan="1" align="right" width="240">病历号：{{registerAllData.Code}}</td>
+            </tr>
+            <tr>
+              <td colspan="2" height="24">单据号：{{registerAllData.Code}}</td>
+              <td colspan="1" align="right" v-if="registerAllData.CreatedOnTime">打印时间：{{registerAllData.CreatedOnTime | myDateFilter('yyyy/MM/dd hh:mm:ss')}}</td>
+            </tr>
+            <tr>
+              <td colspan="3">医生：{{registerAllData.DoctorName}}</td>
+            </tr>
+
+            <tr valign="bottom" style="font-size: 12px">
+              <td height="30">收费项目</td>
+              <td colspan="2"><p>金额
+                <span style="display: inline-block;width: 200px;text-align: right">收费方式</span></p></td>
+            </tr>
+            <tr>
+              <td>挂号费</td>
+              <td colspan="2"><p>￥{{registerAllData.RegisterAmount}}
+                <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
+            </tr>
+            <!--<tr>-->
+              <!--<td>诊疗费</td>-->
+              <!--<td colspan="2"><p>￥{{registerAllData.RegisterAmount}}-->
+                <!--<span style="display: inline-block;width: 200px;text-align: right"></span></p></td>-->
+            <!--</tr>-->
+            <tr valign="bottom">
+              <td height="50"></td>
+              <td colspan="2"><p>
+                <span style="display: inline-block;width: 210px;text-align: right">{{registerAllData.PaymentWayName}}</span></p></td>
+            </tr>
+
+            <tr>
+              <td colspan="1">合计：￥{{registerAllData.UserName + registerAllData.RegisterAmount}}</td>
+              <td colspan="2"><p>大写：{{registerAllData.RegisterAmount}}</p></td>
+            </tr>
+            <tr>
+              <td colspan="3">需开发票请于15日内开具，逾期不补! </td>
+            </tr>
+            <tr>
+              <td colspan="3">收费人员：xx</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
     <div style="text-align: right; margin-top: 30px">
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dataFormSubmitA()">打印</el-button>
+        <el-button type="primary" @click="chenxiPrint()">打印</el-button>
         <el-button type="primary" @click="dataFormSubmitA()">退号</el-button>
         <el-button type="primary" @click="dataFormSubmitA()">再次挂号</el-button>
         <el-button @click="visible = false">关闭</el-button>
@@ -87,6 +143,24 @@ export default {
       }
     },
     handleClose () {},
+
+    // 打印功能
+    chenxiPrint () {
+      var printHTML = document.getElementById('chenxiPrint').innerHTML // 获取要打印的内容
+      var page = window.open('', '_blank') // 打开一个新窗口，用于打印
+      page.document.write(printHTML) // 写入打印页面的内容
+      page.print() // 打印
+      var userAgent = navigator.userAgent
+      if ((userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1) || (userAgent.indexOf('Edge') > -1) || (userAgent.indexOf('Trident') > -1 && userAgent.indexOf('rv:11.0') > -1)) {
+        // IE浏览器
+        page.document.execCommand('print')
+      } else {
+        console.log('not IE')
+      }
+      page.close() // 关闭打印窗口
+    },
+    // 打印功能结束
+
     // 表单提交
     dataFormSubmitA () {
       // this.$refs['dataForm'].validate((valid) => {

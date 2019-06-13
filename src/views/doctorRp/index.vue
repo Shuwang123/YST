@@ -155,6 +155,7 @@
           <div style="margin: 5px 0">
             <el-button type="danger" size="mini" @click="openAgreementRecipelList('40')">协定方</el-button>
             <el-button type="danger" size="mini" @click="openAgreementRecipelList('41')">经典方</el-button>
+            <el-button type="danger" size="mini" disabled>名验方</el-button>
           </div>
           <el-input v-model="dataForm.SpellName" @blur="dataForm.SpellName = ''"
                     :placeholder="`请输入要查询的药材, 门店：${$store.getters.getAccountCurrentHandleStore}`"
@@ -587,7 +588,7 @@ export default {
     // 2.当点击左边table的‘删除’按钮的时候
     delDrugs (row) {
       this.leftTableData.forEach((item, i) => {
-        if (item.ProductCode === row.ProductCode) {
+        if (item.Code === row.Code) {
           this.leftTableData.splice(i, 1)
           return false
         }

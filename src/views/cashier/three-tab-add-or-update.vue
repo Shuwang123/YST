@@ -78,11 +78,114 @@
         <el-col :span="6">调配：</el-col>
         <el-col :span="6">核发：</el-col>
       </el-row>
+
+      <!--打印层-->
+      <div id="chenxiPrint" style="display: none">
+        <!--<div id="chenxiPrint">-->
+        <table width="100%" style="font-size: 12px">
+
+          <!--头部-->
+          <tbody>
+          <tr>
+            <td>处方编号：<span v-text="registerAllData.Code"></span></td>
+            <td colspan="2" align="right">订单时间：<span v-text="registerAllData.CreatedOnTime"></span></td>
+          </tr>
+          <tr>
+            <td height="50" style="font-size: 20px;margin: 20px 0"><b>{{registerAllData.StoreName}}的处方笺</b></td>
+          </tr>
+          <tr height="26">
+            <td>患者信息：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</td>
+            <td width="50%">
+              <!--<p style="padding-left: 70px">科室：<span>{{registerAllData.DepartmentTypeName}}</span></p>-->
+            </td>
+          </tr>
+          <tr>
+            <td colspan="2">
+              <div style="position: relative;margin-left: 60px;border-bottom: 1px solid #333">
+                <span style="position: absolute;bottom: 0;left: -60px; width: 60px">诊断结果：</span>
+                <p style="margin-bottom: 3px;min-height: 20px">{{registerAllData.DiseaseInfo}}</p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+            <td v-if="registerAllData.SaleOrderItems">RP：{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}</td>
+            <td align="right" height="26">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</td>
+          </tr>
+          </tbody>
+
+          <!--药材列表loop-->
+          <tbody>
+          <tr>
+            <td colspan="2">
+              <ul style="list-style-type: none;padding: 0;margin: 0;min-height: 260px;border-bottom: 1px solid #333;">
+                <li v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId"
+                    style="float: left;width: 33%;text-align: center;height: 24px;line-height: 24px">
+                  <span style="display: inline-block;width: 70px;text-align: right;margin-right: 5px">{{item.ProductName}}</span>
+                  <span style="display: inline-block;">{{item.RefundableQty}}</span> {{item.Unit}}
+                </li>
+              </ul>
+            </td>
+          </tr>
+          </tbody>
+
+          <!--底部-->
+          <tbody>
+          <tr>
+            <td colspan="2" height="26">
+              <div style="position: relative;margin-left: 36px">
+                <span style="position: absolute;bottom: 0;left: -36px; width: 36px">帖数：</span>
+                <p>一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.OrderAmount}}</p>
+              </div>
+            </td>
+          </tr>
+          <tr valign="top">
+            <td width="48%">
+              <div style="position: relative;margin-left: 36px">
+                <span style="position: absolute;top: 0;left: -36px; width: 36px">用法：</span>
+                <p style="min-height: 24px">{{registerAllData.DrugRate}}</p>
+              </div>
+            </td>
+            <td width="48%" style="margin-left: 4%">
+              <div style="position: relative;margin-left: 98px">
+                <span style="position: absolute;top: 0;left: -48px; width: 48px">收货人：</span>
+                <p style="min-height: 24px">{{registerAllData.UserName}} {{registerAllData.MobilePhone}}</p>
+              </div>
+            </td>
+          </tr>
+          <tr valign="top">
+            <td width="48%" height="24">
+              <div style="position: relative;margin-left: 36px">
+                <span style="position: absolute;top: 0;left: -36px; width: 36px">医嘱：</span>
+                <p style="min-height: 24px">{{registerAllData.DoctorAdvice}}</p>
+              </div>
+            </td>
+            <td width="48%" style="margin-left: 4%">
+              <div style="position: relative;margin-left: 96px">
+                <span style="position: absolute;top: 0;left: -36px; width: 36px">地址：</span>
+                <p style="min-height: 24px">{{registerAllData.Address}}</p>
+              </div>
+            </td>
+          </tr>
+          <tr>
+
+            <!--签字-->
+          <tr>
+            <td height="26">医生：<span v-text="registerAllData.Code">{{registerAllData.DoctorName}}</span></td>
+            <td colspan="2"><p style="padding-left: 50px">审核：<span></span></p></td>
+          </tr>
+          <tr>
+            <td height="26">调配：<span></span></td>
+            <td colspan="2"><p style="padding-left: 50px">核发：<span></span></p></td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
 
     <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dataFormSubmitA()">打印</el-button>
+        <el-button type="primary" @click="chenxiPrint()">打印</el-button>
         <el-button @click="visible = false">关闭</el-button>
       </span>
     </div>
@@ -167,41 +270,22 @@ export default {
         PaymentWay: 1 // 支付方式
       }
     },
-    // 收银提交接口
-    dataFormSubmitA () {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          if (this.dataForm.reality === 0 && this.registerAllData.OrderAmount > 0) {
-            this.$alert('实收金额未填! ', '提示', {
-              confirmButtonText: '确定'
-            })
-            return false
-          }
-          var params = {
-            // id: this.registerAllData.Id,
-            // PaymentWay: this.dataForm.PaymentWay, // 支付方式
-            // ActualAmount: this.registerAllData.OrderAmount // 实收金额 this.dataForm.reality 不是这个
-          }
-          console.log(params)
-          API.register.cashierSubmit(params).then(result => {
-            if (result.code === '0000') {
-              this.$message({
-                message: `${'提交成功'}`,
-                type: 'success',
-                duration: 1500
-              })
-              this.visible = false
-            } else {
-              this.$message.error(result.message)
-            }
-          })
-        } else {
-          this.$alert('实收金额未填! ', '提示', {
-            confirmButtonText: '确定'
-          })
-        }
-      })
+    // 打印功能
+    chenxiPrint () {
+      var printHTML = document.getElementById('chenxiPrint').innerHTML // 获取要打印的内容
+      var page = window.open('', '_blank') // 打开一个新窗口，用于打印
+      page.document.write(printHTML) // 写入打印页面的内容
+      page.print() // 打印
+      var userAgent = navigator.userAgent
+      if ((userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1) || (userAgent.indexOf('Edge') > -1) || (userAgent.indexOf('Trident') > -1 && userAgent.indexOf('rv:11.0') > -1)) {
+        // IE浏览器
+        page.document.execCommand('print')
+      } else {
+        console.log('not IE')
+      }
+      page.close() // 关闭打印窗口
     }
+    // 打印功能结束
 
   }
 }

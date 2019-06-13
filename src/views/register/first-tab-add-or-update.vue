@@ -136,8 +136,8 @@
       </div>
       <div style="text-align: right; margin-top: 30px">
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="dataFormSubmitA()">挂号并打印</el-button>
-          <el-button type="primary" @click="dataFormAdd()">挂号不打印</el-button>
+          <el-button type="primary" @click="dataFormSubmitA()">挂号</el-button>
+          <!--<el-button type="primary" @click="dataFormAdd()">挂号不打印</el-button>-->
           <el-button @click="visible = false">取消</el-button>
         </span>
       </div>

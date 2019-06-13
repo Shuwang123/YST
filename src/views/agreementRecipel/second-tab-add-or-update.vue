@@ -371,7 +371,7 @@ export default {
     delDrugs (row) {
       console.log(this.leftTableData, row)
       this.leftTableData.forEach((item, i) => {
-        if (item.ProductCode === row.ProductCode) {
+        if (item.Code === row.Code) {
           this.leftTableData.splice(i, 1)
           return false
         }

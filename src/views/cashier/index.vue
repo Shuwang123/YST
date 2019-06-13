@@ -37,7 +37,7 @@
                 </el-date-picker>
               </el-form-item>
               <el-form-item>
-                <el-button @click="isVisible[0].child ===  true ? $refs.firstTab.getDataList() : $refs.secondTab.getDataList()"
+                <el-button @click="isVisible[0].child ===  true ? $refs.firstTab.getDataList() : isVisible[1].child ===  true ? $refs.secondTab.getDataList() : $refs.threeTab.getDataList()"
                            size="mini">查询</el-button>
               </el-form-item>
             </el-col>
@@ -81,7 +81,7 @@ export default {
     ComStore,
     FirstTab,
     SecondTab,
-    ThreeTab,
+    ThreeTab
   },
   watch: {
     'dataForm.AccountId': function () {
