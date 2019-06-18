@@ -82,8 +82,9 @@ export default {
                   // "CanViewStores": "",
                   // "StoreCode": "",
                   // "View": true
-                  console.log(response)
-                  console.log(result)
+
+                  // console.log(response)
+                  // console.log(result)
                   this.$store.commit('setAccountLoginInfoAll', result.data) // ①当前账号的 门店所有详情(先存给Vuex，后在Vuex的commit中存给store，同时转存给session)
                   var isDoctor = result.data.RoleName.includes('医生') // es6返回true或false
                   this.$store.commit('setIsDoctor', isDoctor) // ②判断是否是医生

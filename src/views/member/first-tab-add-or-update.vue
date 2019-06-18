@@ -24,12 +24,21 @@
       </el-form-item>
       <el-form-item label="出生" prop="BirthDate">
         <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.BirthDate"
-                        placeholder="请选择出生日期" style="width: 160px">
+                        placeholder="请选择出生日期" style="width: 149px">
         </el-date-picker>
       </el-form-item>
+
       <el-form-item label="电话" prop="MobilePhone">
         <el-input v-model="dataForm.MobilePhone" placeholder="请输入电话" style="width: 160px"></el-input>
       </el-form-item>
+      <br>
+      <!--<el-form-item label="患者来源" prop="memberOriginVal">-->
+        <!--<el-select v-model="dataForm.memberOriginVal" style="width: 160px">-->
+          <!--<el-option v-for="item in memberOrigin" :key="item.lab"-->
+                     <!--:label="item.lab" :value="item.val">-->
+          <!--</el-option>-->
+        <!--</el-select>-->
+      <!--</el-form-item>-->
 
       <el-form-item label="病例史" prop="AllergyHistory">
         <el-input v-model="dataForm.AllergyHistory" placeholder="请输入病例史" style="width: 413px"></el-input>
@@ -68,13 +77,22 @@ export default {
         BirthDateAge: '',
         BirthDateUnit: '1', // 必须是str类型的
         MobilePhone: '',
+        // memberOriginVal: '0', // 患者来源
         AllergyHistory: '', // 病例史
         Address: ''
       },
+      // memberOrigin: [
+      //   {lab: '未选择来源', val: '0'},
+      //   {lab: '微信推文', val: '1'},
+      //   {lab: '电梯广告', val: '2'},
+      //   {lab: '朋友介绍', val: '3'},
+      //   {lab: '医生介绍', val: '4'}
+      // ],
       dataRule: {
         UserName: Currency('此为必填项'),
         BirthDateAge: NumberInt(),
         BirthDate: Currency('此为必填项'),
+        memberOriginVal: Currency('此为必填项'),
         MobilePhone: Phone(1)
       }
     }

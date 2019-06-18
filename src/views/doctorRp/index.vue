@@ -71,43 +71,60 @@
                   </el-col>
                 </el-row>
 
-                <el-row>
-                  <el-col :span="8">
-                    <el-form-item label="发病时间">
-                      <el-date-picker type="date" placeholder="请选择发病时间" style="width: 144px"
-                                      v-model="dataForm.DiseaseTime" value-format="yyyy-MM-dd">
-                      </el-date-picker>
-                    </el-form-item>
-                  </el-col>
-                  <el-col :span="8">
-                    <el-form-item label="过敏史">
-                      <el-input v-model="dataForm.AgoIllness" placeholder="请输入过敏史" style="width: 144px"></el-input>
-                    </el-form-item>
-                  </el-col>
-                </el-row>
+                <!--<el-row>-->
+                  <!--<el-col :span="8">-->
+                    <!--<el-form-item label="发病时间">-->
+                      <!--<el-date-picker type="date" placeholder="请选择发病时间" style="width: 144px"-->
+                                      <!--v-model="dataForm.DiseaseTime" value-format="yyyy-MM-dd">-->
+                      <!--</el-date-picker>-->
+                    <!--</el-form-item>-->
+                  <!--</el-col>-->
+                  <!--<el-col :span="8">-->
+                    <!--<el-form-item label="过敏史">-->
+                      <!--<el-input v-model="dataForm.AgoIllness" placeholder="请输入过敏史" style="width: 144px"></el-input>-->
+                    <!--</el-form-item>-->
+                  <!--</el-col>-->
+                <!--</el-row>-->
                 <el-row>
                   <el-col :span="24">
-                    <el-form-item label="主诉">
-                      <el-input v-model="dataForm.MainSuit" placeholder="请选择或输入主诉" style="width: 75%"></el-input>
+                    <el-form-item label="主诉" prop="MainSuit" :inline-message="true">
+                      <el-input v-model="dataForm.MainSuit"
+                                placeholder="请选择或输入主诉" style="width: 85%"></el-input>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="24">
-                    <el-form-item label="现病史">
-                      <el-input v-model="dataForm.NowIllness" placeholder="从起病到就诊时疾病的发生、发展及其他变化的经过和诊疗情况" style="width: 75%"></el-input>
-                    </el-form-item>
-                  </el-col>
+                  <!--<el-col :span="24">-->
+                    <!--<el-form-item label="现病史">-->
+                      <!--<el-input v-model="dataForm.NowIllness" placeholder="从起病到就诊时疾病的发生、发展及其他变化的经过和诊疗情况" style="width: 75%"></el-input>-->
+                    <!--</el-form-item>-->
+                  <!--</el-col>-->
                 </el-row>
               </div>
             </transition>
             <el-row>
               <el-col :span="24">
-                <el-form-item label="诊断信息" prop="DiseaseInfo">
-                  <el-input v-model="dataForm.DiseaseInfo" placeholder="请选择或输入诊断信息" style="width: 75%"></el-input>
+                <!--<el-form-item label="诊断结果" prop="DiseaseInfo">-->
+                  <!--<el-input v-model="dataForm.DiseaseInfo" placeholder="请选择或输入诊断结果" style="width: 75%"></el-input>-->
+                <!--</el-form-item>-->
+                <!--2019.06.14-->
+                <el-form-item label="诊断结果" prop="DiseaseInfo" :inline-message="true">
+                  <el-select
+                    v-model="dataForm.DiseaseInfo"
+                    multiple
+                    filterable allow-create reserve-keyword
+                    default-first-option
+                    :popper-append-to-body="false"
+                    placeholder="请选择或输入诊断信息" style="width: 85%"
+                    @visible-change="selHide()">
+                    <el-option v-for="item in options" :key="item.value"
+                      :label="item.label" :value="item.value">
+                    </el-option>
+                  </el-select>
                 </el-form-item>
               </el-col>
             </el-row>
             <div style="border-bottom: 1px solid #E6E6E6; font-weight: 500">R:</div>
           </div>
+
           <!--左侧开方：直接用组件的引用名切换-->
           <el-table
             :height="chenxiHeight"
@@ -117,36 +134,11 @@
             row-class-name="purchaseListRow"
             :header-cell-style="$cxObj.tableHeaderStyle30px"
             style="width: 100%;">
-            <component :is="this.leftTable" ref="leftCurrentTable" @tableEvent="delDrugs" @tableNumberEvent="consoleTable"></component>
+            <component :is="this.leftTable" ref="leftCurrentTable"
+                       @tableEvent="delDrugs" @tableNumberEvent="consoleTable"
+                       @blurEvent="$refs.customInput.focus()">
+            </component>
             <!--v-if="addOrUpdateVisible" ref="patientListPop" @childEven="zairuFun"-->
-            <!--<div>-->
-              <!--<el-table-column prop="" label="操作1" width="" header-align="center" align="center">-->
-                <!--<template slot-scope="scope">-->
-                  <!--<el-button type="text" @click="addOrUpdateHandle(scope.row)">删除</el-button>-->
-                <!--</template>-->
-              <!--</el-table-column>-->
-              <!--<el-table-column prop="Code" header-align="center" align="center" label="编码" width="100"></el-table-column>-->
-              <!--<el-table-column prop="CategoryName" header-align="center" align="center" label="药态" width="70"></el-table-column>-->
-              <!--<el-table-column type="index" align="center" width="70" label="序号"></el-table-column>-->
-              <!--<el-table-column prop="ShowName" header-align="center" align="center" label="药名" width="80"></el-table-column>-->
-              <!--<el-table-column prop="SalePrice" header-align="center" align="center" label="单价" width="70"></el-table-column>-->
-              <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="数量" min-width="150">-->
-                <!--<template slot-scope="scope">-->
-                  <!--<el-input-number v-model="scope.row.myNum" :step="1" @change="handleChange" :min="1" :max="1000" size="mini"></el-input-number>-->
-                  <!--<div class="recipelAgeUnit">-->
-                    <!--<el-select v-model="categoryUnit" style="width: 45px" size="mini">-->
-                      <!--<el-option :label="'克'" :value="'g'"></el-option>-->
-                      <!--<el-option :label="'袋'" :value="'dai'"></el-option>-->
-                    <!--</el-select>-->
-                  <!--</div>-->
-                <!--</template>-->
-              <!--</el-table-column>-->
-              <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="总价" min-width="70">-->
-                <!--<template slot-scope="scope">-->
-                  <!--{{scope.row.SalePrice * scope.row.myNum}}-->
-                <!--</template>-->
-              <!--</el-table-column>-->
-            <!--</div>-->
           </el-table>
         </el-aside>
 
@@ -157,10 +149,24 @@
             <el-button type="danger" size="mini" @click="openAgreementRecipelList('41')">经典方</el-button>
             <el-button type="danger" size="mini" disabled>名验方</el-button>
           </div>
-          <el-input v-model="dataForm.SpellName" @blur="dataForm.SpellName = ''"
-                    :placeholder="`请输入要查询的药材, 门店：${$store.getters.getAccountCurrentHandleStore}`"
-                    style="min-width: 190px; width: 100%" size="small" clearable><i slot="prefix" class="el-input__icon el-icon-search"></i>
-          </el-input>
+
+          <!--<el-input v-model="dataForm.SpellName" @blur="dataForm.SpellName = ''"-->
+                    <!--:placeholder="`请输入要查询的药材, 门店：${$store.getters.getAccountCurrentHandleStore}`"-->
+                    <!--style="min-width: 190px; width: 100%" size="small" clearable><i slot="prefix" class="el-input__icon el-icon-search"></i>-->
+          <!--</el-input>-->
+          <el-autocomplete
+            ref="customInput"
+            popper-class="my-autocomplete"
+            v-model="dataForm.SpellName"
+            :fetch-suggestions="querySearch"
+            :placeholder="`请输入药材拼音首字母 ${$store.getters.getAccountCurrentHandleStore}`" style="min-width: 190px; width: 100%" size="small"
+            @select="addDrugs" @blur="dataForm.SpellName = ''">
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
+            <template slot-scope="{ item }">
+              <div>{{ item.ShowName }} 余<span style="color: red">{{ item.Quantity }}</span></div>
+            </template>
+          </el-autocomplete>
+
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane v-for="item in drugsCategoryArr" :key="item.id" :label="item.text" :name="item.id"></el-tab-pane>
           </el-tabs>
@@ -186,9 +192,8 @@
                     </el-col>
 
                     <el-col :span="6" v-if="item.Quantity > 0" style="text-align: right;padding-right: 7px">
-                      <el-button type="text" size="mini" @click="addDrugs(item)"
+                      <el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)"
                                  style="font-size: 15px;font-weight: 600">添加</el-button>
-                      <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)">添加</el-button>-->
                     </el-col>
                   </el-row>
                 </el-tooltip>
@@ -308,6 +313,7 @@ export default {
         })
       }
       this.getStoreCategorytypeStock()
+      // console.log(this.rightUlData)
     },
     Total (val, oldval) {
       if (val === undefined) {
@@ -318,6 +324,64 @@ export default {
   },
   data () {
     return {
+      options: [{
+        value: '上呼吸道感染',
+        label: '上呼吸道感染'
+      }, {
+        value: '支气管炎',
+        label: '支气管炎'
+      }, {
+        value: '风寒感冒',
+        label: '风寒感冒'
+      }, {
+        value: '急性支气管炎',
+        label: '急性支气管炎'
+      }, {
+        value: '胃炎',
+        label: '胃炎'
+      }, {
+        value: '慢性胃炎',
+        label: '慢性胃炎'
+      }, {
+        value: '脾肾阳虚',
+        label: '脾肾阳虚'
+      }, {
+        value: '咽炎',
+        label: '咽炎'
+      }, {
+        value: '风热犯肺',
+        label: '风热犯肺'
+      }, {
+        value: '月经失调',
+        label: '月经失调'
+      }, {
+        value: '失眠',
+        label: '失眠'
+      }, {
+        value: '颈椎病',
+        label: '颈椎病'
+      }, {
+        value: '气血不足',
+        label: '气血不足'
+      }, {
+        value: '便秘',
+        label: '便秘'
+      }, {
+        value: '扁桃体炎',
+        label: '扁桃体炎'
+      }, {
+        value: '腰肌劳损',
+        label: '腰肌劳损'
+      }, {
+        value: '原发性高血压',
+        label: '原发性高血压'
+      }, {
+        value: '痤疮',
+        label: '痤疮'
+      }, {
+        value: '带状疱疹',
+        label: '带状疱疹'
+      }],
       cutOut: true, // 收起，显示
       litterArr: [
         {content: 'A', isActive: false}, {content: 'N', isActive: false},
@@ -345,7 +409,7 @@ export default {
       addOrUpdateVisibleAgreement: false,
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
-      chenxiHeight: 350, // 这个是测试出来的固定值，用于第一次初始化页面吧，如果以后页面的格式需要调整，可以测试一个初始值来填在这就行了
+      chenxiHeight: 470, // 这个是测试出来的固定值，用于第一次初始化页面吧，如果以后页面的格式需要调整，可以测试一个初始值来填在这就行了
       pageIndex: 1,
       pageSize: 30, // 50 标准
       totalPage: 1,
@@ -360,11 +424,11 @@ export default {
         ageUnit: '1', // val='1' label岁 '0'月
 
         DiagnosisType: '1', // 看诊类型
-        DiseaseTime: '', // 发病时间
-        AgoIllness: '', // 过敏史
+        // DiseaseTime: '', // 发病时间
+        // AgoIllness: '', // 过敏史
+        // NowIllness: '', // 现病史
         MainSuit: '', // 主诉
-        NowIllness: '', // 现病史
-        DiseaseInfo: '', // 诊断信息
+        DiseaseInfo: [], // 诊断信息
 
         SpellName: '',
         DrugRate: '', // 用药间隔
@@ -374,8 +438,9 @@ export default {
       },
       dataRule: {
         UserName: Currency('此为必填项'),
-        DiseaseInfo: Currency('此为必填项'),
-        DrugRate: Currency('此为必填项')
+        MainSuit: Currency('主诉必填'),
+        DiseaseInfo: Currency('诊断结果必填'),
+        DrugRate: Currency('用药方法必填')
       },
       Total: 1, // 剂数
       allMoney: 0
@@ -398,6 +463,15 @@ export default {
     this.chenxiHeight = parseInt(youHeight) - parseInt(zuoHeight)
   },
   methods: {
+    selHide () { // 当前select的下拉option部分隐藏的时候触发此方法
+      var txt = document.getElementsByClassName('el-select-dropdown__list')[1]
+        .firstElementChild.firstElementChild.innerHTML
+      // [n] n受到整个页面中所有select的个数的影响，比如页头月、岁、页底的服用方法的下拉
+      if (txt === this.options[0].value || this.dataForm.DiseaseInfo.some((item) => { // some主要是阻止重复输入
+        return item === txt
+      })) { return false } // *关键点这步*
+      this.dataForm.DiseaseInfo.push(txt)
+    },
     // 打开会员弹窗
     openPatientList () {
       this.addOrUpdateVisible = true
@@ -541,14 +615,6 @@ export default {
           this.rightUlData = result.data
           this.totalPage = result.total
           // console.log(result.data)
-
-          // if (this.dataListViews.length === 0) {
-          //   this.dataListViews = this.dataListViews.concat(result.data) // 会打散拼接到尾巴，旧数组不变
-          // } else if (this.dataListViews.some(item => item.Code === result.data[0].Code || item.Code === result.data[this.pageSize - 1]).Code) {
-          //   this.dataListViews = this.dataListViews.concat([])
-          // } else {
-          //   this.dataListViews = this.dataListViews.concat(result.data)
-          // }
         } else {
           // this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
           this.dataList = []
@@ -560,6 +626,16 @@ export default {
       })
     },
 
+    // 右上角的下拉options展示
+    querySearch (keyWord, callback) {
+      if (keyWord === '') {
+        let arr = []
+        callback(arr)
+        return false
+      } else { // 这个返回的内容就是下拉options的内容
+        setTimeout(() => { callback(this.rightUlData) }, 400)
+      }
+    },
     // 后面有三个方法会共同调用这个方法：计算总价
     countTotalPrice (obj) {
       var sum = 0
@@ -573,16 +649,22 @@ export default {
       console.log(row)
       if (this.leftTableData.some(item => item.Code === row.Code)) {
         // this.$alert(`[${row.ShowName}] 已添加！`, '提示', {
-        this.$alert(`<b style="color: #409EFF;font-size: 14px;font-weight: 500">[${row.ShowName}]</b> 已添加！`, '提示', {
-          confirmButtonText: '确定',
-          dangerouslyUseHTMLString: true,
-          closeOnClickModal: true,
-          closeOnPressEscape: true
-        })
+        // this.$alert(`<b style="color: #409EFF;font-size: 14px;font-weight: 500">[${row.ShowName}]</b> 已添加！`, '提示', {
+        //   confirmButtonText: '确定',
+        //   dangerouslyUseHTMLString: true,
+        //   closeOnClickModal: true,
+        //   closeOnPressEscape: true
+        // })
+        this.$message(`[${row.ShowName}] 已添加！`)
         return false
       }
-      row.myNum = 1 // 让后端加字段要改所有的类型的，这自己加，就没这种问题了myNum
+      // row.myNum = 0 // 让后端加字段要改所有的类型的，这自己加，就没这种问题了myNum
       this.leftTableData.push(row)
+
+      // this.$nextTick(() => {}) push数据后，需要聚焦，为什么不用nextTick，因为聚焦不了啊，弄个时间器把时间间隔弄稳定点
+      setTimeout(() => {
+        this.$refs.leftCurrentTable.$refs.chd.focus()
+      }, 500)
       this.countTotalPrice(this.leftTableData)
     },
     // 2.当点击左边table的‘删除’按钮的时候
@@ -685,7 +767,17 @@ export default {
     // 开方提交
     send () {
       if (this.leftTableData.length === 0) {
-        this.$alert(`处方未编辑药材，还不能提交给药房！`, '提示', {
+        this.$alert(`处方添加药材，还不能提交给药房！`, '提示', {
+          confirmButtonText: '确定',
+          dangerouslyUseHTMLString: true,
+          closeOnClickModal: true,
+          closeOnPressEscape: true
+        })
+        return false
+      } else if (this.leftTableData.some(item => {
+        return item.myNum === undefined
+      })) {
+        this.$alert(`药材未编辑数量，还不能提交！`, '提示', {
           confirmButtonText: '确定',
           dangerouslyUseHTMLString: true,
           closeOnClickModal: true,
@@ -706,10 +798,10 @@ export default {
             PersonalIllness: '', // 个人史?????????
             AgoIllness: '', // 既往史?????????????????
 
+            // NowIllness: this.dataForm.NowIllness, // 现病史
+            // DiseaseTime: this.dataForm.DiseaseTime, // 发病时间
             MainSuit: this.dataForm.MainSuit, // 主诉
-            NowIllness: this.dataForm.NowIllness, // 现病史
-            DiseaseInfo: this.dataForm.DiseaseInfo, // 诊断信息
-            DiseaseTime: this.dataForm.DiseaseTime, // 发病时间
+            DiseaseInfo: this.dataForm.DiseaseInfo.join('，'), // 诊断信息
             DrugRate: this.dataForm.DrugRate, // 用药频率
             DoctorAdvice: this.dataForm.DoctorAdvice, // 医嘱
             Total: this.Total, // 总剂数
@@ -744,11 +836,11 @@ export default {
             DepartmentType: '',
             AgoIllness: '',
 
-            DiseaseInfo: this.dataForm.DiseaseInfo, // 诊断结果
-            NowIllness: this.dataForm.NowIllness,
             MainSuit: this.dataForm.MainSuit,
+            DiseaseInfo: this.dataForm.DiseaseInfo.join('，'), // 诊断结果
 
-            DiseaseTime: this.dataForm.DiseaseTime,
+            // NowIllness: this.dataForm.NowIllness,
+            // DiseaseTime: this.dataForm.DiseaseTime,
             DoctorAdvice: this.dataForm.DoctorAdvice,
             DrugRate: this.dataForm.DrugRate,
             Total: this.Total,
@@ -802,6 +894,13 @@ export default {
   }
 }
 .doctor-recipel /deep/ {
+  .el-select-dropdown__wrap {padding-bottom: 5px;}
+  .el-select-dropdown__item {float: left; display: block !important;}
+  .el-select-dropdown__item.selected::after {right: 5px}
+}
+
+.doctor-recipel /deep/ {
+  /*.el-select-dropdown__item {float: left}*/
   background-color: #fff;
   margin: 0 10px;
   border: 1px solid #DCDFE6;

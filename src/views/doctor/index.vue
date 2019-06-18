@@ -150,7 +150,8 @@ export default {
             this.dataForm.currentDoctorName = ''
           }
         }
-        this.$refs.firstTab.getDataList() // 初始化或者是说任何情况下确定AccountId这个字段完整了后，才继续更新子层页面的展示内容（这有点玄）!!!!!!!!!!
+        // this.$refs.firstTab.getDataList() // 初始化或者是说任何情况下确定AccountId这个字段完整了后，才继续更新子层页面的展示内容（这有点玄）!!!!!!!!!!
+        this.doctorHandle()
       })
     },
     doctorHandle () {

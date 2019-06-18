@@ -2,7 +2,7 @@
     <div class="mod-storeRegister">
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
       <div style="background-color: #F5F7FA;margin-bottom: 0;border-radius: 0 0 0 0;padding: 1px 3px">
-        <el-form :inline="true" :model="dataForm" size="mini">
+        <el-form :inline="true" :model="dataForm" size="mini" @keyup.enter.native="comBranch()">
           <el-row style="height: 35px;line-height: 35px">
             <el-col :span="21">
               <com-store :paramsFather="{
@@ -15,15 +15,21 @@
                 'isTrigger': true
               }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
 
+              <el-form-item v-show="isVisible[0].child">
+                <el-input v-model="dataForm.doctorName" placeholder="请输入医生姓名"
+                          @clear="comBranch" clearable style="width: 119px"></el-input>
+              </el-form-item>
+
               <span v-show="isVisible[1].child">
                 <el-form-item>
-                  <el-select v-model="dataForm.AccountId" placeholder="医生" clearable style="width: 100px">
+                  <el-select v-model="dataForm.AccountId" placeholder="选择医生" clearable style="width: 100px">
                     <el-option v-for="item in storeDoctorArr" :key="item.Id"
                                :label="`${item.Id} ${item.NickName}`" :value="item.Id"></el-option>
                   </el-select>
                 </el-form-item>
                 <el-form-item>
-                  <el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="患者/患者电话" clearable style="width: 119px"></el-input>
+                  <el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="患者/患者电话"
+                            clearable style="width: 119px"></el-input>
                 </el-form-item>
                 <!--<el-form-item>-->
                   <!--<el-input v-model="dataForm.MobilePhone" placeholder="患者电话" clearable style="width: 119px"></el-input>-->
@@ -112,7 +118,9 @@ export default {
         patientName: '', // 患者
         MobilePhone: '', // 电话 这几个信息只是父组件传递给子组件的查询字段而已
         StartDate: '',
-        EndDate: ''
+        EndDate: '',
+
+        doctorName: '' // 医生姓名search
       },
       isVisible: [
         {child: true},
@@ -135,12 +143,16 @@ export default {
         this.valueTime = null
         this.getStoreAllDoctor() // 门店切换时，获取对应门店下所有医生
         this.$nextTick(() => { // 等待watch那计算完毕才执行查询
-          if (this.isVisible[0].child === true) {
-            this.$refs.firstTab.getDataList()
-          } else {
-            this.$refs.secondTab.getDataList()
-          }
+          this.comBranch()
         })
+      }
+    },
+    // 共同的分支方法
+    comBranch () {
+      if (this.isVisible[0].child === true) {
+        this.$refs.firstTab.getDataList()
+      } else {
+        this.$refs.secondTab.getDataList()
       }
     },
     // 当门店改变时，获取门店下所有医生（只是给表头的查询下拉option赋初始值而已）

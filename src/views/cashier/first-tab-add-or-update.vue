@@ -82,101 +82,54 @@
 
         <!--打印层-->
         <div id="chenxiPrint" style="display: none">
-          <!--<div id="chenxiPrint">-->
-          <table width="100%" style="font-size: 12px">
-
-            <!--头部-->
+        <!--<div id="chenxiPrint">-->
+          <table width="100%" style="font-size: 12px;margin-top: -15px">
             <tbody>
             <tr>
-              <td>处方编号：<span v-text="registerAllData.Code"></span></td>
-              <td colspan="2" align="right">订单时间：<span v-text="registerAllData.CreatedOnTime"></span></td>
+              <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆一善堂中医门诊部收据</h3></td>
             </tr>
             <tr>
-              <td height="50" style="font-size: 20px;margin: 20px 0"><b>{{registerAllData.StoreName}}的处方笺</b></td>
-            </tr>
-            <tr height="26">
-              <td>患者信息：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</td>
-              <td width="50%">
-                <!--<p style="padding-left: 70px">科室：<span>{{registerAllData.DepartmentTypeName}}</span></p>-->
-              </td>
+              <td colspan="2" height="24">患者：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</td>
+              <td colspan="1" align="right" width="240">病历号：{{registerAllData.Code}}</td>
             </tr>
             <tr>
-              <td colspan="2">
-                <div style="position: relative;margin-left: 60px;border-bottom: 1px solid #333">
-                  <span style="position: absolute;bottom: 0;left: -60px; width: 60px">诊断结果：</span>
-                  <p style="margin-bottom: 3px;min-height: 20px">{{registerAllData.DiseaseInfo}}</p>
-                </div>
-              </td>
+              <td colspan="2" height="24">单据号：{{registerAllData.Code}}</td>
+              <td colspan="1" align="right" v-if="registerAllData.CreatedOnTime">打印时间：{{registerAllData.CreatedOnTime | myDateFilter('yyyy/MM/dd hh:mm:ss')}}</td>
             </tr>
             <tr>
-              <td v-if="registerAllData.SaleOrderItems">RP：{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}</td>
-              <td align="right" height="26">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</td>
+              <td colspan="3">医生：{{registerAllData.DoctorName}}</td>
             </tr>
-            </tbody>
 
-            <!--药材列表loop-->
-            <tbody>
-            <tr>
-              <td colspan="2">
-                <ul style="list-style-type: none;padding: 0;margin: 0;min-height: 260px;border-bottom: 1px solid #333;">
-                  <li v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId"
-                      style="float: left;width: 33%;text-align: center;height: 24px;line-height: 24px">
-                    <span style="display: inline-block;width: 70px;text-align: right;margin-right: 5px">{{item.ProductName}}</span>
-                    <span style="display: inline-block;">{{item.RefundableQty}}</span> {{item.Unit}}
-                  </li>
-                </ul>
-              </td>
+            <tr valign="bottom" style="font-size: 12px">
+              <td height="30">收费项目</td>
+              <td colspan="2"><p>金额
+                <span style="display: inline-block;width: 200px;text-align: right">收费方式</span></p></td>
             </tr>
-            </tbody>
+            <tr>
+              <td>挂号费</td>
+              <td colspan="2"><p>￥{{registerAllData.RegisterAmount}}
+                <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
+            </tr>
+            <tr>
+              <td>药品费</td>
+              <td colspan="2"><p>￥{{registerAllData.TotalAmount}}
+                <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
+            </tr>
+            <tr valign="bottom">
+              <td height="30"></td>
+              <td colspan="2"><p>
+                <span style="display: inline-block;width: 210px;text-align: right">{{registerAllData.PaymentWayName}}</span></p></td>
+            </tr>
 
-            <!--底部-->
-            <tbody>
             <tr>
-              <td colspan="2" height="26">
-                <div style="position: relative;margin-left: 36px">
-                  <span style="position: absolute;bottom: 0;left: -36px; width: 36px">帖数：</span>
-                  <p>一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.OrderAmount}}</p>
-                </div>
-              </td>
-            </tr>
-            <tr valign="top">
-              <td width="48%">
-                <div style="position: relative;margin-left: 36px">
-                  <span style="position: absolute;top: 0;left: -36px; width: 36px">用法：</span>
-                  <p style="min-height: 24px">{{registerAllData.DrugRate}}</p>
-                </div>
-              </td>
-              <td width="48%" style="margin-left: 4%">
-                <div style="position: relative;margin-left: 98px">
-                  <span style="position: absolute;top: 0;left: -48px; width: 48px">收货人：</span>
-                  <p style="min-height: 24px">{{registerAllData.UserName}} {{registerAllData.MobilePhone}}</p>
-                </div>
-              </td>
-            </tr>
-            <tr valign="top">
-              <td width="48%" height="24">
-                <div style="position: relative;margin-left: 36px">
-                  <span style="position: absolute;top: 0;left: -36px; width: 36px">医嘱：</span>
-                  <p style="min-height: 24px">{{registerAllData.DoctorAdvice}}</p>
-                </div>
-              </td>
-              <td width="48%" style="margin-left: 4%">
-                <div style="position: relative;margin-left: 96px">
-                  <span style="position: absolute;top: 0;left: -36px; width: 36px">地址：</span>
-                  <p style="min-height: 24px">{{registerAllData.Address}}</p>
-                </div>
-              </td>
+              <td colspan="3">合计：￥{{registerAllData.TotalAmount + registerAllData.RegisterAmount}}</td>
+              <!--<td colspan="2"><p>大写：{{registerAllData.RegisterAmount}}</p></td>-->
             </tr>
             <tr>
-
-              <!--签字-->
-            <tr>
-              <td height="26">医生：<span v-text="registerAllData.Code">{{registerAllData.DoctorName}}</span></td>
-              <td colspan="2"><p style="padding-left: 50px">审核：<span></span></p></td>
+              <td colspan="3">需开发票请于15日内开具，逾期不补! </td>
             </tr>
             <tr>
-              <td height="26">调配：<span></span></td>
-              <td colspan="2"><p style="padding-left: 50px">核发：<span></span></p></td>
+              <td colspan="3">收费人员：xx</td>
             </tr>
             </tbody>
           </table>
@@ -302,6 +255,7 @@
     <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="dataFormSubmitA()">确认收费并打印</el-button>
+        <el-button type="primary" @click="chenxiPrint()">打印</el-button>
         <el-button @click="visible = false">关闭</el-button>
       </span>
     </div>

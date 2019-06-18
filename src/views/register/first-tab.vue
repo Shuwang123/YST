@@ -91,7 +91,7 @@ export default {
         // id: this.fatherDataForm.AccountId,
         id: '',
         userName: '',
-        nickName: '',
+        nickName: this.fatherDataForm.doctorName, // 医生姓名search
         roleId: this.$store.getters.getAllDoctorIdArr.join(),
         canViewStores: this.$store.getters.getAccountCurrentHandleStore
       }

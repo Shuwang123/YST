@@ -87,13 +87,8 @@
                   </el-select>
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
-                <el-form-item label="挂号费" prop="RegisterAmount">
-                  <el-input v-model="dataForm.RegisterAmount" placeholder="挂号费"
-                            style="width: 85px" clearable :disabled="RegisterBool"></el-input> ￥
-                </el-form-item>
-              </el-col>
             </el-row>
+
             <!--第三行-->
             <el-row>
               <el-col :span="12">
@@ -105,29 +100,9 @@
                 </el-form-item>
               </el-col>
               <el-col :span="12">
-                <el-form-item label="诊疗费" prop="ConsultationAmount">
-                  <el-input v-model="dataForm.ConsultationAmount" placeholder="诊疗费"
-                            style="width: 85px" clearable :disabled="ConsultationBool"
-                            min="0"></el-input> ￥
-                </el-form-item>
-              </el-col>
-            </el-row>
-
-            <el-row style="margin-top: 10px;font-weight: 500; font-size: 16px">
-              <el-col :span="8">
-                <el-form-item label="总共金额">
-                  <el-input v-model="sum" placeholder="总金额" style="width: 100px" disabled size="small"></el-input> ￥
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="实收" prop="reality">
-                  <el-input @blur="realityBlur" v-model="dataForm.reality" style="width: 90px" clearable="" size="small" :disabled="shiji"></el-input> ￥
-                  <!--<el-input v-model="dataForm.reality" style="width: 90px" clearable="" size="small" :disabled="shiji"></el-input> ￥-->
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="找零" prop="give">
-                  <el-input v-model="dataForm.give" style="width: 90px" clearable size="small" :disabled="shiji"></el-input> ￥
+                <el-form-item label="挂号费" prop="RegisterAmount">
+                  <el-input v-model="dataForm.RegisterAmount" placeholder="挂号费"
+                            style="width: 85px" clearable :disabled="RegisterBool"></el-input> ￥
                 </el-form-item>
               </el-col>
             </el-row>
@@ -160,13 +135,16 @@ import '../common/icon/iconfont.css'
 import FirstPatientList from './first-patient-list'
 export default {
   components: { FirstPatientList },
-  computed: {
-    sum () { // Number('') === 0 === Number()
-      return Number(this.dataForm.RegisterAmount) + Number(this.dataForm.ConsultationAmount)
-    }
-  },
   watch: {
     'dataForm.RegisterAmount': function (newval, oldval) {
+      if (newval.replace(/\s/g, '').length !== newval.length) {
+        this.$alert('此处禁止填写‘空格’ ! ', '输入提示', {
+          confirmButtonText: '确定',
+          callback: () => {
+            this.dataForm.RegisterAmount = ''
+          }
+        })
+      }
       if (Number(newval) === 0) { return false }
       if (!this.regMoney.test(newval)) {
         this.$alert('你输入的金额不合规范! ', '输入提示', {
@@ -175,48 +153,6 @@ export default {
             this.dataForm.RegisterAmount = ''
           }
         })
-      }
-    },
-    'dataForm.ConsultationAmount': function (newval, oldval) {
-      if (Number(newval) === 0) { return false }
-      if (!this.regMoney.test(newval)) {
-        this.$alert('你输入的金额不合规范! ', '输入提示', {
-          confirmButtonText: '确定',
-          callback: () => {
-            this.dataForm.ConsultationAmount = ''
-          }
-        })
-      }
-    },
-    sum (newval, oldval) {
-      if (newval === 0) {
-        this.shiji = true
-        this.dataForm.reality = 0
-        this.dataForm.give = 0
-      } else if (newval > 0) {
-        this.shiji = false
-        this.dataForm.reality = ''
-        this.dataForm.give = ''
-      }
-    },
-
-    // 如果这儿有点懵逼，往下翻还有个实际收费输入框的blur的方法：realityBlur
-    'dataForm.reality': function (newval, oldval) {
-      if (Number(newval) === 0) { return false }
-      if (!this.regMoney.test(newval)) {
-        this.$alert('你输入的金额不合规范! ', '输入提示', {
-          confirmButtonText: '确定',
-          callback: () => {
-            this.dataForm.reality = ''
-            this.dataForm.give = ''
-            return false
-          }
-        })
-      }
-      if (Number(newval) < this.sum) {
-        return false
-      } else {
-        this.dataForm.give = Math.round((newval - this.sum) * 100) / 100 // 保留小数后两位
       }
     }
   },
@@ -247,8 +183,6 @@ export default {
         give: 0 // 找零
       },
       RegisterBool: false, // 禁用
-      ConsultationBool: true, // 禁用
-      shiji: true,
 
       dataList: null,
       addOrUpdateVisible: false,
@@ -267,16 +201,6 @@ export default {
           value: '只挂号',
           label: '只挂号'
         }
-        // , {
-        //   value: '挂号+诊疗',
-        //   label: '挂号+诊疗'
-        // }, {
-        //   value: '只诊疗',
-        //   label: '只诊疗'
-        // }, {
-        //   value: '疗程',
-        //   label: '疗程'
-        // }
       ],
       optionsPaymentType: [
         { // 患者支付类型
@@ -325,31 +249,11 @@ export default {
           this.dataForm.RegisterAmount = 0
           this.dataForm.ConsultationAmount = 0
           this.RegisterBool = true
-          this.ConsultationBool = true
           break
         case '只挂号':
           this.dataForm.RegisterAmount = ''
           this.dataForm.ConsultationAmount = 0
           this.RegisterBool = false
-          this.ConsultationBool = true
-          break
-        case '挂号+诊疗':
-          this.dataForm.RegisterAmount = ''
-          this.dataForm.ConsultationAmount = ''
-          this.RegisterBool = false
-          this.ConsultationBool = false
-          break
-        case '只诊疗':
-          this.dataForm.RegisterAmount = 0
-          this.dataForm.ConsultationAmount = ''
-          this.RegisterBool = true
-          this.ConsultationBool = false
-          break
-        case '疗程':
-          this.dataForm.RegisterAmount = 0
-          this.dataForm.ConsultationAmount = 0
-          this.RegisterBool = true
-          this.ConsultationBool = true
           break
       }
     },
@@ -371,25 +275,11 @@ export default {
         DiagnosisType: '1', // 看诊类型
         chargeType: '只挂号', // 收费类型（药房）
         RegisterAmount: '', // 挂号费
-        ConsultationAmount: 0, // 诊疗费
-        reality: 0, // 实收
-        give: 0 // 找零
+        ConsultationAmount: 0 // 诊疗费
       }
       this.RegisterBool = false // 禁用
-      this.ConsultationBool = true // 禁用
-      this.shiji = true
     },
-    realityBlur () {
-      if (Number(this.dataForm.reality) < this.sum) {
-        this.dataForm.reality = ''
-        this.dataForm.give = ''
-        this.$message({
-          type: 'error',
-          duration: '5000',
-          message: `提示: 实际的收费金额应 ≥ 挂号费!`
-        })
-      }
-    },
+
     // 表单提交
     dataFormSubmitA () {
       this.$refs['dataForm'].validate((valid) => {
