@@ -29,9 +29,9 @@
       <el-form-item label="规格" prop="Specification">
         <el-input v-model="dataForm.Specification" placeholder="x*x/g"></el-input>
       </el-form-item>
-      <el-form-item label="建议售价" prop="SalePrice">
-        <el-input v-model="dataForm.SalePrice" placeholder="小数点后只能必须写2位"></el-input>
-      </el-form-item>
+      <!--<el-form-item label="建议售价" prop="SalePrice">-->
+        <!--<el-input v-model="dataForm.SalePrice" placeholder="小数点后只能必须写2位"></el-input>-->
+      <!--</el-form-item>-->
       <el-form-item label="预警量" prop="RedLine">
         <el-input v-model="dataForm.RedLine" placeholder="预警量"></el-input>
       </el-form-item>
@@ -83,10 +83,15 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
+import {Currency, Letter, NumberInt, NumberFloat, pinyinChenXi} from '../../utils/validate'
 // import {treeDataTranslate} from '@/utils'
 export default {
-  components: {
+  components: {},
+  watch: {
+    'dataForm.ShowName': function (val, oldval) {
+      var pinyin = pinyinChenXi() // 这个方法会返回一个拼音相关的对象
+      this.dataForm.SpellName = pinyin.getCamelChars(val)
+    }
   },
   data () {
     return {
@@ -117,9 +122,9 @@ export default {
       dataRule: {
         Name: Currency('此为必填项'),
         ShowName: Currency('此为必填项'),
-        SpellName: Letter(1),
+        // SpellName: Letter(1),
         Unit: Currency('必选项'),
-        SalePrice: NumberFloat(),
+        // SalePrice: NumberFloat(),
         RedLine: NumberInt(),
         Keywords1: Letter(),
         Keywords3: Letter(),
@@ -147,7 +152,7 @@ export default {
                     SpellName: result.data.SpellName,
                     Unit: result.data.Unit,
                     Specification: result.data.Specification,
-                    SalePrice: result.data.SalePrice.toFixed(2),
+                    SalePrice: '',
                     RedLine: result.data.RedLine,
                     Keywords0: result.data.Keywords.split(',')[0],
                     Keywords1: result.data.Keywords.split(',')[1],
@@ -209,7 +214,7 @@ export default {
             SpellName: this.dataForm.SpellName,
             Unit: this.dataForm.Unit,
             Specification: this.dataForm.Specification,
-            SalePrice: this.dataForm.SalePrice,
+            SalePrice: '',
             RedLine: this.dataForm.RedLine,
             Keywords: [
               this.dataForm.Keywords0, this.dataForm.Keywords1,

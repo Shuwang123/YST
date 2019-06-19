@@ -1,3 +1,4 @@
+<script src="../../../../py.js"></script>
 <template>
   <div>
     <el-table-column prop="" label="操作1" width="" header-align="center" align="center">

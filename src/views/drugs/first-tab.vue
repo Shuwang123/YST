@@ -60,11 +60,11 @@
           <!--<span style="">{{scope.row.CostPrice.toFixed(2)}}</span>-->
         <!--</template>-->
       <!--</el-table-column>-->
-      <el-table-column header-align="center" align="center" label="零售价" min-width="70" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <span style="">{{scope.row.SalePrice.toFixed(2)}}</span>
-        </template>
-      </el-table-column>
+      <!--<el-table-column header-align="center" align="center" label="零售价" min-width="70" :show-overflow-tooltip="true">-->
+        <!--<template slot-scope="scope">-->
+          <!--<span style="">{{scope.row.SalePrice.toFixed(2)}}</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
 
       <!--<el-table-column prop="BrandName" header-align="center" align="center" label="物品" width="80" :show-overflow-tooltip="true"></el-table-column>-->
       <!--<el-table-column prop="StoreName" header-align="center" align="center" label="仓库" width="80" :show-overflow-tooltip="true"></el-table-column>-->
@@ -248,7 +248,7 @@ export default {
     },
     // 根据'未上架'状态和‘列标’，‘判断此列中的对应单元格’高亮还是暗色（返回的class是加载td上的，所以是一个一个的往td上加的就能控制，不像上面的行直接加给的tr，看清细节）
     ownColumnStyle ({row, column, rowIndex, columnIndex}) { // 0123开始columnIndex
-      if (columnIndex === 5 || columnIndex === 4 || columnIndex === 12) {
+      if (columnIndex === 5 || columnIndex === 4 || columnIndex === 11) {
         if (row.WebStatus === 1) {
           return 'highlightColumn'
         } else if (row.WebStatus === 2) {

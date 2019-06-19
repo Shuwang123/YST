@@ -767,7 +767,7 @@ export default {
     // 开方提交
     send () {
       if (this.leftTableData.length === 0) {
-        this.$alert(`处方添加药材，还不能提交给药房！`, '提示', {
+        this.$alert(`处方未添加药品，无法提交！`, '提示', {
           confirmButtonText: '确定',
           dangerouslyUseHTMLString: true,
           closeOnClickModal: true,
@@ -777,7 +777,7 @@ export default {
       } else if (this.leftTableData.some(item => {
         return item.myNum === undefined
       })) {
-        this.$alert(`药材未编辑数量，还不能提交！`, '提示', {
+        this.$alert(`药材未编辑数量，无法提交！`, '提示', {
           confirmButtonText: '确定',
           dangerouslyUseHTMLString: true,
           closeOnClickModal: true,
