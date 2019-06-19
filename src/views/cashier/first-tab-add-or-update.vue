@@ -45,7 +45,6 @@
         <!--footer height: 30px;line-height: 30px-->
         <el-row style="">
           <el-row style="height: 30px;line-height: 30px">
-            <!--<el-col :span="24">帖数：一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，挂号费 ￥{{registerAllData.RegisterAmount}}，诊疗费 ￥{{registerAllData.ConsultationAmount}}，总金额 ￥{{registerAllData.OrderAmount}}</el-col>-->
             <el-col :span="24">帖数：一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.OrderAmount}}</el-col>
           </el-row>
           <el-col :span="12">
@@ -67,7 +66,6 @@
               <el-col :span="24">收货人：{{registerAllData.UserName}} {{registerAllData.MobilePhone}}</el-col>
               <el-col :span="24">
                 <span style="display: inline-block;width: 20%;vertical-align: top;">地址：</span>
-                <!--<span style="display: inline-block;width: 76%;vertical-align: bottom;min-height: 20px;">先吃饭后吃药，加点水不放糖，水温50°，好好睡觉不要打游戏，不听的话你又要来看我</span>-->
                 <span style="display: inline-block;width: 76%;vertical-align: bottom;min-height: 20px;">{{registerAllData.Address}}</span>
               </el-col>
             </el-row>
@@ -152,7 +150,7 @@
           <div style="padding-left: 32px">
             <!--表头-->
             <el-row style="text-align: center; font-weight: 700; border: 1px solid #ccc; border-left: none; border-right: none;height: 35px;line-height: 35px">
-              <el-col :span="6">收费类型</el-col>
+              <el-col :span="6">收费项目</el-col>
               <el-col :span="6">合计</el-col>
               <el-col :span="6">收费状态</el-col>
               <el-col :span="6">操作</el-col>
@@ -164,12 +162,12 @@
               <el-col :span="6">{{registerAllData.RegisterStatusName ? registerAllData.RegisterStatusName : '无'}}</el-col>
               <el-col :span="6">- -</el-col>
             </el-row>
-            <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 30px;line-height: 30px;clear: both">
-              <el-col :span="6">诊疗费</el-col>
-              <el-col :span="6">{{registerAllData.ConsultationAmount}}￥</el-col>
-              <el-col :span="6">{{registerAllData.RegisterStatusName ? registerAllData.RegisterStatusName : '无'}}</el-col>
-              <el-col :span="6">- -</el-col>
-            </el-row>
+            <!--<el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 30px;line-height: 30px;clear: both">-->
+              <!--<el-col :span="6">诊疗费</el-col>-->
+              <!--<el-col :span="6">{{registerAllData.ConsultationAmount}}￥</el-col>-->
+              <!--<el-col :span="6">{{registerAllData.RegisterStatusName ? registerAllData.RegisterStatusName : '无'}}</el-col>-->
+              <!--<el-col :span="6">- -</el-col>-->
+            <!--</el-row>-->
             <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 30px;line-height: 30px;clear: both">
               <el-col :span="6">药费</el-col>
               <el-col :span="6">{{registerAllData.TotalAmount * registerAllData.Total}}￥</el-col>
@@ -184,8 +182,8 @@
           <el-form ref="dataForm" :rules="dataRule" :model="dataForm" label-width="70px" size="mini" :inline="true">
             <el-row style="margin-top: 30px;text-align: left;font-weight: 500; font-size: 16px">
               <el-col :span="12">
-                <el-form-item label="待收金额">
-                  <el-input v-model="residualPrice" placeholder="总金额" style="width: 100px" disabled size="small"></el-input>
+                <el-form-item label="药品费">
+                  <el-input v-model="residualPrice" style="width: 100px" disabled size="small"></el-input>
                 </el-form-item>
               </el-col>
               <el-col :span="12">
@@ -235,7 +233,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="实收" prop="reality">
+                <el-form-item label="实收">
                   <el-input @blur="realityBlur" v-model="dataForm.reality" style="width: 100px" size="small"></el-input>
                 </el-form-item>
               </el-col>
@@ -281,9 +279,7 @@ export default {
         give: '', // 找零
         PaymentWay: 1 // 支付方式
       },
-      dataRule: {
-        reality: Currency('此为必填项')
-      },
+      dataRule: {},// reality: Currency('此为必填项')
       optionsPaymentType: [ // 患者支付类型
         {
           value: 1,
@@ -297,6 +293,15 @@ export default {
         }, {
           value: 4,
           label: '银行卡'
+        }, {
+          value: 5,
+          label: '医保'
+        }, {
+          value: 6,
+          label: '会员卡'
+        }, {
+          value: 7,
+          label: '代金券'
         }
       ],
       dazhe: 1.00,
@@ -397,33 +402,33 @@ export default {
     dataFormSubmitA () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          if (this.dataForm.reality === 0 && this.residualPrice > 0) {
-            this.$alert('实收金额未填! ', '提示', {
-              confirmButtonText: '确定'
-            })
-            return false
-          }
-          var params = {
-            id: this.registerAllData.Id,
-            PaymentWay: this.dataForm.PaymentWay, // 支付方式
-            ActualAmount: this.residualPrice // 实收金额 this.dataForm.reality 不是这个
-          }
-          console.log(params)
-          API.register.cashierSubmit(params).then(result => {
-            if (result.code === '0000') {
-              this.$message({
-                message: `${'提交成功'}`,
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.visible = false
-                  this.$emit('refreshDataList')
-                }
-              })
-            } else {
-              this.$message.error(result.message)
-            }
-          })
+          // if (this.dataForm.reality === 0 && this.residualPrice > 0) {
+          //   this.$alert('实收金额未填! ', '提示', {
+          //     confirmButtonText: '确定'
+          //   })
+          //   return false
+          // }
+          // var params = {
+          //   id: this.registerAllData.Id,
+          //   PaymentWay: this.dataForm.PaymentWay, // 支付方式
+          //   ActualAmount: this.residualPrice // 实收金额 this.dataForm.reality 不是这个
+          // }
+          // console.log(params)
+          // API.register.cashierSubmit(params).then(result => {
+          //   if (result.code === '0000') {
+          //     this.$message({
+          //       message: `${'提交成功'}`,
+          //       type: 'success',
+          //       duration: 1500,
+          //       onClose: () => {
+          //         this.visible = false
+          //         this.$emit('refreshDataList')
+          //       }
+          //     })
+          //   } else {
+          //     this.$message.error(result.message)
+          //   }
+          // })
           this.chenxiPrint() // 提交后打印
         } else {
           this.$alert('实收金额未填! ', '提示', {

@@ -111,7 +111,7 @@
       </div>
       <div style="text-align: right; margin-top: 30px">
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="dataFormSubmitA()">挂号</el-button>
+          <el-button type="primary" @click="dataFormSubmit()">挂号</el-button>
           <!--<el-button type="primary" @click="dataFormAdd()">挂号不打印</el-button>-->
           <el-button @click="visible = false">取消</el-button>
         </span>
@@ -215,6 +215,15 @@ export default {
         }, {
           value: 4,
           label: '银行卡'
+        }, {
+          value: 5,
+          label: '医保'
+        }, {
+          value: 6,
+          label: '会员卡'
+        }, {
+          value: 7,
+          label: '代金券'
         }
       ]
     }
@@ -281,7 +290,7 @@ export default {
     },
 
     // 表单提交
-    dataFormSubmitA () {
+    dataFormSubmit () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var params = {
@@ -306,6 +315,8 @@ export default {
                 type: 'success',
                 duration: 3000
               })
+              // 在这写打印吧
+
               this.visible = false
             } else {
               this.$message.error(result.message)

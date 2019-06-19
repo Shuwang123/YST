@@ -829,8 +829,8 @@ export default {
             DiagnosisType: this.dataForm.DiagnosisType,
 
             RegisterStatus: '1', // 未支付
-            RegisterAmount: '',
-            ConsultationAmount: this.dataForm.ConsultationAmount,
+            RegisterAmount: this.dataForm.ConsultationAmount,
+            ConsultationAmount: 0,
             PaymentWay: '',
             Remark: '',
             DepartmentType: '',

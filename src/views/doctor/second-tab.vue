@@ -31,10 +31,10 @@
       </el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
       <!--<el-table-column header-align="center" align="center" label="挂号费 / 诊疗费" min-width="147">-->
-      <el-table-column header-align="center" align="left" label="总金额" min-width="147">
+      <el-table-column header-align="center" align="left" label="订单总价" min-width="147">
         <template slot-scope="scope">
-          <span>￥ {{scope.row.RegisterAmount}} / {{scope.row.ConsultationAmount}} / {{scope.row.OrderAmount}}</span>
-          <!--<span><span style="display: inline-block;width: 35px;text-align: right;margin-right: 5px">￥</span>{{scope.row.OrderAmount}}</span>-->
+          <!--<span>￥ {{scope.row.RegisterAmount}} / {{scope.row.ConsultationAmount}} / {{scope.row.OrderAmount}}</span>-->
+          <p><span style="display: inline-block;width: 45%;text-align: right;padding-right: 7px">￥</span>{{scope.row.OrderAmount.toFixed(2)}}</p>
         </template>
       </el-table-column>
       <el-table-column header-align="center" align="center" label="收费状态" min-width="190" :show-overflow-tooltip="true">

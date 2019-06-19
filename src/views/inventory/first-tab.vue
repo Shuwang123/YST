@@ -32,6 +32,7 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
+      <el-table-column prop="ProductId" header-align="left" align="left" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="CategoryName" header-align="center" align="center" label="药态" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ProductCode" header-align="center" align="center" label="药品编码" width="90"></el-table-column>
@@ -52,6 +53,11 @@
       <!--<el-table-column prop="SaleAmount" header-align="center" align="center" label="售价总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="RedLine" header-align="center" align="center" label="预警值" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="ProfitPercent" header-align="center" align="center" label="毛利" width="100" :show-overflow-tooltip="true"></el-table-column>-->
+      <el-table-column header-align="center" align="center" label="操作" min-width="80" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <el-button type="text" @click="addOrUpdateHandle(scope.row)">编辑</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <el-pagination
       @size-change="sizeChangeHandle"
@@ -71,6 +77,7 @@ import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import { mapGetters } from 'vuex'
 export default {
   name: 'stockFirst',
+  components: { FirstTabAddOrUpdate },
   props: ['fatherDataForm'],
   data () {
     return {
@@ -82,8 +89,8 @@ export default {
       IsPaging: true,
 
       OrderArr: [
-        {text: '库存从大-->小', val: 'Quantity'},
-        {text: '暂用量或可使用量排序', val: 'OccupyQuantityUsableQuantity'}
+        {text: '库存从大到小', val: 'Quantity'},
+        {text: '可使用量排序', val: 'OccupyQuantityUsableQuantity'}
       ], // 先请求供应商数组
       dataForm: {
         RedLine: '',
@@ -95,7 +102,6 @@ export default {
       dataListSelections: []
     }
   },
-  components: { FirstTabAddOrUpdate },
   mounted () {
     window.onresize = () => {
       this.chenxiHeight = document.documentElement['clientHeight'] - 303 // 273 测试老半天
@@ -147,12 +153,12 @@ export default {
       this.pageIndex = val
       this.getDataList()
     },
-    // addOrUpdateHandle (id, type) {
-    //   this.addOrUpdateVisible = true
-    //   this.$nextTick(() => {
-    //     this.$refs.addOrUpdate.init(id, type)
-    //   })
-    // },
+    addOrUpdateHandle (row) {
+      this.addOrUpdateVisible = true
+      this.$nextTick(() => {
+        this.$refs.addOrUpdate.init(row)
+      })
+    },
     handelDelete (id) {
       this.$confirm(`确定对[id=${id}]的行导出excel表格吗?`, '提示', {
         confirmButtonText: '确定',
@@ -166,5 +172,12 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-
+.storeStock-first-tab /deep/ {
+  .el-dialog__body {
+    padding: 30px 50px;
+  }
+  p span {
+    font-weight: 700;
+  }
+}
 </style>

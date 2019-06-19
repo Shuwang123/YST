@@ -5,7 +5,7 @@
         <el-input v-model="dataForm.drugsName" placeholder="药名" clearable style="width: 150px"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.drugsSpell" placeholder="拼音" clearable style="width: 150px"></el-input>
+        <el-input v-model="dataForm.drugsSpell" placeholder="请输入拼音首字母" clearable style="width: 150px"></el-input>
       </el-form-item>
       <el-form-item>
         <el-select v-model="dataForm.CategoryId" placeholder="药品种类" clearable style="width: 110px">

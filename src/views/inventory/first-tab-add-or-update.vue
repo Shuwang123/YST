@@ -1,131 +1,40 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'采购单详情'" :width="isAddActive === false ? '60%' : '85%'"
+    :title="'门店库存调价'" :width="'667px'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
-    <!--<el-col><div style="border-top: 1px dashed #ccc;padding-top: 10px;font-weight: 900">别名（选填）</div></el-col>-->
-    <el-container>
-      <el-aside :width="isAddActive === false ? '100%' : '60%'">
-        <div class="ownScrollbar" style="min-height: 500px;max-height: 500px;overflow-y: scroll;">
-          <el-row>
-            <el-col style="padding: 0 50px">
-              <el-steps :active="stepActive" process-status="success" finish-status="success" align-center>
-                <el-step title="待收货(已创建采购单)" description="录入实际到货量和采购价格"></el-step>
-                <el-step title="未入库" description="药房录入商品批次号"></el-step>
-                <el-step title="已入库" description="整个采购计划已完毕"></el-step>
-              </el-steps>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8"><p>采购人：<span v-if="dataList !== null">{{dataList.CreatedByName}}</span></p></el-col>
-            <el-col :span="8"><p>供应商：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
-            <el-col :span="8">
-              <p style="width: 190px;">门店：
-                <span v-if="dataList !== null"
-                  style="display: inline-block; vertical-align: bottom; width: 134px; overflow: hidden; text-overflow:ellipsis;white-space:nowrap;">
-                {{dataList.StoreName}}
-              </span>
-              </p>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="8"><p>联系人：<span v-if="dataList !== null">{{dataList.Buyer}}</span></p></el-col>
-            <el-col :span="8"><p>电话：<span v-if="dataList !== null">{{dataList.Phone}}</span></p></el-col>
-            <el-col :span="8"><p>地址：<span v-if="dataList !== null">{{dataList.Address}}</span></p></el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="16"><p>创建时间：<span v-if="dataList !== null">{{dataList.CreatedTime}}</span></p></el-col>
-            <el-col :span="8"><p>备注：<span v-if="dataList !== null">{{dataList.Remark}}</span></p></el-col>
-          </el-row>
-          <el-row>
-            <el-col><div style="padding-top: 5px;font-weight: 900;color: #1CA579">药品：<b v-text="categoryName"></b></div></el-col>
-          </el-row>
+    <div class="ownScrollbar" v-loading="dataListLoading" style="min-height: 400px;max-height: 400px;overflow-y: scroll;">
+      <div v-if="dataList.length > 0">
+        <el-row style="height: 35px;line-height: 35px">
+          <el-col :span="24">
+            <p style="width: 190px;"><span>门店：</span>{{dataList[0].StoreName}}</p>
+          </el-col>
+          <el-col :span="24"><p><span>商品编码：</span>{{dataList[0].ProductCode}}</p></el-col>
+        </el-row>
+        <el-row style="height: 35px;line-height: 35px">
+          <el-col :span="8"><p><span>药材名称：</span>{{dataList[0].ProductName}}</p></el-col>
+          <el-col :span="8"><p><span>药材拼音：</span>{{dataList[0].SpellName}}</p></el-col>
+          <el-col :span="8"><p><span>余量：</span>{{dataList[0].Quantity}}</p></el-col>
+        </el-row>
+        <el-row style="height: 35px;line-height: 35px">
+          <el-col :span="8"><p><span>规格：</span>{{dataList[0].Specification}}</p></el-col>
+          <el-col :span="8"><p><span>预警值：</span>{{dataList[0].RedLine}}</p></el-col>
+          <el-col :span="8"><p><span>售价：</span>{{dataList[0].StoreSalePrice}}</p></el-col>
+          <el-col :span="8" :offset="16">修改售价：
+            <el-input @blur="salePriceBlur()" v-model="dataForm.SalePrice" style="width: 100px" size="small"></el-input>
+          </el-col>
+        </el-row>
+        <!--<el-row>-->
+        <!--<el-col :span="24"><p>修改时间：<span>{{dataList.CreatedTime}}</span></p></el-col>-->
+        <!--<el-col :span="24"><p>操作人：<span>{{dataList.Remark}}</span></p></el-col>-->
+        <!--</el-row>-->
+      </div>
+    </div>
 
-          <el-table  v-if="dataList !== null" :key="Math.random()"
-                     :data="dataList.Items"
-                     stripe
-                     v-loading="dataListLoading"
-                     row-class-name="purchaseListRow"
-                     :header-cell-style="$cxObj.tableHeaderStyle40px"
-                     style="width: 100%;">
-            <el-table-column type="index" align="center" label="序号" width="50"></el-table-column>
-            <el-table-column prop="ProductId" align="center" label="商品" width="50"></el-table-column>
-            <!--<el-table-column prop="Id" align="center" label="ID" width="50"></el-table-column>-->
-            <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称"></el-table-column>
-            <el-table-column prop="CategoryName" header-align="center" align="center" label="药态"></el-table-column>
-
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="采购数量" width="120">
-              <template slot-scope="scope">
-                <el-input-number v-model="scope.row.Quantity" :step="1" :min="1" :max="1000" size="mini" controls-position="right" style="width: 105px"></el-input-number>
-              </template>
-            </el-table-column>
-            <el-table-column v-else :key="Math.random()" prop="Quantity" header-align="center" align="center" label="采购数量"></el-table-column>
-
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="采购价格" width="110">
-              <template slot-scope="scope">
-                <el-input-number v-model="scope.row.CostPrice" :precision="2" :step="0.01" :min="0.01" :max="1000" size="mini" controls-position="right" style="width: 100px"></el-input-number>
-              </template>
-            </el-table-column>
-            <el-table-column v-else prop="CostPrice" header-align="center" align="center" label="采购价格"></el-table-column>
-
-            <!--<el-table-column prop="Amount" header-align="center" align="center" label="总价"></el-table-column>-->
-            <el-table-column v-if="editType === 'B'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="批号填写" width="150">
-              <template slot-scope="scope">
-                <el-input v-model="scope.row.ProductBatchNo" placeholder="批号录入" size="mini"></el-input>
-                <!--<el-input-number v-model="scope.row.ProductBatchNo" :step="1" :min="0" :max="10000" size="mini" controls-position="right"></el-input-number>-->
-              </template>
-            </el-table-column>
-            <el-table-column v-if="dataList.Status === 10" prop="ProductBatchNo" header-align="center" align="center" label="批号"></el-table-column>
-            <el-table-column v-if="editType === 'A'" prop="" label="操作" width="50" header-align="center" align="center">
-              <template slot-scope="scope">
-                <el-button type="text" @click="leftRemove(scope.row.ProductId)">移除</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
-      </el-aside>
-
-      <el-main v-if="isAddActive" style="padding: 0 0 0 5px !important; border-left: 1px solid #E6E6E6">
-        <!--<el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="0" :inline="true">-->
-        <el-form class="purchaseListInfo" :model="dataForm" ref="dataForm" label-width="0" :inline="true">
-          <el-form-item label="" prop="SpellName">
-            <el-input v-model="dataForm.SpellName" placeholder="拼音搜索" size="mini" clearable>
-              <el-button slot="append" icon="el-icon-search" @click="drugsSearch()"></el-button>
-            </el-input>
-          </el-form-item>
-          <!--@selection-change="selectionChangeHandle"-->
-          <!--<el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>-->
-          <el-table
-            :data="dataListAdd" ref="tableChild" :key="Math.random()"
-            stripe
-            :height="450"
-            v-loading="dataListLoading"
-            :header-cell-style="$cxObj.tableHeaderStyle40px"
-            row-class-name="purchaseTableRowClass"
-            style="width: 100%;">
-            <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
-            <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="90" label="商品编码" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="CategoryName" header-align="center" :align="$store.state.common.align" width="" label="药态" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="ShowName" header-align="center" :align="$store.state.common.align" label="药名" width="70" :show-overflow-tooltip="true"></el-table-column>
-            <!--<el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>-->
-            <!--<el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->
-            <!--<el-table-column prop="RedLine" header-align="center" :align="$store.state.common.align" label="预警量" :show-overflow-tooltip="true"></el-table-column>-->
-            <el-table-column prop="Quantity" header-align="center" :align="$store.state.common.align" label="库存" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="" label="操作" width="50" header-align="center" align="center">
-              <template slot-scope="scope">
-                <el-button type="text" @click="rightAdd(scope.row)">添加</el-button>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-form>
-      </el-main>
-    </el-container>
-    <span v-if="editType !== ''" slot="footer" class="dialog-footer">
+    <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
-      <el-button v-if="editType === 'A'" type="primary" @click="dataFormAdd()">新增药材</el-button>
-      <el-button v-if="editType === 'A'" type="primary" @click="dataFormSubmitA()">保存</el-button>
-      <el-button v-else-if="editType === 'B'" type="primary" @click="dataFormSubmitB()">确定入库</el-button>
+      <el-button type="primary" @click="dataFormSubmit()">提交</el-button>
     </span>
   </el-dialog>
 </template>
@@ -134,224 +43,99 @@ import API from '@/api'
 import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
 // import {treeDataTranslate} from '@/utils'
 export default {
-  components: {
+  watch: {
+    'dataForm.SalePrice': function (newval, oldval) {
+      // console.log(newval)
+      if (newval.replace(/\s/g, '').length !== newval.length) {
+        this.$alert('此处禁止填写‘空格’ ! ', '输入提示', {
+          confirmButtonText: '确定',
+          callback: () => {
+            this.dataForm.SalePrice = ''
+          }
+        })
+      }
+      if (Number(newval) === 0) { return false }
+
+      if (!this.ownReg.test(newval)) {
+        this.$alert('你输入的金额不合规范! ', '输入提示', {
+          confirmButtonText: '确定',
+          callback: () => {
+            this.dataForm.SalePrice = ''
+          }
+        })
+      }
+    }
   },
   data () {
     return {
-      stepActive: -1,
       visible: false,
       dataListLoading: false, // 加载
-      Id: '',
-      dataForm: {
-        SpellName: ''
-      },
-      dataList: null,
-      editType: '', // 这个状态A表示待收货的编辑、B表示未入库的编辑、其他的表示查看
-      categoryName: '',
-      categoryId: '',
 
-      isAddActive: false,
-      dataListAdd: []
+      ownReg: /^\d+\.?\d{0,2}$/,
+      dataList: [],
+      dataForm: {
+        SalePrice: 0
+      }
     }
   },
   methods: {
-    comFunction () {
-      // 这儿请求起点药材的接口要改成，请求对应门店库存的接口 后来 又改回老接口了
-      API.drugs.getDrugsList({
-        Name: '',
-        PageIndex: 1,
-        PageSize: 10000,
-        IsPaging: 'false',
-        SpellName: this.dataForm.SpellName,
-        CategoryId: this.categoryId,
-        StoreId: this.dataList.StoreId,
-        CodeOrBarCode: ''
-      }).then(result => {
-        if (result.code === '0000') {
-          this.dataListAdd = result.data
-          this.dataList.Items.forEach(item0 => {
-            this.dataListAdd = this.dataListAdd.filter(item => {
-              return item0.ProductCode !== item.Code
-            })
-          })
-        } else {
-          this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
-        }
-      })
-    },
-    // 先初始化 右边 待添加的药材列表
-    dataFormAdd () {
-      this.isAddActive = !this.isAddActive // 点击'[添加药材]'按钮
-      if (this.isAddActive === false) {
-        return false
-      }
-      this.comFunction()
-    },
-    leftRemove (ProductId) {
-      this.dataList.Items = this.dataList.Items.filter(item => {
-        return item.ProductId !== ProductId
-      })
-      if (this.isAddActive === true) {
-        this.comFunction()
-      }
-    },
-    rightAdd (row) {
-      // 这为什么要发个请求呢，看起来没必要，但其实左右el-table的详情展示不同（来源的接口也不同），右边无法直接传递自己的值给左边
-      API.drugs.getDrugsList({name: '', PageIndex: 1, PageSize: 10000, IsPaging: 'false', SpellName: this.dataForm.SpellName, CategoryId: this.categoryId}).then(result => {
-        if (result.code === '0000') {
-          result.data.forEach(item => {
-            if (item.Code === row.Code) {
-              // this.dataList.Items.push(item) // 左边右边的table中row的详情不一样，脑壳大……
-              this.dataList.Items.push({
-                Id: '', // 这个明细id啥时候才起作用 CategoryName
-                ProductId: item.Id, // need 这儿为什么需要商品id而不需要明细id
-                SapProductCode: item.Code, // need
-                ProductCode: item.Code, // need
-                ProductName: item.ShowName, // need
-                Specification: null,
-                Unit: 'g',
-                CostPrice: item.SalePrice, // need
-                SalePrice: 0,
-                Preferential: 0,
-                CategoryId: '',
-                CategoryName: item.CategoryName, // need
-                Quantity: item.Quantity, // need
-                Amount: 0.33,
-                ActualShipAmount: 0,
-                ActualAmount: 0,
-                ActualShipQuantity: 0,
-                ActualQuantity: 0,
-                BgColor: 'bg-danger',
-                SupplierId: 0, // ???取不到哦
-                SupplierCode: null, // ???取不到哦
-                SupplierName: null,
-                InventoryQuantity: 0,
-                BatchNo: 0,
-                ProductBatchNo: null,
-                CargoFee: 0,
-                Pictures: [
-                  '/Content/AdminLTE/img/default-50x50.gif',
-                  '/Content/AdminLTE/img/default-50x50.gif',
-                  '/Content/AdminLTE/img/default-50x50.gif'
-                ],
-                StoreId: '', // ???取不到哦,这个貌似确定取不到
-                SapStoreCode: null,
-                ShippedQuantityByInventory: 0,
-                ShippedQuantityByFactory: 0,
-                ActualOrderQuantity: 0
-              })
-              console.log(this.dataList.Items)
-              return false
-            }
-          })
-          this.$nextTick(() => {
-            console.log('这儿没执行？')
-            if (this.isAddActive === true) {
-              this.comFunction()
-            }
-          })
-        }
-      })
-    },
-    // 获取某个采购单详情info
-    init (id, type) {
+
+    // 根据药品的编码，获取某个药品的info，虽然最后是改商品的售价
+    init (row) {
       this.visible = true
-      this.dataListLoading = true
-      this.editType = type !== undefined ? type : '' // A B 不同编辑类型页面会展示不同的input和‘按钮’
-      if (id !== undefined) {
-        API.purchase.getPurchaseInfo({id: id}).then(result => {
-          if (result.code === '0000') {
-            this.dataList = result.data
-            this.categoryId = this.dataList.Items[0].CategoryId
-            this.categoryName = this.dataList.Items[0].CategoryName // 返回的采购单详情里每个药材对象中都包含药态，所以这儿取下巧
-            switch (result.data.Status) {
-              case -1:
-                this.stepActive = -1
-                break
-              case 1:
-                this.stepActive = 0
-                break
-              case 4:
-                this.stepActive = 1
-                break
-              case 10:
-                this.stepActive = 2
-                break
-            }
-            this.dataListLoading = false
-          }
-        })
+      var params = {
+        PageIndex: 1,
+        PageSize: 10,
+        IsPaging: true,
+        StoreId: this.$store.getters.getAccountCurrentHandleStore,
+        ProductCodeOrBarCode: row.ProductCode,
+        ProductName: '',
+        SpellName: '',
+        Order: '',
+        BrandId: '',
+        RedLine: '',
+        CategoryId: String(row.CategoryId)
       }
+      this.dataListLoading = true
+      API.storeStock.getStoreStock(params).then(result => {
+        if (result.code === '0000') {
+          this.dataList = result.data
+          this.dataForm.SalePrice = result.data[0].StoreSalePrice
+          console.log('陈希', result.data)
+          this.dataListLoading = false
+        }
+      })
     },
     handleClose () {
-      this.editType = ''
-      this.isAddActive = false
-    },
-    dataFormSubmitA () { // 编辑的提交 采购数量和价格
-      var params = {
-        Address: this.dataList.Address,
-        Buyer: this.dataList.Buyer,
-        Phone: this.dataList.Phone,
-        OrderType: this.dataList.OrderType,
-        Remark: this.dataList.Remark,
-        StoreId: this.dataList.StoreId,
-        StoreCode: this.dataList.StoreCode,
-        Id: this.dataList.Id,
-        SupplierId: this.dataList.SupplierId,
-        SupplierCode: this.dataList.SupplierCode,
-        Items: JSON.stringify(this.dataList.Items.map(item => {
-          return {
-            ProductId: item.ProductId,
-            CostPrice: item.CostPrice,
-            Quantity: item.Quantity,
-            SapProductCode: item.SapProductCode,
-            SupplierId: this.dataList.SupplierId,
-            SupplierCode: this.dataList.SupplierCode // 这儿接口9返回的item.SupplierId用为零，导致不得不去获取总表的那个返回值
-          }
-          // [{\"ProductId\":23,\"CostPrice\":0,\"Quantity\":3,\"SapProductCode\":\"10000109\",\"SupplierId\":1,\"SupplierCode\":\"6006\"}
-        }))
+      this.dataList = []
+      this.dataForm = {
+        SalePrice: 0
       }
-      console.log(params)
-      API.purchase.editNumberAndPrice(params).then(result => {
-        if (result.code === '0000') {
-          this.$message({
-            type: 'success',
-            message: `编辑${result.message}`,
-            duration: 1000
-          })
-          this.$emit('refreshDataList')
-          this.visible = false
-        } else {
-          this.$message({
-            type: 'error',
-            message: `${result.message}`,
-            duration: 1000
-          })
-        }
-      })
     },
-    dataFormSubmitB () { // 入库的提交 批次号
-      if (this.dataList.Items.some(item => item.ProductBatchNo === 0 || item.ProductBatchNo === '' || item.ProductBatchNo === null)) {
-        this.$alert('请把批次号填完!', '提示', {
-          confirmButtonText: '确定'
+    salePriceBlur () {
+      if (Number(this.dataForm.SalePrice) === 0 && this.dataForm.SalePrice.trim() !== '') {
+        this.$alert('售价不能为0! ', '输入提示', {
+          confirmButtonText: '确定',
+          callback: () => {
+            this.dataForm.SalePrice = ''
+          }
+        })
+      }
+    },
+    // 提交商品新的售价
+    dataFormSubmit () {
+      if (this.dataForm.SalePrice === '') {
+        this.$alert('未输入售价! ', '输入提示', {
+          confirmButtonText: '确定',
         })
         return false
       }
       var params = {
-        Code: this.dataList.Code,
-        Id: this.dataList.Id,
-        Remark: this.dataList.Remark,
-        Items: JSON.stringify(this.dataList.Items.map(item => {
-          return {
-            Id: item.Id, // 这是详情id，上面那个A的是药材ID
-            ActualQuantity: item.Quantity,
-            productBatchNo: item.ProductBatchNo
-          }
-          // "[{\"Id\":96,\"ActualQuantity\":1,\"productBatchNo\":123123}, ]       }))
-        }))
+        id: this.dataList[0].ProductId,
+        storeSalePrice: Number(this.dataForm.SalePrice)
       }
       console.log(params)
-      API.purchase.editBatchNo(params).then(result => {
+      API.storeStock.editStoreStockSalePrice(params).then(result => {
         if (result.code === '0000') {
           this.$message({
             type: 'success',
@@ -360,15 +144,10 @@ export default {
           })
           this.$emit('refreshDataList')
           this.visible = false
-        } else {
-          this.$message({
-            type: 'error',
-            message: `${result.message}`,
-            duration: 1000
-          })
         }
       })
     }
+
   }
 }
 </script>
