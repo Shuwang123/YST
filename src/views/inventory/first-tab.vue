@@ -76,10 +76,10 @@
       <el-table-column header-align="center" align="center" label="门店售价" min-width="139" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <el-input-number v-if="scope.row.isDblclick===true"
-                           @blur="tableInputBlur(scope.row.Id, scope.row.StoreSalePrice)"
+                           @blur="tableInputBlur(scope.row)"
                            v-model="scope.row.StoreSalePrice" :precision="2"
                            :min="0.10" :step="0.01" :max="10000" size="mini"></el-input-number>
-          <span v-else>{{scope.row.StoreSalePrice}}</span>
+          <span v-else>{{Number(scope.row.StoreSalePrice).toFixed(2)}}</span>
         </template>
       </el-table-column>
 
@@ -195,30 +195,31 @@ export default {
     },
     // 某个单元格上双击时
     anyCellDblclick (row, column, cell, event) {
-      console.log(row, column, cell, event)
+      // console.log(row, column, cell, event)
+      if (column.label !== '门店售价') { return false }
       this.dataList.forEach(item => {
         if (item.ProductCode === row.ProductCode) {
           item.isDblclick = true
         }
       })
-      this.dataList.push() // this.$refs.xx.doLayout() 双击后重新渲染，触发表格的重新布局
+      this.dataList.push() // 双击后重新渲染，触发表格的重新布局
     },
-    tableInputBlur (Id, price) {
+    tableInputBlur (row) {
       // 先刷新前端的页面
-      this.dataList.forEach(item => {
-        if (item.Id === Id) { item.isDblclick = false }
-      })
+      this.$set(row, 'isDblclick', false)
+      // this.dataList.forEach(item => {
+      //   if (item.Id === row.Id) { item.isDblclick = false }
+      // })
       this.dataList.push()
 
       // 上面只是前端页面临时数据渲染了，其实服务器还没有更新的，之后悄悄的请求一次服务器
-      API.storeStock.editStoreStockSalePrice({id: Id, storeSalePrice: price}).then(result => {
+      API.storeStock.editStoreStockSalePrice({id: row.Id, storeSalePrice: row.StoreSalePrice}).then(result => {
         if (result.code === '0000') {
           this.$message({
             type: 'success',
             message: `操作成功`,
             duration: 3000
-          })
-          // this.getDataList()
+          }) // this.getDataList()
         }
       })
     },
