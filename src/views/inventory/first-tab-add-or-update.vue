@@ -46,7 +46,7 @@ export default {
   watch: {
     'dataForm.SalePrice': function (newval, oldval) {
       // console.log(newval)
-      if (newval.replace(/\s/g, '').length !== newval.length) {
+      if (String(newval).replace(/\s/g, '').length !== String(newval).length) {
         this.$alert('此处禁止填写‘空格’ ! ', '输入提示', {
           confirmButtonText: '确定',
           callback: () => {
@@ -101,7 +101,7 @@ export default {
         if (result.code === '0000') {
           this.dataList = result.data
           this.dataForm.SalePrice = result.data[0].StoreSalePrice
-          console.log('陈希', result.data)
+          // console.log('陈希', result.data)
           this.dataListLoading = false
         }
       })
@@ -126,12 +126,12 @@ export default {
     dataFormSubmit () {
       if (this.dataForm.SalePrice === '') {
         this.$alert('未输入售价! ', '输入提示', {
-          confirmButtonText: '确定',
+          confirmButtonText: '确定'
         })
         return false
       }
       var params = {
-        id: this.dataList[0].ProductId,
+        id: this.dataList[0].Id,
         storeSalePrice: Number(this.dataForm.SalePrice)
       }
       console.log(params)

@@ -27,9 +27,9 @@
         </template>
       </el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="挂号费 / 诊疗费" min-width="119">
+      <el-table-column header-align="center" align="left" label="挂号费" min-width="147">
         <template slot-scope="scope">
-          <span>￥ {{scope.row.RegisterAmount}} + {{scope.row.ConsultationAmount}}</span>
+          <p><span style="display: inline-block;width: 45%;text-align: right;padding-right: 7px">￥</span>{{scope.row.RegisterAmount}}</p>
         </template>
       </el-table-column>
       <el-table-column header-align="center" align="center" label="收费状态" min-width="190">

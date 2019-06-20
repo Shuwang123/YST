@@ -26,32 +26,65 @@
       @selection-change="selectionChangeHandle"
       :height="chenxiHeight"
       :data="dataList"
-      border stripe
+      border stripe highlight-current-row @current-change="handleCurrentChange"
       v-loading="dataListLoading"
       row-class-name="storeStockListRow"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
-      style="width: 100%;">
+      style="width: 100%;"
+      @filter-change="tableColumnFilter" :default-sort = "{prop: 'Quantity', order: 'descending',
+                                                           prop: 'RedLine', order: 'descending'}"
+      @cell-dblclick="anyCellDblclick">
+      <el-table-column type="expand">
+        <template slot-scope="scope">
+          <el-form label-position="left" inline class="demo-table-expand">
+            <el-form-item label="门店："><span>{{ scope.row.StoreName }}</span></el-form-item>
+            <el-form-item label="药品编码："><span>{{ scope.row.ProductCode }}</span></el-form-item>
+            <el-form-item label="药名："><span>{{ scope.row.ProductName }}</span></el-form-item>
+            <el-form-item label="余量："><span>{{ scope.row.Quantity }}</span></el-form-item>
+            <el-form-item label="单价："><span>{{ scope.row.StoreSalePrice }}</span></el-form-item>
+            <el-form-item label="预警值："><span>{{ scope.row.RedLine }}</span></el-form-item>
+            <el-form-item label="药态："><span>{{ scope.row.CategoryName }}</span></el-form-item>
+          </el-form>
+        </template>
+      </el-table-column>
       <el-table-column type="selection" align="center" width="50"></el-table-column>
-      <el-table-column prop="ProductId" header-align="left" align="left" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="CategoryName" header-align="center" align="center" label="药态" width="70" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="CategoryName" header-align="center" align="center"
+                       label="药态" width="70" :show-overflow-tooltip="true"
+
+                       column-key="CategoryId"
+                       :filters="categoryTypeArr" :filter-multiple="false"
+                       filter-placement="bottom">
+                       <!--:filter-method="filterHandler"-->
+      </el-table-column>
       <el-table-column prop="ProductCode" header-align="center" align="center" label="药品编码" width="90"></el-table-column>
       <el-table-column prop="ProductName" header-align="center" align="center" label="药名" min-width="80"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧？所以厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
 
-      <el-table-column prop="Quantity" header-align="center" align="center" label="库存 (余量)" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Quantity" header-align="center" align="center" label="库存 (余量)" sortable width="120" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="OccupyQuantity" header-align="center" align="center" label="锁定" min-width="80"></el-table-column>
       <el-table-column prop="UsableQuantity" header-align="center" align="center" label="可用" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="AvgCostPrice" header-align="center" align="center" label="成本 (avg)" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="成本 (avg)" min-width="80" :show-overflow-tooltip="true">
+      <el-table-column header-align="center" align="center" label="成本 (avg)" width="120" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{scope.row.AvgCostPrice.toFixed(2)}}</span>
         </template>
       </el-table-column>
       <!--<el-table-column prop="Amount" header-align="center" align="center" label="成本总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column prop="StoreSalePrice" header-align="center" align="center" label="门店售价" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+
+      <!--<el-table-column prop="StoreSalePrice" header-align="center" align="center" label="门店售价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
+      <el-table-column header-align="center" align="center" label="门店售价" min-width="139" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <el-input-number v-if="scope.row.isDblclick===true"
+                           @blur="tableInputBlur(scope.row.Id, scope.row.StoreSalePrice)"
+                           v-model="scope.row.StoreSalePrice" :precision="2"
+                           :min="0.10" :step="0.01" :max="10000" size="mini"></el-input-number>
+          <span v-else>{{scope.row.StoreSalePrice}}</span>
+        </template>
+      </el-table-column>
+
       <!--<el-table-column prop="SaleAmount" header-align="center" align="center" label="售价总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column prop="RedLine" header-align="center" align="center" label="预警值" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="RedLine" header-align="center" align="center" label="预警值" sortable width="100" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="ProfitPercent" header-align="center" align="center" label="毛利" width="100" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column header-align="center" align="center" label="操作" min-width="80" :show-overflow-tooltip="true">
         <template slot-scope="scope">
@@ -63,7 +96,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[10, 17, 20, 50, 100]"
+      :page-sizes="[20, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
@@ -85,7 +118,7 @@ export default {
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
       pageIndex: 1,
-      pageSize: 17,
+      pageSize: 20,
       IsPaging: true,
 
       OrderArr: [
@@ -93,13 +126,15 @@ export default {
         {text: '可使用量排序', val: 'OccupyQuantityUsableQuantity'}
       ], // 先请求供应商数组
       dataForm: {
+        CategoryId: '',
         RedLine: '',
         BrandId: '', // 品牌ID
         Order: '' // 按照分别按照Quantity, OccupyQuantityUsableQuantity排序
       },
       dataList: [],
       totalPage: 1,
-      dataListSelections: []
+      dataListSelections: [],
+      categoryTypeArr: []
     }
   },
   mounted () {
@@ -113,7 +148,6 @@ export default {
     },
     getDataList () {
       this.dataListLoading = true
-      console.log('有问题没这儿')
       var params = {
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
@@ -125,7 +159,7 @@ export default {
 
         // SupplierId: this.dataForm.SupplierId, // 供应商
         RedLine: this.dataForm.RedLine,
-        CategoryId: this.fatherDataForm.CategoryId === '10' ? '' : this.fatherDataForm.CategoryId,
+        CategoryId: this.dataForm.CategoryId,
         BrandId: this.dataForm.BrandId,
         Order: this.dataForm.Order
       }
@@ -133,12 +167,71 @@ export default {
         if (result.code === '0000') {
           this.dataList = result.data
           this.totalPage = result.total
-        } else {
-          this.$message.error(result.message)
+
+          API.drugs.getDrugsCategory().then(response => {
+            if (response.code === '0000') {
+              this.categoryTypeArr = response.data.map(item => {
+                return {text: item.text, value: item.text, id: item.id}
+              }).filter(obj => obj.id > 10)
+              this.dataListLoading = false
+            }
+          })
         }
-        this.dataListLoading = false
       })
     },
+    // 当表格的某列的：筛选条件发生变化的时候会触发该事件，参数的值是一个对象，
+    // 对象的 key 是 column 的 columnKey，对应的 value 为用户选择的筛选条件的数组。
+    tableColumnFilter (obj) { // obj = {CategoryId: [全部, 饮片, 颗粒, 三九...]}
+      if (obj.CategoryId[0] === undefined) {
+        this.dataForm.CategoryId = ''
+      } else {
+        this.categoryTypeArr.forEach(item => {
+          if (item.value === obj.CategoryId[0]) {
+            this.dataForm.CategoryId = item.id
+          }
+        })
+      }
+      this.getDataList()
+    },
+    // 某个单元格上双击时
+    anyCellDblclick (row, column, cell, event) {
+      console.log(row, column, cell, event)
+      this.dataList.forEach(item => {
+        if (item.ProductCode === row.ProductCode) {
+          item.isDblclick = true
+        }
+      })
+      this.dataList.push() // this.$refs.xx.doLayout() 双击后重新渲染，触发表格的重新布局
+    },
+    tableInputBlur (Id, price) {
+      // 先刷新前端的页面
+      this.dataList.forEach(item => {
+        if (item.Id === Id) { item.isDblclick = false }
+      })
+      this.dataList.push()
+
+      // 上面只是前端页面临时数据渲染了，其实服务器还没有更新的，之后悄悄的请求一次服务器
+      API.storeStock.editStoreStockSalePrice({id: Id, storeSalePrice: price}).then(result => {
+        if (result.code === '0000') {
+          this.$message({
+            type: 'success',
+            message: `操作成功`,
+            duration: 3000
+          })
+          // this.getDataList()
+        }
+      })
+    },
+    // // 切换药态列筛选状态
+    // filterHandler (value, row, column) {
+    //   this.categoryTypeArr.forEach(item => {
+    //     if (item.value === value) {
+    //       this.dataForm.CategoryId = item.id
+    //     }
+    //   })
+    //   const property = column['property']
+    //   return row[property] === value
+    // },
     getDataListChild () {
       this.getDataList()
     },
@@ -159,6 +252,11 @@ export default {
         this.$refs.addOrUpdate.init(row)
       })
     },
+
+    // 选中单行
+    handleCurrentChange (val) {
+      // this.currentRow = val
+    },
     handelDelete (id) {
       this.$confirm(`确定对[id=${id}]的行导出excel表格吗?`, '提示', {
         confirmButtonText: '确定',
@@ -178,6 +276,25 @@ export default {
   }
   p span {
     font-weight: 700;
+  }
+  .el-table__expand-icon {
+    margin-top: 7px;
+  }
+  .demo-table-expand {
+    label {
+      width: 90px;
+      text-align: right;
+    }
+    .el-form-item {
+      color: #99a9bf;
+      width: 26%;
+      padding-left: 100px;
+      margin-right: 0;
+      margin-bottom: 0;
+      span {
+        color: #e4393c;
+      }
+    }
   }
 }
 </style>
