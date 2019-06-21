@@ -115,6 +115,7 @@
         title="小票内容"
         :visible.sync="innerVisible"
         append-to-body>
+        <!--本地电脑里设置打印纸12.40：9.50cm-->
         <!--打印层-->
         <div id="chenxiPrint"><!-- style="display: none"-->
           <table width="100%" style="font-size: 12px;margin-top: -15px">
