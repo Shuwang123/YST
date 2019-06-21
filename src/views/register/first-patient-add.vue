@@ -27,6 +27,14 @@
       <el-form-item label="电话" prop="MobilePhone" style="margin-top: 15px">
         <el-input v-model="dataForm.MobilePhone" placeholder="请输入电话" style="width: 160px"></el-input>
       </el-form-item>
+      <br>
+      <el-form-item label="患者来源" prop="Source">
+        <el-select v-model="dataForm.Source" style="width: 160px">
+          <el-option v-for="item in memberOrigin" :key="item.lab"
+                     :label="item.lab" :value="item.val">
+          </el-option>
+        </el-select>
+      </el-form-item>
 
       <el-form-item label="病例史" prop="AllergyHistory" style="margin-top: 15px">
         <el-input v-model="dataForm.AllergyHistory" placeholder="请输入病例史" style="width: 413px"></el-input>
@@ -62,12 +70,23 @@ export default {
         BirthDateUnit: '1', // 必须是str类型的
         MobilePhone: '',
         AllergyHistory: '', // 病例史
+        Source: '20', // 患者来源
         Address: ''
       },
+      memberOrigin: [
+        {lab: '医生介绍', val: '1'},
+        {lab: '广告', val: '2'},
+        {lab: '宣传单', val: '3'},
+        {lab: '网络渠道', val: '4'},
+        {lab: '美团', val: '5'},
+        {lab: '熟人介绍', val: '6'},
+        {lab: '其他', val: '20'}
+      ],
       dataRule: {
         UserName: Currency('此为必填项'),
         BirthDateAge: NumberInt(),
         BirthDate: Currency('此为必填项'),
+        Source: Currency('此为必填项'),
         MobilePhone: Phone(1)
       },
       dataList: null
@@ -123,7 +142,8 @@ export default {
         BirthDateUnit: '1', // 必须是str类型的
         MobilePhone: '',
         AllergyHistory: '', // 病例史
-        Address: ''
+        Address: '',
+        Source: '20' // 患者来源
       }
     },
     // 表单提交
@@ -137,7 +157,8 @@ export default {
             BirthDate: this.dataForm.BirthDate,
             MobilePhone: this.dataForm.MobilePhone,
             AllergyHistory: this.dataForm.AllergyHistory,
-            Address: this.dataForm.Address
+            Address: this.dataForm.Address,
+            Source: this.dataForm.Source
           }
           console.log(paramsAdd)
           API.member.addMemberSubmit(paramsAdd).then((data) => {

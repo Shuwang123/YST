@@ -2,8 +2,8 @@
   <div class="mod-purchaseList">
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
       <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
-        <!--<el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">-->
-        <el-form :inline="true" :model="dataForm" size="mini">
+        <el-form :inline="true" :model="dataForm" @keyup.enter.native="doctorHandle()" size="mini">
+        <!--<el-form :inline="true" :model="dataForm">-->
           <com-store :paramsFather="{
             'label_0': '',
             'size_1': 'mini',
@@ -21,13 +21,15 @@
           </el-form-item>
 
           <el-form-item>
-            <el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="处方类型" clearable style="width: 119px"></el-input>
+            <el-input v-model="dataForm.PrescriptionName" placeholder="处方名"
+                      @clear="doctorHandle()" clearable style="width: 119px"></el-input>
           </el-form-item>
-          <el-form-item>
-            <el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="处方名/主治功效" clearable style="width: 139px"></el-input>
-          </el-form-item>
+          <!--<el-form-item>-->
+            <!--<el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="处方名/主治功效" clearable style="width: 139px"></el-input>-->
+          <!--</el-form-item>-->
 
           <el-form-item>
+            <el-button @click="doctorHandle()" size="mini">查询</el-button>
             <!--<el-button v-if="$store.getters.getAccountIsDoctor" :disabled="dataForm.AccountId === '' ? true : false"-->
             <el-button type="primary"
                        @click="isVisible[0].child ? addAgreement() : addClassics()">
@@ -80,7 +82,8 @@ export default {
         currentDoctorName: '', // 当前选中的医生名
         View: true, // 是否显示门店筛选组件
         StartDate: '',
-        EndDate: ''
+        EndDate: '',
+        PrescriptionName: '' // 协定方名
       },
       isVisible: [
         {child: true},
@@ -168,11 +171,7 @@ export default {
           }
         }
         // this.$refs.firstTab.getDataList() // 初始化或者是说任何情况下确定AccountId这个字段完整了后，才继续更新子层页面的展示内容（这有点玄）!!!!!!!!!!
-        if (this.isVisible[0].child === true) {
-          this.$refs.firstTab.getDataList()
-        } else if (this.isVisible[1].child === true) {
-          this.$refs.secondTab.getDataList()
-        }
+        this.doctorHandle()
       })
     },
     doctorHandle () {

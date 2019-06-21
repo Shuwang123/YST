@@ -87,15 +87,15 @@
               <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆一善堂中医门诊部收据</h3></td>
             </tr>
             <tr>
-              <td colspan="2" height="24">患者：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</td>
-              <td colspan="1" align="right" width="240">病历号：{{registerAllData.Code}}</td>
+              <td colspan="3" height="24">患者：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</td>
             </tr>
             <tr>
               <td colspan="2" height="24">单据号：{{registerAllData.Code}}</td>
               <td colspan="1" align="right" v-if="registerAllData.CreatedOnTime">打印时间：{{registerAllData.CreatedOnTime | myDateFilter('yyyy/MM/dd hh:mm:ss')}}</td>
             </tr>
             <tr>
-              <td colspan="3">医生：{{registerAllData.DoctorName}}</td>
+              <td colspan="2" height="24">医生：{{registerAllData.DoctorName}}</td>
+              <td colspan="1" align="right" width="240">病历号：{{registerAllData.Code}}</td>
             </tr>
 
             <tr valign="bottom" style="font-size: 12px">
@@ -280,28 +280,31 @@ export default {
         PaymentWay: 1 // 支付方式
       },
       dataRule: {},// reality: Currency('此为必填项')
-      optionsPaymentType: [ // 患者支付类型
-        {
-          value: 1,
-          label: '现金'
+      optionsPaymentType: [
+        { // 患者支付类型
+          label: '现金',
+          value: 1
         }, {
-          value: 2,
-          label: '支付宝'
+          label: '支付宝',
+          value: 2
         }, {
-          value: 3,
-          label: '微信'
+          label: '微信扫码',
+          value: 3
         }, {
-          value: 4,
-          label: '银行卡'
+          label: '银行卡',
+          value: 4
         }, {
-          value: 5,
-          label: '医保'
+          label: '医保',
+          value: 5
         }, {
-          value: 6,
-          label: '会员卡'
+          label: '微信客服手机',
+          value: 6
         }, {
-          value: 7,
-          label: '代金券'
+          label: '代金券',
+          value: 7
+        }, {
+          label: '会员卡',
+          value: 8
         }
       ],
       dazhe: 1.00,

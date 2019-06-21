@@ -165,7 +165,10 @@ export default {
       }
       API.storeStock.getStoreStock(params).then(result => {
         if (result.code === '0000') {
-          this.dataList = result.data
+          this.dataList = result.data.map(item => {
+            item.RedLine = Number(item.RedLine)
+            return item
+          })
           this.totalPage = result.total
 
           API.drugs.getDrugsCategory().then(response => {

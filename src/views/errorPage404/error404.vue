@@ -25,14 +25,14 @@ import img_404_cloud from '@/assets/404_images/404_cloud.png'
 
 export default {
   name: 'page404',
-  data() {
+  data () {
     return {
       img_404,
       img_404_cloud
     }
   },
   computed: {
-    message() {
+    message () {
       return '特朗普说这个页面你不能进......'
     }
   }

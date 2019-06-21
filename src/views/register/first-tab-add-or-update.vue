@@ -3,7 +3,7 @@
     v-dialogDrag
     :title="$store.getters.getRegisterStep === 1 ? '挂号信息填写' : $store.getters.getRegisterStep === 2 ? '门店患者调用' : '建立新的患者'" :width="'678px'"
     :close-on-click-modal="false"
-    :visible.sync="visible" @close="handleClose" class="registerIndex">
+    :visible.sync="outerVisible" @close="handleClose" class="registerIndex">
     <!--vuex 1、2、3-->
     <!--one div-->
     <transition mode="out-in">
@@ -109,13 +109,76 @@
           </div>
         </el-form>
       </div>
+
+      <el-dialog
+        width="500px"
+        title="小票内容"
+        :visible.sync="innerVisible"
+        append-to-body>
+        <!--打印层-->
+        <div id="chenxiPrint"><!-- style="display: none"-->
+          <table width="100%" style="font-size: 12px;margin-top: -15px">
+            <tbody>
+            <tr>
+              <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆一善堂中医门诊部收据</h3></td>
+            </tr>
+            <tr>
+              <td colspan="3" height="24">患者：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</td>
+            </tr>
+            <tr>
+              <td colspan="2" height="24">单据号：{{registerAllData.Code}}</td>
+              <td colspan="1" align="right" v-if="registerAllData.CreatedOnTime">打印时间：{{registerAllData.CreatedOnTime | myDateFilter('yyyy/MM/dd hh:mm:ss')}}</td>
+            </tr>
+            <tr>
+              <td colspan="2" height="24">医生：{{registerAllData.DoctorName}}</td>
+              <td colspan="1" align="right" width="240">病历号：{{registerAllData.Code}}</td>
+            </tr>
+
+            <tr valign="bottom" style="font-size: 12px">
+              <td height="30">收费项目</td>
+              <td colspan="2"><p>金额
+                <span style="display: inline-block;width: 200px;text-align: right">收费方式</span></p></td>
+            </tr>
+            <tr>
+              <td>挂号费</td>
+              <td colspan="2"><p>￥{{registerAllData.RegisterAmount}}
+                <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
+            </tr>
+            <!--<tr>-->
+            <!--<td>诊疗费</td>-->
+            <!--<td colspan="2"><p>￥{{registerAllData.RegisterAmount}}-->
+            <!--<span style="display: inline-block;width: 200px;text-align: right"></span></p></td>-->
+            <!--</tr>-->
+            <tr valign="bottom">
+              <td height="50"></td>
+              <td colspan="2"><p>
+                <span style="display: inline-block;width: 210px;text-align: right">{{registerAllData.PaymentWayName}}</span></p></td>
+            </tr>
+
+            <tr>
+              <td colspan="1">合计：￥{{registerAllData.RegisterAmount}}</td>
+              <td colspan="2"><p>大写：{{registerAllData.RegisterAmount}}</p></td>
+            </tr>
+            <tr>
+              <td colspan="3">需开发票请于15日内开具，逾期不补! </td>
+            </tr>
+            <tr>
+              <td colspan="3">收费人员：xx</td>
+            </tr>
+            </tbody>
+          </table>
+        </div>
+        <div style="text-align: right"><el-button type="primary" @click="chenxiPrint()">打印挂号小票</el-button></div>
+      </el-dialog>
+
       <div style="text-align: right; margin-top: 30px">
         <span slot="footer" class="dialog-footer">
           <el-button type="primary" @click="dataFormSubmit()">挂号</el-button>
-          <!--<el-button type="primary" @click="dataFormAdd()">挂号不打印</el-button>-->
-          <el-button @click="visible = false">取消</el-button>
+          <el-button @click="outerVisible = false">取消</el-button>
+          <!--<el-button type="primary" @click="innerVisible = true">打开内层 Dialog</el-button>-->
         </span>
       </div>
+
     </div>
     </transition>
 
@@ -129,7 +192,7 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
+import {Currency, Letter, NumberInt, NumberFloat, calcAge} from '../../utils/validate'
 import '../common/icon/iconfont.css'
 // import {treeDataTranslate} from '@/utils'
 import FirstPatientList from './first-patient-list'
@@ -137,7 +200,7 @@ export default {
   components: { FirstPatientList },
   watch: {
     'dataForm.RegisterAmount': function (newval, oldval) {
-      if (newval.replace(/\s/g, '').length !== newval.length) {
+      if (String(newval).replace(/\s/g, '').length !== String(newval).length) {
         this.$alert('此处禁止填写‘空格’ ! ', '输入提示', {
           confirmButtonText: '确定',
           callback: () => {
@@ -158,9 +221,10 @@ export default {
   },
   data () {
     return {
+      outerVisible: false,
+      innerVisible: false,
       regMoney: /^\d+\.?\d{0,2}$/,
       show: true,
-      visible: false,
       dataListLoading: false, // 加载
 
       doctorId: '',
@@ -177,7 +241,7 @@ export default {
         PaymentWay: 1, // 支付方式
         DiagnosisType: '1', // 看诊类型
         chargeType: '只挂号', // 收费类型（药房）
-        RegisterAmount: '', // 挂号费
+        RegisterAmount: '', // 挂号费 ''初始值
         ConsultationAmount: 0, // 诊疗费
         reality: 0, // 实收
         give: 0 // 找零
@@ -204,28 +268,32 @@ export default {
       ],
       optionsPaymentType: [
         { // 患者支付类型
-          value: 1,
-          label: '现金'
+          label: '现金',
+          value: 1
         }, {
-          value: 2,
-          label: '支付宝'
+          label: '支付宝',
+          value: 2
         }, {
-          value: 3,
-          label: '微信'
+          label: '微信扫码',
+          value: 3
         }, {
-          value: 4,
-          label: '银行卡'
+          label: '银行卡',
+          value: 4
         }, {
-          value: 5,
-          label: '医保'
+          label: '医保',
+          value: 5
         }, {
-          value: 6,
-          label: '会员卡'
+          label: '微信客服手机',
+          value: 6
         }, {
-          value: 7,
-          label: '代金券'
+          label: '代金券',
+          value: 7
+        }, {
+          label: '会员卡',
+          value: 8
         }
-      ]
+      ],
+      registerAllData: {}
     }
   },
   created () {
@@ -244,7 +312,7 @@ export default {
     },
     // 获取某个采购单详情info
     init (row) {
-      this.visible = true
+      this.outerVisible = true
       this.dataListLoading = true
       if (row !== undefined) {
         this.doctorId = row.Id // 医生id
@@ -316,8 +384,15 @@ export default {
                 duration: 3000
               })
               // 在这写打印吧
-
-              this.visible = false
+              API.register.getRegisterInfo({id: result.id}).then(result => {
+                if (result.code === '0000') {
+                  console.log(result.data)
+                  result.data.BirthDate = calcAge(result.data.BirthDate)
+                  this.registerAllData = result.data
+                  this.$nextTick(() => { this.innerVisible = true })
+                }
+                this.outerVisible = false
+              })
             } else {
               this.$message.error(result.message)
             }
@@ -329,6 +404,24 @@ export default {
         }
       })
     },
+
+    // 打印功能
+    chenxiPrint () {
+      // console.log('陈希', this.$refs.chenxiPrint)
+      var printHTML = document.getElementById('chenxiPrint').innerHTML // 获取要打印的内容
+      var page = window.open('', '_blank') // 打开一个新窗口，用于打印
+      page.document.write(printHTML) // 写入打印页面的内容
+      page.print() // 打印
+      var userAgent = navigator.userAgent
+      if ((userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1) || (userAgent.indexOf('Edge') > -1) || (userAgent.indexOf('Trident') > -1 && userAgent.indexOf('rv:11.0') > -1)) {
+        page.document.execCommand('print')
+      } else {
+        console.log('not IE')
+      }
+      page.close() // 关闭打印窗口
+      this.innerVisible = false
+    },
+    // 打印功能结束
 
     openPatientList () {
       this.addOrUpdateVisible = true

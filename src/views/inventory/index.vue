@@ -34,13 +34,13 @@
       <el-tab-pane label="" name="second">
         <span slot="label"><i class=""></i> 库存历史</span>
         <transition name="chenxi">
-          <second-tab v-if="isVisible[1].child" ref="firstTab" :fatherDataForm="dataForm"></second-tab>
+          <second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>
         </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="third">
         <span slot="label"><i class=""></i> 库存批次流水</span>
         <transition name="chenxi">
-          <third-tab v-if="isVisible[2].child" ref="firstTab" :fatherDataForm="dataForm"></third-tab>
+          <third-tab v-if="isVisible[2].child" ref="thridTab" :fatherDataForm="dataForm"></third-tab>
         </transition>
       </el-tab-pane>
     </el-tabs>
@@ -60,15 +60,12 @@ export default {
 
       dataForm: { // 三个子组件共有的查询条件：门店，商品编码、商品名称、商品拼音
         StoreId: '',
-        CategoryText: '',
-        CategoryId: '',
         ProductCodeOrBarCode: '',
         ProductName: '',
         SpellName: ''
       },
       isVisible: [
         {child: true},
-        {child: false},
         {child: false},
         {child: false}
       ]
@@ -80,14 +77,12 @@ export default {
     ThirdTab,
     ComStore
   },
-  created () {
-    // this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
-  },
+  created () {}, // this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
   methods: {
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
         this.dataForm.StoreId = choseStoreId
-        this.$refs.firstTab.getDataList()
+        this.tabChange()
       }
     },
     pageInit () {
@@ -105,9 +100,6 @@ export default {
           this.isVisible = this.isVisible.map((item, index) => {
             return index === 0 ? {child: true} : {child: false}
           })
-          this.$nextTick(() => {
-            this.$refs.firstTab.getDataList() // 这儿写了为什么后两个不写呢，一个小bug不好描述，好奇的话，只看代码是很难看出来的，删了后然后tabs切换几下就知道了，不过记得提前备份哟
-          })
           break
         case 'second':
           this.isVisible = this.isVisible.map((item, index) => {
@@ -120,6 +112,19 @@ export default {
           })
           break
       }
+      this.tabChange()
+    },
+    // 点击tab或者切换门店时，请求当前tab下的dataList
+    tabChange () {
+      this.$nextTick(() => {
+        if (this.isVisible[0].child) {
+          this.$refs.firstTab.getDataList()
+        } else if (this.isVisible[1].child) {
+          this.$refs.secondTab.getDataList()
+        } else if (this.isVisible[2].child) {
+          this.$refs.thridTab.getDataList()
+        }
+      })
     }
   }
 }

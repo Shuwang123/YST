@@ -128,11 +128,11 @@ export default {
           MobilePhone: this.dataForm.MobilePhone,
           Code: this.dataForm.Code
         }
-        console.log(params)
+        // console.log(params)
         API.member.getMemberList(params).then(result => {
           if (result.code === '0000') {
             this.dataList = result.data.map(item => {
-              item.BirthDate = calcAge(item.BirthDate) // 这个方法不要太懵逼哈，@utils/validate.js里的自定义方法
+              item.BirthDate = calcAge(item.BirthDate) // @utils/validate.js里的自定义方法
               return item
             })
             this.totalPage = result.total

@@ -47,22 +47,21 @@
 
       <!--打印层-->
       <div id="chenxiPrint" style="display: none">
-      <!--<div id="chenxiPrint">-->
         <table width="100%" style="font-size: 12px;margin-top: -15px">
           <tbody>
             <tr>
               <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆一善堂中医门诊部收据</h3></td>
             </tr>
             <tr>
-              <td colspan="2" height="24">患者：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</td>
-              <td colspan="1" align="right" width="240">病历号：{{registerAllData.Code}}</td>
+              <td colspan="3" height="24">患者：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</td>
             </tr>
             <tr>
               <td colspan="2" height="24">单据号：{{registerAllData.Code}}</td>
               <td colspan="1" align="right" v-if="registerAllData.CreatedOnTime">打印时间：{{registerAllData.CreatedOnTime | myDateFilter('yyyy/MM/dd hh:mm:ss')}}</td>
             </tr>
             <tr>
-              <td colspan="3">医生：{{registerAllData.DoctorName}}</td>
+              <td colspan="2" height="24">医生：{{registerAllData.DoctorName}}</td>
+              <td colspan="1" align="right" width="240">病历号：{{registerAllData.Code}}</td>
             </tr>
 
             <tr valign="bottom" style="font-size: 12px">
@@ -87,7 +86,7 @@
             </tr>
 
             <tr>
-              <td colspan="1">合计：￥{{registerAllData.UserName + registerAllData.RegisterAmount}}</td>
+              <td colspan="1">合计：￥{{registerAllData.RegisterAmount}}</td>
               <td colspan="2"><p>大写：{{registerAllData.RegisterAmount}}</p></td>
             </tr>
             <tr>
@@ -103,9 +102,9 @@
     </div>
     <div style="text-align: right; margin-top: 30px">
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="chenxiPrint()">打印</el-button>
-        <el-button type="primary" @click="dataFormSubmitA()">退号</el-button>
-        <el-button type="primary" @click="dataFormSubmitA()">再次挂号</el-button>
+        <el-button type="primary" @click="chenxiPrint()">小票补打</el-button>
+        <!--<el-button type="primary" @click="dataFormSubmitA()">退号</el-button>-->
+        <!--<el-button type="primary" @click="dataFormSubmitA()">再次挂号</el-button>-->
         <el-button @click="visible = false">关闭</el-button>
         <!--<el-button type="primary" @click="dataFormAdd()">挂号不打印</el-button>-->
       </span>

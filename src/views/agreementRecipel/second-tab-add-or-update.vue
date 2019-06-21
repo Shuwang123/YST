@@ -260,6 +260,7 @@ export default {
         PrescriptionName: '', // 处方名
         DrugRate: '', // 用法
         OrderType: '41' // 创建经典方
+        // Status: '3,5,6', // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部
       }
       this.leftTableData = []
       this.oldTabsName = '1001'

@@ -9,14 +9,15 @@
       <!--协定方查询输入框-->
       <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
         <el-form-item label="">
-          <el-input v-model="dataForm.UserName" placeholder="请输入处方名" size="mini" clearable style="width: 117px"></el-input>
+          <el-input v-model="dataForm.PrescriptionName" placeholder="请输入处方名" size="mini"
+                    @clear="getDataList()" clearable style="width: 117px"></el-input>
         </el-form-item>
-        <el-form-item label="">
-          <el-input v-model="dataForm.MobilePhone" placeholder="请输入协定方主治、功效" size="mini" clearable style="width: 171px"></el-input>
-        </el-form-item>
+        <!--<el-form-item label="">-->
+          <!--<el-input v-model="dataForm.MobilePhone" placeholder="请输入协定方主治、功效" size="mini" clearable style="width: 171px"></el-input>-->
+        <!--</el-form-item>-->
         <el-form-item>
-          <!--<el-button icon="el-icon-search" @click="getDataList()" size="mini">查询</el-button>-->
-          <el-button type="primary" size="mini" @click="dataForm.UserName = ''; dataForm.MobilePhone = ''; getDataList()">重置</el-button>
+          <el-button @click="getDataList()" size="mini">查询</el-button>
+          <el-button type="primary" size="mini" @click="dataForm.PrescriptionName = ''; getDataList()">重置</el-button>
         </el-form-item>
       </el-form>
 
@@ -77,7 +78,8 @@ export default {
       isPaging: true,
       dataForm: {
         UserName: '',
-        MobilePhone: ''
+        MobilePhone: '',
+        PrescriptionName: ''
       },
       totalPage: 1,
 
@@ -105,7 +107,8 @@ export default {
         WrokFrom: '', // 开始时间
         WrokTo: '', // 结束时间
         Status: '', // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部 ''表示协定方
-        OrderType: this.num // 40表示协定方 41表示经典方
+        OrderType: this.num, // 40表示协定方 41表示经典方
+        PrescriptionName: this.dataForm.PrescriptionName
       }
       console.log(params)
       API.register.getRegisterList(params).then(result => { // 获取协定方列表
@@ -141,6 +144,11 @@ export default {
     handleClose () {
       this.editType = ''
       this.isAddActive = false
+      this.dataForm = {
+        UserName: '',
+        MobilePhone: '',
+        PrescriptionName: ''
+      }
     }
   }
 }

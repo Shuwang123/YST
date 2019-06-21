@@ -49,7 +49,7 @@
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
 
-    <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate"></first-tab-add-or-update>
+    <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @registerPrint="fatherFun"></first-tab-add-or-update>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -81,6 +81,10 @@ export default {
     }
   },
   methods: {
+    fatherFun () {
+      this.getDataList()
+    },
+
     // 这个是查询某门店的：全部医生列表
     getDataList () {
       this.dataListLoading = true
@@ -117,6 +121,7 @@ export default {
       //   this.dataListLoading = false
       // })
     },
+
     // 每页数
     sizeChangeHandle (val) {
       this.pageSize = val
