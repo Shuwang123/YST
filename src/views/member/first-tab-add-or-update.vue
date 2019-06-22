@@ -169,7 +169,7 @@ export default {
               this.dataForm.MobilePhone = result.data.MobilePhone
               this.dataForm.AllergyHistory = result.data.AllergyHistory
               this.dataForm.Address = result.data.Address
-              this.dataForm.Source = result.data.Source
+              this.dataForm.Source = String(result.data.Source)
               console.log(result.data)
               console.log(this.dataForm)
               this.memberId = result.data.Id

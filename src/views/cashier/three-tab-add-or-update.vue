@@ -170,7 +170,7 @@
 
             <!--签字-->
           <tr>
-            <td height="26">医生：<span v-text="registerAllData.Code">{{registerAllData.DoctorName}}</span></td>
+            <td height="26">医生：<span v-text="registerAllData.DoctorName"></span></td>
             <td colspan="2"><p style="padding-left: 50px">审核：<span></span></p></td>
           </tr>
           <tr>

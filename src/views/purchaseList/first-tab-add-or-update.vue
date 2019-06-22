@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'采购单详情'" :width="isAddActive === false ? '900px' : '85%'"
+    :title="'采购单详情'" :width="isAddActive === false ? '1000px' : '85%'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <!--<el-col><div style="border-top: 1px dashed #ccc;padding-top: 10px;font-weight: 900">别名（选填）</div></el-col>-->
@@ -51,38 +51,65 @@
                      :header-cell-style="$cxObj.tableHeaderStyle40px"
                      style="width: 100%;">
             <!--<el-table-column prop="Id" align="center" label="ID" width="50"></el-table-column>-->
-            <el-table-column type="index" align="center" label="序号" width="50"></el-table-column>
-            <el-table-column prop="ProductId" align="center" label="商品" width="50"></el-table-column>
-            <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称"></el-table-column>
-            <el-table-column prop="CategoryName" header-align="center" align="center" label="药态"></el-table-column>
+            <el-table-column type="index" align="center" label="序号" fixed width="50"></el-table-column>
+            <el-table-column prop="ProductId" align="center" label="商品" fixed width="50"></el-table-column>
+            <el-table-column prop="CategoryName" header-align="center" align="center" label="药态" fixed width="70" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称" fixed width="80" :show-overflow-tooltip="true"></el-table-column>
 
             <!--采购数量-->
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="采购数量" header-align="center" :align="$store.state.common.align" width="120">
+            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="采购数量" header-align="center" :align="$store.state.common.align" width="110">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.Quantity" :step="1" :min="1" :max="1000" size="mini" controls-position="right" style="width: 105px"></el-input-number>
+                <el-input-number v-model="scope.row.Quantity" :step="1" :min="1" :max="1000" size="mini" controls-position="right" style="width: 95px"></el-input-number>
               </template>
             </el-table-column>
             <el-table-column v-else prop="Quantity" :key="Math.random()" label="采购数量" header-align="center" align="center"></el-table-column>
 
-            <el-table-column prop="LastCostPirce" header-align="center" align="center" label="上次采购价"></el-table-column>
+            <!--前采购价-->
+            <el-table-column prop="LastCostPirce" header-align="center" align="center" label="前采购价"></el-table-column>
 
-            <!--就是添加药材的进价!!!-->
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="此次采购价" header-align="center" :align="$store.state.common.align" width="110">
+            <!--现采购价：就是进价!!!-->
+            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="现采购价" header-align="center" :align="$store.state.common.align" width="110">
               <template slot-scope="scope">
                 <el-input-number v-model="scope.row.CostPrice" :precision="2" :step="0.01" :min="0.01" :max="1000" size="mini" controls-position="right" style="width: 100px"></el-input-number>
               </template>
             </el-table-column>
-            <el-table-column v-else prop="CostPrice" header-align="center" label="此次采购价" align="center"></el-table-column>
+            <el-table-column v-else prop="CostPrice" header-align="center" label="现采购价" align="center"></el-table-column>
 
             <!--门店售价填写-->
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="售价填写" prop="" header-align="center" :align="$store.state.common.align" width="110">
+            <!--<el-table-column v-if="editType === 'A'" :key="Math.random()" label="售价填写" prop="" header-align="center" :align="$store.state.common.align" width="110">-->
+              <!--<template slot-scope="scope">-->
+                <!--<el-input-number v-model="scope.row.StoreSalePrice" :precision="2" :step="0.01" :min="0.01" :max="1000" size="mini" controls-position="right" style="width: 100px"></el-input-number>-->
+              <!--</template>-->
+            <!--</el-table-column>-->
+            <!--<el-table-column v-if="editType !== 'A'" prop="StoreSalePrice" label="售价" header-align="center" align="center"></el-table-column>-->
+
+            <!--生产日期 填写：2019.07.01-->
+            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="生产日期" prop="" header-align="center" :align="$store.state.common.align" width="140">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.StoreSalePrice" :precision="2" :step="0.01" :min="0.01" :max="1000" size="mini" controls-position="right" style="width: 100px"></el-input-number>
+                <el-date-picker
+                  v-model="scope.row.time0"
+                  align="right"
+                  type="date" size="mini"
+                  placeholder="生产日期"
+                  :picker-options="pickerOptions0" style="width: 128px">
+                </el-date-picker>
               </template>
             </el-table-column>
-            <el-table-column v-if="editType !== 'A'" prop="StoreSalePrice" label="售价" header-align="center" align="center"></el-table-column>
-            <!--<el-table-column v-if="dataList.Status !== -1 && editType !== 'A'" prop="StoreSalePrice" label="售价" header-align="center" align="center"></el-table-column>-->
+            <el-table-column v-if="editType !== 'A'" prop="time0" label="生产日期" header-align="center" align="center"></el-table-column>
 
+            <!--保质期 填写：2019.07.01-->
+            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="保质期" prop="" header-align="center" :align="$store.state.common.align" width="140">
+              <template slot-scope="scope">
+                <el-date-picker
+                  v-model="scope.row.time1"
+                  align="right"
+                  type="date" size="mini"
+                  placeholder="保质期"
+                  :picker-options="pickerOptions1" style="width: 128px">
+                </el-date-picker>
+              </template>
+            </el-table-column>
+            <el-table-column v-if="editType !== 'A'" prop="time1" label="保质期" header-align="center" align="center"></el-table-column>
 
 
             <!--翻页：批号录入-->
@@ -95,7 +122,7 @@
             </el-table-column>
             <el-table-column v-if="dataList.Status === 10" prop="ProductBatchNo" header-align="center" align="center" label="批号"></el-table-column>
 
-            <el-table-column v-if="editType === 'A'" prop="" label="操作" width="50" header-align="center" align="center">
+            <el-table-column v-if="editType === 'A'" prop="" label="操作" header-align="center" align="center">
               <template slot-scope="scope">
                 <el-button type="text" @click="leftRemove(scope.row.ProductId)">移除</el-button>
               </template>
@@ -182,7 +209,72 @@ export default {
 
       isAddActive: false,
       dataListAdd: [],
-      OrderTotalPrice: 0 // 采购单总价显示
+      OrderTotalPrice: 0, // 采购单总价显示
+      pickerOptions0: {
+        disabledDate (time) {
+          return time.getTime() > Date.now()
+        },
+        shortcuts: [{ // 快捷方式
+          text: '前1个月',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 24 * 30 * 1000)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '前6个月',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 24 * 180 * 1000)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '前1年',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() - 3600 * 24 * 365 * 1000)
+            picker.$emit('pick', date)
+          }
+        }]
+      },
+      pickerOptions1: {
+        shortcuts: [{ // 快捷方式
+          text: '1月后',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() + 3600 * 24 * 30 * 1000)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '6月后',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() + 3600 * 24 * 180 * 1000)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '1年后',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() + 3600 * 24 * 365 * 1 * 1000)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '2年后',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() + 3600 * 24 * 365 * 2 * 1000)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '3年后',
+          onClick (picker) {
+            const date = new Date()
+            date.setTime(date.getTime() + 3600 * 24 * 365 * 3 * 1000)
+            picker.$emit('pick', date)
+          }
+        }]
+      }
     }
   },
   methods: {
@@ -293,7 +385,7 @@ export default {
         API.purchase.getPurchaseInfo({id: id}).then(result => {
           if (result.code === '0000') {
             this.dataList = result.data
-            // console.log(result.data.Items)
+            console.log(result.data.Items)
 
             // 2019.06.01 展示采购单总价
             this.dataList.Items.forEach(item => {
@@ -322,83 +414,83 @@ export default {
       }
     },
     excelExports (excelType) {
-      var jsonData = []
-      var str = '' // 列标题
-      if (excelType === 'purchase') { // 药房采购单导出，发给厂商用的
-        jsonData = this.dataList.Items.map(item => {
-          return {
-            dCategory: item.CategoryName,
-            dCode: item.ProductCode,
-            dName: item.ProductName,
-            dNumber: item.Quantity,
-            dStoreSalePrice: item.StoreSalePrice,
-            dInventoryQuantity: item.InventoryQuantity
-          }
-        })
-        str = `<tr>
-                <th colspan="6"><h3>重庆渝北一善堂中医门诊部(采购单)</h3></th>
-              </tr>
-              <tr>
-                <td height="20">药态</td> <td height="20">编码</td>
-                <td height="20">药名</td> <td height="20">采购量</td>
-                <td height="20">采购价</td> <td height="20">库存余量</td>
-              </tr>`
-      } else if (excelType === 'caiwu') { // 入库后入库单导出，给财务拿去算账的
-        jsonData = this.dataList.Items.map(item => {
-          return {
-            dCode: item.ProductCode, // 商品编码
-            dName: item.ProductName, // 药品名称
-            dSpecification: item.Specification, // 规格
-            dSupplierName: this.dataList.SupplierName, // 供应商 （生成厂家）// dProductBatchNo: item.ProductBatchNo, // 批号??? BatchNo
-
-            dUnit: item.Unit, // 单位
-            dQuantity: item.Quantity, // 数量
-            dCostPrice: item.CostPrice, // 单价
-            dActualShipAmount: item.ActualShipAmount // 金额
-            // dCreatedTime: this.dataList.CreatedTime | this.myDateFilter('yyyy-MM-dd hh:mm:ss'), // 生成时间
-            // dTimeTo: this.dataList.CreatedTime | this.myDateFilter('yyyy-MM-dd hh:mm:ss'), // 有效期至
-            // dZhijian: '合格' // 质检情况
-          }
-        })
-        str = `<tr>
-                <th colspan="8"><h3>重庆渝北一善堂中医门诊部(入库单)</h3></th>
-              </tr>
-              <tr>
-                <td height="20">编号</td> <td height="20">药材名</td>
-                <td height="20">规格</td> <td height="20">生产厂家</td>
-                <td height="20">单位</td> <td height="20">数  量</td>
-                <td height="20">单价</td> <td height="20">金   额</td>
-              </tr>`
-      }
-
-      // 循环遍历，每行加入tr标签，每个单元格加td标签
-      for (let i = 0; i < jsonData.length; i++) {
-        str += '<tr>'
-        for (let item in jsonData[i]) {
-          // 增加\t为了不让表格显示科学计数法或者其他格式
-          str += `<td align="left" height="20">${jsonData[i][item] + '\t'}</td>`
-        }
-        str += '</tr>'
-      }
-
-      // Worksheet名
-      let worksheet = 'Sheet1'
-      let uri = 'data:application/vnd.ms-excel;base64,' // 使用浏览器的功能
-      // 下载的表格模板数据
-      let template = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
-      xmlns:x="urn:schemas-microsoft-com:office:excel"
-      xmlns="http://www.w3.org/TR/REC-html40">
-           <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
-           <x:Name>${worksheet}</x:Name>
-           <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
-           </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
-           </head>
-           <body><table align="left" border="1">${str}</table></body>
-      </html>`
-
-      // 下载模板
-      // btoa()方法用于创建一base-64编码的字符串。该方法使用 "A-Z", "a-z", "0-9", "+", "/" 和 "=" 字符来编码字符串
-      window.location.href = uri + window.btoa(unescape(encodeURIComponent(template)))
+      // var jsonData = []
+      // var str = '' // 列标题
+      // if (excelType === 'purchase') { // 药房采购单导出，发给厂商用的
+      //   jsonData = this.dataList.Items.map(item => {
+      //     return {
+      //       dCategory: item.CategoryName,
+      //       dCode: item.ProductCode,
+      //       dName: item.ProductName,
+      //       dNumber: item.Quantity,
+      //       // dStoreSalePrice: item.StoreSalePrice,
+      //       dInventoryQuantity: item.InventoryQuantity
+      //     }
+      //   })
+      //   str = `<tr>
+      //           <th colspan="6"><h3>重庆渝北一善堂中医门诊部(采购单)</h3></th>
+      //         </tr>
+      //         <tr>
+      //           <td height="20">药态</td> <td height="20">编码</td>
+      //           <td height="20">药名</td> <td height="20">采购量</td>
+      //           <td height="20">采购价</td> <td height="20">库存余量</td>
+      //         </tr>`
+      // } else if (excelType === 'caiwu') { // 入库后入库单导出，给财务拿去算账的
+      //   jsonData = this.dataList.Items.map(item => {
+      //     return {
+      //       dCode: item.ProductCode, // 商品编码
+      //       dName: item.ProductName, // 药品名称
+      //       dSpecification: item.Specification, // 规格
+      //       dSupplierName: this.dataList.SupplierName, // 供应商 （生成厂家）// dProductBatchNo: item.ProductBatchNo, // 批号??? BatchNo
+      //
+      //       dUnit: item.Unit, // 单位
+      //       dQuantity: item.Quantity, // 数量
+      //       dCostPrice: item.CostPrice, // 单价
+      //       dActualShipAmount: item.ActualShipAmount // 金额
+      //       // dCreatedTime: this.dataList.CreatedTime | this.myDateFilter('yyyy-MM-dd hh:mm:ss'), // 生成时间
+      //       // dTimeTo: this.dataList.CreatedTime | this.myDateFilter('yyyy-MM-dd hh:mm:ss'), // 有效期至
+      //       // dZhijian: '合格' // 质检情况
+      //     }
+      //   })
+      //   str = `<tr>
+      //           <th colspan="8"><h3>重庆渝北一善堂中医门诊部(入库单)</h3></th>
+      //         </tr>
+      //         <tr>
+      //           <td height="20">编号</td> <td height="20">药材名</td>
+      //           <td height="20">规格</td> <td height="20">生产厂家</td>
+      //           <td height="20">单位</td> <td height="20">数  量</td>
+      //           <td height="20">单价</td> <td height="20">金   额</td>
+      //         </tr>`
+      // }
+      //
+      // // 循环遍历，每行加入tr标签，每个单元格加td标签
+      // for (let i = 0; i < jsonData.length; i++) {
+      //   str += '<tr>'
+      //   for (let item in jsonData[i]) {
+      //     // 增加\t为了不让表格显示科学计数法或者其他格式
+      //     str += `<td align="left" height="20">${jsonData[i][item] + '\t'}</td>`
+      //   }
+      //   str += '</tr>'
+      // }
+      //
+      // // Worksheet名
+      // let worksheet = 'Sheet1'
+      // let uri = 'data:application/vnd.ms-excel;base64,' // 使用浏览器的功能
+      // // 下载的表格模板数据
+      // let template = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      // xmlns:x="urn:schemas-microsoft-com:office:excel"
+      // xmlns="http://www.w3.org/TR/REC-html40">
+      //      <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+      //      <x:Name>${worksheet}</x:Name>
+      //      <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
+      //      </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+      //      </head>
+      //      <body><table align="left" border="1">${str}</table></body>
+      // </html>`
+      //
+      // // 下载模板
+      // // btoa()方法用于创建一base-64编码的字符串。该方法使用 "A-Z", "a-z", "0-9", "+", "/" 和 "=" 字符来编码字符串
+      // window.location.href = uri + window.btoa(unescape(encodeURIComponent(template)))
     },
     handleClose () {
       this.editType = ''
@@ -424,7 +516,7 @@ export default {
             LastCostPirce: item.LastCostPrice, // 这还提交上一次采购价其实没啥用了，不过后一个tab里填写入库编码的时候还可以瞄一下，有点点小用吧
 
             CostPrice: item.CostPrice, // 进价售价：
-            StoreSalePrice: item.StoreSalePrice, // 门店售价：这三个值，直接来源于添加药材那，用来作为初始值在创建采购单的时候直接传递给后端
+            // StoreSalePrice: item.StoreSalePrice, // 门店售价：这三个值，直接来源于添加药材那，用来作为初始值在创建采购单的时候直接传递给后端
 
             Quantity: item.Quantity, // 采购量手填
 

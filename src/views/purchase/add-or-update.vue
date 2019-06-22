@@ -21,7 +21,10 @@
           @selection-change="selectionChangeHandle"
           :header-cell-style="$cxObj.tableHeaderStyle40px"
           row-class-name="purchaseTableRowClass"
-          style="width: 100%;">
+          style="width: 100%;"
+          :default-sort="{prop: 'Quantity', order: 'ascending'}"
+          @sort-change="orderChange">
+          <!--ascending descending-->
           <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
           <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
           <el-table-column prop="CategoryName" header-align="center" :align="$store.state.common.align" width="100" label="药态" :show-overflow-tooltip="true"></el-table-column>
@@ -33,9 +36,9 @@
           </el-table-column>
           <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
           <!--<el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->
-          <el-table-column prop="Quantity" header-align="center" :align="$store.state.common.align" label="库存 (余量)" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="Quantity" sortable header-align="center" :align="$store.state.common.align" label="库存 (余量)" :show-overflow-tooltip="true"></el-table-column>
           <!--<el-table-column prop="CostPrice" header-align="center" :align="$store.state.common.align" label="上一次的进价" width="116"></el-table-column>-->
-          <el-table-column prop="RedLine" header-align="center" :align="$store.state.common.align" label="预警量" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="RedLine" sortable header-align="center" :align="$store.state.common.align" label="预警量" :show-overflow-tooltip="true"></el-table-column>
         </el-table>
         <el-pagination
           @size-change="sizeChangeHandle"
@@ -131,6 +134,10 @@ export default {
         }
       })
     },
+    orderChange (column, prop, order) {
+      console.log(column, prop, order)
+    },
+
     getDataList (categoryid, storeid) {
       this.dataListLoading = true
       // ※ 为什么给注释了呢：本来打算弄门店库存接口（可根据库存量勾选），但后来还是用的老创建药材列表界面的获取接口
@@ -157,7 +164,8 @@ export default {
         SpellName: this.dataForm.SpellName,
         CategoryId: categoryid,
         StoreId: storeid, // 传不传门店id决定了是否返回库存余量!!!
-        CodeOrBarCode: '' // 暂无
+        CodeOrBarCode: '', // 暂无
+        Order: '' // 排序的要求：排序  Order = Quantity/OccupyQuantity/UsableQuantity // LeftRedLineDesc // LeftRedLineAsc
       }).then(result => {
         if (result.code === '0000' && result.data.length > 0) {
           this.dataList = result.data
