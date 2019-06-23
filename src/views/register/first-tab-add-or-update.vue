@@ -147,7 +147,7 @@
             </tr>
             <!--<tr>-->
             <!--<td>诊疗费</td>-->
-            <!--<td colspan="2"><p>￥{{registerAllData.RegisterAmount}}-->
+            <!--<td colspan="2"><p>￥{{registerAllData.}}-->
             <!--<span style="display: inline-block;width: 200px;text-align: right"></span></p></td>-->
             <!--</tr>-->
             <tr valign="bottom">
@@ -318,6 +318,7 @@ export default {
       if (row !== undefined) {
         this.doctorId = row.Id // 医生id
         this.doctorName = row.NickName
+        this.dataForm.RegisterAmount = row.RegisterAmount
       }
       this.dataListLoading = false
     },
@@ -356,6 +357,7 @@ export default {
         ConsultationAmount: 0 // 诊疗费
       }
       this.RegisterBool = false // 禁用
+      this.$refs.dataForm.clearValidate()
     },
 
     // 表单提交

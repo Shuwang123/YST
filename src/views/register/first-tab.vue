@@ -24,6 +24,7 @@
       <el-table-column prop="StoreName" header-align="center" align="center" label="门店" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="RoleName" header-align="center" align="center" label="角色" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="NickName" header-align="center" align="center" label="医生昵称" width="100"></el-table-column>
+      <el-table-column prop="RegisterAmount" header-align="center" align="center" label="挂号费" width="70"></el-table-column>
       <el-table-column prop="" label="已挂号/限号量（？）" width="" header-align="center" align="center">
         <template slot-scope="scope">
           <span>{{scope.row.Id}}/{{scope.row.Id}}</span>

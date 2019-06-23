@@ -11,17 +11,17 @@
         'isTrigger': false
       }" ref="comStore" @eventStore="changeStoreData"></com-store>
       <el-form-item>
-        <el-input v-model="dataForm.userName" placeholder="查询账号" clearable></el-input>
+        <el-input v-model="dataForm.userName" placeholder="查询账号" clearable @clear="getDataList()"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.nickName" placeholder="查询昵称" clearable></el-input>
+        <el-input v-model="dataForm.nickName" placeholder="查询昵称" clearable @clear="getDataList()"></el-input>
       </el-form-item>
       <!--<el-form-item>-->
         <!--<el-input v-model="dataForm.id" placeholder="账号ID(系统自动生成的不可控)" clearable style="width: 100px"></el-input>-->
       <!--</el-form-item>-->
 
       <el-form-item>
-        <el-select v-model="dataForm.roleId" placeholder="请选择角色" clearable>
+        <el-select v-model="dataForm.roleId" placeholder="请选择角色" clearable @change="getDataList()">
           <el-option v-for="item in roleArr" :key="item.id" :label="item.name" :value="item.id"></el-option>
         </el-select>
       </el-form-item>

@@ -3,7 +3,8 @@
              :title="id === 0 ? '申请账号' : '编辑账号'"
              :close-on-click-modal="false" :visible.sync="visible"
              @close="handleClose" id='add-or-update'>
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" v-loading="dataListLoading"
+             @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="登陆账号" prop="UserName" v-if="!id">
         <el-input v-model="dataForm.UserName" placeholder="请填写用户名（登陆账号，限数字或字母以后不可更改）"></el-input>
       </el-form-item>
@@ -26,13 +27,19 @@
         'isTrigger': false
       }" ref="comStoreOne" @eventStore="changeStoreData">
       </com-store>
+
       <!--这申请账号时如果没有选择角色ID，默认0，提交后会导致申请账号失败-->
       <el-form-item label="角色ID" prop="RoleId">
-        <el-select v-model="dataForm.RoleId" placeholder="一个账号只能对应单个角色且必填" style="width: 400px">
+        <el-select v-model="dataForm.RoleId"
+                   placeholder="一个账号只能对应单个角色且必填" style="width: 400px">
           <el-option v-for="item in roleArr" :key="item.value"
                      :value="item.value" :label="'['+item.value+'] '+item.label">
           </el-option>
         </el-select>
+      </el-form-item>
+      <!--医生类型的账号，会设置挂号费 2019.07.01-->
+      <el-form-item v-if="RegisterAmountInputNumber" label="挂号费" prop="RegisterAmount">
+        <el-input-number v-model="dataForm.RegisterAmount" :precision="2" :min="1" :step="0.1" :max="1000"></el-input-number>
       </el-form-item>
 
       <com-store :paramsFather="{
@@ -60,9 +67,26 @@ import {Currency, Phone} from '../../utils/validate'
 import ComStore from '../common/com-store'
 
 export default {
+  watch: {
+    'dataForm.RoleId': function (val, oldval) {
+      setTimeout(() => {
+        var isDoctor = this.roleArr.some(item => {
+          return (item.value === val && item.label.includes('医生'))
+        })
+        if (isDoctor) {
+          this.RegisterAmountInputNumber = true
+        } else {
+          this.RegisterAmountInputNumber = false
+          this.RegisterAmount = ''
+        }
+        console.log(val, this.RegisterAmount, this.RegisterAmountInputNumber)
+      }, 50)
+    }
+  },
   data () {
     return {
       visible: false,
+      dataListLoading: false,
       id: '',
       dataForm: {
         UserName: '',
@@ -72,14 +96,17 @@ export default {
 
         StoreId: 0, // 0 归属门店
         RoleId: 0, // 0
+        RegisterAmount: '', // 医生挂号费
         CanViewStores: '' // '' 1,2,3 可以控制的门店，有关账号的权限范围
       },
+      RegisterAmountInputNumber: false,
       roleArr: [], // 角色选项
       dataRule: {
         UserName: Currency('账号不能为空'),
         // Password: Currency('密码不能为空'),
         NickName: Currency('别名必填'),
-        Phone: Phone(1)
+        Phone: Phone(1),
+        RegisterAmount: Currency('别名必填')
         // StoreId: Currency('门店必选'),
         // RoleId: Currency('角色必选')
       }
@@ -103,7 +130,7 @@ export default {
           this.roleArr = result.data.map(item => {
             return {value: item.Id, label: item.Name}
           })
-          console.log(this.roleArr)
+          // console.log(this.roleArr)
         }
       })
     },
@@ -116,10 +143,12 @@ export default {
         NickName: '',
         Phone: '',
         RoleId: 0, // 0
+        RegisterAmount: '', // 医生挂号费
         StoreId: 0, // 0
         CanViewStores: '' // '' 1,2,3
       }
       this.id = ''
+      this.RegisterAmountInputNumber = false
     },
     // 如果是编辑账号初始化弹窗，如果新建账号，弹窗内容空
     init (id) {
@@ -127,6 +156,7 @@ export default {
       this.visible = true
       this.getRoleInit()
       if (this.id) {
+        this.dataListLoading = true
         var obj = {id: this.id}
         API.adminUser.adminUserDetail(obj).then(result => {
           if (result.code === '0000') {
@@ -137,12 +167,15 @@ export default {
             this.dataForm.Phone = result.data.Phone
 
             this.dataForm.RoleId = result.data.RoleId
+            this.dataForm.RegisterAmount = result.data.RegisterAmount // 医生类型的账号会有挂号费
+
             this.dataForm.StoreId = result.data.StoreId
             this.$refs.comStoreOne.pageInit(result.data.StoreId)
             this.dataForm.CanViewStores = result.data.CanViewStores // 响应的是一个字串
             this.$refs.comStoreSome.pageInit(result.data.CanViewStores.split(',').map(item => {
               return Number(item)
             }))
+            this.dataListLoading = false
           }
         })
       }
@@ -180,6 +213,7 @@ export default {
             // Password: md5(this.dataForm.Password),
             NickName: this.dataForm.NickName,
             RoleId: this.dataForm.RoleId,
+            RegisterAmount: this.dataForm.RegisterAmount,
             StoreId: this.dataForm.StoreId,
             CanViewStores: this.dataForm.CanViewStores,
             Phone: this.dataForm.Phone,
@@ -193,6 +227,7 @@ export default {
             NickName: this.dataForm.NickName,
             RoleId: this.dataForm.RoleId,
             StoreId: this.dataForm.StoreId,
+            RegisterAmount: this.dataForm.RegisterAmount,
             CanViewStores: this.dataForm.CanViewStores,
             Phone: this.dataForm.Phone
           }
