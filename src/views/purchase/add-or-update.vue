@@ -8,9 +8,15 @@
       @close="handleClose">
       <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="0" :inline="true">
         <el-form-item label="" prop="SpellName">
-          <el-input v-model="dataForm.SpellName" placeholder="拼音搜索" size="mini" clearable>
-            <el-button slot="append" icon="el-icon-search" @click="drugsSearch()"></el-button>
-          </el-input>
+          <el-input v-model="dataForm.SpellName" placeholder="拼音搜索" size="mini" clearable @clear="drugsSearch()"></el-input>
+        </el-form-item>
+        <el-form-item label="">
+          <el-select v-model="dataForm.Order" placeholder="排序" clearable @change="drugsSearch()" size="mini" style="width: 120px">
+            <el-option v-for="item in orderArr" :key="item.text" :label="item.text" :value="item.val"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="">
+          <el-button type="primary" @click="drugsSearch()" size="mini">搜索</el-button>
         </el-form-item>
         <br>
         <el-table
@@ -21,9 +27,7 @@
           @selection-change="selectionChangeHandle"
           :header-cell-style="$cxObj.tableHeaderStyle40px"
           row-class-name="purchaseTableRowClass"
-          style="width: 100%;"
-          :default-sort="{prop: 'Quantity', order: 'ascending'}"
-          @sort-change="orderChange">
+          style="width: 100%;">
           <!--ascending descending-->
           <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
           <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
@@ -36,9 +40,13 @@
           </el-table-column>
           <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
           <!--<el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->
-          <el-table-column prop="Quantity" sortable header-align="center" :align="$store.state.common.align" label="库存 (余量)" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column header-align="center" :align="$store.state.common.align" label="库存 (余量)" :show-overflow-tooltip="true">
+            <template slot-scope="scope">
+              <span :style="{color: scope.row.Quantity < scope.row.RedLine ? '#e4393c' : '#333'}">{{ scope.row.Quantity }}</span>
+            </template>
+          </el-table-column>
           <!--<el-table-column prop="CostPrice" header-align="center" :align="$store.state.common.align" label="上一次的进价" width="116"></el-table-column>-->
-          <el-table-column prop="RedLine" sortable header-align="center" :align="$store.state.common.align" label="预警量" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="RedLine" header-align="center" :align="$store.state.common.align" label="预警量" :show-overflow-tooltip="true"></el-table-column>
         </el-table>
         <el-pagination
           @size-change="sizeChangeHandle"
@@ -73,6 +81,14 @@ export default {
       pageIndex: 1,
       pageSize: 10,
       totalPage: 0,
+      orderArr: [{
+        text: '库存减预警（小到大）',
+        val: 'LeftRedLineAsc'
+      }, {
+        text: '库存减预警（大到小）',
+        val: 'LeftRedLineDesc'
+      }],
+
       categoryId: '',
       storeId: '',
 
@@ -81,7 +97,8 @@ export default {
       },
       drugsCategoryList: [], // 先请求药品种类列表
       dataForm: {
-        SpellName: ''
+        SpellName: '',
+        Order: ''
         // CategoryId: ''
       },
       dataList: [],
@@ -94,7 +111,7 @@ export default {
     dataList (n, o) {
       this.$nextTick(() => {
         this.ownPurchaseFatherList = this.ownPurchaseFatherList.length > 0 ? this.ownPurchaseFatherList : this.purchaseFatherList
-        console.log(this.ownPurchaseFatherList)
+        // console.log(this.ownPurchaseFatherList)
         this.dataList.forEach(item => {
           // console.log('这儿执行就有问题')
           this.ownPurchaseFatherList.forEach(row => {
@@ -134,10 +151,6 @@ export default {
         }
       })
     },
-    orderChange (column, prop, order) {
-      console.log(column, prop, order)
-    },
-
     getDataList (categoryid, storeid) {
       this.dataListLoading = true
       // ※ 为什么给注释了呢：本来打算弄门店库存接口（可根据库存量勾选），但后来还是用的老创建药材列表界面的获取接口
@@ -155,7 +168,7 @@ export default {
       //
       //   BrandId: '', // 品牌ID 忽略
       //   ProductCodeOrBarCode: '', // 商品编码 忽略
-      //   Order: '' // 按照分别按照Quantity, OccupyQuantityUsableQuantity排序 忽略
+      //   Order: '' //
       API.drugs.getDrugsList({
         Name: '',
         PageIndex: this.pageIndex,
@@ -165,13 +178,12 @@ export default {
         CategoryId: categoryid,
         StoreId: storeid, // 传不传门店id决定了是否返回库存余量!!!
         CodeOrBarCode: '', // 暂无
-        Order: '' // 排序的要求：排序  Order = Quantity/OccupyQuantity/UsableQuantity // LeftRedLineDesc // LeftRedLineAsc
+        Order: this.dataForm.Order // 排序  ---LeftRedLineDesc  LeftRedLineAsc库存量-警告值 排序
       }).then(result => {
         if (result.code === '0000' && result.data.length > 0) {
           this.dataList = result.data
           this.totalPage = result.total
           console.log(result.data)
-          console.log(this.dataList)
           if (this.dataListViews.length === 0) {
             this.dataListViews = this.dataListViews.concat(result.data) // 会打散拼接到尾巴，旧数组不变
           } else if (this.dataListViews.some(item => item.Code === result.data[0].Code || item.Code === result.data[this.pageSize - 1]).Code) {

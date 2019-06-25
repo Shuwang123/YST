@@ -10,3 +10,21 @@ export function getSupplierList (params) {
     data: requestParam(params)
   })
 }
+
+// 创建供应商
+export function createSupplier (params) {
+  return request({
+    url: requestUrl('/YstApiSupplier/Create'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 编辑供应商
+export function editSupplier (params) {
+  return request({
+    url: requestUrl('/YstApiSupplier/Edit'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}

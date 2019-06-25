@@ -12,28 +12,29 @@
         <!--<el-form-item>-->
           <!--<el-input v-model="dataForm.BrandId" placeholder="品牌ID" size="mini" clearable style="width: 120px"></el-input>-->
         <!--</el-form-item>-->
-        <!--<el-form-item label="">-->
-          <!--<el-select v-model="dataForm." placeholder="排序" size="mini" clearable style="width: 120px">-->
-            <!--<el-option v-for="item in " :key="item.text" :label="item.text" :value="item.val"></el-option>-->
-          <!--</el-select>-->
-        <!--</el-form-item>-->
+        <el-form-item label="">
+          <el-select v-model="dataForm.Order" placeholder="排序" @change="getDataList()"
+                     size="mini" clearable
+                     style="width: 120px">
+            <el-option v-for="item in orderArr" :key="item.text" :label="item.text" :value="item.val"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button icon="el-icon-search" @click="pageIndex = 1; getDataList()" size="mini">查询</el-button>
         </el-form-item>
       </el-form>
     </div>
+    <!-- :default-sort = "{prop: 'RedLine', order: 'ascending'}-->
     <el-table
       @selection-change="selectionChangeHandle"
       :height="chenxiHeight"
       :data="dataList"
-      border stripe highlight-current-row @current-change="handleCurrentChange"
+      border highlight-current-row @current-change="handleCurrentChange"
       v-loading="dataListLoading"
-      row-class-name="storeStockListRow"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;"
-      @filter-change="tableColumnFilter" :default-sort = "{prop: 'RedLine', order: 'ascending'}"
-      @cell-dblclick="anyCellDblclick"
-      @sort-change="orderChange">
+      @filter-change="tableColumnFilter"
+      @cell-dblclick="anyCellDblclick">
       <el-table-column type="expand">
         <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
@@ -58,10 +59,14 @@
                        <!--:filter-method="filterHandler"-->
       </el-table-column>
       <el-table-column prop="ProductCode" header-align="center" align="center" label="药品编码" width="90"></el-table-column>
-      <el-table-column prop="ProductName" header-align="center" align="center" label="药名" min-width="80"></el-table-column>
+      <!--<el-table-column prop="ProductName" header-align="center" align="center" label="药名" min-width="80"></el-table-column>-->
+      <el-table-column header-align="center" align="center" label="药名" min-width="80">
+        <template slot-scope="scope">
+          <span :style="{color: scope.row.Quantity - scope.row.RedLine <= 0 ? '#e4393c' : ''}">{{scope.row.ProductName}}</span>
+        </template>
+      </el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧？所以厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
 
-      <el-table-column prop="Quantity" header-align="center" align="center" label="库存 (余量)" sortable width="120" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="OccupyQuantity" header-align="center" align="center" label="锁定" min-width="80"></el-table-column>
       <el-table-column prop="UsableQuantity" header-align="center" align="center" label="可用" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="AvgCostPrice" header-align="center" align="center" label="成本 (avg)" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
@@ -84,7 +89,12 @@
       </el-table-column>
 
       <!--<el-table-column prop="SaleAmount" header-align="center" align="center" label="售价总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column prop="RedLine" header-align="center" align="center" label="预警值" sortable width="100" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column header-align="center" align="center" label="库存 (余量)" width="120" :show-overflow-tooltip="true">
+        <template slot-scope="scope">
+          <span :style="{color: scope.row.Quantity - scope.row.RedLine <= 0 ? '#e4393c' : ''}">{{scope.row.Quantity}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column prop="RedLine" header-align="center" align="center" label="预警值" width="100" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="ProfitPercent" header-align="center" align="center" label="毛利" width="100" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column header-align="center" align="center" label="操作" min-width="80" :show-overflow-tooltip="true">
         <template slot-scope="scope">
@@ -125,8 +135,15 @@ export default {
         CategoryId: '',
         RedLine: '',
         BrandId: '', // 品牌ID
-        Order: '' // 按照分别按照Quantity, OccupyQuantity UsableQuantity排序
+        Order: '' // 按照---LeftRedLineDesc  LeftRedLineAsc库存量-警告值 排序
       },
+      orderArr: [{
+        text: '库存减预警（小到大）',
+        val: 'LeftRedLineAsc'
+      }, {
+        text: '库存减预警（大到小）',
+        val: 'LeftRedLineDesc'
+      }],
       dataList: [],
       totalPage: 1,
       dataListSelections: [],
@@ -141,21 +158,6 @@ export default {
   methods: {
     selectionChangeHandle (val) {
       this.dataListSelections = val
-    },
-    orderChange (column) {
-      // console.log(column)
-      if (column.prop === null) { this.dataForm.Order = '' }
-      if (column.prop === 'RedLine') {
-        switch (column.order) {
-          case 'ascending':
-            this.dataForm.Order = 'LeftRedLineAsc'
-            break
-          case 'descending':
-            this.dataForm.Order = 'LeftRedLineDesc'
-            break
-        }
-      }
-      this.getDataList()
     },
     getDataList () {
       this.dataListLoading = true
@@ -174,7 +176,7 @@ export default {
         CategoryId: this.dataForm.CategoryId,
         Order: this.dataForm.Order
       }
-      console.log(params)
+      // console.log(params)
       API.storeStock.getStoreStock(params).then(result => {
         if (result.code === '0000') {
           this.dataList = result.data.map(item => {
@@ -182,6 +184,9 @@ export default {
             return item
           })
           this.totalPage = result.total
+          // console.log(result.data.map(item => {
+          //   return {name: item.ProductName, num: item.LeftRedLine}
+          // }))
 
           API.drugs.getDrugsCategory().then(response => {
             if (response.code === '0000') {

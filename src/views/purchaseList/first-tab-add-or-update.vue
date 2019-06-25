@@ -5,7 +5,7 @@
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <!--<el-col><div style="border-top: 1px dashed #ccc;padding-top: 10px;font-weight: 900">别名（选填）</div></el-col>-->
-    <el-container>
+    <el-container><!-- style="display: none"-->
       <el-aside :width="isAddActive === false ? '100%' : '60%'">
         <div class="ownScrollbar" style="min-height: 500px;max-height: 500px;overflow-y: scroll;">
 
@@ -52,9 +52,9 @@
                      style="width: 100%;">
             <!--<el-table-column prop="Id" align="center" label="ID" width="50"></el-table-column>-->
             <el-table-column type="index" align="center" label="序号" fixed width="50"></el-table-column>
-            <el-table-column prop="ProductId" align="center" label="商品" fixed width="50"></el-table-column>
-            <el-table-column prop="CategoryName" header-align="center" align="center" label="药态" fixed width="70" :show-overflow-tooltip="true"></el-table-column>
-            <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称" fixed width="80" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="ProductId" align="center" label="商品" fixed min-width="50"></el-table-column>
+            <el-table-column prop="CategoryName" header-align="center" align="center" label="药态" fixed min-width="70" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称" fixed min-width="80" :show-overflow-tooltip="true"></el-table-column>
 
             <!--采购数量-->
             <el-table-column v-if="editType === 'A'" :key="Math.random()" label="采购数量" header-align="center" :align="$store.state.common.align" width="110">
@@ -76,40 +76,50 @@
             <el-table-column v-else prop="CostPrice" header-align="center" label="现采购价" align="center"></el-table-column>
 
             <!--门店售价填写-->
-            <!--<el-table-column v-if="editType === 'A'" :key="Math.random()" label="售价填写" prop="" header-align="center" :align="$store.state.common.align" width="110">-->
+            <!--<el-table-column v-if="editType === 'B'" :key="Math.random()" label="售价填写" prop="" header-align="center" :align="$store.state.common.align" width="110">-->
               <!--<template slot-scope="scope">-->
                 <!--<el-input-number v-model="scope.row.StoreSalePrice" :precision="2" :step="0.01" :min="0.01" :max="1000" size="mini" controls-position="right" style="width: 100px"></el-input-number>-->
               <!--</template>-->
             <!--</el-table-column>-->
-            <!--<el-table-column v-if="editType !== 'A'" prop="StoreSalePrice" label="售价" header-align="center" align="center"></el-table-column>-->
+            <!--<el-table-column v-if="editType !== 'B'" prop="StoreSalePrice" label="售价" header-align="center" align="center"></el-table-column>-->
 
             <!--生产日期 填写：2019.07.01-->
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="生产日期" prop="" header-align="center" :align="$store.state.common.align" width="140">
+            <el-table-column v-if="editType === 'B'" :key="Math.random()" label="生产日期" header-align="center" :align="$store.state.common.align" width="140">
               <template slot-scope="scope">
                 <el-date-picker
-                  v-model="scope.row.time0"
+                  v-model="scope.row.ProductionDate"
                   align="right"
                   type="date" size="mini"
                   placeholder="生产日期"
-                  :picker-options="pickerOptions0" style="width: 128px">
+                  :picker-options="pickerOptions_0" style="width: 128px">
                 </el-date-picker>
               </template>
             </el-table-column>
-            <el-table-column v-if="editType !== 'A'" prop="time0" label="生产日期" header-align="center" align="center"></el-table-column>
+            <el-table-column v-if="dataList.Status !== 1 && dataList.Status !== -1 && editType !== 'B'" :key="Math.random()" label="生产日期" header-align="center" align="center">
+              <template slot-scope="scope">
+                <span v-if="scope.row.ProductionDate === null">未填写</span>
+                <span v-else>{{scope.row.ProductionDate | myDateFilter('yyyy-MM-dd')}}</span>
+              </template>
+            </el-table-column>
 
             <!--保质期 填写：2019.07.01-->
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="保质期" prop="" header-align="center" :align="$store.state.common.align" width="140">
+            <el-table-column v-if="editType === 'B'" :key="Math.random()" label="有效期" header-align="center" :align="$store.state.common.align" width="140">
               <template slot-scope="scope">
                 <el-date-picker
-                  v-model="scope.row.time1"
+                  v-model="scope.row.ExpiryDate" @focus="ExpiryDateFocus(scope.row.ProductionDate)"
                   align="right"
                   type="date" size="mini"
-                  placeholder="保质期"
-                  :picker-options="pickerOptions1" style="width: 128px">
+                  placeholder="有效期"
+                  :picker-options="pickerOptions_1" style="width: 128px">
                 </el-date-picker>
               </template>
             </el-table-column>
-            <el-table-column v-if="editType !== 'A'" prop="time1" label="保质期" header-align="center" align="center"></el-table-column>
+            <el-table-column v-if="dataList.Status !== 1 && dataList.Status !== -1 && editType !== 'B'" :key="Math.random()" label="有效期" header-align="center" align="center">
+              <template slot-scope="scope">
+                <span v-if="scope.row.ExpiryDate === null">未填写</span>
+                <span v-else>{{scope.row.ExpiryDate | myDateFilter('yyyy-MM-dd')}}</span>
+              </template>
+            </el-table-column>
 
 
             <!--翻页：批号录入-->
@@ -182,9 +192,53 @@
       <el-button @click="excelExports('purchase')">导出Excel(采购单)</el-button>
     </span>
     <span v-else-if="stepActive === 2" slot="footer" class="dialog-footer">
+      <el-button @click="chenxiPrint()">打印入库单</el-button>
       <el-button @click="excelExports('caiwu')">导出Excel(财务入库单)</el-button>
+
+      <!--本地电脑里设置打印纸12.40：9.50cm-->
+      <!--打印层 财务（入库单）-->
+        <div id="chenxiPrint" style="display: none"><!-- -->
+          <table width="100%"  style="font-size: 12px">
+            <thead style="display:table-header-group;font-weight:bold">
+              <tr><td colspan="2" align="center" style="font-weight:bold;border:3px double red">每页都有的表头</td></tr>
+            </thead>
+            <tbody>
+              <tr><td>表格内容1</td><td>表格内容</td></tr>
+              <tr><td>表格内容1</td><td>表格内容</td></tr>
+            </tbody>
+            <tfoot style="display:table-footer-group;font-weight:bold">
+              <tr>
+                <td colspan="2" align="center" style="font-weight:bold;border:3px double blue">每页都有的表尾</td>
+              </tr>
+            </tfoot>
+          </table>
+          <div style="page-break-after: always">123</div>
+
+          <table width="100%"  style="font-size: 12px">
+            <thead style="display:table-header-group;font-weight:bold">
+              <tr><td colspan="2" align="center" style="font-weight:bold;border:3px double red">每页都有的表头</td></tr>
+            </thead>
+            <tbody>
+              <tr><td>表格内容1</td><td>表格内容</td></tr>
+              <tr><td>表格内容1</td><td>表格内容</td></tr>
+            </tbody>
+            <tfoot style="display:table-footer-group;font-weight:bold">
+              <tr>
+                <td colspan="2" align="center" style="font-weight:bold;border:3px double blue">每页都有的表尾</td>
+              </tr>
+            </tfoot>
+          </table>
+          <div style="page-break-after: always">123</div>
+        </div>
     </span>
   </el-dialog>
+  <!--<tr>-->
+  <!--<td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆一善堂中医门诊部收据</h3></td>-->
+  <!--</tr>-->
+  <!--<tr>-->
+  <!--<td colspan="2" height="24">医生：{{registerAllData.DoctorName}}</td>-->
+  <!--<td colspan="1" align="right" width="240">病历号：{{registerAllData.Code}}</td>-->
+  <!--</tr>-->
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
@@ -210,26 +264,26 @@ export default {
       isAddActive: false,
       dataListAdd: [],
       OrderTotalPrice: 0, // 采购单总价显示
-      pickerOptions0: {
+      pickerOptions_0: {
         disabledDate (time) {
           return time.getTime() > Date.now()
         },
         shortcuts: [{ // 快捷方式
-          text: '前1个月',
+          text: '1月前',
           onClick (picker) {
             const date = new Date()
             date.setTime(date.getTime() - 3600 * 24 * 30 * 1000)
             picker.$emit('pick', date)
           }
         }, {
-          text: '前6个月',
+          text: '6月前',
           onClick (picker) {
             const date = new Date()
             date.setTime(date.getTime() - 3600 * 24 * 180 * 1000)
             picker.$emit('pick', date)
           }
         }, {
-          text: '前1年',
+          text: '1年前',
           onClick (picker) {
             const date = new Date()
             date.setTime(date.getTime() - 3600 * 24 * 365 * 1000)
@@ -237,47 +291,61 @@ export default {
           }
         }]
       },
-      pickerOptions1: {
-        shortcuts: [{ // 快捷方式
-          text: '1月后',
+      pickerOptions_1: null
+    }
+  },
+  methods: {
+    ExpiryDateFocus (ProductionDate) {
+      // 有效期聚焦的时候，会获取当前行前面的生成日期，如果生成日期有值的时候
+      // 就会以本行的生成日期为基础，计算相对于此生产日期之后 半年，一年，三年后的有效期
+      var preProductionDate = ProductionDate === null ? new Date() : ProductionDate
+      this.pickerOptions_1 = { // 快捷方式
+        shortcuts: [{
+          text: '3个月',
           onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() + 3600 * 24 * 30 * 1000)
+            const date = new Date(preProductionDate)
+            date.setTime(date.getTime() + 3600 * 24 * 30 * 3 * 1000 + 1)
             picker.$emit('pick', date)
           }
         }, {
-          text: '6月后',
+          text: '6个月',
           onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() + 3600 * 24 * 180 * 1000)
+            const date = new Date(preProductionDate)
+            date.setTime(date.getTime() + 3600 * 24 * 30 * 6 * 1000 + 3600 * 24 * 3 * 1000)
             picker.$emit('pick', date)
           }
         }, {
-          text: '1年后',
+          text: '1年（12月）',
           onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() + 3600 * 24 * 365 * 1 * 1000)
+            const date = new Date(preProductionDate)
+            date.setTime(date.getTime() + 3600 * 24 * 30 * 12 * 1000 + 3600 * 24 * 7 * 1000)
             picker.$emit('pick', date)
           }
         }, {
-          text: '2年后',
+          text: '1年半（18月）',
           onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() + 3600 * 24 * 365 * 2 * 1000)
+            const date = new Date(preProductionDate)
+            date.setTime(date.getTime() + 3600 * 24 * 30 * 18 * 1000 + 3600 * 24 * 10 * 1000)
             picker.$emit('pick', date)
           }
         }, {
-          text: '3年后',
+          text: '2年',
           onClick (picker) {
-            const date = new Date()
-            date.setTime(date.getTime() + 3600 * 24 * 365 * 3 * 1000)
+            const date = new Date(preProductionDate)
+            date.setTime(date.getTime() + 3600 * 24 * 30 * 24 * 1000 + 3600 * 24 * 14 * 1000)
+            picker.$emit('pick', date)
+          }
+        }, {
+          text: '3年',
+          onClick (picker) {
+            const date = new Date(preProductionDate)
+            date.setTime(date.getTime() + 3600 * 24 * 30 * 36 * 1000 + 3600 * 24 * 21 * 1000)
             picker.$emit('pick', date)
           }
         }]
       }
-    }
-  },
-  methods: {
+    },
+
     comFunction () {
       // 这请求起点 药材的接口要改成，请求对应门店库存的接口（这个后来崩了） 后来 又改回老接口了
       API.drugs.getDrugsList({
@@ -492,6 +560,24 @@ export default {
       // // btoa()方法用于创建一base-64编码的字符串。该方法使用 "A-Z", "a-z", "0-9", "+", "/" 和 "=" 字符来编码字符串
       // window.location.href = uri + window.btoa(unescape(encodeURIComponent(template)))
     },
+    // 打印功能
+    chenxiPrint () {
+      // console.log('陈希', this.$refs.chenPrint)
+      var printHTML = document.getElementById('chenxiPrint').innerHTML // 获取要打印的内容
+      var page = window.open('', '_blank') // 打开一个新窗口，用于打印
+      page.document.write(printHTML) // 写入打印页面的内容
+      page.print() // 打印
+      var userAgent = navigator.userAgent
+      if ((userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1) || (userAgent.indexOf('Edge') > -1) || (userAgent.indexOf('Trident') > -1 && userAgent.indexOf('rv:11.0') > -1)) {
+        page.document.execCommand('print')
+      } else {
+        console.log('not IE')
+      }
+      page.close() // 关闭打印窗口
+      this.innerVisible = false
+    },
+    // 打印功能结束
+
     handleClose () {
       this.editType = ''
       this.isAddActive = false
@@ -513,18 +599,16 @@ export default {
           return {
             ProductId: item.ProductId,
 
-            LastCostPirce: item.LastCostPrice, // 这还提交上一次采购价其实没啥用了，不过后一个tab里填写入库编码的时候还可以瞄一下，有点点小用吧
+            LastCostPirce: item.LastCostPrice, // 瞄一下，有点点小用
 
             CostPrice: item.CostPrice, // 进价售价：
             // StoreSalePrice: item.StoreSalePrice, // 门店售价：这三个值，直接来源于添加药材那，用来作为初始值在创建采购单的时候直接传递给后端
-
             Quantity: item.Quantity, // 采购量手填
 
             SapProductCode: item.SapProductCode,
             SupplierId: this.dataList.SupplierId,
             SupplierCode: this.dataList.SupplierCode // 这儿接口9返回的item.SupplierId用为零，导致不得不去获取总表的那个返回值
           }
-          // [{\"ProductId\":23,\"CostPrice\":0,\"Quantity\":3,\"SapProductCode\":\"10000109\",\"SupplierId\":1,\"SupplierCode\":\"6006\"}
         }))
       }
       console.log(params)
@@ -548,7 +632,13 @@ export default {
     },
     dataFormSubmitB () { // 入库的提交 批次号
       if (this.dataList.Items.some(item => item.ProductBatchNo === 0 || item.ProductBatchNo === '' || item.ProductBatchNo === null)) {
-        this.$alert('请把批次号填完!', '提示', {
+        this.$alert('批次号未完整录入!', '提示', {
+          confirmButtonText: '确定'
+        })
+        return false
+      }
+      if (this.dataList.Items.some(item => item.ProductionDate === null)) {
+        this.$alert('检测有商品的生成日期未填写!', '提示', {
           confirmButtonText: '确定'
         })
         return false
@@ -561,9 +651,10 @@ export default {
           return {
             Id: item.Id, // 这是详情id，上面那个A的是药材ID
             ActualQuantity: item.Quantity,
-            productBatchNo: item.ProductBatchNo
+            productBatchNo: item.ProductBatchNo,
+            ProductionDate: item.ProductionDate, // 生产日期
+            ExpiryDate: item.ExpiryDate // 有效期
           }
-          // "[{\"Id\":96,\"ActualQuantity\":1,\"productBatchNo\":123123}, ]       }))
         }))
       }
       console.log(params)
