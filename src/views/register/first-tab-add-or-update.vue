@@ -115,10 +115,9 @@
         title="小票内容"
         :visible.sync="innerVisible"
         append-to-body>
-        <!--本地电脑里设置打印纸12.40：9.50cm-->
-        <!--打印层-->
-        <div id="chenxiPrint"><!-- style="display: none"-->
-          <table width="100%" style="font-size: 12px;margin-top: -15px">
+        <!--打印层：要求打印纸设置（12.00 * 93.10） chrome：无边距、无页眉页脚打印-->
+        <div id="chenxiPrint">
+          <table width="100%" style="font-size: 12px;padding-right: 55px">
             <tbody>
             <tr>
               <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆一善堂中医门诊部收据</h3></td>

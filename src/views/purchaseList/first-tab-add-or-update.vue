@@ -5,9 +5,9 @@
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <!--<el-col><div style="border-top: 1px dashed #ccc;padding-top: 10px;font-weight: 900">别名（选填）</div></el-col>-->
-    <el-container><!-- style="display: none"-->
+    <el-container><!-- display: none -->
       <el-aside :width="isAddActive === false ? '100%' : '60%'">
-        <div class="ownScrollbar" style="min-height: 500px;max-height: 500px;overflow-y: scroll;">
+        <div class="ownScrollbar" style="min-height: 500px;max-height: 500px;overflow-y: scroll;display: none">
 
           <!--头部状态-->
           <el-row>
@@ -142,6 +142,66 @@
             <span style="color: #e4393c">{{OrderTotalPrice.toFixed(2)}}</span>
           </p>
         </div>
+
+        <!--本地电脑里设置打印纸12.40：9.50cm-->
+        <!--打印层 -->
+        <!--打印层 -->
+        <!--打印层 财务（入库单）--><!-- style="display: none" -->
+        <div id="chenxiPrint" v-if="dataList !== null">
+          <div v-for="index in pages" :key="index" style="font-size: 12px;"> <!-- 循环开始 -->
+            <div>
+              <div style="text-align: center;font-size: 18px;font-weight: 900">重庆渝北一善堂中医门诊部（入库单）</div>
+              <div>
+                <div style="display: inline-block;width: 30%;text-align: left">供货企业：{{dataList.SupplierName}}</div>
+                <div style="display: inline-block;width: 25%;text-align: right">入库时间：{{dataList.CreatedTime | myDateFilter('yyyy-MM-dd')}}</div>
+                <div style="display: inline-block;width: 40%;text-align: right">单据编号：{{dataList.Code}}</div>
+              </div>
+            </div>
+            <table border="1" style="border-collapse: collapse;border-sizing: border-box" width="100%">
+              <tbody style="text-align: center;line-height: 16px">
+              <tr style="font-size: 12px">
+                <td height="16"><p>排序</p></td>
+                <td>商品编码</td>
+                <td>商品名称</td>
+                <td>规格</td>
+                <td>生成厂家</td>
+
+                <td>单位</td>
+                <td>数量</td>
+                <td>进价</td>
+                <td>金额</td>
+                <td>批号</td>
+              </tr>
+              <tr  style="font-size: 12px" v-for="(item, ind) in dataList.Items.slice((index - 1) * 10, (index * 10))" :key="item.ProductCode">
+                <td width="50" height="16">{{ind + (index - 1) * 10 + 1}}</td>
+                <td width="70">{{item.ProductCode}}</td>
+                <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.ProductName}}</p></td>
+                <td width="70" align="center"><p style="width: 70px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.Specification}}</p></td>
+                <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{dataList.SupplierName}}</p></td>
+
+                <td width="50">{{item.Unit}}</td>
+                <td width="70">{{item.Quantity}}</td>
+                <td width="70">{{item.CostPrice.toFixed(2)}}</td>
+                <td width="70">{{(item.Quantity * item.CostPrice).toFixed(2)}}</td>
+                <td width="100" align="center"><p style="width: 100px;white-space: nowrap;overflow: hidden;">{{item.ProductBatchNo}}</p></td>
+              </tr>
+              <tr style="font-size: 12px">
+                <td colspan="2" align="center" height="16">总 {{dataList.Items.length}} 笔</td>
+                <td colspan="6" align="left" style="padding: 0 10px;font-weight: bold">{{index === pages ? '全部总计：￥' + sumCountAll(dataList.Items) +
+                  '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;大写：' + sumCountChinese(sumCountAll(dataList.Items)) : ''}}</td>
+                <td colspan="2" align="center">本页合计：{{sumCount(index)}}</td>
+              </tr>
+              </tbody>
+            </table>
+            <div>
+              <div style="display: inline-block;width: 30%;text-align: left">创建人：{{dataList.CreatedByName}}</div>
+              <div style="display: inline-block;width: 25%;text-align: right">出库人：{{$store.getters.getAccountLoginInfoAll.NickName}}</div>
+              <div style="display: inline-block;width: 40%;text-align: right;">第 {{index}} 页，共 {{pages}} 页</div>
+            </div>
+            <div style="page-break-after: always"></div>
+          </div>
+        </div>
+
       </el-aside>
 
       <!--右侧：追加药材-->
@@ -194,51 +254,8 @@
     <span v-else-if="stepActive === 2" slot="footer" class="dialog-footer">
       <el-button @click="chenxiPrint()">打印入库单</el-button>
       <el-button @click="excelExports('caiwu')">导出Excel(财务入库单)</el-button>
-
-      <!--本地电脑里设置打印纸12.40：9.50cm-->
-      <!--打印层 财务（入库单）-->
-        <div id="chenxiPrint" style="display: none"><!-- -->
-          <table width="100%"  style="font-size: 12px">
-            <thead style="display:table-header-group;font-weight:bold">
-              <tr><td colspan="2" align="center" style="font-weight:bold;border:3px double red">每页都有的表头</td></tr>
-            </thead>
-            <tbody>
-              <tr><td>表格内容1</td><td>表格内容</td></tr>
-              <tr><td>表格内容1</td><td>表格内容</td></tr>
-            </tbody>
-            <tfoot style="display:table-footer-group;font-weight:bold">
-              <tr>
-                <td colspan="2" align="center" style="font-weight:bold;border:3px double blue">每页都有的表尾</td>
-              </tr>
-            </tfoot>
-          </table>
-          <div style="page-break-after: always">123</div>
-
-          <table width="100%"  style="font-size: 12px">
-            <thead style="display:table-header-group;font-weight:bold">
-              <tr><td colspan="2" align="center" style="font-weight:bold;border:3px double red">每页都有的表头</td></tr>
-            </thead>
-            <tbody>
-              <tr><td>表格内容1</td><td>表格内容</td></tr>
-              <tr><td>表格内容1</td><td>表格内容</td></tr>
-            </tbody>
-            <tfoot style="display:table-footer-group;font-weight:bold">
-              <tr>
-                <td colspan="2" align="center" style="font-weight:bold;border:3px double blue">每页都有的表尾</td>
-              </tr>
-            </tfoot>
-          </table>
-          <div style="page-break-after: always">123</div>
-        </div>
     </span>
   </el-dialog>
-  <!--<tr>-->
-  <!--<td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆一善堂中医门诊部收据</h3></td>-->
-  <!--</tr>-->
-  <!--<tr>-->
-  <!--<td colspan="2" height="24">医生：{{registerAllData.DoctorName}}</td>-->
-  <!--<td colspan="1" align="right" width="240">病历号：{{registerAllData.Code}}</td>-->
-  <!--</tr>-->
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
@@ -246,6 +263,14 @@ import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
 // import {treeDataTranslate} from '@/utils'
 export default {
   components: {
+  },
+  watch: {
+    'dataList.Items': function (val, oldval) {
+      this.pages = parseInt(val.length / 10 + 1) // 循环打印相关参数
+      if (val.length !== 0 && (val.length % 10) === 0) {
+        this.pages-- // 针对刚好10条那种
+      }
+    }
   },
   data () {
     return {
@@ -291,10 +316,32 @@ export default {
           }
         }]
       },
-      pickerOptions_1: null
+      pickerOptions_1: null,
+      pages: 1 // 循环打印相关参数
     }
   },
   methods: {
+    // 打印页，每页的合计金额
+    sumCount (n) {
+      return this.dataList.Items.slice((n - 1) * 10, n * 10).map(item => item.CostPrice * item.Quantity).reduce((pren, nextm) => pren + nextm).toFixed(2)
+    },
+    // 所有页的合计金额
+    sumCountAll (arr) {
+      return arr.map(item => item.CostPrice * item.Quantity).reduce((pren, nextm) => pren + nextm).toFixed(2)
+    },
+    // 总的合计金额转中文大写
+    sumCountChinese (n) {
+      if (!/^(0|[1-9]\d*)(\.\d+)?$/.test(n)) return '数据非法'
+      var unit = '千百拾亿千百拾万千百拾元角分'
+      var str = ''
+      n += '00'
+      var p = n.indexOf('.')
+      if (p >= 0) n = n.substring(0, p) + n.substr(p + 1, 2)
+      unit = unit.substr(unit.length - n.length)
+      for (var i = 0; i < n.length; i++) str += '零壹贰叁肆伍陆柒捌玖'.charAt(n.charAt(i)) + unit.charAt(i)
+      return str.replace(/零(千|百|拾|角)/g, '零').replace(/(零)+/g, '零').replace(/零(万|亿|元)/g, '$1').replace(/(亿)万|壹(拾)/g, '$1$2').replace(/^元零?|零分/g, '').replace(/元$/g, '元整')
+    },
+
     ExpiryDateFocus (ProductionDate) {
       // 有效期聚焦的时候，会获取当前行前面的生成日期，如果生成日期有值的时候
       // 就会以本行的生成日期为基础，计算相对于此生产日期之后 半年，一年，三年后的有效期
