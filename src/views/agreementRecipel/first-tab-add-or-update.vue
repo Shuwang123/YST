@@ -32,6 +32,19 @@
                 </el-row>
                 <el-row>
                   <el-col :span="24">
+                    <el-form-item label="一级药态">
+                      <el-radio-group v-model="dataForm.CategoryOne"  @change="handleChange" size="mini">
+                        <el-radio label="1" border :disabled="openType === 'see' ? true : false">汤剂</el-radio>
+                        <el-radio label="3" border :disabled="openType === 'see' ? true : false">制膏</el-radio>
+                        <el-radio label="4" border :disabled="openType === 'see' ? true : false">水泛丸</el-radio>
+                        <el-radio label="5" border :disabled="openType === 'see' ? true : false">水蜜丸</el-radio>
+                        <el-radio label="2" border :disabled="openType === 'see' ? true : false">外用</el-radio>
+                      </el-radio-group>
+                    </el-form-item>
+                  </el-col>
+                </el-row>
+                <el-row>
+                  <el-col :span="24">
                     <el-form-item label="主治">
                       <el-input v-model="dataForm.MainCure" placeholder="请输入主治" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
                     </el-form-item>
@@ -203,7 +216,8 @@ export default {
         {content: 'L', isActive: false}, {content: 'Y', isActive: false},
         {content: 'M', isActive: false}, {content: 'Z', isActive: false}],
       drugsCategoryArr: [], // 先请求药品种类
-      oldTabsName: '1001',
+      drugsCategoryArrCopy: [], // 初始化的时候就保存一个保存有全部信息的副本，以后用于提取
+      oldTabsName: '1001', // 二级态记录
       activeName: '1001',
       dataList: [],
       leftTable: 'TableOne', // 左侧表格 组件的引用名切换哟，这的值决定
@@ -212,7 +226,7 @@ export default {
       rightUlData: [], // 右侧列表的数据
 
       dataListLoading: false, // 加载
-      chenxiHeight: 390, // 这个是测试出来的固定值，用于第一次初始化页面吧，如果以后页面的格式需要调整，可以测试一个初始值来填在这就行了
+      chenxiHeight: 345, // 这个是测试出来的固定值，用于第一次初始化页面吧，如果以后页面的格式需要调整，可以测试一个初始值来填在这就行了
       pageIndex: 1,
       pageSize: 30, // 50 标准
       totalPage: 1,
@@ -222,6 +236,8 @@ export default {
 
         // StoreId: '', // 门店
         AccountId: '', // 医生
+        oldCategoryOne: '1', // 一级药态记录
+        CategoryOne: '1', // 一级药态类型
 
         MainCure: '', // 主治
         Effect: '', // 功效
@@ -254,6 +270,8 @@ export default {
         SpellName: '',
         agreementRecipelId: '', // 协定方id
         AccountId: '', // 医生
+        oldCategoryOne: '1', // 一级药态记录
+        CategoryOne: '1', // 一级药态类型
         MainCure: '', // 主治
         Effect: '', // 功效
         Explain: '', // 说明
@@ -266,6 +284,18 @@ export default {
       this.oldTabsName = '1001'
       this.activeName = '1001'
     },
+
+    // 一级药态点击时，对应的二级药态变化
+    filterCategory (arr) {
+      var brr = []
+      for (let i = 0; i < arr.length; i++) {
+        this.drugsCategoryArrCopy.forEach(item => {
+          if (item.id === arr[i]) { brr.push(item) }
+        })
+      }
+      this.drugsCategoryArr = brr
+    },
+
     pageInit (agreementRecipelId, type, AccountId) { // type 'add see edit'
       this.visible = true
       this.dataListLoading = true
@@ -279,6 +309,7 @@ export default {
             return ind > 0
           })
         }
+        this.drugsCategoryArrCopy = this.drugsCategoryArr
       })
 
       if (agreementRecipelId) { // 查看、和 编辑 都需要初始化
@@ -295,11 +326,30 @@ export default {
             this.dataForm.Explain = result.data.Explain // 说明
             this.dataForm.PrescriptionName = result.data.PrescriptionName // 处方名
             this.dataForm.DrugRate = result.data.DrugRate // 用法
+            this.dataForm.oldCategoryOne = String(result.data.CategoryOne) // 药态一级记录 1内服2外用3制膏4水丸5水蜜丸
+            this.dataForm.CategoryOne = String(result.data.CategoryOne) // 药态一级分类 1内服2外用3制膏4水丸5水蜜丸
+            switch (this.dataForm.CategoryOne) { // [饮片1001、颗粒1002、精品1003、三九1004]
+              case '1':
+                this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
+                break
+              case '3':
+                this.filterCategory(['1004']) // 制膏只有三九
+                break
+              case '4':
+                this.filterCategory(['1001', '1003']) // 制丸只有饮片
+                break
+              case '5':
+                this.filterCategory(['1001', '1003'])
+                break
+              case '2':
+                this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
+                break
+            }
           }
           // 左边table 字段转换下
           this.leftTableData = result.data.SaleOrderItems.map(item => {
             item.CategoryName = item.CategoryName.substring(4)
-            item.Id = item.ProductId // 这个字段为什么要转换，可能看起来很懵逼，就是后端的接口一会那个字段一会这个字段搞出来的，如果不转化一下，编辑提交的情况下有bug
+            item.Id = item.ProductId // 这个字段为什么要转换，可能看起来很懵，就是后端的接口一会那个字段一会这个字段搞出来的，如果不转化一下，直接就使用会有bug（就是代表同一个东西的字段，后端取名没有统一）
             item.myNum = item.Quantity
             item.ShowName = item.ProductName
             item.Code = item.ProductCode
@@ -383,6 +433,105 @@ export default {
       this.leftTableData.push() // 这个可能会非常懵逼，目的是每次改变任何的myNum的值都会重新渲染左边的table，把push()拿掉就能找到问题在哪，这就是这个push()没任何实际参数但还是要写一个在这的原因
     },
 
+    // 一级药态被点击时
+    handleChange (leftLab) {
+      console.log(leftLab)
+      if (this.leftTableData.length === 0) { // 没开任何药材时直接切换直接加载呗，都没药材记录还提示啥子嘛
+        switch (leftLab) { // [饮片1001、颗粒1002、精品1003、三九1004]
+          case '1':
+            this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
+            break
+          case '3':
+            this.filterCategory(['1004']) // 制膏只有三九
+            break
+          case '4':
+            this.filterCategory(['1001', '1003']) // 制丸只有饮片
+            break
+          case '5':
+            this.filterCategory(['1001', '1003'])
+            break
+          case '2':
+            this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
+            break
+        }
+        this.activeName = this.drugsCategoryArr[0].id
+        switch (this.activeName) {
+          case '1001':
+            this.leftTable = 'TableOne'
+            this.rightUl = 'ul-one'
+            break
+          case '1002':
+            this.leftTable = 'TableTwo'
+            this.rightUl = 'ul-one'
+            break
+          case '1003':
+            this.leftTable = 'TableThree'
+            this.rightUl = 'ul-one'
+            break
+          case '1004':
+            this.leftTable = 'TableFour'
+            this.rightUl = 'ul-one'
+            break
+        }
+        this.dataForm.oldCategoryOne = leftLab
+        this.oldTabsName = this.activeName
+        this.getStoreCategorytypeStock()
+      } else { // 有的时候提示是否确定切换tabs
+        this.$confirm('切换药态将清空已经加入的药品, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          switch (leftLab) { // [饮片1001、颗粒1002、精品1003、三九1004]
+            case '1':
+              this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
+              break
+            case '3':
+              this.filterCategory(['1004']) // 制膏只有三九
+              break
+            case '4':
+              this.filterCategory(['1001', '1003']) // 制丸只有饮片
+              break
+            case '5':
+              this.filterCategory(['1001', '1003'])
+              break
+            case '2':
+              this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
+              break
+          }
+          this.activeName = this.drugsCategoryArr[0].id
+          switch (this.activeName) {
+            case '1001':
+              this.leftTable = 'TableOne'
+              this.rightUl = 'ul-one'
+              break
+            case '1002':
+              this.leftTable = 'TableTwo'
+              this.rightUl = 'ul-one'
+              break
+            case '1003':
+              this.leftTable = 'TableThree'
+              this.rightUl = 'ul-one'
+              break
+            case '1004':
+              this.leftTable = 'TableFour'
+              this.rightUl = 'ul-one'
+              break
+          }
+          this.dataForm.oldCategoryOne = leftLab
+          this.oldTabsName = this.activeName
+          this.getStoreCategorytypeStock()
+          this.leftTableData = [] // 不只切换，还需要清空左边table信息
+        }).catch(() => {
+          this.dataForm.CategoryOne = this.dataForm.oldCategoryOne
+          this.activeName = this.oldTabsName // 依靠oldTabsName切回上一步，table、ul、和tableData都不需要变了，就是取消切换药态的操作
+        })
+      }
+      // console.log(this.dataForm.CategorOne, this.dataForm.oldCategorOne, this.activeName, this.oldTabsName)
+      // this.rightCategoryChangeClick(this.activeName) // 切换了一节药态导致二级药态也切换，需要模拟一下点击二级药态时的一些方法
+    },
+
+    // 二级药态变化
     handleClick (tab, event) {
       if (this.leftTableData.length === 0) { // 没开任何药材时直接切换直接加载呗，都没药材记录还提示啥子嘛
         switch (tab.name) {
@@ -501,7 +650,8 @@ export default {
                 SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
               }
               return obj
-            }))
+            })),
+            CategoryOne: this.dataForm.CategoryOne // 药态一级分类 1内服2外用3制膏4水丸5水蜜丸
           }
 
           // 创建协定方，调用旧的创建挂号单的接口
@@ -528,7 +678,8 @@ export default {
                 SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
               }
               return obj
-            }))
+            })),
+            CategoryOne: this.dataForm.CategoryOne // 药态一级分类 1内服 2外用 3制膏 4水丸 5水蜜丸
           }
           console.log(paramsEdit) // 编辑协定方后 = 挂号编辑提交
           console.log(paramsCreate) // 创建协定方后 = 挂号创建提交

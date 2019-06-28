@@ -7,7 +7,7 @@
     <!--<el-col><div style="border-top: 1px dashed #ccc;padding-top: 10px;font-weight: 900">别名（选填）</div></el-col>-->
     <el-container><!-- display: none -->
       <el-aside :width="isAddActive === false ? '100%' : '60%'">
-        <div class="ownScrollbar" style="min-height: 500px;max-height: 500px;overflow-y: scroll;display: none">
+        <div class="ownScrollbar" style="min-height: 500px;max-height: 500px;overflow-y: scroll;">
 
           <!--头部状态-->
           <el-row>
@@ -147,8 +147,8 @@
         <!--打印层 -->
         <!--打印层 -->
         <!--打印层 财务（入库单）--><!-- style="display: none" -->
-        <div id="chenxiPrint" v-if="dataList !== null">
-          <div v-for="index in pages" :key="index" style="font-size: 12px;"> <!-- 循环开始 -->
+        <div id="chenxiPrint" v-if="dataList !== null" style="display: none">
+          <div v-for="index in pages" :key="index" style="font-size: 12px; width: 80%"> <!-- 循环开始 -->
             <div>
               <div style="text-align: center;font-size: 18px;font-weight: 900">重庆渝北一善堂中医门诊部（入库单）</div>
               <div>

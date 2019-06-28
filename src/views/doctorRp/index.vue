@@ -69,22 +69,24 @@
                       </el-radio-group>
                     </el-form-item>
                   </el-col>
+                  <el-col :span="16">
+                    <el-form-item label="一级药态">
+                      <el-radio-group v-model="dataForm.CategoryOne"  @change="handleChange" size="mini">
+                        <el-radio label="1" border>汤剂</el-radio>
+                        <el-radio label="3" border>制膏</el-radio>
+                        <el-radio label="4" border>水泛丸</el-radio>
+                        <el-radio label="5" border>水蜜丸</el-radio>
+                        <el-radio label="2" border>外用</el-radio>
+                      </el-radio-group>
+                    </el-form-item>
+                  </el-col>
                 </el-row>
 
-                <!--<el-row>-->
-                  <!--<el-col :span="8">-->
-                    <!--<el-form-item label="发病时间">-->
-                      <!--<el-date-picker type="date" placeholder="请选择发病时间" style="width: 144px"-->
-                                      <!--v-model="dataForm.DiseaseTime" value-format="yyyy-MM-dd">-->
-                      <!--</el-date-picker>-->
-                    <!--</el-form-item>-->
-                  <!--</el-col>-->
-                  <!--<el-col :span="8">-->
-                    <!--<el-form-item label="过敏史">-->
-                      <!--<el-input v-model="dataForm.AgoIllness" placeholder="请输入过敏史" style="width: 144px"></el-input>-->
-                    <!--</el-form-item>-->
-                  <!--</el-col>-->
-                <!--</el-row>-->
+                <!--<el-form-item label="发病时间">-->
+                  <!--<el-date-picker type="date" placeholder="请选择发病时间" style="width: 144px"-->
+                                  <!--v-model="dataForm.DiseaseTime" value-format="yyyy-MM-dd">-->
+                  <!--</el-date-picker>-->
+                <!--</el-form-item>-->
                 <el-row>
                   <el-col :span="24">
                     <el-form-item label="主诉" prop="MainSuit" :inline-message="true">
@@ -92,20 +94,11 @@
                                 placeholder="请选择或输入主诉" style="width: 85%"></el-input>
                     </el-form-item>
                   </el-col>
-                  <!--<el-col :span="24">-->
-                    <!--<el-form-item label="现病史">-->
-                      <!--<el-input v-model="dataForm.NowIllness" placeholder="从起病到就诊时疾病的发生、发展及其他变化的经过和诊疗情况" style="width: 75%"></el-input>-->
-                    <!--</el-form-item>-->
-                  <!--</el-col>-->
                 </el-row>
               </div>
             </transition>
             <el-row>
               <el-col :span="24">
-                <!--<el-form-item label="诊断结果" prop="DiseaseInfo">-->
-                  <!--<el-input v-model="dataForm.DiseaseInfo" placeholder="请选择或输入诊断结果" style="width: 75%"></el-input>-->
-                <!--</el-form-item>-->
-                <!--2019.06.14-->
                 <el-form-item label="诊断结果" prop="DiseaseInfo" :inline-message="true">
                   <el-select
                     v-model="dataForm.DiseaseInfo"
@@ -143,17 +136,17 @@
         </el-aside>
 
         <!--右侧药材：tabs标签页切换引导组件切换-->
+        <!---->
+        <!--其实这儿感觉可以不用传递一级药态dataForm.CategoryOne，直接传递-2查询全部，因为载入后我做了相应的自动切换药态的功能-->
+        <!---->
         <el-main width="25%" style="padding: 0 10px 40px; border-bottom: 1px solid #DCDFE6;">
-          <div style="margin: 5px 0">
-            <el-button type="danger" size="mini" @click="openAgreementRecipelList('40')">协定方</el-button>
-            <el-button type="danger" size="mini" @click="openAgreementRecipelList('41')">经典方</el-button>
-            <el-button type="danger" size="mini" disabled>名验方</el-button>
+          <div style="margin: 5px 0;width: 279px;overflow: hidden;cursor: pointer">
+            <el-button type="warning" plain size="mini" @click="openAgreementRecipelList('40', '-2')">协定方</el-button>
+            <el-button type="warning" plain size="mini" @click="openAgreementRecipelList('41', '-2')">经典方</el-button>
+            <el-button type="warning" plain size="mini" @click="openAgreementRecipelList('42', '-2')">理疗中成药</el-button>
+            <!--<el-button type="warning" plain size="medium" disabled>名验方</el-button>-->
           </div>
 
-          <!--<el-input v-model="dataForm.SpellName" @blur="dataForm.SpellName = ''"-->
-                    <!--:placeholder="`请输入要查询的药材, 门店：${$store.getters.getAccountCurrentHandleStore}`"-->
-                    <!--style="min-width: 190px; width: 100%" size="small" clearable><i slot="prefix" class="el-input__icon el-icon-search"></i>-->
-          <!--</el-input>-->
           <el-autocomplete
             ref="customInput"
             popper-class="my-autocomplete"
@@ -192,7 +185,8 @@
                     </el-col>
 
                     <el-col :span="6" v-if="item.Quantity > 0" style="text-align: right;padding-right: 7px">
-                      <el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)"
+                      <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)"-->
+                      <el-button type="text" size="mini" @click="addDrugs(item)"
                                  style="font-size: 15px;font-weight: 600">添加</el-button>
                     </el-col>
                   </el-row>
@@ -228,12 +222,19 @@
               <el-input-number v-model="Total" @change="countTotalPrice(leftTableData)" :min="1" :step="1" :max="30" style="width: 95px"></el-input-number> 剂
             </el-form-item>
           </el-col>
-          <el-col :span="6">
-            <el-form-item label="用药方法" prop="DrugRate">
-              <el-select v-model="dataForm.DrugRate" style="width: 144px" placeholder="请选择用药方法">
-                <el-option :label="'一日一次饭后服'" :value="'一日一次饭后服'"></el-option>
-                <el-option :label="'一日一次饭前服…'" :value="'一日一次饭前服…'"></el-option>
+          <el-col :span="12">
+            <el-form-item label="用法：" prop="DrugRate_0">
+              每日
+              <el-select v-model="dataForm.DrugRate_0" style="width: 70px">
+                <el-option v-for="item in DrugRateOptionsArr"
+                           :key="item.lab" :label="item.lab" :value="item.val"></el-option>
               </el-select>
+              剂，一剂分
+              <el-select v-model="dataForm.DrugRate_1" style="width: 70px">
+                <el-option v-for="item in DrugRateOptionsArr"
+                           :key="item.lab" :label="item.lab" :value="item.val"></el-option>
+              </el-select>
+              次服
             </el-form-item>
           </el-col>
           <el-col :span="6">
@@ -242,27 +243,56 @@
             </el-form-item>
           </el-col>
         </el-row>
+      </el-footer>
+
+      <div style="position: fixed;bottom: 0;left: 0px;right: 0;padding-left: 230px;background-color: #f1f2f7;z-index: 999">
         <el-row>
-          <el-col :span="6">
+          <el-col :span="6" style="padding-top: 5px">
             <el-form-item label="开方医生">
               <el-input v-model="$route.query.DoctorName" placeholder="onlyReady" style="width: 110px" :disabled="true"></el-input>
             </el-form-item>
             <!--{{$route.query.DoctorId}}-->
           </el-col>
-          <el-col :span="12" style="font-weight: 500; font-size: 16px; padding-top: 10px">
-            &nbsp;&nbsp;&nbsp;总金额：<span style="color: #e4393c">￥{{allMoney}}</span>
-            <span v-if="$route.query.MobilePhone === '0'"> +
-              <el-input-number v-model="dataForm.ConsultationAmount" :min="1" :max="1000" style="width: 100px" size="mini"></el-input-number> =
-              <span style="color: #e4393c;font-size: 16px">￥{{(Number(allMoney) + dataForm.ConsultationAmount).toFixed(2)}}</span>
-            </span>
+          <el-col :span="14" style="font-weight: 500; font-size: 16px; padding-top: 10px;cursor: pointer;">
+            <div style="width: 540px; overflow: hidden">
+              总金额：<span style="display: inline-block;color: #e4393c;font-weight: 700">￥
+              {{(Number(allMoney) + dataForm.WorkAmount + dataForm.ConsultationAmount).toFixed(2)}} =</span>
+              <!--1-->
+              <el-tooltip placement="top">
+                <div slot="content">当前药费</div>
+                <span>￥{{allMoney}}</span>
+              </el-tooltip>
+              <!--2-->
+              <el-tooltip placement="top">
+                <div slot="content">加工费：<br/>加工费只针对制膏制丸</div>
+                <span v-show="dataForm.CategoryOne === '3' ||
+                            dataForm.CategoryOne === '4' || dataForm.CategoryOne === '5'">
+                  +￥{{dataForm.WorkAmount}}</span>
+              </el-tooltip>
+              <!--3-->
+              <el-tooltip placement="top">
+                <div slot="content">医生直接开方时：<br/>需填写挂号费</div>
+                <span v-if="$route.query.MobilePhone === '0'">
+                  + <el-input-number v-model="dataForm.ConsultationAmount" :min="1" :max="1000" style="width: 100px" size="mini"></el-input-number>
+                </span>
+              </el-tooltip>
+
+              <!--药方总重量：只针对制膏制丸 [用的计算属性处理]-->
+              <el-tooltip placement="top">
+                <div slot="content">加工费规则：<br/>1000以下算120元，1000g以上每多100g加10元</div>
+                <span v-show="dataForm.CategoryOne !== '1' &&
+                        dataForm.CategoryOne !== '2' && leftTableData.length !== 0">
+                ；总重量：{{categoryAllWeight}} g</span>
+              </el-tooltip>
+
+            </div>
           </el-col>
-          <el-col :span="6">
-            <el-form-item>
-              <el-button type="primary" icon="iconfont icon-ico_zhongyaofangguanli_zhongyaoqingling" @click="send()" size="medium">&nbsp;发送给药房</el-button>
-            </el-form-item>
+          <el-col :span="4" style="padding-top: 7px">
+            <el-button type="primary" icon="iconfont icon-ico_zhongyaofangguanli_zhongyaoqingling"
+                       @click="send()" size="small">&nbsp;发送给药房</el-button>
           </el-col>
         </el-row>
-      </el-footer>
+      </div>
     </el-form>
     <patient-list-pop v-if="addOrUpdateVisible" ref="patientListPop" @childEven="zairuFun"></patient-list-pop>
     <agreement-dialog v-if="addOrUpdateVisibleAgreement" ref="agreementPop" @childAgreementEven="zairuFunAgreement" :indexDoctorId="$route.query.DoctorId"></agreement-dialog>
@@ -320,10 +350,18 @@ export default {
         console.log(val)
         this.Total = 1
       }
+    },
+    allMoney (val, oldval) {
+      if (this.dataForm.CategoryOne === '3' || this.dataForm.CategoryOne === '4' || this.dataForm.CategoryOne === '5') {
+        this.dataForm.WorkAmount = this.categoryAllWeight <= 1000 ? 120 : Math.ceil((this.categoryAllWeight - 1000) / 100) * 10 + 120
+      } else {
+        this.dataForm.WorkAmount = 0
+      }
     }
   },
   data () {
     return {
+      rightButton: '',
       options: [{
         value: '上呼吸道感染',
         label: '上呼吸道感染'
@@ -382,6 +420,11 @@ export default {
         value: '带状疱疹',
         label: '带状疱疹'
       }],
+      DrugRateOptionsArr: [
+        {lab: '1', val: '1'}, {lab: '2', val: '2'}, {lab: '3', val: '3'},
+        {lab: '4', val: '4'}, {lab: '5', val: '5'}, {lab: '6', val: '6'},
+        {lab: '7', val: '7'}, {lab: '8', val: '8'}, {lab: '9', val: '9'}
+      ],
       cutOut: true, // 收起，显示
       litterArr: [
         {content: 'A', isActive: false}, {content: 'N', isActive: false},
@@ -398,7 +441,8 @@ export default {
         {content: 'L', isActive: false}, {content: 'Y', isActive: false},
         {content: 'M', isActive: false}, {content: 'Z', isActive: false}],
       drugsCategoryArr: [], // 先请求药品种类
-      oldTabsName: '1001',
+      drugsCategoryArrCopy: [], // 初始化的时候就保存一个保存有全部信息的副本，以后用于提取
+      oldTabsName: '1001', // 二级药态记录
       activeName: '1001',
       dataList: [],
       leftTable: 'TableOne', // 左侧表格 组件的引用名切换哟，这的值决定
@@ -424,6 +468,8 @@ export default {
         ageUnit: '1', // val='1' label岁 '0'月
 
         DiagnosisType: '1', // 看诊类型
+        oldCategoryOne: '1', // 一级药态记录
+        CategoryOne: '1', // 一级药态类型
         // DiseaseTime: '', // 发病时间
         // AgoIllness: '', // 过敏史
         // NowIllness: '', // 现病史
@@ -431,19 +477,34 @@ export default {
         DiseaseInfo: [], // 诊断信息
 
         SpellName: '',
-        DrugRate: '', // 用药间隔
+        // Dte: '', // 用药间隔
+        DrugRate_0: '1', // 每日几剂 搭配计算属性
+        DrugRate_1: '1', // 一剂分几次服
         DoctorAdvice: '', // 医嘱
         RegisterAmount: 0, // 挂号费
-        ConsultationAmount: 0 // 诊疗费
+        ConsultationAmount: 0, // 诊疗费
+        WorkAmount: 0 // 加工费 （只有一级药态为制膏、制丸的情况下才有）
       },
       dataRule: {
         UserName: Currency('此为必填项'),
         MainSuit: Currency('主诉必填'),
         DiseaseInfo: Currency('诊断结果必填'),
-        DrugRate: Currency('用药方法必填')
+        DrugRate_0: Currency('用药方法必填')
       },
       Total: 1, // 剂数
       allMoney: 0
+    }
+  },
+  computed: {
+    // 服用方法
+    'DrugRate': function () {
+      return `共 ${this.Total} 剂，每日 ${this.dataForm.DrugRate_0} 剂，一剂分 ${this.dataForm.DrugRate_1} 次服`
+    },
+    // 药方总重量
+    categoryAllWeight () {
+      if (this.leftTableData.length !== 0) {
+        return this.Total * this.leftTableData.map(obj => obj.myNum).reduce((pren, nextm) => pren + nextm)
+      }
     }
   },
   created () {
@@ -455,15 +516,13 @@ export default {
     //   var newHeight = document.documentElement['clientHeight'] - 350
     //   this.chenxiHeight = newHeight > 350 ? newHeight : 350 // 273 测试老半天
     // }
-    // console.log(youHeight)
-    // console.log(zuoHeight)
-    // console.log(this.chenxiHeight)
+    // console.log(youHeight)// console.log(zuoHeight)// console.log(this.chenxiHeight)
     var youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
     var zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
     this.chenxiHeight = parseInt(youHeight) - parseInt(zuoHeight)
   },
   methods: {
-    selHide () { // 当前select的下拉option部分隐藏的时候触发此方法
+    selHide () { // 当前select的下拉option块部分 隐藏的时候触发此方法
       var txt = document.getElementsByClassName('el-select-dropdown__list')[1]
         .firstElementChild.firstElementChild.innerHTML
       // [n] n受到整个页面中所有select的个数的影响，比如页头月、岁、页底的服用方法的下拉
@@ -501,10 +560,10 @@ export default {
     },
 
     // 打开协定方列表接口
-    openAgreementRecipelList (typeNum) {
+    openAgreementRecipelList (typeNum, Category) {
       this.addOrUpdateVisibleAgreement = true
       this.$nextTick(() => {
-        this.$refs.agreementPop.init(typeNum)
+        this.$refs.agreementPop.init(typeNum, Category)
       })
     },
     zairuFunAgreement (agreementId) {
@@ -521,6 +580,25 @@ export default {
           // this.dataForm.Explain = result.data.Explain // 说明
           // this.dataForm.PrescriptionName = result.data.PrescriptionName // 处方名
           // this.dataForm.DrugRate = result.data.DrugRate // 用法
+          this.dataForm.oldCategoryOne = String(result.data.CategoryOne) // 药态一级记录 1内服2外用3制膏4水丸5水蜜丸
+          this.dataForm.CategoryOne = String(result.data.CategoryOne) // 药态一级分类 1内服2外用3制膏4水丸5水蜜丸
+          switch (this.dataForm.CategoryOne) { // [饮片1001、颗粒1002、精品1003、三九1004]
+            case '1':
+              this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
+              break
+            case '3':
+              this.filterCategory(['1004']) // 制膏只有三九
+              break
+            case '4':
+              this.filterCategory(['1001', '1003']) // 制丸只有饮片
+              break
+            case '5':
+              this.filterCategory(['1001', '1003'])
+              break
+            case '2':
+              this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
+              break
+          }
 
           // 左边table 字段转换下
           this.leftTableData = result.data.SaleOrderItems.map(item => {
@@ -547,6 +625,18 @@ export default {
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       // if (isMultiple === false) { this.dataForm.StoreId = choseStoreId }
     },
+
+    // 二级药态相关
+    filterCategory (arr) {
+      var brr = []
+      for (let i = 0; i < arr.length; i++) {
+        this.drugsCategoryArrCopy.forEach(item => {
+          if (item.id === arr[i]) { brr.push(item) }
+        })
+      }
+      this.drugsCategoryArr = brr
+    },
+
     pageInit () {
       // 先请求药品种类提供给下拉列表
       API.drugs.getDrugsCategory().then(result => {
@@ -554,6 +644,7 @@ export default {
           this.drugsCategoryArr = result.data.filter((item, ind) => {
             return ind > 0
           })
+          this.drugsCategoryArrCopy = this.drugsCategoryArr
         }
       })
       // 后初始化页面的右上角：
@@ -598,7 +689,7 @@ export default {
         this.dataListLoading = false
       })
     },
-    // 右侧‘添加’药材的小模块：获取 对应门店 对应药态下的 对应药材库
+    // 右侧药材列表展示的模块：获取 对应门店 对应药态下的 对应药材库
     getStoreCategorytypeStock () {
       API.drugs.getDrugsList({
         Name: '',
@@ -684,11 +775,115 @@ export default {
       // console.log(this.leftTableData)
     },
 
+    // 一级药态被点击时
+    handleChange (leftLab) {
+      console.log(leftLab)
+      if (this.leftTableData.length === 0) { // 没开任何药材时直接切换直接加载呗，都没药材记录还提示啥子嘛
+        switch (leftLab) { // [饮片1001、颗粒1002、精品1003、三九1004]
+          case '1':
+            this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
+            break
+          case '3':
+            this.filterCategory(['1004']) // 制膏只有三九
+            break
+          case '4':
+            this.filterCategory(['1001', '1003']) // 制丸只有饮片
+            break
+          case '5':
+            this.filterCategory(['1001', '1003'])
+            break
+          case '2':
+            this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
+            break
+        }
+        this.activeName = this.drugsCategoryArr[0].id
+        switch (this.activeName) {
+          case '1001':
+            this.leftTable = 'TableOne'
+            this.rightUl = 'ul-one'
+            break
+          case '1002':
+            this.leftTable = 'TableTwo'
+            this.rightUl = 'ul-one'
+            break
+          case '1003':
+            this.leftTable = 'TableThree'
+            this.rightUl = 'ul-one'
+            break
+          case '1004':
+            this.leftTable = 'TableFour'
+            this.rightUl = 'ul-one'
+            break
+        }
+        this.dataForm.oldCategoryOne = leftLab
+        this.oldTabsName = this.activeName
+        this.getStoreCategorytypeStock()
+        this.countTotalPrice(this.leftTableData) // 切换药态后立马清空价格
+      } else { // 有的时候提示是否确定切换tabs
+        this.$confirm('切换药态将清空已经加入的药品, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          switch (leftLab) { // [饮片1001、颗粒1002、精品1003、三九1004]
+            case '1':
+              this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
+              break
+            case '3':
+              this.filterCategory(['1004']) // 制膏只有三九
+              break
+            case '4':
+              this.filterCategory(['1001', '1003']) // 制丸只有饮片
+              break
+            case '5':
+              this.filterCategory(['1001', '1003'])
+              break
+            case '2':
+              this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
+              break
+          }
+          this.activeName = this.drugsCategoryArr[0].id
+          switch (this.activeName) {
+            case '1001':
+              this.leftTable = 'TableOne'
+              this.rightUl = 'ul-one'
+              break
+            case '1002':
+              this.leftTable = 'TableTwo'
+              this.rightUl = 'ul-one'
+              break
+            case '1003':
+              this.leftTable = 'TableThree'
+              this.rightUl = 'ul-one'
+              break
+            case '1004':
+              this.leftTable = 'TableFour'
+              this.rightUl = 'ul-one'
+              break
+          }
+          this.dataForm.oldCategoryOne = leftLab
+          this.oldTabsName = this.activeName
+          this.getStoreCategorytypeStock()
+          this.leftTableData = [] // 不只切换，还需要清空左边table信息
+          this.countTotalPrice(this.leftTableData) // 切换药态后立马清空价格
+        }).catch(() => {
+          this.dataForm.CategoryOne = this.dataForm.oldCategoryOne
+          this.activeName = this.oldTabsName // 依靠oldTabsName切回上一步，table、ul、和tableData都不需要变了，就是取消切换药态的操作
+        })
+      }
+      // console.log(this.dataForm.CategoryOne, this.dataForm.oldCategoryOne, this.activeName, this.oldTabsName)
+      // this.rightCategoryChangeClick(this.activeName) // 切换了一节药态导致二级药态也切换，需要模拟一下点击二级药态时的一些方法
+    },
+
+    // 二级药态被点击时
     handleClick (tab, event) {
       // console.log(tab, event)
       // console.log(this.leftTableData)
+      this.rightCategoryChangeClick(tab.name)
+    },
+    rightCategoryChangeClick (categroyId) {
       if (this.leftTableData.length === 0) { // 没开任何药材时直接切换直接加载呗，都没药材记录还提示啥子嘛
-        switch (tab.name) {
+        switch (categroyId) {
           case '1001':
             this.leftTable = 'TableOne'
             this.rightUl = 'ul-one'
@@ -715,7 +910,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          switch (tab.name) {
+          switch (categroyId) {
             case '1001':
               this.leftTable = 'TableOne'
               this.rightUl = 'ul-one'
@@ -742,6 +937,7 @@ export default {
         })
       }
     },
+
     // A B C D...字母按钮
     activeLitter (txt, ind) {
       this.dataForm.SpellName = txt
@@ -802,7 +998,7 @@ export default {
             // DiseaseTime: this.dataForm.DiseaseTime, // 发病时间
             MainSuit: this.dataForm.MainSuit, // 主诉
             DiseaseInfo: this.dataForm.DiseaseInfo.join('，'), // 诊断信息
-            DrugRate: this.dataForm.DrugRate, // 用药频率
+            DrugRate: this.DrugRate, // 用药频率
             DoctorAdvice: this.dataForm.DoctorAdvice, // 医嘱
             Total: this.Total, // 总剂数
             ItemsJson: JSON.stringify(this.leftTableData.map(item => {
@@ -818,7 +1014,8 @@ export default {
                 SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
               }
               return obj
-            }))
+            })),
+            WorkAmount: this.dataForm.WorkAmount // 加工费
           }
           // ‘直接开方’参数，直接开方的参数应该传给create接口
           var paramsCreate = {
@@ -842,7 +1039,7 @@ export default {
             // NowIllness: this.dataForm.NowIllness,
             // DiseaseTime: this.dataForm.DiseaseTime,
             DoctorAdvice: this.dataForm.DoctorAdvice,
-            DrugRate: this.dataForm.DrugRate,
+            DrugRate: this.DrugRate,
             Total: this.Total,
             ItemsJson: JSON.stringify(this.leftTableData.map(item => {
               var obj = {
@@ -857,7 +1054,8 @@ export default {
                 SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
               }
               return obj
-            }))
+            })),
+            WorkAmount: this.dataForm.WorkAmount // 加工费
           }
           console.log(paramsEdit) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
           console.log(paramsCreate) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
@@ -894,9 +1092,15 @@ export default {
   }
 }
 .doctor-recipel /deep/ {
+  /*诊断结果的样式*/
   .el-select-dropdown__wrap {padding-bottom: 5px;}
   .el-select-dropdown__item {float: left; display: block !important;}
   .el-select-dropdown__item.selected::after {right: 5px}
+
+  /*一级药态的样式*/
+  .el-radio.is-bordered + .el-radio.is-bordered {margin-left: 5px}
+  .el-radio__label {padding-left: 5px}
+  .el-radio--mini.is-bordered {padding: 6px 10px 0 10px}
 }
 
 .doctor-recipel /deep/ {

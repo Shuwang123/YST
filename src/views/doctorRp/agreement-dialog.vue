@@ -85,7 +85,8 @@ export default {
 
       dataList: null,
       show3: true,
-      num: 40
+      num: 40,
+      Category: '-2' // 一级药态 1内服2外用3制膏4水丸5水蜜丸
     }
   },
   methods: {
@@ -108,7 +109,8 @@ export default {
         WrokTo: '', // 结束时间
         Status: '', // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部 ''表示协定方
         OrderType: this.num, // 40表示协定方 41表示经典方
-        PrescriptionName: this.dataForm.PrescriptionName
+        PrescriptionName: this.dataForm.PrescriptionName,
+        CategoryOne: this.Category // 药态一级分类 1内服2外用3制膏4水丸5水蜜丸 -2的时候就是请求全部协定方或者全部经典方
       }
       console.log(params)
       API.register.getRegisterList(params).then(result => { // 获取协定方列表
@@ -125,8 +127,9 @@ export default {
       })
     },
     // 获取某个采购单详情info
-    init (typeNum) {
+    init (typeNum, Category) {
       this.num = typeNum
+      this.Category = Category
       this.visible = true
       this.getDataList()
     },

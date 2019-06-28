@@ -105,7 +105,8 @@ export default {
           WrokTo: '', // 结束时间
           Status: '', // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部 ''表示协定方
           OrderType: '40', // 40表示协定方 41表示经典方
-          PrescriptionName: this.fatherDataForm.PrescriptionName
+          PrescriptionName: this.fatherDataForm.PrescriptionName,
+          CategoryOne: '-2' // 一级分类 -2查询所有 1内服2外用3制膏4水丸5水蜜丸
         }
         console.log(params)
         API.register.getRegisterList(params).then(result => { // 获取待就诊列表（挂号列表为基础筛选：医生）或者以后还可能筛选挂号单本身的状态
@@ -114,6 +115,7 @@ export default {
               item.BirthDate = calcAge(item.BirthDate)
               return item
             })
+            console.log(this.dataList)
             this.totalPage = result.total
           } else {
             this.$message.error(result.message)
