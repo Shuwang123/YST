@@ -35,8 +35,7 @@
           <el-col :span="18" v-if="registerAllData.SaleOrderItems">
             RP：{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}
             一剂 {{registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g，
-            {{registerAllData.Total}}剂共 {{registerAllData.Total * registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g，
-            加工费{{registerAllData.WorkAmount}}
+            共 {{registerAllData.Total * registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g
           </el-col>
           <el-col :span="6" style="text-align: right;padding-right: 15px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
         </el-row>
@@ -156,100 +155,124 @@
             <el-col :span="8">状态</el-col>
             <el-col :span="8">操作</el-col>
           </el-row>
-          <!--收费项目详情-->
-          <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
-            <el-col :span="8">
-              <el-form-item label="挂号费">
-                <el-input v-model="registerAllData.RegisterAmount" style="width: 100px" disabled></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">{{registerAllData.RegisterStatusName ? registerAllData.RegisterStatusName : '无'}}</el-col>
-            <el-col :span="8">- -</el-col>
-          </el-row>
-          <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
-            <el-col :span="8">
-              <el-form-item label="药品费">
-                <el-input v-model="registerAllData.DrugTotalAmount" style="width: 100px" disabled></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">{{registerAllData.StatusName ? registerAllData.StatusName : '无'}}</el-col>
-            <el-col :span="8">
-              <el-form-item label="折扣">
-                <el-input-number v-model="percentage" :min="1" :max="100" style="width: 95px"></el-input-number>
-              </el-form-item>%
-            </el-col>
-          </el-row>
-
-          <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
-            <el-col :span="8">
-              <el-tooltip placement="left" effect="light">
-                <div slot="content">加工费：<br/><br/>只针对制膏、制丸</div>
-                <el-form-item label="加工费">
-                  <el-input-number v-model="registerAllData.WorkAmount" :min="0" :max="1000" style="width: 100px"></el-input-number>
+          <div class="collect">
+            <!--收费项目详情-->
+            <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
+              <el-col :span="8">
+                <el-form-item label="挂号费">
+                  <el-input v-model="registerAllData.RegisterAmount" style="width: 100px" disabled></el-input>
                 </el-form-item>
-              </el-tooltip>
-            </el-col>
-            <el-col :span="8">待收费</el-col>
-            <el-col :span="8">- -</el-col>
-          </el-row>
-          <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
-            <el-col :span="8">
-              <el-form-item label="代煎">
-                <el-input-number v-model="daijian" :min="0" :max="1000" style="width: 100px"></el-input-number>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">待收费</el-col>
-            <el-col :span="8">- -</el-col>
-          </el-row>
+              </el-col>
+              <el-col :span="8">{{registerAllData.RegisterStatusName ? registerAllData.RegisterStatusName : '无'}}</el-col>
+              <el-col :span="8">- -</el-col>
+            </el-row>
+            <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
+              <el-col :span="8">
+                <el-form-item label="药品费">
+                  <el-input v-model="registerAllData.DrugTotalAmount" style="width: 100px" disabled></el-input>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">{{registerAllData.StatusName ? registerAllData.StatusName : '无'}}</el-col>
+              <el-col :span="8">
+                <el-form-item label="折扣">
+                  <el-input-number v-model="dataForm.percentage" :min="1" :max="100" style="width: 95px"></el-input-number>
+                </el-form-item>%
+              </el-col>
+            </el-row>
 
-          <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
-            <el-col :span="8">
-              <el-form-item label="快递">
-                <el-input-number v-model="kuaidi" :min="0" :max="1000" style="width: 100px"></el-input-number>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">待收费</el-col>
-            <el-col :span="8">- -</el-col>
-          </el-row>
-          <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
-            <el-col :span="8">
-              <el-form-item label="其他">
-                <el-input-number v-model="qita" :max="1000" style="width: 100px"></el-input-number>
-              </el-form-item>
-            </el-col>
-            <el-col :span="8">待收费</el-col>
-            <el-col :span="8">- -</el-col>
-          </el-row>
+            <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
+              <el-col :span="8">
+                <el-tooltip placement="left" effect="light">
+                  <div slot="content">加工费：<br/><br/>只针对制膏、制丸</div>
+                  <el-form-item label="加工费">
+                    <el-input-number v-if="registerAllData.WorkAmount" v-model="registerAllData.WorkAmount" :min="0" :max="1000" style="width: 100px"></el-input-number>
+                  </el-form-item>
+                </el-tooltip>
+              </el-col>
+              <el-col :span="8">待收费</el-col>
+              <el-col :span="8">- -</el-col>
+            </el-row>
+            <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
+              <el-col :span="8">
+                <el-form-item label="代煎">
+                  <el-input-number v-model="dataForm.DJAmount" :min="0" :max="1000" style="width: 100px"></el-input-number>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">待收费</el-col>
+              <el-col :span="8">- -</el-col>
+            </el-row>
 
-          <el-row>
-            <el-col :span="24" style="margin-top: 10px">
-              <el-form-item label="最终合计">
-                <el-input v-model="registerAllData.TotalAmount" style="width: 100px" disabled></el-input> ￥
-              </el-form-item>
+            <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
+              <el-col :span="8">
+                <el-form-item label="快递">
+                  <el-input-number v-model="dataForm.ExpressAmount" :min="0" :max="1000" style="width: 100px"></el-input-number>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">待收费</el-col>
+              <el-col :span="8">- -</el-col>
+            </el-row>
+            <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
+              <el-col :span="8">
+                <el-form-item label="其他">
+                  <el-input-number v-model="dataForm.OtherAmount" :max="1000" style="width: 100px"></el-input-number>
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">待收费</el-col>
+              <el-col :span="8">- -</el-col>
+            </el-row>
+          </div>
+
+          <el-row style="margin: 15px 0 10px">
+            <el-col :span="24">
+              患者总消费：￥{{registerAllData.TotalAmount}}，已支付：￥{{registerAllData.RegisterAmount}}，<b style="color: #e4393c">待支付：￥{{registerAllData.TotalAmount}}</b>
             </el-col>
           </el-row>
+          <!--支付方式0-->
           <el-row>
-            <el-col :span="8" style="margin-bottom: 10px">
+            <el-col :span="9" style="margin-bottom: 10px">
               <el-form-item label="支付方式"><!--患者支付方式-->
                 <el-select v-model="dataForm.PaymentWay" style="width: 100px" placeholder="支付方式">
                   <el-option v-for="item in optionsPaymentType" :key="item.value"
-                             :label="item.label" :value="item.value"></el-option>
+                             :label="item.label" :value="item.value" :disabled="item.abled"></el-option>
+                </el-select>
+              </el-form-item>
+              <div style="display: inline-block;width: 16px;height: 16px;line-height: 16px;border-radius: 50%;
+                   background-color: #0A96FE;text-align: center;color: #fff;margin-top: 10px;
+                   cursor: pointer" @click="paymentAdd = !paymentAdd">
+                {{paymentAdd === false ? '+' : '-'}}
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="支付金额">
+                <el-input v-model="dataForm.PayAmount" style="width: 100px"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <!--支付方式1-->
+          <el-row v-show="paymentAdd">
+            <el-col :span="9" style="margin-bottom: 10px">
+              <el-form-item label="支付方式"><!--患者支付方式-->
+                <el-select v-model="dataForm.OnlinePaymentWay" style="width: 100px" placeholder="支付方式">
+                  <el-option v-for="item in optionsPaymentType" :key="item.value"
+                             :label="item.label" :value="item.value" :disabled="item.abled"></el-option>
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="实收">
-                <el-input @blur="realityBlur" v-model="dataForm.reality" style="width: 100px" size="small"></el-input>
+              <el-form-item label="支付金额">
+                <el-input v-model="dataForm.OnlinePayAmount" style="width: 100px"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8" :offset="9" style="margin-bottom: 10px">
+              <el-form-item label="找零" prop="give">
+                <el-input v-model="dataForm.give" style="width: 100px" clearable size="small" disabled></el-input>
               </el-form-item>
             </el-col>
           </el-row>
         </el-form>
       </el-main>
-      <!--<el-col :span="8">-->
-        <!--<el-form-item label="找零" prop="give">-->
-          <!--<el-input v-model="dataForm.give" style="width: 100px" clearable size="small" disabled></el-input>-->
-        <!--</el-form-item>-->
-      <!--</el-col>-->
     </el-container>
 
     <div style="text-align: right">
@@ -274,83 +297,119 @@ export default {
       addOrUpdateVisible: false, // 暂时没用
       isAddActive: true,
 
+      oldDrugTotalAmount: '', // 提前保存最初100%时候的药费价格
       registerAllData: '', // 挂号单全部信息
       regMoney: /^\d+\.?\d{0,2}$/,
       dataForm: {
-        reality: '', // 实收
-        give: '', // 找零
-        PaymentWay: 1 // 支付方式
+        percentage: 100, // 打折
+
+        PaymentWay: 1, // 支付方式
+        OnlinePaymentWay: '', // 支付方式
+        PayAmount: '', // 支付金额_0
+        OnlinePayAmount: 0, // 支付金额_1
+
+        WorkAmount: '', // 加工费
+        DJAmount: 0, // 代煎费用
+        ExpressAmount: 0, // 快递费
+        OtherAmount: 0, // 其他
+
+        give: '' // 找零
       },
-      dataRule: {},// reality: Currency('此为必填项')
-      optionsPaymentType: [
-        { // 患者支付类型
-          label: '现金',
-          value: 1
-        }, {
-          label: '支付宝',
-          value: 2
-        }, {
-          label: '微信扫码',
-          value: 3
-        }, {
-          label: '银行卡',
-          value: 4
-        }, {
-          label: '医保',
-          value: 5
-        }, {
-          label: '微信客服手机',
-          value: 6
-        }, {
-          label: '代金券',
-          value: 7
-        }, {
-          label: '会员卡',
-          value: 8
-        }
-      ],
-      percentage: 100, // 打折参数
-      daijian: 0,
-      jiagongfei: 0,
-      kuaidi: 0,
-      qita: 0,
+      dataRule: {}, // realty: Currency('此为必填项')
+      paymentAdd: false,
+      optionsPaymentType: [ // 支付类型
+        {label: '现金', value: 1, abled: true},
+        {label: '支付宝', value: 2},
+        {label: '微信扫码', value: 3},
+        {label: '银行卡', value: 4},
+        {label: '医保', value: 5},
+        {label: '微信客服手机', value: 6},
+        {label: '代金券', value: 7},
+        {label: '会员卡', value: 8}],
+
       // 残留的价格，挂号费已支付未支付的状态会影响这个值去 ± OerderAmount(2表示挂号费已支付，1表示未支付)
       residualPrice: 0 // 2019.06.01 新增字段，优化代码
     }
   },
   watch: {
-    'dataForm.reality': function (newval, oldval) {
-      console.log(this.residualPrice)
-      if (Number(newval) === 0) { return false }
-      if (!this.regMoney.test(newval)) {
-        this.$alert('你输入的金额不合规范! ', '输入提示', {
+    // 折扣监听
+    'dataForm.percentage': function (val, oldval) {
+      this.registerAllData.DrugTotalAmount = Number(this.oldDrugTotalAmount * val / 100).toFixed(2)
+    },
+    // 支付方式变化时
+    'dataForm.PaymentWay': function (val, oldval) {
+      this.optionsPaymentType.forEach(item => {
+        if (val === item.value || this.dataForm.OnlinePaymentWay === item.value) {
+          item.abled = true
+        } else { item.abled = false }
+      })
+    },
+    'dataForm.OnlinePaymentWay': function (val, oldval) {
+      this.optionsPaymentType.forEach(item => {
+        if (val === item.value || this.dataForm.PaymentWay === item.value) {
+          item.abled = true
+        } else { item.abled = false }
+      })
+    },
+    // 支付金额变化时
+    'dataForm.PayAmount': function (val, oldval) {
+      var sum = Number(val) + Number(this.dataForm.OnlinePayAmount)
+      console.log(val, this.dataForm.OnlinePaymentWay, sum)
+      if (Number(val) === 0 && String(val).length > 1) { // 000000 这种
+        this.dataForm.PayAmount = ''
+        return false
+      }
+      if (String(val).includes(' ').length) { // ____000 这种
+        this.dataForm.PayAmount = ''
+        return false
+      }
+      if (Number(val) !== 0 && !this.regMoney.test(val)) {
+        this.$alert('请规范您的输入，不要乱填空格字母等奇怪符号! ', '输入提示', {
           confirmButtonText: '确定',
           callback: () => {
-            this.dataForm.reality = ''
+            this.dataForm.PayAmount = ''
             this.dataForm.give = ''
             return false
           }
         })
       }
-      if (Number(newval) < this.residualPrice) { // 这：实收小于总金额就退出，然后呢应该还需要清空错误的输入和错误提示吧，其实搭配了下面的realityBlur方法的，别看漏了，我自己也懵逼
+      if (sum < this.registerAllData.TotalAmount) { // 这：监听时：实收小于总金额就不用计算找零了，但还是需要清空错误的输入啊，比如‘    ’
         return false
+        // this.dataForm.give = Math.round((sum - this.registerAllData.TotalAmount) * 100) / 100 // 保留小数后两位
       } else {
-        this.dataForm.give = Math.round((newval - this.residualPrice) * 100) / 100 // 保留小数后两位
+        this.dataForm.give = Math.round((sum - this.registerAllData.TotalAmount) * 100) / 100 // 保留小数后两位
+      }
+    },
+    'dataForm.OnlinePayAmount': function (val, oldval) {
+      var sum = Number(val) + Number(this.dataForm.PayAmount)
+      console.log(this.dataForm.PaymentWay, val, sum)
+      if (Number(val) === 0 && String(val).length > 1) { // 000000 这种
+        this.dataForm.OnlinePayAmount = ''
+        return false
+      }
+      if (String(val).includes(' ').length) { // ____000 这种
+        this.dataForm.OnlinePayAmount = ''
+        return false
+      }
+      if (Number(val) !== 0 && !this.regMoney.test(val)) {
+        this.$alert('请规范您的输入，不要乱填空格字母等奇怪符号! ', '输入提示', {
+          confirmButtonText: '确定',
+          callback: () => {
+            this.dataForm.OnlinePayAmount = ''
+            this.dataForm.give = ''
+            return false
+          }
+        })
+      }
+      if (sum < this.registerAllData.TotalAmount) { // 这：监听时：实收小于总金额就不用计算找零了，但还是需要清空错误的输入啊，比如‘    ’
+        return false
+        // this.dataForm.give = Math.round((sum - this.registerAllData.TotalAmount) * 100) / 100 // 保留小数后两位
+      } else {
+        this.dataForm.give = Math.round((sum - this.registerAllData.TotalAmount) * 100) / 100 // 保留小数后两位
       }
     }
   },
   methods: {
-    realityBlur () {
-      if (Number(this.dataForm.reality) < this.residualPrice) {
-        this.dataForm.reality = ''
-        this.dataForm.give = ''
-        this.$message({
-          type: 'warning',
-          duration: '5000',
-          message: `提示: 实际的收费金额应 ≥ 挂号费!`
-        })
-      }
-    },
     // 根据表单的Id，获取对应挂号单的详情
     init (formId) {
       if (formId) {
@@ -360,6 +419,7 @@ export default {
           if (result.code === '0000') {
             result.data.BirthDate = calcAge(result.data.BirthDate)
             this.registerAllData = result.data
+            this.oldDrugTotalAmount = result.data.DrugTotalAmount
             this.dataListLoading = false
             console.log('查看', result.data)
 
@@ -380,16 +440,27 @@ export default {
     handleClose () {
       this.isAddActive = true
       this.dataForm = {
-        reality: '', // 实收
-        give: '', // 找零
-        PaymentWay: 1 // 支付方式
+        percentage: 100, // 打折
+
+        PaymentWay: 1, // 支付方式
+        OnlinePaymentWay: '', // 支付方式
+        PayAmount: '', // 支付金额_0
+        OnlinePayAmount: 0, // 支付金额_1
+
+        WorkAmount: '', // 加工费
+        DJAmount: 0, // 代煎费用
+        ExpressAmount: 0, // 快递费
+        OtherAmount: 0, // 其他
+
+        give: '' // 找零
       }
+      this.paymentAdd = false
     },
     // 收银提交接口
     dataFormSubmitA () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          // if (this.dataForm.reality === 0 && this.residualPrice > 0) {
+          // if (this.dataForm.reaity === 0 && this.residualPrice > 0) {
           //   this.$alert('实收金额未填! ', '提示', {
           //     confirmButtonText: '确定'
           //   })
@@ -398,7 +469,7 @@ export default {
           // var params = {
           //   id: this.registerAllData.Id,
           //   PaymentWay: this.dataForm.PaymentWay, // 支付方式
-          //   ActualAmount: this.residualPrice // 实收金额 this.dataForm.reality 不是这个
+          //   ActualAmount: this.residualPrice // 实收金额 this.dataForm.reaity 不是这个
           // }
           // console.log(params)
           // API.register.cashierSubmit(params).then(result => {
@@ -467,14 +538,14 @@ export default {
 .charge-info /deep/ .el-form-item {
   margin-bottom: 0;
 }
-.ownScrollbar /deep/ {
-  /*span {*/
-    /*display: inline-block;*/
-    /*width: 70px;*/
-    /*text-align: right;*/
-    /*height: 30px;*/
-    /*line-height: 30px;*/
-  /*}*/
+.collect /deep/ {
+  .el-form-item--medium .el-form-item__label {
+    margin-top: -3px;
+  }
+  .el-form-item {
+    position: relative;
+    top: 2px;
+  }
 }
 
 /*出诊 复诊样式覆盖*/
