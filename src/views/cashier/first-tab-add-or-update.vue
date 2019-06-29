@@ -20,7 +20,7 @@
         <el-row style="text-align: left;font-size: 20px;margin: 20px 0"><el-col :span="24"><b>{{registerAllData.StoreName}}处方笺</b></el-col></el-row>
         <el-row>
           <el-col :span="16">患者信息：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</el-col>
-          <el-col :span="8">科室：{{registerAllData.DepartmentTypeName}}</el-col>
+          <!--<el-col :span="8">科室：{{registerAllData.DepartmentTypeName}}</el-col>-->
         </el-row>
         <el-row>
           <el-col :span="24">
@@ -32,8 +32,13 @@
         <!--循环-->
         <el-row style="margin: 5px 0">
           <!--<el-col :span="12" style="font-size: 16px;">RP：[{{registerAllData.StatusName}}]</el-col> 下面行写了个vif，控制台报错找不0属性，后来加了v-if-->
-          <el-col :span="12" v-if="registerAllData.SaleOrderItems">RP：{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}</el-col>
-          <el-col :span="12" style="text-align: right;padding-right: 15px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
+          <el-col :span="18" v-if="registerAllData.SaleOrderItems">
+            RP：{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}
+            一剂 {{registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g，
+            {{registerAllData.Total}}剂共 {{registerAllData.Total * registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g，
+            加工费{{registerAllData.WorkAmount}}
+          </el-col>
+          <el-col :span="6" style="text-align: right;padding-right: 15px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
         </el-row>
         <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;">
           <el-col :span="8" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
@@ -45,7 +50,7 @@
         <!--footer height: 30px;line-height: 30px-->
         <el-row style="">
           <el-row style="height: 30px;line-height: 30px">
-            <el-col :span="24">帖数：一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.OrderAmount}}</el-col>
+            <el-col :span="24">帖数：一剂 ￥{{registerAllData.DrugOneAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.OrderAmount}}</el-col>
           </el-row>
           <el-col :span="12">
             <el-row>
@@ -136,119 +141,115 @@
 
       </el-aside>
 
-      <el-main>
-        <div class="ownScrollbar" style="min-height: 390px;overflow-y: scroll;"
-             v-loading="dataListLoading">
-          <div style="">
-            <el-row>
-              <el-col :span="24">病历号：{{registerAllData.UserCode}}</el-col>
-            </el-row>
-          </div>
+      <el-main class="ownScrollbar" style="min-height: 390px;overflow-y: scroll;" v-loading="dataListLoading">
+        <el-row>
+          <el-col :span="24">病历号：{{registerAllData.UserCode}}</el-col>
+        </el-row>
+        <el-row>
+          <el-col><div style="padding-top: 5px;font-size: 16px;font-weight: 900;color: #1CA579">收费项目：</div></el-col>
+        </el-row>
+
+        <el-form ref="dataForm" :rules="dataRule" :model="dataForm" label-width="70px" size="mini" :inline="true">
+          <!--头行-->
+          <el-row style="text-align: center; font-weight: 700; border-bottom: 1px solid #ccc;border-top: 1px solid #ccc;height: 40px;line-height: 40px">
+            <el-col :span="8">收费项目</el-col>
+            <el-col :span="8">状态</el-col>
+            <el-col :span="8">操作</el-col>
+          </el-row>
+          <!--收费项目详情-->
+          <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
+            <el-col :span="8">
+              <el-form-item label="挂号费">
+                <el-input v-model="registerAllData.RegisterAmount" style="width: 100px" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">{{registerAllData.RegisterStatusName ? registerAllData.RegisterStatusName : '无'}}</el-col>
+            <el-col :span="8">- -</el-col>
+          </el-row>
+          <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
+            <el-col :span="8">
+              <el-form-item label="药品费">
+                <el-input v-model="registerAllData.DrugTotalAmount" style="width: 100px" disabled></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">{{registerAllData.StatusName ? registerAllData.StatusName : '无'}}</el-col>
+            <el-col :span="8">
+              <el-form-item label="折扣">
+                <el-input-number v-model="percentage" :min="1" :max="100" style="width: 95px"></el-input-number>
+              </el-form-item>%
+            </el-col>
+          </el-row>
+
+          <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
+            <el-col :span="8">
+              <el-tooltip placement="left" effect="light">
+                <div slot="content">加工费：<br/><br/>只针对制膏、制丸</div>
+                <el-form-item label="加工费">
+                  <el-input-number v-model="registerAllData.WorkAmount" :min="0" :max="1000" style="width: 100px"></el-input-number>
+                </el-form-item>
+              </el-tooltip>
+            </el-col>
+            <el-col :span="8">待收费</el-col>
+            <el-col :span="8">- -</el-col>
+          </el-row>
+          <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
+            <el-col :span="8">
+              <el-form-item label="代煎">
+                <el-input-number v-model="daijian" :min="0" :max="1000" style="width: 100px"></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">待收费</el-col>
+            <el-col :span="8">- -</el-col>
+          </el-row>
+
+          <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
+            <el-col :span="8">
+              <el-form-item label="快递">
+                <el-input-number v-model="kuaidi" :min="0" :max="1000" style="width: 100px"></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">待收费</el-col>
+            <el-col :span="8">- -</el-col>
+          </el-row>
+          <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 40px;line-height: 40px;clear: both">
+            <el-col :span="8">
+              <el-form-item label="其他">
+                <el-input-number v-model="qita" :max="1000" style="width: 100px"></el-input-number>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">待收费</el-col>
+            <el-col :span="8">- -</el-col>
+          </el-row>
 
           <el-row>
-            <el-col><div style="padding-top: 5px;font-size: 16px;font-weight: 900;color: #1CA579">收费项目：</div></el-col>
+            <el-col :span="24" style="margin-top: 10px">
+              <el-form-item label="最终合计">
+                <el-input v-model="registerAllData.TotalAmount" style="width: 100px" disabled></el-input> ￥
+              </el-form-item>
+            </el-col>
           </el-row>
-          <div style="padding-left: 32px">
-            <!--表头-->
-            <el-row style="text-align: center; font-weight: 700; border: 1px solid #ccc; border-left: none; border-right: none;height: 35px;line-height: 35px">
-              <el-col :span="6">收费项目</el-col>
-              <el-col :span="6">合计</el-col>
-              <el-col :span="6">收费状态</el-col>
-              <el-col :span="6">操作</el-col>
-            </el-row>
-            <!--模拟表体-->
-            <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 30px;line-height: 30px;clear: both">
-              <el-col :span="6">挂号费</el-col>
-              <el-col :span="6">{{registerAllData.RegisterAmount}}￥</el-col>
-              <el-col :span="6">{{registerAllData.RegisterStatusName ? registerAllData.RegisterStatusName : '无'}}</el-col>
-              <el-col :span="6">- -</el-col>
-            </el-row>
-            <!--<el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 30px;line-height: 30px;clear: both">-->
-              <!--<el-col :span="6">诊疗费</el-col>-->
-              <!--<el-col :span="6">{{registerAllData.ConsultationAmount}}￥</el-col>-->
-              <!--<el-col :span="6">{{registerAllData.RegisterStatusName ? registerAllData.RegisterStatusName : '无'}}</el-col>-->
-              <!--<el-col :span="6">- -</el-col>-->
-            <!--</el-row>-->
-            <el-row style="text-align: center;border-bottom: 1px solid #ccc; height: 30px;line-height: 30px;clear: both">
-              <el-col :span="6">药费</el-col>
-              <el-col :span="6">{{registerAllData.TotalAmount * registerAllData.Total}}￥</el-col>
-              <el-col :span="6">{{registerAllData.StatusName ? registerAllData.StatusName : '无'}}</el-col>
-              <el-col :span="6">
-                <!--<span style="color: #409EFF;cursor: pointer;text-align: center">- -</span>-->
-                <span @click="seeRecipelInfo" style="color: #409EFF;cursor: pointer;text-align: center">{{isAddActive === false ? '处方' : '处方'}}详情</span>
-              </el-col>
-            </el-row>
-          </div>
-
-          <el-form ref="dataForm" :rules="dataRule" :model="dataForm" label-width="70px" size="mini" :inline="true">
-            <el-row style="margin-top: 30px;text-align: left;font-weight: 500; font-size: 16px">
-              <el-col :span="12">
-                <el-form-item label="药品费">
-                  <el-input v-model="residualPrice" style="width: 100px" disabled size="small"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="折扣率">
-                  <el-select v-model="dazhe" style="width: 100px">
-                    <el-option v-for="item in dazheArr" :key="item.value"
-                               :label="item.label" :value="item.value"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
-
-            <el-row>
-              <el-col :span="12">
-                <el-form-item label="代煎">
-                  <el-input v-model="daijian" style="width: 100px" size="small"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="制丸">
-                  <el-input v-model="zhiwan" style="width: 100px" size="small"></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-
-            <el-row>
-              <el-col :span="12">
-                <el-form-item label="快递">
-                  <el-input v-model="kuaidi" style="width: 100px" size="small"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="12">
-                <el-form-item label="其他">
-                  <el-input v-model="qita" style="width: 100px" size="small"></el-input>
-                  <!--<el-input-number v-model="dataForm.reality" :max="10" label="描述文字"></el-input-number>-->
-                </el-form-item>
-              </el-col>
-            </el-row>
-
-            <el-row>
-              <el-col :span="8" style="margin-bottom: 10px">
-                <el-form-item label="支付方式"><!--患者支付方式-->
-                  <el-select v-model="dataForm.PaymentWay" style="width: 100px" placeholder="支付方式">
-                    <el-option v-for="item in optionsPaymentType" :key="item.value"
-                               :label="item.label" :value="item.value"></el-option>
-                  </el-select>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="实收">
-                  <el-input @blur="realityBlur" v-model="dataForm.reality" style="width: 100px" size="small"></el-input>
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item label="找零" prop="give">
-                  <el-input v-model="dataForm.give" style="width: 100px" clearable size="small" disabled></el-input>
-                </el-form-item>
-              </el-col>
-            </el-row>
-
-          </el-form>
-        </div>
+          <el-row>
+            <el-col :span="8" style="margin-bottom: 10px">
+              <el-form-item label="支付方式"><!--患者支付方式-->
+                <el-select v-model="dataForm.PaymentWay" style="width: 100px" placeholder="支付方式">
+                  <el-option v-for="item in optionsPaymentType" :key="item.value"
+                             :label="item.label" :value="item.value"></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="实收">
+                <el-input @blur="realityBlur" v-model="dataForm.reality" style="width: 100px" size="small"></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </el-form>
       </el-main>
-
+      <!--<el-col :span="8">-->
+        <!--<el-form-item label="找零" prop="give">-->
+          <!--<el-input v-model="dataForm.give" style="width: 100px" clearable size="small" disabled></el-input>-->
+        <!--</el-form-item>-->
+      <!--</el-col>-->
     </el-container>
 
     <div style="text-align: right">
@@ -308,27 +309,9 @@ export default {
           value: 8
         }
       ],
-      dazhe: 1.00,
-      dazheArr: [ // 打折options模版
-        {
-          value: 1.00,
-          label: '不打折'
-        }, {
-          value: 0.95,
-          label: '95折'
-        }, {
-          value: 0.90,
-          label: '9折'
-        }, {
-          value: 0.80,
-          label: '8折'
-        }, {
-          value: 0.70,
-          label: '7折'
-        }
-      ],
+      percentage: 100, // 打折参数
       daijian: 0,
-      zhiwan: 0,
+      jiagongfei: 0,
       kuaidi: 0,
       qita: 0,
       // 残留的价格，挂号费已支付未支付的状态会影响这个值去 ± OerderAmount(2表示挂号费已支付，1表示未支付)
@@ -485,13 +468,13 @@ export default {
   margin-bottom: 0;
 }
 .ownScrollbar /deep/ {
-  span {
-    display: inline-block;
-    width: 70px;
-    text-align: right;
-    height: 30px;
-    line-height: 30px;
-  }
+  /*span {*/
+    /*display: inline-block;*/
+    /*width: 70px;*/
+    /*text-align: right;*/
+    /*height: 30px;*/
+    /*line-height: 30px;*/
+  /*}*/
 }
 
 /*出诊 复诊样式覆盖*/

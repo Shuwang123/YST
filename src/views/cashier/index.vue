@@ -37,7 +37,7 @@
                 </el-date-picker>
               </el-form-item>
               <el-form-item>
-                <el-button @click="isVisible[0].child ===  true ? $refs.firstTab.getDataList() : isVisible[1].child ===  true ? $refs.secondTab.getDataList() : $refs.threeTab.getDataList()"
+                <el-button @click="isVisible[0].child ===  true ? $refs.firstTab.getDataList() : $refs.secondTab.getDataList()"
                            size="mini">查询</el-button>
               </el-form-item>
             </el-col>
@@ -53,16 +53,9 @@
       </el-tab-pane>
 
       <el-tab-pane label="" name="second">
-        <span slot="label"><i class=""></i> 已收费</span>
+        <span slot="label"><i class=""></i> 已收费（已出库）</span>
         <transition name="chenxi">
           <second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>
-        </transition>
-      </el-tab-pane>
-
-      <el-tab-pane label="" name="three">
-        <span slot="label"><i class=""></i> 已出库</span>
-        <transition name="chenxi">
-          <three-tab v-if="isVisible[2].child" ref="threeTab" :fatherDataForm="dataForm"></three-tab>
         </transition>
       </el-tab-pane>
 
@@ -73,15 +66,13 @@
 import API from '@/api'
 import FirstTab from './first-tab'
 import SecondTab from './second-tab'
-import ThreeTab from './three-tab'
 import ComStore from '../common/com-store'
 
 export default {
   components: {
     ComStore,
     FirstTab,
-    SecondTab,
-    ThreeTab
+    SecondTab
   },
   watch: {
     'dataForm.AccountId': function () {
@@ -89,8 +80,6 @@ export default {
         this.$refs.firstTab.getDataList()
       } else if (this.isVisible[1].child === true) {
         this.$refs.secondTab.getDataList()
-      } else if (this.isVisible[2].child === true) {
-        this.$refs.threeTab.getDataList()
       }
     },
     'dataForm.patientNameOrMobilePhone': function (val, oldval) {
@@ -128,7 +117,6 @@ export default {
       },
       isVisible: [
         {child: true},
-        {child: false},
         {child: false}
       ],
       valueTime: [],
@@ -147,8 +135,6 @@ export default {
             this.$refs.firstTab.getDataList()
           } else if (this.isVisible[1].child === true) {
             this.$refs.secondTab.getDataList()
-          } else if (this.isVisible[2].child === true) {
-            this.$refs.threeTab.getDataList()
           }
         })
       }
@@ -190,11 +176,6 @@ export default {
             return index === 1 ? {child: true} : {child: false}
           })
           break
-        case 'three':
-          this.isVisible = this.isVisible.map((item, index) => {
-            return index === 2 ? {child: true} : {child: false}
-          })
-          break
       }
       this.$nextTick(() => {
         this.isVisible.forEach((item, index) => {
@@ -203,8 +184,6 @@ export default {
               this.$refs.firstTab.getDataList() // 待收费列表
             } else if (index === 1) {
               this.$refs.secondTab.getDataList() // 已收费列表
-            } else if (index === 2) {
-              this.$refs.threeTab.getDataList() // 已发货列表
             }
             return false
           }

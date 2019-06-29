@@ -264,14 +264,14 @@
               </el-tooltip>
               <!--2-->
               <el-tooltip placement="top">
-                <div slot="content">加工费：<br/>加工费只针对制膏制丸</div>
+                <div slot="content">加工费：<br/><br/>只针对制膏制丸</div>
                 <span v-show="dataForm.CategoryOne === '3' ||
                             dataForm.CategoryOne === '4' || dataForm.CategoryOne === '5'">
                   +￥{{dataForm.WorkAmount}}</span>
               </el-tooltip>
               <!--3-->
               <el-tooltip placement="top">
-                <div slot="content">医生直接开方时：<br/>需填写挂号费</div>
+                <div slot="content">医生直接开方时：<br/><br/>需填写挂号费</div>
                 <span v-if="$route.query.MobilePhone === '0'">
                   + <el-input-number v-model="dataForm.ConsultationAmount" :min="1" :max="1000" style="width: 100px" size="mini"></el-input-number>
                 </span>
@@ -279,7 +279,7 @@
 
               <!--药方总重量：只针对制膏制丸 [用的计算属性处理]-->
               <el-tooltip placement="top">
-                <div slot="content">加工费规则：<br/>1000以下算120元，1000g以上每多100g加10元</div>
+                <div slot="content">加工费规则：<br/><br/>1000g以下算120元，1000g以上每多100g加10元</div>
                 <span v-show="dataForm.CategoryOne !== '1' &&
                         dataForm.CategoryOne !== '2' && leftTableData.length !== 0">
                 ；总重量：{{categoryAllWeight}} g</span>
@@ -1015,6 +1015,7 @@ export default {
               }
               return obj
             })),
+            // CategoryOne: this.dataForm.CategoryOne,
             WorkAmount: this.dataForm.WorkAmount // 加工费
           }
           // ‘直接开方’参数，直接开方的参数应该传给create接口
@@ -1055,6 +1056,7 @@ export default {
               }
               return obj
             })),
+            // CategoryOne: this.dataForm.CategoryOne,
             WorkAmount: this.dataForm.WorkAmount // 加工费
           }
           console.log(paramsEdit) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口

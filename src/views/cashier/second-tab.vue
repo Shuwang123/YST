@@ -34,13 +34,12 @@
       </el-table-column>
       <el-table-column header-align="center" align="center" label="收费状态" min-width="260" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <span>{{scope.row.DiagnosisTypeName}} / {{scope.row.RegisterStatusName ? scope.row.RegisterStatusName : ''}} / {{scope.row.RegisterOrderStatusName}}</span>
+          <span>{{scope.row.DiagnosisTypeName}} / {{scope.row.RegisterStatusName ? scope.row.RegisterStatusName : ''}} / {{scope.row.StatusName}}</span>
         </template>
       </el-table-column>
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
-          <el-button type="text" size="mini" @click="comfireDispensing(scope.row.Code)">点击出库</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -53,7 +52,7 @@
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
-    <second-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataListChild"></second-tab-add-or-update>
+    <three-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></three-tab-add-or-update>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -106,7 +105,7 @@ export default {
         MobilePhone: this.fatherDataForm.MobilePhone, // 患者电话
         WrokFrom: this.fatherDataForm.StartDate, // 开始时间
         WrokTo: this.fatherDataForm.EndDate, // 结束时间
-        Status: '5', // -1作废1初始 2只支付挂号费 待就诊（候诊）3 已就诊-(待收费) 5已收费6已发货  -2全部,
+        Status: '6', // -1作废1初始 2只支付挂号费 待就诊（候诊）3 已就诊-(待收费) 5已收费6已发货  -2全部
         OrderType: '1' // 40表示协定方
       }
       // 获取挂号列表
@@ -124,9 +123,6 @@ export default {
         this.dataListLoading = false
       })
     },
-    getDataListChild () {
-      this.getDataList()
-    },
     // 每页数
     sizeChangeHandle (val) {
       this.pageSize = val
@@ -138,10 +134,10 @@ export default {
       this.pageIndex = val
       this.getDataList()
     },
-    addOrUpdateHandle (patientId) {
+    addOrUpdateHandle (formId) {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(patientId)
+        this.$refs.addOrUpdate.init(formId)
       })
     },
     handelDelete (id) {
@@ -150,23 +146,6 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-      })
-    },
-    // 收费后确认药材出库
-    comfireDispensing (Code) {
-      this.$confirm(`确定出库吗?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        console.log(Code)
-        API.register.saleOrderSubmit({saleOrderCode: Code}).then(result => {
-          if (result.code === '0000') {
-            this.getDataList()
-          } else {
-            this.$message.error(result.message)
-          }
-        })
       })
     }
   }

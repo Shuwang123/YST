@@ -39,7 +39,7 @@
           <span style="display: inline-block;width: 70px;text-align: left">{{item.RefundableQty}} {{item.Unit}}</span>
         </el-col>
         <i style="position: absolute;right: 33%;bottom: 50%;transform: rotate(-23deg);border: 2px solid #e4393c;box-shadow: 0 0 10px 1px #e4393c;
-                  color: #e4393c;font-size: 30px;padding: 10px 10px;border-radius: 30px;opacity: .9">{{registerAllData.OrderAmount}}元，已收款</i>
+                  color: #e4393c;font-size: 30px;padding: 10px 10px;border-radius: 30px;opacity: .9">{{registerAllData.OrderAmount}}元，已发药</i>
       </el-row>
 
       <!--footer height: 30px;line-height: 30px-->
@@ -291,43 +291,43 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-.registerIndex /deep/ .el-form-item {
-  margin-bottom: 0;
-}
-.ownScrollbar /deep/ {
-  span {
-    display: inline-block;
-    width: 70px;
-    text-align: right;
-    height: 30px;
-    line-height: 30px;
+  .registerIndex /deep/ .el-form-item {
+    margin-bottom: 0;
   }
-}
+  .ownScrollbar /deep/ {
+    span {
+      display: inline-block;
+      width: 70px;
+      text-align: right;
+      height: 30px;
+      line-height: 30px;
+    }
+  }
 
-/*出诊 复诊样式覆盖*/
-.registerIndex /deep/ {
-  .el-radio-button--mini .el-radio-button__inner {
-    padding: 7px 9px;
+  /*出诊 复诊样式覆盖*/
+  .registerIndex /deep/ {
+    .el-radio-button--mini .el-radio-button__inner {
+      padding: 7px 9px;
+    }
+    /*只要半场动画*/
+    .v-enter {opacity: 0}
+    .v-enter-active {transition: all .4s ease}
+    .v-leave-active {position:absolute}
   }
-  /*只要半场动画*/
-  .v-enter {opacity: 0}
-  .v-enter-active {transition: all .4s ease}
-  .v-leave-active {position:absolute}
-}
-.ownScrollbar::-webkit-scrollbar,
-.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar {
-  width: 7px;
-}
-.ownScrollbar::-webkit-scrollbar-thumb,
-.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-thumb {
-  border-radius: 3px;
-  box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
-  background-color: #DDDEE0;
-}
-.ownScrollbar::-webkit-scrollbar-track,
-.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-track {
-  border-radius: 0;
-  box-shadow: inset 0 0 5px rgba(0,0,0,0);
-  background-color: rgba(0,0,0,0);
-}
+  .ownScrollbar::-webkit-scrollbar,
+  .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar {
+    width: 7px;
+  }
+  .ownScrollbar::-webkit-scrollbar-thumb,
+  .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    background-color: #DDDEE0;
+  }
+  .ownScrollbar::-webkit-scrollbar-track,
+  .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-track {
+    border-radius: 0;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0);
+    background-color: rgba(0,0,0,0);
+  }
 </style>
