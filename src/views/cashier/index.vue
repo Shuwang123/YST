@@ -53,7 +53,7 @@
       </el-tab-pane>
 
       <el-tab-pane label="" name="second">
-        <span slot="label"><i class=""></i> 已收费（已出库）</span>
+        <span slot="label"><i class=""></i> 已收费(已出库)</span>
         <transition name="chenxi">
           <second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>
         </transition>

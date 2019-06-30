@@ -143,7 +143,7 @@
           </p>
         </div>
 
-        <!--本地电脑里设置打印纸12.40：9.50cm-->
+        <!--24.10：9.31cm-->
         <!--打印层 -->
         <!--打印层 -->
         <!--打印层 财务（入库单）--><!-- style="display: none" -->
@@ -317,7 +317,7 @@ export default {
         }]
       },
       pickerOptions_1: null,
-      pages: 1 // 循环打印相关参数
+      pages: 1 // 打印循环 相关参数
     }
   },
   methods: {
@@ -483,7 +483,6 @@ export default {
             }
           })
           this.$nextTick(() => {
-            console.log('这儿没执行？')
             if (this.isAddActive === true) {
               this.comFunction()
             }

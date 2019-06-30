@@ -20,6 +20,7 @@
       <el-table-column prop="Code" header-align="center" align="center" label="编码" min-width="100"></el-table-column>
 
       <el-table-column prop="PrescriptionName" header-align="center" align="center" label="处方名" min-width="110" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="CategoryOneName" header-align="center" align="center" label="一级药态" min-width="110" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="MainCure" header-align="center" align="center" label="主治" min-width="110"></el-table-column>
       <el-table-column prop="Effect" header-align="center" align="center" label="功效" min-width="110"></el-table-column>
       <el-table-column prop="DrugRate" header-align="center" align="center" label="用法" min-width="110"></el-table-column>

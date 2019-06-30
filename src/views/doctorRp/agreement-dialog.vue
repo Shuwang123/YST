@@ -2,7 +2,7 @@
   <el-dialog
     v-dialogDrag
     :title="'协定方列表'"
-    width="1000px"
+    width="1100px"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <div v-if="show3" class="ownScrollbar" style="min-height: 400px;max-height: 600px;">
@@ -32,6 +32,7 @@
         <el-table-column prop="Id" header-align="center" align="center" label="ID" width="60" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="Code" header-align="center" align="center" label="编码" min-width="100"></el-table-column>
         <el-table-column prop="PrescriptionName" header-align="center" align="center" label="处方名" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+        <el-table-column prop="CategoryOneName" header-align="center" align="center" label="一级药态" min-width="110" :show-overflow-tooltip="true"></el-table-column>
         <el-table-column prop="MainCure" header-align="center" align="center" label="主治" min-width="110"></el-table-column>
         <el-table-column prop="Effect" header-align="center" align="center" label="功效" min-width="110"></el-table-column>
         <el-table-column prop="DrugRate" header-align="center" align="center" label="用法" min-width="110"></el-table-column>

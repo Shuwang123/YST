@@ -52,7 +52,7 @@
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
-    <three-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></three-tab-add-or-update>
+    <second-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></second-tab-add-or-update>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -105,8 +105,9 @@ export default {
         MobilePhone: this.fatherDataForm.MobilePhone, // 患者电话
         WrokFrom: this.fatherDataForm.StartDate, // 开始时间
         WrokTo: this.fatherDataForm.EndDate, // 结束时间
-        Status: '6', // -1作废1初始 2只支付挂号费 待就诊（候诊）3 已就诊-(待收费) 5已收费6已发货  -2全部
-        OrderType: '1' // 40表示协定方
+        Status: '6', // -1作废1初始 2只支付挂号费 待就诊（候诊）3 已就诊-(待收费) 5已收费6已发货 出库  -2全部
+        OrderType: '1', // 40表示协定方
+        CategoryOne: '-2'
       }
       // 获取挂号列表
       console.log(params)

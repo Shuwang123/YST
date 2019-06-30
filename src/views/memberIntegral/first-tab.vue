@@ -19,8 +19,8 @@
         <el-input v-model="dataForm.MobilePhone" placeholder="电话" clearable @clear="getDataList()" style="width: 150px"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
-        <el-button type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus">新增会员</el-button>
+        <el-button icon="el-icon-search" @click="getDataList()">查询患者</el-button>
+        <!--<el-button type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus">新增会员</el-button>-->
       </el-form-item>
     </el-form>
 
@@ -57,7 +57,8 @@
       </el-table-column>
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
-          <el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">编辑</el-button>
+          <el-button type="text" @click="addOrUpdateHandle(scope.row.Id, 'see')">查看流水</el-button>
+          <el-button type="text" @click="addOrUpdateHandle(scope.row.Id, 'edit')">编辑</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -72,6 +73,7 @@
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
     <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></first-tab-add-or-update>
+    <first-tab-add-or-update-see-flowing v-if="addOrUpdateVisibleSee" ref="addOrUpdateSee" @refreshDataListSee="getDataList"></first-tab-add-or-update-see-flowing>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -79,6 +81,7 @@ import API from '@/api'
 import {calcAge} from '@/utils/validate' // 自定义的计算年龄的方法，精确到月，至于精确到天，那种才生下来的娃，一个月不到不太可能中医
 import { mapGetters } from 'vuex'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
+import FirstTabAddOrUpdateSeeFlowing from './first-tab-add-or-update-see-flowing'
 import ComStore from '../common/com-store'
 export default {
   name: 'member',
@@ -87,6 +90,7 @@ export default {
       dataListLoading: false, // 加载
       chenxiHeight: document.documentElement['clientHeight'] - 276, // 心累，不要动
       addOrUpdateVisible: false,
+      addOrUpdateVisibleSee: false,
 
       pageSize: 17,
       pageIndex: 1,
@@ -101,6 +105,7 @@ export default {
   },
   components: {
     FirstTabAddOrUpdate,
+    FirstTabAddOrUpdateSeeFlowing,
     ComStore
   },
   created () {
@@ -154,11 +159,18 @@ export default {
       this.pageIndex = val
       this.getDataList()
     },
-    addOrUpdateHandle (id) {
-      this.addOrUpdateVisible = true
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id)
-      })
+    addOrUpdateHandle (id, popType) {
+      if (popType === 'see') {
+        this.addOrUpdateVisibleSee = true
+        this.$nextTick(() => {
+          this.$refs.addOrUpdateSee.init(id)
+        })
+      } else if (popType === 'edit') {
+        this.addOrUpdateVisible = true
+        this.$nextTick(() => {
+          this.$refs.addOrUpdate.init(id)
+        })
+      }
     },
 
     // 根据'未上架'状态，判断每行是高亮还是暗色

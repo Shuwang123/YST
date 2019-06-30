@@ -4,7 +4,7 @@
     :title="'已开处方'" :width="'615px'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose" class="charge-info">
-    <div style="width: 580px">
+    <div style="width: 580px" v-loading="dataListLoading">
       <el-row>
         <el-col :span="12">
           <!-- style="border-bottom: 1px solid #333;"-->
@@ -18,7 +18,7 @@
       <el-row style="text-align: left;font-size: 20px;margin: 20px 0"><el-col :span="24"><b>{{registerAllData.StoreName}}处方笺</b></el-col></el-row>
       <el-row>
         <el-col :span="16">患者信息：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</el-col>
-        <el-col :span="8">科室：{{registerAllData.DepartmentTypeName}}</el-col>
+        <!--<el-col :span="8">科室：{{registerAllData.DepartmentTypeName}}</el-col>-->
       </el-row>
       <el-row>
         <el-col :span="24">
@@ -30,7 +30,11 @@
       <!--循环-->
       <el-row style="margin: 5px 0">
         <!--<el-col :span="12" style="font-size: 16px;">RP：[{{registerAllData.StatusName}}]</el-col>-->
-        <el-col :span="12" v-if="registerAllData.SaleOrderItems">RP：{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}</el-col>
+        <el-col :span="12" v-if="registerAllData.SaleOrderItems">
+          RP：[{{registerAllData.CategoryOneName}}] - [{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}]
+          1 剂 {{registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g，
+          共 {{registerAllData.Total * registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g
+        </el-col>
         <el-col :span="12" style="text-align: right;padding-right: 15px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
       </el-row>
       <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;position: relative">
@@ -43,10 +47,9 @@
       </el-row>
 
       <!--footer height: 30px;line-height: 30px-->
-      <el-row style="">
+      <el-row>
         <el-row style="height: 30px;line-height: 30px">
-          <el-col :span="24">帖数：一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，挂号费 ￥{{registerAllData.RegisterAmount}}，诊疗费 ￥{{registerAllData.ConsultationAmount}}，总金额 ￥{{registerAllData.OrderAmount}}
-          </el-col>
+          <el-col :span="24">帖数：一剂 ￥{{registerAllData.DrugOneAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</el-col>
         </el-row>
         <el-col :span="12">
           <el-row>
@@ -98,8 +101,6 @@ export default {
     return {
       visible: false,
       dataListLoading: false, // 加载
-      addOrUpdateVisible: false, // 暂时没用
-      isAddActive: true,
 
       registerAllData: '' // 挂号单全部信息
     }
@@ -120,11 +121,7 @@ export default {
         })
       }
     },
-    seeRecipelInfo () {
-      this.isAddActive = !this.isAddActive // 点击'[添加药材]'按钮
-    },
     handleClose () {
-      this.isAddActive = true
       this.dataForm = {
         reality: '', // 实收
         give: '', // 找零

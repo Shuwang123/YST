@@ -49,7 +49,7 @@
         <!--footer height: 30px;line-height: 30px-->
         <el-row style="">
           <el-row style="height: 30px;line-height: 30px">
-            <el-col :span="24">帖数：一剂 ￥{{registerAllData.DrugOneAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.OrderAmount}}</el-col>
+            <el-col :span="24">帖数：一剂 ￥{{registerAllData.DrugOneAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</el-col>
           </el-row>
           <el-col :span="12">
             <el-row>
@@ -284,8 +284,7 @@
 
     <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dataFormSubmitA()">确认收费并打印</el-button>
-        <el-button type="primary" @click="chenxiPrint()">打印</el-button>
+        <el-button type="primary" @click="dataFormSubmit()">确认收费并打印</el-button>
         <el-button @click="visible = false">关闭</el-button>
       </span>
     </div>
@@ -487,9 +486,10 @@ export default {
       this.paymentAdd = false
     },
     // 收银提交接口
-    dataFormSubmitA () {
+    dataFormSubmit () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          var  Actual = Number(this.dataForm.PayAmount) + Number(this.dataForm.OnlinePayAmount)
           if (this.paymentAdd === true && this.dataForm.OnlinePaymentWay === '') {
             this.$alert('未选择支付方式! ', '提示', {confirmButtonText: '确定'})
             return false
@@ -519,7 +519,7 @@ export default {
           }
           var params = {
             id: this.registerAllData.Id,
-            // ActualAmount: '', // 实收废弃
+            ActualAmount: Actual, // 实收废弃???
             PaymentWay: this.dataForm.PaymentWay, // 支付方式
             OnlinePaymentWay: this.dataForm.OnlinePaymentWay, // 支付方式
             PayAmount: this.dataForm.PayAmount, // 实收金额

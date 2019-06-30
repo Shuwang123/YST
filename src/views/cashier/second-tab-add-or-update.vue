@@ -4,7 +4,7 @@
     :title="'划价收费'" :width="'615px'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose" class="charge-info">
-    <div style="width: 580px">
+    <div style="width: 580px" v-loading="dataListLoading">
       <el-row>
         <el-col :span="12">
           <!-- style="border-bottom: 1px solid #333;"-->
@@ -18,7 +18,7 @@
       <el-row style="text-align: left;font-size: 20px;margin: 20px 0"><el-col :span="24"><b>{{registerAllData.StoreName}}处方笺</b></el-col></el-row>
       <el-row>
         <el-col :span="16">患者信息：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</el-col>
-        <el-col :span="8">科室：{{registerAllData.DepartmentTypeName}}</el-col>
+        <!--<el-col :span="8">科室：{{registerAllData.DepartmentTypeName}}</el-col>-->
       </el-row>
       <el-row>
         <el-col :span="24">
@@ -32,6 +32,8 @@
         <!--<el-col :span="12" style="font-size: 16px;">RP：[{{registerAllData.StatusName}}]</el-col>-->
         <el-col :span="12" v-if="registerAllData.SaleOrderItems">
           RP：[{{registerAllData.CategoryOneName}}] - [{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}]
+          1 剂 {{registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g，
+          共 {{registerAllData.Total * registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g
         </el-col>
         <el-col :span="12" style="text-align: right;padding-right: 15px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
       </el-row>
@@ -40,14 +42,12 @@
           <span style="display: inline-block;width: 70px;text-align: right">{{item.ProductName}}</span>
           <span style="display: inline-block;width: 70px;text-align: left">{{item.RefundableQty}} {{item.Unit}}</span>
         </el-col>
-        <i style="position: absolute;right: 33%;bottom: 50%;transform: rotate(-23deg);border: 2px solid #e4393c;box-shadow: 0 0 10px 1px #e4393c;
-                  color: #e4393c;font-size: 30px;padding: 10px 10px;border-radius: 30px;opacity: .9">{{registerAllData.OrderAmount}}元，已发药</i>
       </el-row>
 
       <!--footer height: 30px;line-height: 30px-->
-      <el-row style="">
+      <el-row>
         <el-row style="height: 30px;line-height: 30px">
-          <el-col :span="24">帖数：一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，订单总金额 ￥{{registerAllData.OrderAmount}}</el-col>
+          <el-col :span="24">帖数：一剂 ￥{{registerAllData.DrugOneAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</el-col>
         </el-row>
         <el-col :span="12">
           <el-row>
@@ -81,9 +81,9 @@
         <el-col :span="6">核发：</el-col>
       </el-row>
 
-      <!--打印层-->
-      <div id="chenxiPrint" style="display: none">
-        <!--<div id="chenxiPrint">-->
+      <!--打印层: 药方--><!--标准A5-->
+      <div id="printRecipel" style="display: none">
+        <!--<div id="printRecipel">-->
         <table width="100%" style="font-size: 12px">
 
           <!--头部-->
@@ -110,7 +110,7 @@
             </td>
           </tr>
           <tr>
-            <td v-if="registerAllData.SaleOrderItems">RP：{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}</td>
+            <td v-if="registerAllData.SaleOrderItems">RP：[{{registerAllData.CategoryOneName}}] - [{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}]</td>
             <td align="right" height="26">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</td>
           </tr>
           </tbody>
@@ -136,7 +136,8 @@
             <td colspan="2" height="26">
               <div style="position: relative;margin-left: 36px">
                 <span style="position: absolute;bottom: 0;left: -36px; width: 36px">帖数：</span>
-                <p>一剂 ￥{{registerAllData.TotalAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.OrderAmount}}</p>
+                <p>一剂 ￥{{registerAllData.DrugOneAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</p>
+
               </div>
             </td>
           </tr>
@@ -183,11 +184,123 @@
         </table>
       </div>
 
+      <!--打印层：收银小票补打--><!--12.00：9.31cm-->
+      <div id="printCashier" style="display: none">
+        <table width="100%" style="font-size: 12px;padding-right: 55px">
+          <tbody>
+          <tr>
+            <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆一善堂中医门诊部收据</h3></td>
+          </tr>
+          <tr>
+            <td colspan="3" height="24">患者：{{registerAllData.UserName}} {{registerAllData.SexName ? registerAllData.SexName : '__'}} {{registerAllData.BirthDate}}</td>
+          </tr>
+          <tr>
+            <td colspan="2" height="24">单据号：{{registerAllData.Code}}</td>
+            <td colspan="1" align="right" v-if="registerAllData.CreatedOnTime">打印时间：{{registerAllData.CreatedOnTime | myDateFilter('yyyy/MM/dd hh:mm:ss')}}</td>
+          </tr>
+          <tr>
+            <td colspan="2" height="24">医生：{{registerAllData.DoctorName}}</td>
+            <td colspan="1" align="right" width="240">病历号：{{registerAllData.Code}}</td>
+          </tr>
+
+          <tr valign="bottom" style="font-size: 12px">
+            <td height="30">收费项目</td>
+            <td colspan="2"><p>金额
+              <span style="display: inline-block;width: 200px;text-align: right">收费方式</span></p></td>
+          </tr>
+          <tr>
+            <td>挂号费</td>
+            <td colspan="2"><p>￥{{registerAllData.RegisterAmount}}
+              <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
+          </tr>
+          <tr>
+            <td>药品费</td>
+            <td colspan="2"><p>￥{{registerAllData.TotalAmount - registerAllData.RegisterAmount}}
+              <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
+          </tr>
+          <tr valign="bottom">
+            <td height="30"></td>
+            <td colspan="2"><p>
+              <span style="display: inline-block;width: 210px;text-align: right">{{registerAllData.PaymentWayName}}</span></p></td>
+          </tr>
+
+          <tr>
+            <td colspan="1">合计：￥{{registerAllData.TotalAmount}}</td>
+            <td colspan="2"><p>大写：{{sumChinese(registerAllData.TotalAmount)}}</p></td>
+          </tr>
+          <tr>
+            <td colspan="3">需开发票请于15日内开具，逾期不补! </td>
+          </tr>
+          <tr>
+            <td colspan="3">收费人员：xx</td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!--打印层：财务出库单）--><!--24.10：9.31cm-->
+      <div id="printOutStock" style="display: none">
+        <div v-for="index in pages" :key="index" style="font-size: 12px; width: 80%"> <!-- 循环开始 -->
+          <div>
+            <div style="text-align: center;font-size: 18px;font-weight: 900">重庆渝北一善堂中医门诊部（出库单）</div>
+            <div>
+              <div style="display: inline-block;width: 30%;text-align: left">供货企业：{{registerAllData.DoctorName}}</div>
+              <div style="display: inline-block;width: 25%;text-align: right">出库时间：{{registerAllData.CreatedOn | myDateFilter('yyyy-MM-dd')}}</div>
+              <div style="display: inline-block;width: 40%;text-align: right">单据编号：{{registerAllData.Code}}</div>
+            </div>
+          </div>
+          <table border="1" style="border-collapse: collapse;border-sizing: border-box" width="100%">
+            <tbody style="text-align: center;line-height: 16px">
+            <tr style="font-size: 12px">
+              <td height="16"><p>排序</p></td>
+              <td>商品编码</td>
+              <td>商品名称</td>
+              <td>规格</td>
+              <td>生成厂家</td>
+
+              <td>单位</td>
+              <td>数量</td>
+              <td>售价</td>
+              <td>金额</td>
+              <td>批号</td>
+            </tr>
+            <tr  style="font-size: 12px" v-for="(item, ind) in registerAllData.SaleOrderItems.slice((index - 1) * 10, (index * 10))" :key="item.ProductCode">
+              <td width="50" height="16">{{ind + (index - 1) * 10 + 1}}</td>
+              <td width="70">{{item.ProductCode}}</td>
+              <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.ProductName}}</p></td>
+              <td width="70" align="center"><p style="width: 70px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.Specification}}</p></td>
+              <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{registerAllData.DoctorName}}</p></td>
+
+              <td width="50">{{item.Unit}}</td>
+              <td width="70">{{item.Quantity}}</td>
+              <td width="70">{{item.SalePrice.toFixed(2)}}</td>
+              <td width="70">{{(item.Quantity * item.SalePrice).toFixed(2)}}</td>
+              <td width="100" align="center"><p style="width: 100px;white-space: nowrap;overflow: hidden;">{{item.ProductCode}}</p></td>
+            </tr>
+            <tr style="font-size: 12px">
+              <td colspan="2" align="center" height="16">总 {{registerAllData.SaleOrderItems.length}} 笔</td>
+              <td colspan="6" align="left" style="padding: 0 10px;font-weight: bold">{{index === pages ? '全部总计：￥' + sumCountAll(registerAllData.SaleOrderItems) +
+                '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;大写：' + sumChinese(sumCountAll(registerAllData.SaleOrderItems)) : ''}}</td>
+              <td colspan="2" align="center">本页合计：{{sumCount(index)}}</td>
+            </tr>
+            </tbody>
+          </table>
+          <div>
+            <div style="display: inline-block;width: 30%;text-align: left">创建人：{{registerAllData.DoctorName}}</div>
+            <div style="display: inline-block;width: 25%;text-align: right">出库人：{{registerAllData.OrderLevelName}}</div>
+            <div style="display: inline-block;width: 40%;text-align: right;">第 {{index}} 页，共 {{pages}} 页</div>
+          </div>
+          <div style="page-break-after: always"></div>
+        </div>
+      </div>
+
     </div>
 
     <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="chenxiPrint()">打印</el-button>
+        <el-button type="primary" @click="chenxiPrint('printRecipel')">药方</el-button>
+        <el-button type="primary" @click="chenxiPrint('printCashier')">收银小票补打</el-button>
+        <el-button type="primary" @click="chenxiPrint('printOutStock')">出库单(财务)</el-button>
         <el-button @click="visible = false">关闭</el-button>
       </span>
     </div>
@@ -201,50 +314,31 @@ export default {
   data () {
     return {
       visible: false,
-      dataListLoading: false, // 加载
-      addOrUpdateVisible: false, // 暂时没用
-      isAddActive: true,
+      dataListLoading: false,
 
       registerAllData: '', // 挂号单全部信息
-      regMoney: /^\d+\.?\d{0,2}$/,
       dataForm: {
-        reality: '', // 实收
-        give: '', // 找零
         PaymentWay: 1 // 支付方式
-      }
+      },
+      pages: 1 // 打印循环 相关参数
     }
   },
   watch: {
-    'dataForm.reality': function (newval, oldval) {
-      if (Number(newval) === 0) { return false }
-      if (!this.regMoney.test(newval)) {
-        this.$alert('你输入的金额不合规范! ', '输入提示', {
-          confirmButtonText: '确定',
-          callback: () => {
-            this.dataForm.reality = ''
-            this.dataForm.give = ''
-            return false
-          }
-        })
-      }
-      if (Number(newval) < this.registerAllData.OrderAmount) { // 这：实收小于总金额就退出，然后呢应该还需要清空错误的输入和错误提示吧，其实搭配了下面的realityBlur方法的，别看漏了，我自己也懵逼
-        return false
-      } else {
-        this.dataForm.give = Math.round((newval - this.registerAllData.OrderAmount) * 100) / 100 // 保留小数后两位
+    'registerAllData.SaleOrderItems': function (val, oldval) {
+      this.pages = parseInt(val.length / 10 + 1) // 循环打印相关参数
+      if (val.length !== 0 && (val.length % 10) === 0) {
+        this.pages-- // 针对刚好10条那种
       }
     }
   },
   methods: {
-    realityBlur () {
-      if (Number(this.dataForm.reality) < this.registerAllData.OrderAmount) {
-        this.dataForm.reality = ''
-        this.dataForm.give = ''
-        this.$message({
-          type: 'warning',
-          duration: '5000',
-          message: `提示: 实际的收费金额应 ≥ 挂号费!`
-        })
-      }
+    // 打印页，每页的合计金额
+    sumCount (n) {
+      return this.registerAllData.SaleOrderItems.slice((n - 1) * 10, n * 10).map(item => item.SalePrice * item.Quantity).reduce((pren, nextm) => pren + nextm).toFixed(2)
+    },
+    // 所有页的合计金额
+    sumCountAll (arr) {
+      return arr.map(item => item.SalePrice * item.Quantity).reduce((pren, nextm) => pren + nextm).toFixed(2)
     },
     // 根据表单的Id，获取对应挂号单的详情
     init (formId) {
@@ -256,25 +350,31 @@ export default {
             result.data.BirthDate = calcAge(result.data.BirthDate)
             this.registerAllData = result.data
             this.dataListLoading = false
-            // console.log('查看', result.data)
+            console.log('查看', result.data)
           }
         })
       }
     },
-    seeRecipelInfo () {
-      this.isAddActive = !this.isAddActive // 点击'[添加药材]'按钮
-    },
     handleClose () {
-      this.isAddActive = true
       this.dataForm = {
-        reality: '', // 实收
-        give: '', // 找零
         PaymentWay: 1 // 支付方式
       }
     },
     // 打印功能
-    chenxiPrint () {
-      var printHTML = document.getElementById('chenxiPrint').innerHTML // 获取要打印的内容
+    chenxiPrint (printType) {
+      var idName = ''
+      switch (printType) {
+        case 'printRecipel':
+          idName = 'printRecipel'
+          break
+        case 'printCashier':
+          idName = 'printCashier'
+          break
+        case 'printOutStock':
+          idName = 'printOutStock'
+          break
+      }
+      var printHTML = document.getElementById(idName).innerHTML // 获取要打印的内容
       var page = window.open('', '_blank') // 打开一个新窗口，用于打印
       page.document.write(printHTML) // 写入打印页面的内容
       page.print() // 打印
@@ -286,8 +386,21 @@ export default {
         console.log('not IE')
       }
       page.close() // 关闭打印窗口
-    }
+    },
     // 打印功能结束
+
+    // 金额转中文大写
+    sumChinese (n) {
+      if (!/^(0|[1-9]\d*)(\.\d+)?$/.test(n)) return '数据非法'
+      var unit = '千百拾亿千百拾万千百拾元角分'
+      var str = ''
+      n += '00'
+      var p = n.indexOf('.')
+      if (p >= 0) n = n.substring(0, p) + n.substr(p + 1, 2)
+      unit = unit.substr(unit.length - n.length)
+      for (var i = 0; i < n.length; i++) str += '零壹贰叁肆伍陆柒捌玖'.charAt(n.charAt(i)) + unit.charAt(i)
+      return str.replace(/零(千|百|拾|角)/g, '零').replace(/(零)+/g, '零').replace(/零(万|亿|元)/g, '$1').replace(/(亿)万|壹(拾)/g, '$1$2').replace(/^元零?|零分/g, '').replace(/元$/g, '元整')
+    }
 
   }
 }
@@ -296,16 +409,6 @@ export default {
   .registerIndex /deep/ .el-form-item {
     margin-bottom: 0;
   }
-  .ownScrollbar /deep/ {
-    span {
-      display: inline-block;
-      width: 70px;
-      text-align: right;
-      height: 30px;
-      line-height: 30px;
-    }
-  }
-
   /*出诊 复诊样式覆盖*/
   .registerIndex /deep/ {
     .el-radio-button--mini .el-radio-button__inner {
