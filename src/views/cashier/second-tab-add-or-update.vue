@@ -30,7 +30,9 @@
       <!--循环-->
       <el-row style="margin: 5px 0">
         <!--<el-col :span="12" style="font-size: 16px;">RP：[{{registerAllData.StatusName}}]</el-col>-->
-        <el-col :span="12" v-if="registerAllData.SaleOrderItems">RP：{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}</el-col>
+        <el-col :span="12" v-if="registerAllData.SaleOrderItems">
+          RP：[{{registerAllData.CategoryOneName}}] - [{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}]
+        </el-col>
         <el-col :span="12" style="text-align: right;padding-right: 15px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
       </el-row>
       <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;position: relative">

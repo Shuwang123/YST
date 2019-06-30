@@ -498,7 +498,7 @@ export default {
   computed: {
     // 服用方法
     'DrugRate': function () {
-      return `共 ${this.Total} 剂，每日 ${this.dataForm.DrugRate_0} 剂，一剂分 ${this.dataForm.DrugRate_1} 次服`
+      return `共${this.Total}剂，每日${this.dataForm.DrugRate_0}剂，一剂分${this.dataForm.DrugRate_1}次服`
     },
     // 药方总重量
     categoryAllWeight () {
@@ -1015,7 +1015,7 @@ export default {
               }
               return obj
             })),
-            // CategoryOne: this.dataForm.CategoryOne,
+            CategoryOne: this.dataForm.CategoryOne,
             WorkAmount: this.dataForm.WorkAmount // 加工费
           }
           // ‘直接开方’参数，直接开方的参数应该传给create接口
@@ -1056,7 +1056,7 @@ export default {
               }
               return obj
             })),
-            // CategoryOne: this.dataForm.CategoryOne,
+            CategoryOne: this.dataForm.CategoryOne,
             WorkAmount: this.dataForm.WorkAmount // 加工费
           }
           console.log(paramsEdit) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
