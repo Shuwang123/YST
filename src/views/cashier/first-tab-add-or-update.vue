@@ -436,7 +436,7 @@ export default {
       if (this.registerAllData.RegisterStatus === 1) { // 挂号费未支付（直接开方）：待收金额就 + 挂号费
         this.myFutureAmount = this.mySumAmount
       } else if (this.registerAllData.RegisterStatus === 2) { // 挂号费已支付：待收金额就不加挂号费
-        this.myFutureAmount = this.mySumAmount - this.registerAllData.RegisterAmount
+        this.myFutureAmount = Number(this.mySumAmount - this.registerAllData.RegisterAmount).toFixed(2)
       }
       this.dataForm.PayAmount = ''
       this.dataForm.OnlinePayAmount = 0
@@ -504,7 +504,7 @@ export default {
               this.dataForm.OnlinePayAmount = 0
             } else {
               this.dataForm.PayAmount = this.dataForm.PayAmount
-              this.dataForm.OnlinePayAmount = this.myFutureAmount - this.dataForm.PayAmount
+              this.dataForm.OnlinePayAmount = Number(this.myFutureAmount - this.dataForm.PayAmount).toFixed(2)
             }
           } else { // 表示单种支付方式
             if (this.dataForm.PayAmount < this.myFutureAmount) {
