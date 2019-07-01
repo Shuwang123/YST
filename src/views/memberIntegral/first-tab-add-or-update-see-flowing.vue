@@ -1,70 +1,74 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="!dataForm.id ? '新增会员信息' : '编辑会员信息'" width="600px"
+    :title="!dataForm.id ? '新增会员信息' : '编辑会员信息'" width="900px"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px" size="small" :inline="true">
-      <el-form-item label="姓名" prop="UserName">
-        <el-input v-model="dataForm.UserName" placeholder="请输入姓名" style="width: 160px"></el-input>
-      </el-form-item>
-      <el-form-item label="性别" prop="Sex">
-        <el-radio-group v-model="dataForm.Sex" style="width: 144px">
-          <el-radio label="1">男</el-radio>
-          <el-radio label="2">女</el-radio>
-        </el-radio-group>
-      </el-form-item>
+    <el-row>
+      <el-col :span="15" style="height:500px;border-right: 1px solid #ccc">
+        <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px" size="small" :inline="true">
+          <el-form-item label="姓名" prop="UserName">
+            <el-input v-model="dataForm.UserName" placeholder="请输入姓名" style="width: 160px"></el-input>
+          </el-form-item>
+          <el-form-item label="性别" prop="Sex">
+            <el-radio-group v-model="dataForm.Sex" style="width: 144px">
+              <el-radio label="1">男</el-radio>
+              <el-radio label="2">女</el-radio>
+            </el-radio-group>
+          </el-form-item>
 
-      <el-form-item label="年龄" prop="BirthDateAge">
-        <el-input v-model="dataForm.BirthDateAge" @blur="stampCalc(dataForm.BirthDateAge, dataForm.BirthDateUnit)" placeholder="只读" style="width: 91px" clearable></el-input>
-        <el-select v-model="dataForm.BirthDateUnit" @change="stampCalc(dataForm.BirthDateAge, dataForm.BirthDateUnit)" style="width: 66px;margin-right: 10px">
-          <el-option label="岁" value="1"></el-option>
-          <el-option label="月" value="0"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="出生" prop="BirthDate">
-        <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.BirthDate"
-                        placeholder="请选择出生日期" style="width: 149px">
-        </el-date-picker>
-      </el-form-item>
+          <el-form-item label="年龄" prop="BirthDateAge">
+            <el-input v-model="dataForm.BirthDateAge" @blur="stampCalc(dataForm.BirthDateAge, dataForm.BirthDateUnit)" placeholder="只读" style="width: 91px" clearable></el-input>
+            <el-select v-model="dataForm.BirthDateUnit" @change="stampCalc(dataForm.BirthDateAge, dataForm.BirthDateUnit)" style="width: 66px;margin-right: 10px">
+              <el-option label="岁" value="1"></el-option>
+              <el-option label="月" value="0"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="出生" prop="BirthDate">
+            <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.BirthDate"
+                            placeholder="请选择出生日期" style="width: 149px">
+            </el-date-picker>
+          </el-form-item>
 
-      <el-form-item label="电话" prop="MobilePhone">
-        <el-input v-model="dataForm.MobilePhone" placeholder="请输入电话" style="width: 160px"></el-input>
-      </el-form-item>
-      <br>
-      <el-form-item label="患者来源" prop="Source">
-        <el-select v-model="dataForm.Source" style="width: 160px">
-          <el-option v-for="item in memberOrigin" :key="item.lab"
-                     :label="item.lab" :value="item.val">
-          </el-option>
-        </el-select>
-      </el-form-item>
+          <el-form-item label="电话" prop="MobilePhone">
+            <el-input v-model="dataForm.MobilePhone" placeholder="请输入电话" style="width: 160px"></el-input>
+          </el-form-item>
+          <br>
+          <el-form-item label="患者来源" prop="Source">
+            <el-select v-model="dataForm.Source" style="width: 160px">
+              <el-option v-for="item in memberOrigin" :key="item.lab"
+                         :label="item.lab" :value="item.val">
+              </el-option>
+            </el-select>
+          </el-form-item>
 
-      <el-form-item label="病例史" prop="AllergyHistory">
-        <el-input v-model="dataForm.AllergyHistory" placeholder="请输入病例史" style="width: 413px"></el-input>
-      </el-form-item>
-      <el-form-item label="详细地址" prop="Address">
-        <el-input v-model="dataForm.Address" placeholder="详细地址" style="width: 413px"></el-input>
-      </el-form-item>
-
-      <!--积分流水-->
-      <div class="block">
-        <div class="radio">
-          排序：
-          <el-radio-group v-model="reverse">
-            <el-radio :label="true">倒序</el-radio>
-            <el-radio :label="false">正序</el-radio>
-          </el-radio-group>
+          <el-form-item label="病例史" prop="AllergyHistory">
+            <el-input v-model="dataForm.AllergyHistory" placeholder="请输入病例史" style="width: 413px"></el-input>
+          </el-form-item>
+          <el-form-item label="详细地址" prop="Address">
+            <el-input v-model="dataForm.Address" placeholder="详细地址" style="width: 413px"></el-input>
+          </el-form-item>
+        </el-form>
+      </el-col>
+      <el-col :span="9">
+        <!--积分流水-->
+        <div class='time'>
+          <div class='text-content'>
+            <h2 class='text-center'>积分兑换流水</h2>
+            <div class='time-line'>
+              <div v-for='item in testList' :key="item.time" class='time-line-div'>
+                <p>{{item.time}}</p>
+                <p ref='circular'></p>
+                <p>{{item.text}}</p>
+              </div>
+              <div class='img-dotted' ref='dotted'></div>
+            </div>
+            <div style='margin-top:20px;'>
+            </div>
+          </div>
         </div>
-
-        <el-timeline :reverse="reverse">
-          <el-timeline-item
-            v-for="(activity, index) in activities" :key="index"
-            :timestamp="activity.timestamp">{{activity.content}}
-          </el-timeline-item>
-        </el-timeline>
-      </div>
-    </el-form>
+      </el-col>
+    </el-row>
 
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -78,8 +82,18 @@ import {formatDate, calcAge, calcTimeStamp} from '@/utils/validate'
 
 export default {
   components: {},
+  mounted () {
+    this.$refs.dotted.style.left = this.$refs.circular.offsetLeft - 12 + 'px'
+  },
   data () {
     return {
+      testList: [
+        {key: '1', time: '2001-01-01 01:00:00', text: '第一步第一步第一步第一步第一步'},
+        {key: '2', time: '2002-02-02 02:00:00', text: '第二步第二步第二步第二步第二步'},
+        {key: '3', time: '2003-03-03 03:00:00', text: '第三步第三步第三步第三步第三步'},
+        {key: '4', time: '2004-04-04 04:00:00', text: '第四步第四步第四步第四步第四步'},
+        {key: '5', time: '2005-05-05 05:00:00', text: '第五步第五步第五步第五步第五步'}
+      ],
       visible: false,
       reverse: true,
       activities: [{
@@ -93,7 +107,7 @@ export default {
         timestamp: '2018-04-11'
       }],
       drugsCategoryList: [], // 初始化药品种类
-      memberId: '', // 会员ID，提交是判断add、edit
+      memberId: ' ', //  会员ID，提交是判断add、edit
       dataForm: {
         UserName: '',
         Sex: '1',
@@ -258,3 +272,54 @@ export default {
   }
 }
 </script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+.text-center{
+  text-align: center;
+}
+.time h2{
+  color:#FF6600;
+  margin: 20px auto 30px auto;
+}
+.time-line{
+  position: relative;
+  width:300px;
+  margin:0 auto;
+}
+.time-line-div{
+  position:relative;
+  min-height:85px;
+}
+.time-line-div>p:nth-child(1){
+  position: absolute;
+  left:0;
+  width:100px;
+}
+.time-line-div>p:nth-child(2){
+  position:absolute;
+  left: 100px;
+  width:15px;
+  height:15px;
+  top:10px;
+  background:#5CB85C;
+  border-radius: 50%;
+  z-index: 10
+}
+.time-line-div>p:nth-child(3){
+  position:absolute;
+  left: 130px;
+  padding: 10px;
+  background: #317EF3;
+  font-size:.8rem;
+  color:#fff;
+  border-radius: 10px;
+}
+.img-dotted{
+  position:absolute;
+  width:20px;
+  height:100%;
+  top:0;
+  z-index: 1;
+  /*background:url('/static/dotted.png');*/
+}
+</style>

@@ -37,7 +37,7 @@
       <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="StoreName" header-align="center" align="center" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Code" header-align="center" align="center" label="病历号" width="100" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column header-align="center" align="center" label="姓名" min-width="129">
+      <el-table-column header-align="center" align="center" label="姓名" min-width="150">
         <template slot-scope="scope">
           <span>{{scope.row.UserName}} / {{scope.row.Sex === 1 ? '男' : '女'}} / {{scope.row.BirthDate}}</span>
         </template>

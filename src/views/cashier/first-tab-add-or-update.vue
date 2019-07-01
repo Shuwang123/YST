@@ -489,17 +489,17 @@ export default {
     dataFormSubmit () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          var  Actual = Number(this.dataForm.PayAmount) + Number(this.dataForm.OnlinePayAmount)
+          // var  Actual = Number(this.dataForm.PayAmount) + Number(this.dataForm.OnlinePayAmount)
           if (this.paymentAdd === true && this.dataForm.OnlinePaymentWay === '') {
             this.$alert('未选择支付方式! ', '提示', {confirmButtonText: '确定'})
             return false
           }
           if (this.paymentAdd === true) { // 表示多种支付方式
-            if ((Number(this.dataForm.PayAmount) + Number(this.dataForm.OnlinePayAmount)) < this.myFutureAmount) {
+            if ((Number(this.dataForm.PayAmount) + Number(this.dataForm.OnlinePayAmount)) < Number(this.myFutureAmount)) {
               this.$alert('实收金额不够! ', '提示', {confirmButtonText: '确定'})
               return false
             }
-            if (this.dataForm.PayAmount >= this.myFutureAmount) {
+            if (Number(this.dataForm.PayAmount) >= Number(this.myFutureAmount)) {
               this.dataForm.PayAmount = this.myFutureAmount
               this.dataForm.OnlinePayAmount = 0
             } else {
@@ -507,16 +507,17 @@ export default {
               this.dataForm.OnlinePayAmount = Number(this.myFutureAmount - this.dataForm.PayAmount).toFixed(2)
             }
           } else { // 表示单种支付方式
-            if (this.dataForm.PayAmount < this.myFutureAmount) {
+            if (Number(this.dataForm.PayAmount) < Number(this.myFutureAmount)) {
               this.$alert('实收金额不够! ', '提示', {confirmButtonText: '确定'})
               return false
             }
-            if (this.dataForm.PayAmount >= this.myFutureAmount) {
+            if (Number(this.dataForm.PayAmount) >= Number(this.myFutureAmount)) {
               this.dataForm.PayAmount = this.myFutureAmount
               this.dataForm.OnlinePaymentWay = '' // 支付方式
               this.dataForm.OnlinePayAmount = 0
             }
           }
+          var  Actual = Number(this.dataForm.PayAmount) + Number(this.dataForm.OnlinePayAmount)
           var params = {
             id: this.registerAllData.Id,
             ActualAmount: Actual, // 实收废弃???
