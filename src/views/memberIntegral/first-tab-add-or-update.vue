@@ -47,15 +47,22 @@
         <el-input v-model="dataForm.Address" placeholder="详细地址" style="width: 413px"></el-input>
       </el-form-item>
 
-      <el-form-item label="当前积分" prop="SalePrice">
-        <el-input v-model="dataForm.SalePrice"></el-input>
+      <el-form-item label="当前积分" prop="sumIntegral">
+        <el-input v-model="dataForm.sumIntegral"></el-input>
       </el-form-item>
-      <br>
-      <el-form-item label="扣除积分" prop="SalePrice">
-        <el-input v-model="dataForm.SalePrice"></el-input>
+      <el-form-item label="扣除积分" prop="EditPoints">
+        <el-input v-model="dataForm.EditPoints"></el-input>
       </el-form-item>
-      <el-form-item label="兑换商品" prop="SalePrice">
-        <el-input v-model="dataForm.SalePrice"></el-input>
+      <!--<el-input v-model="dataForm.Remark"></el-input>-->
+      <el-form-item label="兑换商品" prop="Remark">
+        <el-input
+          type="textarea" style="width: 410px"
+          placeholder="请输入兑换商品或别的描述内容"
+          v-model="dataForm.Remark"
+          maxlength="150"
+          :rows="3"
+          show-word-limit>
+        </el-input>
       </el-form-item>
     </el-form>
 
@@ -87,7 +94,11 @@ export default {
         MobilePhone: '',
         Source: '20', // 患者来源
         AllergyHistory: '', // 病例史
-        Address: ''
+        Address: '',
+
+        sumIntegral: '',
+        EditPoints: '',
+        Remark: ''
       },
       memberOrigin: [
         {lab: '医生介绍', val: '1'},
@@ -103,7 +114,11 @@ export default {
         BirthDateAge: NumberInt(),
         BirthDate: Currency('此为必填项'),
         Source: Currency('此为必填项'),
-        MobilePhone: Phone(1)
+        MobilePhone: Phone(1),
+
+        sumIntegral: Currency('此为必填项'),
+        EditPoints: Currency('此为必填项'),
+        Remark: Currency('此为必填项')
       }
     }
   },
@@ -122,16 +137,6 @@ export default {
         this.dataForm.BirthDateAge = allAge.substring(0, allAge.length - 1) // !!!!!!只取数不要单位，其实也可以parseInt
       }
     }
-    // 'dataForm.BirthDateAge': function (val, oldval) { // 死循环，占时放弃了，当初想的解决方案是用户自己先选择模式，来去都单向才没死循环; 最后发现了新的解决办法，不会出现死循环了
-    //   if (val === '') {
-    //     this.dataForm.BirthDate = ''
-    //     this.dataForm.BirthDateUnit = '1'
-    //     // this.dataForm.BirthDateAge = ''
-    //   } else {
-    //     var timeStamp = calcTimeStamp(val, this.dataForm.BirthDateUnit) // !!!!!!这得到2019-10-02
-    //     this.dataForm.BirthDate = timeStamp
-    //   }
-    // }
   },
   methods: {
     // 通过age去计算时间戳
@@ -198,7 +203,11 @@ export default {
         MobilePhone: '',
         AllergyHistory: '', // 病例史
         Address: '',
-        Source: '20' // 患者来源
+        Source: '20', // 患者来源
+
+        sumIntegral: '',
+        EditPoints: '',
+        Remark: ''
       }
       this.$refs['dataForm'].clearValidate()
     },
@@ -206,31 +215,14 @@ export default {
     dataFormSubmit () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          var paramsAdd = {
-            StoreId: this.$store.getters.getAccountCurrentHandleStore,
-            UserName: this.dataForm.UserName,
-            Sex: this.dataForm.Sex,
-            BirthDate: this.dataForm.BirthDate,
-            MobilePhone: this.dataForm.MobilePhone,
-            AllergyHistory: this.dataForm.AllergyHistory,
-            Address: this.dataForm.Address,
-            Source: this.dataForm.Source
+          var params = {
+            Id: this.memberId,
+            sumIntegral: this.dataForm.sumIntegral, // 总积分
+            EditPoints: this.dataForm.EditPoints,
+            Remark: this.dataForm.Remark
           }
-          var paramsEdit = {
-            StoreId: this.$store.getters.getAccountCurrentHandleStore,
-            UserName: this.dataForm.UserName,
-            Sex: this.dataForm.Sex,
-            BirthDate: this.dataForm.BirthDate,
-            MobilePhone: this.dataForm.MobilePhone,
-            AllergyHistory: this.dataForm.AllergyHistory,
-            Address: this.dataForm.Address,
-            Source: this.dataForm.Source,
-            Id: this.memberId
-          }
-          console.log(paramsAdd)
-          console.log(paramsEdit)
-          var tick = this.memberId ? API.member.editMemberSubmit(paramsEdit) : API.member.addMemberSubmit(paramsAdd)
-          tick.then((data) => {
+          console.log(params)
+          API.member.editIntegral(params).then((data) => {
             if (data.code === '0000') {
               this.$message({
                 message: `${this.memberId ? '编辑成功' : '会员添加成功'}`,

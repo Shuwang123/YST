@@ -5,7 +5,7 @@
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <el-row>
-      <el-col :span="15" style="height:500px;border-right: 1px solid #ccc">
+      <el-col :span="15">
         <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px" size="small" :inline="true">
           <el-form-item label="姓名" prop="UserName">
             <el-input v-model="dataForm.UserName" placeholder="请输入姓名" style="width: 160px"></el-input>
@@ -51,19 +51,16 @@
         </el-form>
       </el-col>
       <el-col :span="9">
-        <!--积分流水-->
-        <div class='time'>
-          <div class='text-content'>
-            <h2 class='text-center'>积分兑换流水</h2>
-            <div class='time-line'>
-              <div v-for='item in testList' :key="item.time" class='time-line-div'>
-                <p>{{item.time}}</p>
-                <p ref='circular'></p>
-                <p>{{item.text}}</p>
-              </div>
-              <div class='img-dotted' ref='dotted'></div>
-            </div>
-            <div style='margin-top:20px;'>
+        <!--积分时间轴-->
+        <h3>积分兑换流水</h3>
+        <div class='time-line'>
+          <div v-for='item in testList' :key="item.time" class='time-line-items'>
+            <i></i><strong></strong>
+            <!--<span>{{item.time | myDateFilter('yyyy/MM/dd hh:mm:ss')}}</span>-->
+            <span>{{item.time | myDateFilter('yyyy/MM/dd')}}</span>
+            <div>
+              <p><b>操作人：</b>{{item.people}}</p>
+              {{item.text}}
             </div>
           </div>
         </div>
@@ -82,18 +79,9 @@ import {formatDate, calcAge, calcTimeStamp} from '@/utils/validate'
 
 export default {
   components: {},
-  mounted () {
-    this.$refs.dotted.style.left = this.$refs.circular.offsetLeft - 12 + 'px'
-  },
   data () {
     return {
-      testList: [
-        {key: '1', time: '2001-01-01 01:00:00', text: '第一步第一步第一步第一步第一步'},
-        {key: '2', time: '2002-02-02 02:00:00', text: '第二步第二步第二步第二步第二步'},
-        {key: '3', time: '2003-03-03 03:00:00', text: '第三步第三步第三步第三步第三步'},
-        {key: '4', time: '2004-04-04 04:00:00', text: '第四步第四步第四步第四步第四步'},
-        {key: '5', time: '2005-05-05 05:00:00', text: '第五步第五步第五步第五步第五步'}
-      ],
+      testList: [],
       visible: false,
       reverse: true,
       activities: [{
@@ -179,8 +167,10 @@ export default {
       this.memberId = id
       if (id !== undefined) {
         this.$nextTick(() => {
-          API.member.editMemberGet({id: id}).then(result => {
-            if (result.code === '0000') {
+          function memberInfo () { return API.member.editMemberGet({id: id}) }
+          function seeIntegral () { return API.member.seeIntegral({id: id}) }
+          this.$ios.all([memberInfo(), seeIntegral()]).then(this.$ios.spread((result, response) => {
+            if (result.code === '0000' && response.code === '0000') {
               this.dataForm.UserName = result.data.UserName
               this.dataForm.Sex = String(result.data.Sex)
 
@@ -192,17 +182,26 @@ export default {
               } else if (allAge.substr(allAge.length - 1) === '岁') {
                 this.dataForm.BirthDateUnit = '1'
               }
-              this.dataForm.BirthDateAge = allAge.substring(0, allAge.length - 1) // !!!!!!只获取数不要单位，其实也可以parseInt
+              this.dataForm.BirthDateAge = allAge.substring(0, allAge.length - 1) // !!!!!! 只获取数不要单位，其实也可以parseInt
 
               this.dataForm.MobilePhone = result.data.MobilePhone
               this.dataForm.AllergyHistory = result.data.AllergyHistory
               this.dataForm.Address = result.data.Address
               this.dataForm.Source = String(result.data.Source)
-              console.log(result.data)
-              console.log(this.dataForm)
               this.memberId = result.data.Id
+
+
+              // 积分相关的返回
+              console.log(response.data)
+              this.testList = response.data.map(item => {
+                return {
+                  people: item.CreatedByName,
+                  time: item.CreatedOn,
+                  text: item.Remark
+                }
+              })
             }
-          })
+          }))
         })
       }
     },
@@ -274,52 +273,53 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-.text-center{
-  text-align: center;
-}
-.time h2{
-  color:#FF6600;
-  margin: 20px auto 30px auto;
-}
-.time-line{
-  position: relative;
-  width:300px;
-  margin:0 auto;
-}
-.time-line-div{
-  position:relative;
-  min-height:85px;
-}
-.time-line-div>p:nth-child(1){
-  position: absolute;
-  left:0;
-  width:100px;
-}
-.time-line-div>p:nth-child(2){
-  position:absolute;
-  left: 100px;
-  width:15px;
-  height:15px;
-  top:10px;
-  background:#5CB85C;
-  border-radius: 50%;
-  z-index: 10
-}
-.time-line-div>p:nth-child(3){
-  position:absolute;
-  left: 130px;
-  padding: 10px;
-  background: #317EF3;
-  font-size:.8rem;
-  color:#fff;
-  border-radius: 10px;
-}
-.img-dotted{
-  position:absolute;
-  width:20px;
-  height:100%;
-  top:0;
-  z-index: 1;
-  /*background:url('/static/dotted.png');*/
+.time-line {
+  min-height: 500px;
+  height:500px;
+  overflow: scroll;
+  &::-webkit-scrollbar { width: 7px; }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    background-color: #DDDEE0;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 0;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0);
+    background-color: rgba(0,0,0,0);
+  }
+  div.time-line-items {
+    position:relative;
+    padding: 0 10px 20px 35px;
+    i {
+      position: absolute;
+      left: 0;
+      top: 7px;
+      width: 12px;
+      height: 12px;
+      background-color: #E4E7ED;
+      border-radius: 50%;
+    }
+    strong {
+      position: absolute;
+      left: 5px;
+      top: 19px;
+      width: 2px;
+      height: 119px;
+      background-color: #E4E7ED;
+    }
+    span {color: #909399;}
+    div {
+      height: 90px;
+      padding: 7px 10px;
+      overflow: hidden;
+      border-radius: 5px;
+      border: 1px solid #EBEEF5;
+      box-shadow: 0 0 10px 0 #EBEEF5;
+      p {font-size:14px;color: #333}
+      font-size: 12px;
+      color: #999;
+    }
+  }
 }
 </style>

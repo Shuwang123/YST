@@ -43,3 +43,20 @@ export function editMemberSubmit (params) {
     data: requestParam(params)
   })
 }
+
+// 修改积分
+export function editIntegral (params) {
+  return request({
+    url: requestUrl('/YstApiUsers/EditPoints'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+// 查看积分线
+export function seeIntegral (params) {
+  return request({
+    url: requestUrl('/YstApiUsers/UserSPointsHistory'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
