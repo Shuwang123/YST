@@ -117,7 +117,7 @@
               </el-col>
             </el-row>
             <div style="border-bottom: 1px solid #E6E6E6; font-weight: 500">
-              R:{{dataForm.oldCategoryOneName}} - {{oldTwoTabsName}}</div>
+              R: {{dataForm.oldCategoryOneName}} - {{oldTwoTabsName}}</div>
           </div>
 
           <!--左侧开方：直接用组件的引用名切换-->
@@ -641,7 +641,7 @@ export default {
       this.dataForm.DiseaseInfo.push(txt)
     },
     selHide4 () { // 当前select的下拉option块部分 隐藏的时候触发此方法
-      var txt = document.getElementsByClassName('el-select-dropdown__list')[4]
+      var txt = document.querySelector('.yizhuCss .el-select-dropdown__list')
         .firstElementChild.firstElementChild.innerHTML
       // [n] n受到整个页面中所有select的个数的影响，比如页头月、岁、页底的服用方法的下拉
       if (txt === this.yizhuOptions[0].value || this.dataForm.DoctorAdvice.some((item) => { // some阻止重复输入
