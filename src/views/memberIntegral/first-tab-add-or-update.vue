@@ -1,70 +1,91 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="!dataForm.id ? '新增会员信息' : '编辑会员信息'" width="600px"
+    :title="!dataForm.id ? '新增会员信息' : '编辑会员信息'" width="900px"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px" size="small" :inline="true">
-      <el-form-item label="姓名" prop="UserName">
-        <el-input v-model="dataForm.UserName" placeholder="请输入姓名" style="width: 160px"></el-input>
-      </el-form-item>
-      <el-form-item label="性别" prop="Sex">
-        <el-radio-group v-model="dataForm.Sex" style="width: 144px">
-          <el-radio label="1">男</el-radio>
-          <el-radio label="2">女</el-radio>
-        </el-radio-group>
-      </el-form-item>
+    <el-row v-loading="dataListLoading">
+      <el-col :span="15">
+        <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px" size="small" :inline="true">
+          <el-form-item label="姓名" prop="UserName">
+            <el-input v-model="dataForm.UserName" placeholder="请输入姓名" disabled style="width: 160px"></el-input>
+          </el-form-item>
+          <el-form-item label="性别" prop="Sex">
+            <el-radio-group v-model="dataForm.Sex" disabled style="width: 144px">
+              <el-radio label="1">男</el-radio>
+              <el-radio label="2">女</el-radio>
+            </el-radio-group>
+          </el-form-item>
 
-      <el-form-item label="年龄" prop="BirthDateAge">
-        <el-input v-model="dataForm.BirthDateAge" @blur="stampCalc(dataForm.BirthDateAge, dataForm.BirthDateUnit)" placeholder="只读" style="width: 91px" clearable></el-input>
-        <el-select v-model="dataForm.BirthDateUnit" @change="stampCalc(dataForm.BirthDateAge, dataForm.BirthDateUnit)" style="width: 66px;margin-right: 10px">
-          <el-option label="岁" value="1"></el-option>
-          <el-option label="月" value="0"></el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="出生" prop="BirthDate">
-        <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.BirthDate"
-                        placeholder="请选择出生日期" style="width: 149px">
-        </el-date-picker>
-      </el-form-item>
+          <el-form-item label="年龄" prop="BirthDateAge">
+            <el-input v-model="dataForm.BirthDateAge" @blur="stampCalc(dataForm.BirthDateAge, dataForm.BirthDateUnit)" disabled placeholder="只读" style="width: 91px"></el-input>
+            <el-select v-model="dataForm.BirthDateUnit" @change="stampCalc(dataForm.BirthDateAge, dataForm.BirthDateUnit)" disabled style="width: 66px;margin-right: 10px">
+              <el-option label="岁" value="1"></el-option>
+              <el-option label="月" value="0"></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="出生" prop="BirthDate">
+            <el-date-picker type="date" value-format="yyyy-MM-dd" v-model="dataForm.BirthDate"
+                            placeholder="请选择出生日期" disabled style="width: 149px">
+            </el-date-picker>
+          </el-form-item>
 
-      <el-form-item label="电话" prop="MobilePhone">
-        <el-input v-model="dataForm.MobilePhone" placeholder="请输入电话" style="width: 160px"></el-input>
-      </el-form-item>
-      <br>
-      <el-form-item label="患者来源" prop="Source">
-        <el-select v-model="dataForm.Source" style="width: 160px">
-          <el-option v-for="item in memberOrigin" :key="item.lab"
-                     :label="item.lab" :value="item.val">
-          </el-option>
-        </el-select>
-      </el-form-item>
+          <el-form-item label="电话" prop="MobilePhone">
+            <el-input v-model="dataForm.MobilePhone" placeholder="请输入电话" disabled style="width: 160px"></el-input>
+          </el-form-item>
+          <br>
+          <el-form-item label="患者来源" prop="Source">
+            <el-select v-model="dataForm.Source" disabled style="width: 160px">
+              <el-option v-for="item in memberOrigin" :key="item.lab"
+                         :label="item.lab" :value="item.val">
+              </el-option>
+            </el-select>
+          </el-form-item>
 
-      <el-form-item label="病例史" prop="AllergyHistory">
-        <el-input v-model="dataForm.AllergyHistory" placeholder="请输入病例史" style="width: 413px"></el-input>
-      </el-form-item>
-      <el-form-item label="详细地址" prop="Address">
-        <el-input v-model="dataForm.Address" placeholder="详细地址" style="width: 413px"></el-input>
-      </el-form-item>
+          <el-form-item label="病例史" prop="AllergyHistory">
+            <el-input v-model="dataForm.AllergyHistory" placeholder="请输入病例史" disabled style="width: 413px"></el-input>
+          </el-form-item>
+          <el-form-item label="详细地址" prop="Address">
+            <el-input v-model="dataForm.Address" placeholder="详细地址" disabled style="width: 413px"></el-input>
+          </el-form-item>
 
-      <el-form-item label="当前积分" prop="sumIntegral">
-        <el-input v-model="dataForm.sumIntegral"></el-input>
-      </el-form-item>
-      <el-form-item label="扣除积分" prop="EditPoints">
-        <el-input v-model="dataForm.EditPoints"></el-input>
-      </el-form-item>
-      <!--<el-input v-model="dataForm.Remark"></el-input>-->
-      <el-form-item label="兑换商品" prop="Remark">
-        <el-input
-          type="textarea" style="width: 410px"
-          placeholder="请输入兑换商品或别的描述内容"
-          v-model="dataForm.Remark"
-          maxlength="150"
-          :rows="3"
-          show-word-limit>
-        </el-input>
-      </el-form-item>
-    </el-form>
+          <!--积分相关-->
+          <el-form-item label="当前积分" prop="Points">
+            <el-input v-model="dataForm.Points" disabled></el-input>
+          </el-form-item>
+          <el-form-item label="扣除积分" prop="EditPoints">
+            <el-input-number v-model="dataForm.EditPoints"
+                             :min="-dataForm.Points" :max="10000" :step="100"></el-input-number>
+          </el-form-item>
+          <el-form-item label="兑换描述" prop="Remark">
+            <el-input
+              type="textarea" style="width: 410px"
+              placeholder="请输入兑换的商品或别的描述内容"
+              v-model="dataForm.Remark"
+              maxlength="150"
+              :rows="3"
+              show-word-limit>
+            </el-input>
+          </el-form-item>
+        </el-form>
+      </el-col>
+      <el-col :span="9">
+        <!--积分时间轴-->
+        <h3>积分兑换流水：<span style="color: #e4393c">当前积分 {{dataForm.Points}}</span></h3>
+        <div class='time-line' v-if="testList.length > 0">
+          <div v-for='item in testList' :key="item.time" class='time-line-items'>
+            <i></i><strong></strong>
+            <!--<span>{{item.time | myDateFilter('yyyy/MM/dd hh:mm:ss')}}</span>-->
+            <span>{{item.time | myDateFilter('yyyy/MM/dd hh')}} 时</span>
+            <div>
+              <p><b>操作人：</b>{{item.people}}</p>
+              {{item.text}}
+            </div>
+          </div>
+        </div>
+        <div class='time-line' v-else style="line-height: 450px;height: 450px;text-align: center;color: #e4393c">暂无记录 ＞﹏＜</div>
+      </el-col>
+    </el-row>
 
     <span slot="footer" class="dialog-footer">
       <el-button type="primary" @click="dataFormSubmit()">确认兑换</el-button>
@@ -78,13 +99,24 @@ import {Currency, Phone, NumberInt} from '../../utils/validate'
 import {formatDate, calcAge, calcTimeStamp} from '@/utils/validate'
 
 export default {
-  components: {
-  },
   data () {
     return {
+      testList: [],
       visible: false,
+      dataListLoading: false, // 加载
+
+      activities: [{
+        content: '活动按期开始',
+        timestamp: '2018-04-15'
+      }, {
+        content: '通过审核',
+        timestamp: '2018-04-13'
+      }, {
+        content: '创建成功',
+        timestamp: '2018-04-11'
+      }],
       drugsCategoryList: [], // 初始化药品种类
-      memberId: '', // 会员ID，提交是判断add、edit
+      memberId: ' ', //  会员ID，提交是判断add、edit
       dataForm: {
         UserName: '',
         Sex: '1',
@@ -96,7 +128,7 @@ export default {
         AllergyHistory: '', // 病例史
         Address: '',
 
-        sumIntegral: '',
+        Points: '',
         EditPoints: '',
         Remark: ''
       },
@@ -115,8 +147,7 @@ export default {
         BirthDate: Currency('此为必填项'),
         Source: Currency('此为必填项'),
         MobilePhone: Phone(1),
-
-        sumIntegral: Currency('此为必填项'),
+        Points: Currency('此为必填项'),
         EditPoints: Currency('此为必填项'),
         Remark: Currency('此为必填项')
       }
@@ -161,11 +192,14 @@ export default {
     // 新增，编辑时获取单行详情info
     init (id) {
       this.visible = true
+      this.dataListLoading = true
       this.memberId = id
       if (id !== undefined) {
         this.$nextTick(() => {
-          API.member.editMemberGet({id: id}).then(result => {
-            if (result.code === '0000') {
+          function memberInfo () { return API.member.editMemberGet({id: id}) }
+          function seeIntegral () { return API.member.seeIntegral({id: id}) }
+          this.$ios.all([memberInfo(), seeIntegral()]).then(this.$ios.spread((result, response) => {
+            if (result.code === '0000' && response.code === '0000') {
               this.dataForm.UserName = result.data.UserName
               this.dataForm.Sex = String(result.data.Sex)
 
@@ -177,17 +211,28 @@ export default {
               } else if (allAge.substr(allAge.length - 1) === '岁') {
                 this.dataForm.BirthDateUnit = '1'
               }
-              this.dataForm.BirthDateAge = allAge.substring(0, allAge.length - 1) // !!!!!!只获取数不要单位，其实也可以parseInt
+              this.dataForm.BirthDateAge = allAge.substring(0, allAge.length - 1) // !!!!!! 只获取数不要单位，其实也可以parseInt
 
               this.dataForm.MobilePhone = result.data.MobilePhone
               this.dataForm.AllergyHistory = result.data.AllergyHistory
               this.dataForm.Address = result.data.Address
               this.dataForm.Source = String(result.data.Source)
-              console.log(result.data)
-              console.log(this.dataForm)
+              this.dataForm.Points = result.data.Points
               this.memberId = result.data.Id
+
+
+              // 积分相关的返回
+              console.log(result.data, response.data)
+              this.testList = response.data.map(item => {
+                return {
+                  people: item.CreatedByName,
+                  time: item.CreatedOn,
+                  text: item.Remark
+                }
+              }).reverse()
+              this.dataListLoading = false
             }
-          })
+          }))
         })
       }
     },
@@ -204,8 +249,8 @@ export default {
         AllergyHistory: '', // 病例史
         Address: '',
         Source: '20', // 患者来源
+        Points: '',
 
-        sumIntegral: '',
         EditPoints: '',
         Remark: ''
       }
@@ -217,7 +262,7 @@ export default {
         if (valid) {
           var params = {
             Id: this.memberId,
-            sumIntegral: this.dataForm.sumIntegral, // 总积分
+            // Points: this.dataForm.Points, // 总积分
             EditPoints: this.dataForm.EditPoints,
             Remark: this.dataForm.Remark
           }
@@ -244,3 +289,55 @@ export default {
   }
 }
 </script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+.time-line {
+  min-height: 500px;
+  height:500px;
+  overflow: scroll;
+  &::-webkit-scrollbar { width: 7px; }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    background-color: #DDDEE0;
+  }
+  &::-webkit-scrollbar-track {
+    border-radius: 0;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0);
+    background-color: rgba(0,0,0,0);
+  }
+  div.time-line-items {
+    position:relative;
+    padding: 0 10px 20px 35px;
+    i {
+      position: absolute;
+      left: 0;
+      top: 7px;
+      width: 12px;
+      height: 12px;
+      background-color: #E4E7ED;
+      border-radius: 50%;
+    }
+    strong {
+      position: absolute;
+      left: 5px;
+      top: 19px;
+      width: 2px;
+      height: 119px;
+      background-color: #E4E7ED;
+    }
+    span {color: #909399;}
+    div {
+      height: 90px;
+      padding: 7px 10px;
+      overflow: hidden;
+      border-radius: 5px;
+      border: 1px solid #EBEEF5;
+      box-shadow: 0 0 10px 0 #EBEEF5;
+      p {font-size:14px;color: #333}
+      font-size: 12px;
+      color: #999;
+    }
+  }
+}
+</style>

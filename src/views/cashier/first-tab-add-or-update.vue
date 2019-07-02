@@ -239,7 +239,7 @@
                 </el-select>
               </el-form-item>
               <div style="display: inline-block;width: 16px;height: 16px;line-height: 16px;border-radius: 50%;
-                   background-color: #0A96FE;text-align: center;color: #fff;margin-top: 10px;
+                   background-color: #0A96FE;text-align: center;color: #fff;margin-top: 7px;
                    cursor: pointer" @click="paymentAdd = !paymentAdd">
                 {{paymentAdd === false ? '+' : '-'}}
               </div>
@@ -594,12 +594,12 @@ export default {
   margin-bottom: 0;
 }
 .collect /deep/ {
-  .el-form-item--medium .el-form-item__label {
-    margin-top: -3px;
+  .el-form-item--mini .el-form-item__label {
+    margin-top: -15px;
   }
   .el-form-item {
     position: relative;
-    top: 2px;
+    top: 6px;
   }
 }
 

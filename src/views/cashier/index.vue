@@ -37,8 +37,7 @@
                 </el-date-picker>
               </el-form-item>
               <el-form-item>
-                <el-button @click="isVisible[0].child ===  true ? $refs.firstTab.getDataList() : $refs.secondTab.getDataList()"
-                           size="mini">查询</el-button>
+                <el-button @click="comTabFunction()" size="mini">查询</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -51,11 +50,16 @@
           <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
-
       <el-tab-pane label="" name="second">
-        <span slot="label"><i class=""></i> 已收费(已出库)</span>
+        <span slot="label"><i class=""></i> 已收费（库存不足未出库）</span>
         <transition name="chenxi">
           <second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>
+        </transition>
+      </el-tab-pane>
+      <el-tab-pane label="" name="three">
+        <span slot="label"><i class=""></i> 已收费(已出库)</span>
+        <transition name="chenxi">
+          <three-tab v-if="isVisible[2].child" ref="threeTab" :fatherDataForm="dataForm"></three-tab>
         </transition>
       </el-tab-pane>
 
@@ -66,21 +70,19 @@
 import API from '@/api'
 import FirstTab from './first-tab'
 import SecondTab from './second-tab'
+import ThreeTab from './three-tab'
 import ComStore from '../common/com-store'
 
 export default {
   components: {
     ComStore,
     FirstTab,
-    SecondTab
+    SecondTab,
+    ThreeTab
   },
   watch: {
     'dataForm.AccountId': function () {
-      if (this.isVisible[0].child === true) {
-        this.$refs.firstTab.getDataList()
-      } else if (this.isVisible[1].child === true) {
-        this.$refs.secondTab.getDataList()
-      }
+      this.comTabFunction()
     },
     'dataForm.patientNameOrMobilePhone': function (val, oldval) {
       var reg = /\d{11}/ig
@@ -117,6 +119,7 @@ export default {
       },
       isVisible: [
         {child: true},
+        {child: false},
         {child: false}
       ],
       valueTime: [],
@@ -124,6 +127,15 @@ export default {
     }
   },
   methods: {
+    comTabFunction () {
+      if (this.isVisible[0].child === true) {
+        this.$refs.firstTab.getDataList()
+      } else if (this.isVisible[1].child === true) {
+        this.$refs.secondTab.getDataList()
+      } else if (this.isVisible[2].child === true) {
+        this.$refs.threeTab.getDataList()
+      }
+    },
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
         this.dataForm.AccountId = '' // 门店切换时，选择的医生筛选条件当然也清空
@@ -131,11 +143,7 @@ export default {
         this.valueTime = null
         this.getStoreAllDoctor() // 门店切换时，获取对应门店下所有医生
         this.$nextTick(() => { // 等待watch那计算完毕才执行查询
-          if (this.isVisible[0].child === true) {
-            this.$refs.firstTab.getDataList()
-          } else if (this.isVisible[1].child === true) {
-            this.$refs.secondTab.getDataList()
-          }
+          this.comTabFunction()
         })
       }
     },
@@ -176,6 +184,11 @@ export default {
             return index === 1 ? {child: true} : {child: false}
           })
           break
+        case 'three':
+          this.isVisible = this.isVisible.map((item, index) => {
+            return index === 2 ? {child: true} : {child: false}
+          })
+          break
       }
       this.$nextTick(() => {
         this.isVisible.forEach((item, index) => {
@@ -184,6 +197,8 @@ export default {
               this.$refs.firstTab.getDataList() // 待收费列表
             } else if (index === 1) {
               this.$refs.secondTab.getDataList() // 已收费列表
+            } else if (index === 2) {
+              this.$refs.threeTab.getDataList() // 已发货列表
             }
             return false
           }
