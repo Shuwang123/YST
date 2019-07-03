@@ -52,8 +52,8 @@
     </el-form>
 
     <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
       <el-button type="primary" @click="dataFormSubmit()">确定添加</el-button>
+      <el-button @click="visible = false">取消</el-button>
     </span>
   </el-dialog>
 </template>

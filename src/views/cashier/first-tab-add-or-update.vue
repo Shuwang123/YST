@@ -121,7 +121,9 @@
             <tr valign="bottom">
               <td height="30"></td>
               <td colspan="2"><p>
-                <span style="display: inline-block;width: 210px;text-align: right">{{registerAllData.PaymentWayName}}</span></p></td>
+                <span style="display: inline-block;width: 100%;text-align: right;padding-right: 19px">
+                  {{optionsPaymentType.filter(item => { return item.value === dataForm.PaymentWay})[0].label}}</span></p>
+              </td>
             </tr>
 
             <tr>
@@ -132,7 +134,7 @@
               <td colspan="3">需开发票请于15日内开具，逾期不补! </td>
             </tr>
             <tr>
-              <td colspan="3">收费人员：xx</td>
+              <td colspan="3">收费人员：{{$store.getters.getAccountLoginInfoAll.NickName}}</td>
             </tr>
             </tbody>
           </table>

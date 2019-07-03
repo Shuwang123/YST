@@ -93,7 +93,7 @@
               <td colspan="3">需开发票请于15日内开具，逾期不补! </td>
             </tr>
             <tr>
-              <td colspan="3">收费人员：xx</td>
+              <td colspan="3">收费人员：{{$store.getters.getAccountLoginInfoAll.NickName}}</td>
             </tr>
           </tbody>
         </table>

@@ -117,7 +117,7 @@
               </el-col>
             </el-row>
             <div style="border-bottom: 1px solid #E6E6E6; font-weight: 500">
-              R: {{dataForm.oldCategoryOneName}} - {{oldTwoTabsName}}</div>
+              R: [{{dataForm.oldCategoryOneName}}] - [{{oldTwoTabsName}}]</div>
           </div>
 
           <!--左侧开方：直接用组件的引用名切换-->

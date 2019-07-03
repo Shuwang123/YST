@@ -20,15 +20,15 @@
       style="width: 100%;">
       <!--<el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>-->
       <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
-      <el-table-column prop="Id" header-align="center" :align="$store.state.common.align" width="50" label="ID"></el-table-column>
+      <!--<el-table-column prop="Id" header-align="center" :align="$store.state.common.align" width="50" label="ID"></el-table-column>-->
 
-      <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="80" label="编码"></el-table-column>
+      <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="100" label="编码"></el-table-column>
       <el-table-column prop="ShortName" header-align="center" :align="$store.state.common.align" label="供应商"></el-table-column>
       <el-table-column prop="Name" header-align="center" :align="$store.state.common.align" label="厂家"></el-table-column>
       <el-table-column prop="Contact" header-align="center" :align="$store.state.common.align" label="联系人"></el-table-column>
       <el-table-column prop="Phone" header-align="center" :align="$store.state.common.align" label="联系电话"></el-table-column>
-      <el-table-column prop="QQ" header-align="center" :align="$store.state.common.align" label="QQ"></el-table-column>
-      <el-table-column prop="SupplierType" header-align="center" :align="$store.state.common.align" label="类型"></el-table-column>
+      <!--<el-table-column prop="QQ" header-align="center" :align="$store.state.common.align" label="QQ"></el-table-column>-->
+      <!--<el-table-column prop="SupplierType" header-align="center" :align="$store.state.common.align" label="类型"></el-table-column>-->
       <el-table-column header-align="center" :align="$store.state.common.align" width="150" label="操作">
         <template slot-scope="scope">
           <el-button type="primary" size="mini" plain icon="el-icon-edit"

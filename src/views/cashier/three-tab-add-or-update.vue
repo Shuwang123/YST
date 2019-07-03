@@ -239,7 +239,7 @@
       </div>
 
       <!--打印层：财务出库单）--><!--24.10：9.31cm-->
-      <div id="printOutStock" style="display: none">
+      <div id="printOutStock" v-if="registerAllData !== ''" style="display: none">
         <div v-for="index in pages" :key="index" style="font-size: 12px; width: 80%"> <!-- 循环开始 -->
           <div>
             <div style="text-align: center;font-size: 18px;font-weight: 900">重庆渝北一善堂中医门诊部（出库单）</div>

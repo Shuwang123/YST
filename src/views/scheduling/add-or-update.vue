@@ -1,38 +1,25 @@
 <template>
-  <el-dialog v-dialogDrag ref="dialog__wrapper" :width="RegisterAmountInputNumber ? '900px' : '600px'"
-             :title="id === 0 ? '申请账号' : '编辑账号'"
+  <el-dialog v-dialogDrag ref="dialog__wrapper" :width="'600px'"
+             :title="'编辑医生排班'"
              :close-on-click-modal="false" :visible.sync="visible"
              @close="handleClose" id='add-or-update'>
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm"
              v-loading="dataListLoading"
              @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-row>
-        <el-col :span="RegisterAmountInputNumber ? 12 : 24">
+        <el-col :span="24">
           <el-form-item label="登陆账号" prop="UserName" v-if="!id">
             <el-input v-model="dataForm.UserName" placeholder="请填写用户名（登陆账号，限数字或字母以后不可更改）"></el-input>
           </el-form-item>
           <!--<el-form-item label="密码" prop="Password" v-if="!id">-->
           <!--<el-input v-model="dataForm.Password" placeholder="填写密码或修改密码"></el-input>-->
           <!--</el-form-item>-->
-          <el-form-item label="昵称" prop="NickName">
-            <el-input v-model="dataForm.NickName" placeholder="请填写别名"></el-input>
+          <el-form-item label="医生" prop="NickName">
+            <el-input v-model="dataForm.NickName" placeholder="请填写别名" disabled></el-input>
           </el-form-item>
-          <el-form-item label="电话" prop="Phone">
-            <el-input v-model="dataForm.Phone" placeholder="请填写电话"></el-input>
-          </el-form-item>
-          <com-store :paramsFather="{
-          'label_0': '归属门店',
-          'size_1': '',
-          'width_2': '350px',
-          'clear_3': false,
-          'multiple_4': false,
-          'must_5': false,
-          'isTrigger': false
-          }" ref="comStoreOne" @eventStore="changeStoreData">
-          </com-store>
 
           <!--这申请账号时如果没有选择角色ID，默认0，提交后会导致申请账号失败-->
-          <el-form-item label="角色ID" prop="RoleId">
+          <el-form-item label="角色ID" prop="RoleId" style="display: none">
             <el-select v-model="dataForm.RoleId"
                        placeholder="一个账号只能对应单个角色且必填" style="width: 350px">
               <el-option v-for="item in roleArr" :key="item.value"
@@ -40,19 +27,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <com-store :paramsFather="{
-          'label_0': '可控门店',
-          'size_1': '',
-          'width_2': '350px',
-          'clear_3': false,
-          'multiple_4': true,
-          'must_5': false,
-          'isTrigger': false
-          }" ref="comStoreSome" @eventStore="changeStoreData">
-          </com-store>
-        </el-col>
-        <el-col v-if="RegisterAmountInputNumber" :span="11" style="padding-left:10px; margin-left: 10px;">
-          <p style="font-weight: 700;font-size: 18px;margin-bottom: 10px">医生类型账号：</p>
+
           <!--医生类型的账号，会设置挂号费 2019.07.01-->
           <el-form-item label="挂号费" prop="RegisterAmount">
             <el-input-number v-model="dataForm.RegisterAmount" :precision="2" :min="1" :step="0.1" :max="1000"></el-input-number>
@@ -68,8 +43,8 @@
     </el-form>
 
     <span slot="footer" class="dialog-footer">
-      <el-button @click="visible = false">取消</el-button>
       <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+      <el-button @click="visible = false">取消</el-button>
     </span>
   </el-dialog>
 </template>
@@ -135,13 +110,6 @@ export default {
     ComStore
   },
   methods: {
-    changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
-      if (isMultiple === true) {
-        this.dataForm.CanViewStores = choseStoreId
-      } else if (isMultiple === false) {
-        this.dataForm.StoreId = choseStoreId
-      }
-    },
     getRoleInit () {
       var parmet = {pageIndex: 1, pageSize: 100, isPaging: false} // 请求角色的
       API.role.jueseList(parmet).then((result) => {
@@ -149,7 +117,6 @@ export default {
           this.roleArr = result.data.map(item => {
             return {value: item.Id, label: item.Name}
           })
-          // console.log(this.roleArr)
         }
       })
     },
@@ -193,20 +160,11 @@ export default {
             this.dataForm.OrderWork = result.data.OrderWork // 医生类型的账号会有排班
 
             this.dataForm.StoreId = result.data.StoreId
-            this.$refs.comStoreOne.pageInit(result.data.StoreId)
-            this.dataForm.CanViewStores = result.data.CanViewStores // 响应的是一个字串
-            this.$refs.comStoreSome.pageInit(result.data.CanViewStores.split(',').map(item => {
-              return Number(item)
-            }))
+
             this.dataListLoading = false
           }
         })
       }
-      // 这儿不要注释哟，重复弹窗可以清空上次弹窗的操作记录
-      this.$nextTick(() => {
-        this.$refs.comStoreOne.pageInit('')
-        this.$refs.comStoreSome.pageInit([]) // 多选的时候清空子组件不要传''了，不然子组件后续的选择调用push方法时有bug，而且你还找不出来，恶心死人
-      })
     },
     // 表单提交
     dataFormSubmit () {

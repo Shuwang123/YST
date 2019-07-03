@@ -20,7 +20,7 @@
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
-        <el-button type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus">新增会员</el-button>
+        <el-button type="primary" @click="addOrUpdateHandle(undefined, 'Basics')" icon="el-icon-plus">新增会员</el-button>
       </el-form-item>
     </el-form>
 
@@ -30,9 +30,7 @@
       :data="dataList"
       border stripe
       v-loading="dataListLoading"
-      :row-class-name="ownTableRowClassName"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
-      :cell-class-name="ownColumnStyle"
       style="width: 100%;">
       <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="StoreName" header-align="center" align="center" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
@@ -57,7 +55,8 @@
       </el-table-column>
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
-          <el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">编辑</el-button>
+          <el-button type="text" @click="addOrUpdateHandle(scope.row.Id, 'Basics')">会员</el-button>
+          <el-button type="text" @click="addOrUpdateHandle(scope.row.Id, 'integral')">积分</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -72,6 +71,7 @@
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
     <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></first-tab-add-or-update>
+    <first-tab-add-or-update-flowing v-if="addOrUpdateVisibleFlowing" ref="addOrUpdateFlowing" @refreshDataListFlowing="getDataList"></first-tab-add-or-update-flowing>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -79,6 +79,7 @@ import API from '@/api'
 import {calcAge} from '@/utils/validate' // 自定义的计算年龄的方法，精确到月，至于精确到天，那种才生下来的娃，一个月不到不太可能中医
 import { mapGetters } from 'vuex'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
+import FirstTabAddOrUpdateFlowing from './first-tab-add-or-update-flowing'
 import ComStore from '../common/com-store'
 export default {
   name: 'member',
@@ -87,6 +88,7 @@ export default {
       dataListLoading: false, // 加载
       chenxiHeight: document.documentElement['clientHeight'] - 276, // 心累，不要动
       addOrUpdateVisible: false,
+      addOrUpdateVisibleFlowing: false,
 
       pageSize: 17,
       pageIndex: 1,
@@ -101,6 +103,7 @@ export default {
   },
   components: {
     FirstTabAddOrUpdate,
+    FirstTabAddOrUpdateFlowing,
     ComStore
   },
   created () {
@@ -154,33 +157,20 @@ export default {
       this.pageIndex = val
       this.getDataList()
     },
-    addOrUpdateHandle (id) {
-      this.addOrUpdateVisible = true
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(id)
-      })
-    },
-
-    // 根据'未上架'状态，判断每行是高亮还是暗色
-    ownTableRowClassName ({row, rowIndex}) {
-      if (rowIndex >= 0 && row.WebStatus === 1) {
-        return 'on-row'
-      } else if (rowIndex >= 0 && row.WebStatus === 2) {
-        return 'off-row'
-      } else {
-        return ''
-      }
-    },
-    // 根据'未上架'状态和‘列标’，‘判断此列中的对应单元格’高亮还是暗色（返回的class是加载td上的，所以是一个一个的往td上加的就能控制，不像上面的行直接加给的tr，看清细节）
-    ownColumnStyle ({row, column, rowIndex, columnIndex}) { // 0123开始columnIndex
-      if (columnIndex === 4 || columnIndex === 5 || columnIndex === 15) {
-        if (row.WebStatus === 1) {
-          return 'highlightColumn'
-        } else if (row.WebStatus === 2) {
-          return 'dimColumn'
-        }
+    addOrUpdateHandle (id, popType) {
+      if (popType === 'Basics') {
+        this.addOrUpdateVisible = true
+        this.$nextTick(() => {
+          this.$refs.addOrUpdate.init(id)
+        })
+      } else if (popType === 'integral') {
+        this.addOrUpdateVisibleFlowing = true
+        this.$nextTick(() => {
+          this.$refs.addOrUpdateFlowing.init(id)
+        })
       }
     }
+
   }
 }
 </script>

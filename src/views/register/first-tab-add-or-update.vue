@@ -163,7 +163,7 @@
               <td colspan="3">需开发票请于15日内开具，逾期不补! </td>
             </tr>
             <tr>
-              <td colspan="3">收费人员：xx</td>
+              <td colspan="3">收费人员：{{$store.getters.getAccountLoginInfoAll.NickName}}</td>
             </tr>
             </tbody>
           </table>
@@ -356,7 +356,7 @@ export default {
         ConsultationAmount: 0 // 诊疗费
       }
       this.RegisterBool = false // 禁用
-      this.$refs.dataForm.clearValidate()
+      this.$refs['dataForm'].clearValidate()
     },
 
     // 表单提交

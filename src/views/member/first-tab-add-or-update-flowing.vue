@@ -295,19 +295,21 @@ export default {
   min-height: 500px;
   height:500px;
   overflow: scroll;
-  &::-webkit-scrollbar { width: 7px; }
-  &::-webkit-scrollbar-thumb {
+  &::-webkit-scrollbar { width: 0; }
+  &:hover::-webkit-scrollbar { width: 7px; }
+  &:hover::-webkit-scrollbar-thumb {
     border-radius: 3px;
     box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
     background-color: #DDDEE0;
   }
-  &::-webkit-scrollbar-track {
+  &:hover::-webkit-scrollbar-track {
     border-radius: 0;
     box-shadow: inset 0 0 5px rgba(0,0,0,0);
     background-color: rgba(0,0,0,0);
   }
   div.time-line-items {
     position:relative;
+    width: 315px;
     padding: 0 10px 20px 35px;
     i {
       position: absolute;
