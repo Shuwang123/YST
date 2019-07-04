@@ -111,7 +111,7 @@ export default {
         CategoryOne: '-2'
       }
       // 获取挂号列表
-      console.log(params)
+      // console.log(params)
       API.register.getRegisterList(params).then(result => {
         if (result.code === '0000') {
           this.dataList = result.data.map(item => {
@@ -145,14 +145,7 @@ export default {
         this.$refs.addOrUpdate.init(patientId)
       })
     },
-    handelDelete (id) {
-      this.$confirm(`确定对[id=${id}]的行导出excel表格吗?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-      })
-    },
+
     // 收费后确认药材出库
     comfireDispensing (Code) {
       this.$confirm(`确定出库吗?`, '提示', {
@@ -160,7 +153,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        console.log(Code)
+        // console.log(Code)
         API.register.saleOrderSubmit({saleOrderCode: Code}).then(result => {
           if (result.code === '0000') {
             this.getDataList()

@@ -1,5 +1,5 @@
 <template>
-  <div class="mod-user">
+  <div class="mod-scheduling">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <com-store :paramsFather="{
           'label_0': '',
@@ -128,13 +128,13 @@ export default {
         canViewStores: this.$store.getters.getAccountCurrentHandleStore, // 名店id 传递''返回全部（相对自己的权限内），不是传递0
         roleId: this.dataForm.roleId// 角色id
       }
-      console.log(parmet)
+      // console.log(parmet)
       this.dataListLoading = true
       API.adminUser.adminUserList(parmet).then(response => {
         if (response.code === '0000') {
           if (response.data) {
             this.dataList = response.data
-            console.log(this.dataList)
+            // console.log(this.dataList)
           }
           this.totalPage = response.total
         } else {
@@ -167,7 +167,7 @@ export default {
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .mod {
-  &-user {
+  &-scheduling {
     margin: 10px;
     .el-pagination {
       margin-top: 15px;

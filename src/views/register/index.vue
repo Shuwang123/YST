@@ -214,13 +214,10 @@ export default {
         this.isVisible.forEach((item, index) => {
           if (item.child === true) {
             if (index === 0) {
-              this.num = 0
               this.$refs.firstTab.getDataList()
             } else if (index === 1) {
-              this.num = 1
               this.$refs.secondTab.getDataList() // 挂号列表
             } else if (index === 2) {
-              this.num = 2
               this.$refs.threeTab.getDataList() // 挂号列表
             }
             return false

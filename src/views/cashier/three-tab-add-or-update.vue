@@ -350,7 +350,7 @@ export default {
             result.data.BirthDate = calcAge(result.data.BirthDate)
             this.registerAllData = result.data
             this.dataListLoading = false
-            console.log('查看', result.data)
+            // console.log('查看', result.data)
           }
         })
       }
@@ -406,33 +406,33 @@ export default {
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .registerIndex /deep/ .el-form-item {
-    margin-bottom: 0;
+.registerIndex /deep/ .el-form-item {
+  margin-bottom: 0;
+}
+/*出诊 复诊样式覆盖*/
+.registerIndex /deep/ {
+  .el-radio-button--mini .el-radio-button__inner {
+    padding: 7px 9px;
   }
-  /*出诊 复诊样式覆盖*/
-  .registerIndex /deep/ {
-    .el-radio-button--mini .el-radio-button__inner {
-      padding: 7px 9px;
-    }
-    /*只要半场动画*/
-    .v-enter {opacity: 0}
-    .v-enter-active {transition: all .4s ease}
-    .v-leave-active {position:absolute}
-  }
-  .ownScrollbar::-webkit-scrollbar,
-  .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar {
-    width: 7px;
-  }
-  .ownScrollbar::-webkit-scrollbar-thumb,
-  .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-thumb {
-    border-radius: 3px;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
-    background-color: #DDDEE0;
-  }
-  .ownScrollbar::-webkit-scrollbar-track,
-  .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-track {
-    border-radius: 0;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0);
-    background-color: rgba(0,0,0,0);
-  }
+  /*只要半场动画*/
+  .v-enter {opacity: 0}
+  .v-enter-active {transition: all .4s ease}
+  .v-leave-active {position:absolute}
+}
+.ownScrollbar::-webkit-scrollbar,
+.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar {
+  width: 7px;
+}
+.ownScrollbar::-webkit-scrollbar-thumb,
+.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+  background-color: #DDDEE0;
+}
+.ownScrollbar::-webkit-scrollbar-track,
+.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-track {
+  border-radius: 0;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0);
+  background-color: rgba(0,0,0,0);
+}
 </style>

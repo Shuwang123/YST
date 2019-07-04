@@ -1,5 +1,5 @@
 <template>
-  <div class="storeStock-first-tab">
+  <div class="storeCashier-first-tab">
     <el-table
       :height="chenxiHeight"
       :data="dataList"
@@ -110,7 +110,7 @@ export default {
         CategoryOne: '-2'
       }
       // 获取挂号列表
-      console.log(params)
+      // console.log(params)
       API.register.getRegisterList(params).then(result => {
         if (result.code === '0000') {
           this.dataList = result.data.map(item => {
@@ -139,14 +139,6 @@ export default {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(formId)
-      })
-    },
-    handelDelete (id) {
-      this.$confirm(`确定对[id=${id}]的行导出excel表格吗?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
       })
     }
   }

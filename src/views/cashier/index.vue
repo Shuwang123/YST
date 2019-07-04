@@ -1,8 +1,8 @@
 <template>
-    <div class="mod-storeRegister">
+    <div class="mod-storeCashier">
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
       <div style="background-color: #F5F7FA;margin-bottom: 0;border-radius: 0 0 0 0;padding: 1px 3px">
-        <el-form :inline="true" :model="dataForm" size="mini">
+        <el-form :inline="true" :model="dataForm" size="mini" @keyup.enter.native="comTabFunction()">
           <el-row style="height: 35px;line-height: 35px">
             <el-col :span="21">
               <com-store :paramsFather="{
@@ -15,19 +15,21 @@
                 'isTrigger': true
               }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
               <el-form-item>
-                <el-select v-model="dataForm.AccountId" placeholder="医生" clearable style="width: 100px">
+                <el-select v-model="dataForm.AccountId" placeholder="医生"
+                           @change="comTabFunction()" @clear="comTabFunction()" clearable style="width: 100px">
                   <el-option v-for="item in storeDoctorArr" :key="item.Id"
                              :label="`${item.Id} ${item.NickName}`" :value="item.Id">
                   </el-option>
                 </el-select>
               </el-form-item>
               <el-form-item>
-                <el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="患者/患者电话" clearable style="width: 119px"></el-input>
+                <el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="患者/患者电话"
+                          @clear="comTabFunction()" clearable style="width: 119px"></el-input>
               </el-form-item>
               <el-form-item>
                 <el-date-picker
                   size="mini"
-                  v-model="valueTime"
+                  v-model="valueTime" @change="comTabFunction()"
                   type="daterange"
                   range-separator="至"
                   start-placeholder="开始日期"
@@ -81,9 +83,6 @@ export default {
     ThreeTab
   },
   watch: {
-    'dataForm.AccountId': function () {
-      this.comTabFunction()
-    },
     'dataForm.patientNameOrMobilePhone': function (val, oldval) {
       var reg = /\d{11}/ig
       if (reg.test(val) === true && val.length === 11) { // 验证通过表示 输入的 手机号
@@ -95,7 +94,7 @@ export default {
       }
     },
     valueTime (val, oldval) {
-      console.log(val)
+      // console.log(val)
       if (val !== [] && val !== null) {
         this.dataForm.StartDate = val[0]
         this.dataForm.EndDate = val[1]
@@ -127,25 +126,25 @@ export default {
     }
   },
   methods: {
-    comTabFunction () {
-      if (this.isVisible[0].child === true) {
-        this.$refs.firstTab.getDataList()
-      } else if (this.isVisible[1].child === true) {
-        this.$refs.secondTab.getDataList()
-      } else if (this.isVisible[2].child === true) {
-        this.$refs.threeTab.getDataList()
-      }
-    },
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
         this.dataForm.AccountId = '' // 门店切换时，选择的医生筛选条件当然也清空
         this.dataForm.patientNameOrMobilePhone = ''
         this.valueTime = null
         this.getStoreAllDoctor() // 门店切换时，获取对应门店下所有医生
-        this.$nextTick(() => { // 等待watch那计算完毕才执行查询
-          this.comTabFunction()
-        })
+        this.comTabFunction()
       }
+    },
+    comTabFunction () {
+      this.$nextTick(() => { // 等待watch那计算完毕才执行查询
+        if (this.isVisible[0].child === true) {
+          this.$refs.firstTab.getDataList()
+        } else if (this.isVisible[1].child === true) {
+          this.$refs.secondTab.getDataList()
+        } else if (this.isVisible[2].child === true) {
+          this.$refs.threeTab.getDataList()
+        }
+      })
     },
     // 当门店改变时，获取门店下所有医生（只是给表头的查询下拉option赋初始值而已）
     getStoreAllDoctor () { // 给 option 的
@@ -190,20 +189,7 @@ export default {
           })
           break
       }
-      this.$nextTick(() => {
-        this.isVisible.forEach((item, index) => {
-          if (item.child === true) {
-            if (index === 0) {
-              this.$refs.firstTab.getDataList() // 待收费列表
-            } else if (index === 1) {
-              this.$refs.secondTab.getDataList() // 已收费列表
-            } else if (index === 2) {
-              this.$refs.threeTab.getDataList() // 已发货列表
-            }
-            return false
-          }
-        })
-      })
+      this.comTabFunction()
     }
   }
 }
@@ -215,20 +201,13 @@ export default {
   transform: translate(40px, 30px);
   opacity: 0;
 }
-/*.chenxi-enter-to, .chenxi-leave {
-transform: translate(0, 0);
-opacity: 1;
-}*/
 .chenxi-enter-active,
 .chenxi-leave-active {
   transition: all 0.6s ease;
 }
-/*.chenxi-leave-to {
-  transform: translateX(-100px, 0);
-}*/
 
 .mod {
-  &-storeRegister /deep/ {
+  &-storeCashier /deep/ {
     margin-left: 10px;
     /*max-height: 810px;*/
     overflow: hidden;
@@ -243,20 +222,15 @@ opacity: 1;
   }
 }
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
-.mod-storeRegister{
-  & /deep/ .el-form-item {
-    margin-bottom: 0px;
-  }
-  & /deep/ .el-dialog__body {
-    padding-top: 10px;
-  }
+.mod-storeCashier /deep/ {
+  .el-form-item { margin-bottom: 0; }
+  .el-dialog__body { padding-top: 10px; }
   /*表头高重写35高*/
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td,
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td {
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td,
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td {
     padding: 0 !important;
   }
-  /*& /deep/ .el-tabs__content {background-color: #F0F0F0}*/
-  & /deep/ .storeStockListRow {
+  .storeStockListRow {
     color: #606266;
     & td {padding: 0;}
     & td .cell{
@@ -265,9 +239,4 @@ opacity: 1;
     }
   }
 }
-/*.mod-purchaseList {*/
-  /*& /deep/ .el-dialog__header {*/
-    /*background-color: #1CA579;*/
-  /*}*/
-/*}*/
 </style>

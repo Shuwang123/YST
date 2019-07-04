@@ -222,7 +222,7 @@ export default {
 
 
               // 积分相关的返回
-              console.log(result.data, response.data)
+              // console.log(result.data, response.data)
               this.testList = response.data.map(item => {
                 return {
                   people: item.CreatedByName,
@@ -266,7 +266,7 @@ export default {
             EditPoints: this.dataForm.EditPoints,
             Remark: this.dataForm.Remark
           }
-          console.log(params)
+          // console.log(params)
           API.member.editIntegral(params).then((data) => {
             if (data.code === '0000') {
               this.$message({

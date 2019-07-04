@@ -63,8 +63,6 @@ import {Currency, Phone, NumberInt} from '../../utils/validate'
 import {formatDate, calcAge, calcTimeStamp} from '@/utils/validate'
 
 export default {
-  components: {
-  },
   data () {
     return {
       visible: false,
@@ -170,8 +168,8 @@ export default {
               this.dataForm.AllergyHistory = result.data.AllergyHistory
               this.dataForm.Address = result.data.Address
               this.dataForm.Source = String(result.data.Source)
-              console.log(result.data)
-              console.log(this.dataForm)
+              // console.log(result.data)
+              // console.log(this.dataForm)
               this.memberId = result.data.Id
             }
           })
@@ -219,8 +217,8 @@ export default {
             Source: this.dataForm.Source,
             Id: this.memberId
           }
-          console.log(paramsAdd)
-          console.log(paramsEdit)
+          // console.log(paramsAdd)
+          // console.log(paramsEdit)
           var tick = this.memberId ? API.member.editMemberSubmit(paramsEdit) : API.member.addMemberSubmit(paramsAdd)
           tick.then((data) => {
             if (data.code === '0000') {

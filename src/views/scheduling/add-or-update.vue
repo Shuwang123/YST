@@ -69,7 +69,7 @@ export default {
           this.dataForm.Room = ''
           this.dataForm.OrderWork = ''
         }
-        console.log(val, this.dataForm.RegisterAmount, this.RegisterAmountInputNumber)
+        // console.log(val, this.dataForm.RegisterAmount, this.RegisterAmountInputNumber)
       }, 50)
     }
   },
@@ -203,7 +203,7 @@ export default {
             Phone: this.dataForm.Phone,
             id: this.id
           }
-          console.log(obj)
+          // console.log(obj)
           var objEdit = {
             Id: this.id,
             // UserName: this.dataForm.UserName,
@@ -218,7 +218,7 @@ export default {
             CanViewStores: this.dataForm.CanViewStores,
             Phone: this.dataForm.Phone
           }
-          console.log(objEdit)
+          // console.log(objEdit)
           var tick = this.id ? API.adminUser.adminUserEdit(objEdit) : API.adminUser.adminUserAdd(obj)
           tick.then(data => {
             if (data.code === '0000') {
