@@ -133,7 +133,6 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var paramsCreate = {
-
             Name: this.dataForm.Name,
             ShortName: this.dataForm.ShortName,
             Contact: this.dataForm.Contact,

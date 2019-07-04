@@ -5,7 +5,7 @@
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <!--<el-col><div style="border-top: 1px dashed #ccc;padding-top: 10px;font-weight: 900">别名（选填）</div></el-col>-->
-    <el-container><!-- display: none -->
+    <el-container v-loading="dataListLoading"><!-- display: none -->
       <el-aside :width="isAddActive === false ? '100%' : '60%'">
         <div class="ownScrollbar" style="min-height: 500px;max-height: 500px;overflow-y: scroll;">
 
@@ -46,7 +46,6 @@
           <el-table  v-if="dataList !== null" :key="Math.random()"
                      :data="dataList.Items"
                      stripe
-                     v-loading="dataListLoading"
                      row-class-name="purchaseListRow"
                      :header-cell-style="$cxObj.tableHeaderStyle40px"
                      style="width: 100%;">
@@ -499,7 +498,7 @@ export default {
         API.purchase.getPurchaseInfo({id: id}).then(result => {
           if (result.code === '0000') {
             this.dataList = result.data
-            console.log(result.data.Items)
+            // console.log(result.data.Items)
 
             // 2019.06.01 展示采购单总价
             this.dataList.Items.forEach(item => {

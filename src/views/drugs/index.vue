@@ -4,7 +4,6 @@
       <el-tab-pane label="中草药品" name="first">
         <first-tab></first-tab>
       </el-tab-pane>
-      <!--<el-tab-pane label="成品药品" name="second" disabled="true">-->
       <el-tab-pane label="成品药品" name="second">
         成品药品
         <br>
@@ -13,8 +12,7 @@
         <br>
         <br>
       </el-tab-pane>
-      <el-tab-pane label="其他商品" name="third">
-      <!--<el-tab-pane label="其他商品" name="third" disabled="true">-->
+      <el-tab-pane label="其他商品" name="third"><!--disabled="true"-->
         其他商品
         <br>
         <br>
@@ -61,22 +59,16 @@ export default {
   }
 }
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
-.mod-drugs {
-  & /deep/ .el-form-item {
-    margin-bottom: 14px;
-  }
-  & /deep/ .el-dialog__body {
-    padding-top: 10px;
-  }
+.mod-drugs /deep/ {
+  .el-form-item { margin-bottom: 14px; }
+  .el-dialog__body { padding-top: 10px; }
   /*表头高重写35高*/
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td,
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td {
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td,
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td {
     padding: 0 !important;
   }
-  /*& /deep/ .el-tabs__content {background-color: #F0F0F0}*/
 }
 .mod-drugs /deep/ .ownScrollbar {
-  /*.gutter {width: 7px !important;}*/
   .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar { width: 7px; }
   .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-thumb {
     border-radius: 3px;

@@ -4,7 +4,7 @@
     :title="!dataForm.id ? '新增' : '编辑'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm"  label-width="80px">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" v-loading="dataListLoading" label-width="80px">
       <el-form-item label="门店名称" prop="Name">
         <el-input v-model="dataForm.Name" placeholder="名店名称Name"></el-input>
       </el-form-item>
@@ -42,6 +42,7 @@ export default {
     return {
       nodes: [],
       visible: false,
+      dataListLoading: false,
       dataForm: {
         id: 0,
         Name: '',
@@ -60,9 +61,8 @@ export default {
   },
   methods: {
     updataAddress (childCode) {
-      console.log(childCode)
+      // console.log(childCode)
       this.dataForm.AreaId = childCode
-      console.log(this.dataForm.AreaId)
     },
     // 新增，编辑时获取单行详情info
     init (id) {
@@ -70,6 +70,7 @@ export default {
       this.dataForm.id = id || 0
       // 门店这的弹窗细心点会发现弹窗明显会慢一些，因为地址组件那个东东的缘故，js所执行的地区的那对象太大了，2019.05.23去掉了这的this.$nextTick(()=>{}),如果以后有啥问题，可以从这思考
       if (this.dataForm.id) {
+        this.dataListLoading = true
         API.store.getStoreRow({id: this.dataForm.id}).then(result => {
           if (result.code === '0000') {
             this.dataForm = {
@@ -82,6 +83,7 @@ export default {
             }
           }
           this.$refs.comAddress.getAddress(this.dataForm.AreaId) // 调用自定义的全国统一地址子组件，上面有nextTick别看漏了
+          this.dataListLoading = false
         })
       } else {
         this.$refs.comAddress.getAddress()
@@ -131,18 +133,7 @@ export default {
         }
       })
     }
-    // 递归获取节点
-    // getNodes (treenodes) {
-    //   if (treenodes.length > 0) {
-    //     for (var i = 0; i < treenodes.length; i++) {
-    //       if (treenodes[i].children) {
-    //         this.getNodes(treenodes[i].children)
-    //       } else {
-    //         this.nodes.push(treenodes[i].id)
-    //       }
-    //     }
-    //   }
-    // }
+
   }
 }
 </script>

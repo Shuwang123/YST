@@ -94,7 +94,7 @@ export default {
           this.dataForm.Room = ''
           this.dataForm.OrderWork = ''
         }
-        console.log(val, this.dataForm.RegisterAmount, this.RegisterAmountInputNumber)
+        // console.log(val, this.dataForm.RegisterAmount, this.RegisterAmountInputNumber)
       }, 50)
     }
   },

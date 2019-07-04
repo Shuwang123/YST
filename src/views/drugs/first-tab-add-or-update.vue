@@ -4,7 +4,8 @@
     :title="!dataForm.id ? '新增药品信息' : '修改药品信息'" width="600px"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px" size="small" :inline="true">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm"
+             label-width="80px" size="small" :inline="true" v-loading="dataListLoading">
       <el-form-item label="药典名称" prop="Name">
         <el-input v-model="dataForm.Name" placeholder="药典规范名称"></el-input>
       </el-form-item>
@@ -84,7 +85,6 @@
 <script type="text/ecmascript-6">
 import API from '@/api'
 import {Currency, Letter, NumberInt, NumberFloat, pinyinChenXi} from '../../utils/validate'
-// import {treeDataTranslate} from '@/utils'
 export default {
   components: {},
   watch: {
@@ -96,6 +96,7 @@ export default {
   data () {
     return {
       visible: false,
+      dataListLoading: false,
       drugsCategoryList: [], // 初始化药品种类
 
       Id: '',
@@ -136,11 +137,13 @@ export default {
     // 新增，编辑时获取单行详情info
     init (id) {
       this.visible = true
+      this.dataListLoading = true
       API.drugs.getDrugsCategory().then(result => {
         if (result.code === '0000') {
           this.drugsCategoryList = result.data
           this.$nextTick(() => {
             if (id) {
+              this.dataListLoading = true
               API.drugs.getEdit({id: id}).then(result => {
                 if (result.code === '0000') {
                   this.dataForm = {
@@ -163,10 +166,12 @@ export default {
                   }
                   this.Id = result.data.Id
                 }
-                console.log(this.dataForm)
+                this.dataListLoading = false
+                // console.log(this.dataForm)
               })
             }
           })
+          this.dataListLoading = false
         }
       })
     },
@@ -222,7 +227,7 @@ export default {
               this.dataForm.Keywords4, this.dataForm.Keywords5
             ].join()
           }
-          console.log(params)
+          // console.log(params)
           var tick = !this.Id ? API.drugs.createDrugs(params) : API.drugs.submitEdit(params)
           tick.then((data) => {
             if (data.code === '0000') {

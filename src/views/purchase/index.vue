@@ -138,7 +138,7 @@ export default {
     if (to.path === '/drugs/purchase') {
       next(vm => {
         // 这儿的[]==[]为false…… 还有神奇的vm，都不晓得哪冒出来的，居然可以直接用，这查查资料
-        console.log(window.sessionStorage.getItem('modPurchaseList'))
+        // console.log(window.sessionStorage.getItem('modPurchaseList'))
         if (window.sessionStorage.getItem('modPurchaseList') !== '[]' && JSON.parse(window.sessionStorage.getItem('modPurchaseList')) !== '' &&
           window.sessionStorage.getItem('modPurchaseList') !== undefined && window.sessionStorage.getItem('modPurchaseList') !== null) {
           // console.log(window.sessionStorage.getItem('modPurchaseList'))
@@ -276,7 +276,7 @@ export default {
         //     PageSize: 1000,
         //     IsPaging: true,
         //     code: '',
-        //     canViewStores: result.data.CanViewStores
+        //     data.CanViewStores
         //   }).then(result => {
         //     if (result.code === '0000') {
         //       this.dataForm.StoreId = result.data[0].Id
@@ -336,7 +336,7 @@ export default {
     },
     addOrUpdateHandle (id0, id1) { // id0是药态类型、饮片、颗粒等+id1门店id
       this.addOrUpdateVisible = true
-      console.log(id1)
+      // console.log(id1)
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id0, id1)
       })
@@ -350,7 +350,7 @@ export default {
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        console.log(Id)
+        // console.log(Id)
         if (Id === undefined) {
           for (var i = 0; i < this.dataListSelections.length; i++) {
             this.purchaseFormal = this.dataList = this.purchaseFormal.filter(item => {
@@ -365,8 +365,7 @@ export default {
       })
     },
     handleChange () {
-      this.dataList.push()
-      // this.purchaseFormal 正式购买
+      this.dataList.push() // this.purchaseFormal 正式购买
     },
     // 正式提交采购单
     savePurchase () {
@@ -404,7 +403,7 @@ export default {
           })
           return false
         }
-        console.log(params)
+        // console.log(params)
         API.purchase.submitPurchase(params).then(result => {
           if (result.code === '0000') {
             this.$message({message: result.message, type: 'success', duration: 3000})
@@ -459,15 +458,15 @@ export default {
   }
 }
 /*表头高重写*/
-.mod-purchase {
+.mod-purchase /deep/ {
   /*重写头部input的margin-bottom*/
-  & /deep/ .el-form-item {margin-bottom: 5px}
+  .el-form-item {margin-bottom: 5px}
   margin-top: 0;
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td,
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td {
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td,
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td {
     padding: 0 !important;
   }
-  & /deep/ .purchaseTableRowClass {
+  .purchaseTableRowClass {
     height: 30px;
     line-height: 30px;
   }

@@ -2,13 +2,14 @@
   <div class="first-tab">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.drugsName" placeholder="药名" clearable style="width: 150px"></el-input>
+        <el-input v-model="dataForm.drugsName" placeholder="药名" clearable @clear="getDataList()" style="width: 150px"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.drugsSpell" placeholder="请输入拼音首字母" clearable style="width: 150px"></el-input>
+        <el-input v-model="dataForm.drugsSpell" placeholder="请输入拼音首字母" clearable @clear="getDataList()" style="width: 150px"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-select v-model="dataForm.CategoryId" placeholder="药品种类" clearable style="width: 110px">
+        <el-select v-model="dataForm.CategoryId" placeholder="药品种类" @change="getDataList()"
+                   clearable @clear="getDataList()" style="width: 110px">
           <el-option v-for="item in drugsCategoryList" :key="item.id" :label="item.text" :value="item.id"></el-option>
         </el-select>
       </el-form-item>

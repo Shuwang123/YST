@@ -65,7 +65,7 @@
           <span :style="{color: scope.row.Quantity - scope.row.RedLine <= 0 ? '#e4393c' : ''}">{{scope.row.ProductName}}</span>
         </template>
       </el-table-column>
-      <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧？所以厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
+      <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧，所有厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
 
       <el-table-column prop="OccupyQuantity" header-align="center" align="center" label="锁定" min-width="80"></el-table-column>
       <el-table-column prop="UsableQuantity" header-align="center" align="center" label="可用" min-width="80" :show-overflow-tooltip="true"></el-table-column>
@@ -277,14 +277,6 @@ export default {
     // 选中单行
     handleCurrentChange (val) {
       // this.currentRow = val
-    },
-    handelDelete (id) {
-      this.$confirm(`确定对[id=${id}]的行导出excel表格吗?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-      })
     }
   }
 }

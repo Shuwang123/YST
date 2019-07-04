@@ -1,10 +1,8 @@
 <template>
-
-    <div class="mod-purchaseList">
+  <div class="mod-purchaseList">
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
       <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
-        <!--<el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">-->
-        <el-form :inline="true" :model="dataForm">
+        <el-form :inline="true" :model="dataForm"><!--@keyup.enter.native="getDataList()"-->
           <com-store :paramsFather="{
             'label_0': '',
             'size_1': 'mini',
@@ -15,21 +13,20 @@
             'isTrigger': true
           }" ref="comStore" @eventStore="changeStoreData"></com-store>
           <el-form-item label="">
-            <el-select v-model="dataForm.SupplierId" placeholder="供应厂商" size="mini" clearable style="width: 120px">
+            <el-select v-model="dataForm.SupplierId" placeholder="供应厂商" @change="getChildDataList"
+                       clearable @clear="getChildDataList" size="mini" style="width: 120px">
               <el-option v-for="item in SupplierIdArr" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>
             </el-select>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="dataForm.code" placeholder="采购单批次" size="mini" clearable></el-input>
+            <el-input v-model="dataForm.code" placeholder="采购单号" size="mini" style="width: 140px"
+                      @keyup.enter.native="getChildDataList" @clear="getChildDataList" clearable></el-input>
           </el-form-item>
           <el-form-item>
-            <!--<el-date-picker-->
-              <!--:default-time="['12:00:00']"-->
-              <!--value-format="yyyy-MM-dd HH:mm">-->
-            <!--</el-date-picker>-->
+            <!--:default-time="['12:00:00']"-->
             <el-date-picker
               size="mini"
-              v-model="value6"
+              v-model="value6" @change="getChildDataList"
               type="daterange"
               range-separator="至"
               start-placeholder="开始日期"
@@ -44,7 +41,6 @@
         </el-form>
       </div>
 
-      <!--<el-tab-pane label="成品药品" name="second" disabled="true">-->
       <el-tab-pane label="" name="first">
         <span slot="label"><i class="el-icon-date"></i> 全部</span>
         <transition name="chenxi">
@@ -109,7 +105,6 @@ export default {
   },
   watch: {
     'value6': function () {
-      console.log(this.value6)
       if (this.value6 !== [] && this.value6 !== null) {
         this.dataForm.StartDate = this.value6[0]
         this.dataForm.EndDate = this.value6[1]
@@ -129,7 +124,9 @@ export default {
       }
     },
     getChildDataList () {
-      this.$refs.firstTab.getDataList(this.num)
+      this.$nextTick(() => {
+        this.$refs.firstTab.getDataList(this.num)
+      })
     },
     pageInit () {
       this.dataListLoading = true
@@ -196,22 +193,12 @@ export default {
   transform: translate(40px, 30px);
   opacity: 0;
 }
-/*.chenxi-enter-to, .chenxi-leave {
-transform: translate(0, 0);
-opacity: 1;
-}*/
 .chenxi-enter-active,
-.chenxi-leave-active {
-  transition: all 0.6s ease;
-}
-/*.chenxi-leave-to {
-  transform: translateX(-100px, 0);
-}*/
+.chenxi-leave-active { transition: all 0.6s ease; }
 
 .mod {
-  &-purchaseList /deep/ {
+  &-purchaseList /deep/ { /*max-height: 810px;*/
     margin-left: 10px;
-    /*max-height: 810px;*/
     overflow: hidden;
     .el-pagination {
       margin-top: 15px;
@@ -224,20 +211,15 @@ opacity: 1;
   }
 }
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
-.mod-purchaseList {
-  & /deep/ .el-form-item {
-    margin-bottom: 14px;
-  }
-  & /deep/ .el-dialog__body {
-    padding-top: 10px;
-  }
+.mod-purchaseList /deep/ {
+  .el-form-item { margin-bottom: 14px; }
+  .el-dialog__body { padding-top: 10px; }
   /*表头高重写35高*/
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td,
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td {
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td,
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td {
     padding: 0 !important;
   }
-  /*& /deep/ .el-tabs__content {background-color: #F0F0F0}*/
-  & /deep/ .purchaseListRow {
+  .purchaseListRow {
     color: #606266;
     & td {padding: 0;}
     & td .cell{
@@ -246,9 +228,4 @@ opacity: 1;
     }
   }
 }
-/*.mod-purchaseList {*/
-  /*& /deep/ .el-dialog__header {*/
-    /*background-color: #1CA579;*/
-  /*}*/
-/*}*/
 </style>

@@ -31,13 +31,6 @@
       </el-form-item>
     </el-form>
 
-    <!--<el-table-column header-align="center" :align="$store.state.common.align" label="角色">-->
-    <!--<template slot-scope="scope">-->
-    <!--<span v-for="(item, index) in scope.row.roles" :key="index">-->
-    <!--{{item.roleName}}-->
-    <!--</span>-->
-    <!--</template>-->
-    <!--</el-table-column>-->
     <el-table
       :data="dataList"
       border stripe
@@ -46,8 +39,8 @@
       :header-cell-style="$cxObj.tableHeaderStyle"
       style="width: 100%;">
       <el-table-column type="index" label="序号" :align="$store.state.common.align" width="50px"></el-table-column>
-      <!--<el-table-column prop="Id" header-align="center" :align="$store.state.common.align" label="ID" width="50"></el-table-column>-->
       <el-table-column prop="StoreName" header-align="center" :align="$store.state.common.align" label="所属门店" width="100" :show-tooltip-when-overflow="true"></el-table-column>
+      <!--<el-table-column prop="Id" header-align="center" :align="$store.state.common.align" label="ID" width="50"></el-table-column>-->
       <!--<el-table-column prop="UserName" header-align="right" align="right" label="注册账号" width="119"></el-table-column>-->
       <!--<el-table-column prop="NickName" header-align="left" align="left" label="昵称" width="100"></el-table-column>-->
       <el-table-column header-align="center" align="left" label="登陆账号 / 昵称" min-width="150" :show-overflow-tooltip="true">
@@ -189,13 +182,13 @@ export default {
         // storeId: this.dataForm.storeId === '' ? this.$store.getters.getAccountLoginInfoAll.CanViewStores : this.dataForm.storeId,
         roleId: this.dataForm.roleId// 角色id
       }
-      console.log(parmet)
+      // console.log(parmet)
       this.dataListLoading = true
       API.adminUser.adminUserList(parmet).then(response => {
         if (response.code === '0000') {
           if (response.data) {
             this.dataList = response.data
-            console.log(this.dataList)
+            // console.log(this.dataList)
           }
           this.totalPage = response.total
         } else {

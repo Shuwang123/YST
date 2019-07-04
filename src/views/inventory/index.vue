@@ -136,17 +136,10 @@ export default {
   transform: translate(40px, 30px);
   opacity: 0;
 }
-/*.chenxi-enter-to, .chenxi-leave {
-transform: translate(0, 0);
-opacity: 1;
-}*/
 .chenxi-enter-active,
 .chenxi-leave-active {
   transition: all 0.6s ease;
 }
-/*.chenxi-leave-to {
-  transform: translateX(-100px, 0);
-}*/
 
 .mod {
   &-storeStock /deep/ {
@@ -164,20 +157,15 @@ opacity: 1;
   }
 }
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
-.mod-storeStock{
-  & /deep/ .el-form-item {
-    margin-bottom: 14px;
-  }
-  & /deep/ .el-dialog__body {
-    padding-top: 10px;
-  }
+.mod-storeStock  /deep/ {
+  .el-form-item { margin-bottom: 14px; }
+  .el-dialog__body { padding-top: 10px; }
   /*表头高重写35高*/
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td,
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td {
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td,
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td {
     padding: 0 !important;
   }
-  /*& /deep/ .el-tabs__content {background-color: #F0F0F0}*/
-  & /deep/ .storeStockListRow {
+  .storeStockListRow {
     color: #606266;
     & td {padding: 0;}
     & td .cell{
@@ -186,9 +174,4 @@ opacity: 1;
     }
   }
 }
-/*.mod-purchaseList {*/
-  /*& /deep/ .el-dialog__header {*/
-    /*background-color: #1CA579;*/
-  /*}*/
-/*}*/
 </style>

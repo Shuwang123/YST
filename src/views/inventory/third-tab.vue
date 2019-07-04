@@ -136,21 +136,13 @@ export default {
     currentChangeHandle (val) {
       this.pageIndex = val
       this.getDataList()
-    },
+    }
     // addOrUpdateHandle (id, type) {
     //   this.addOrUpdateVisible = true
     //   this.$nextTick(() => {
     //     this.$refs.addOrUpdate.init(id, type)
     //   })
-    // },
-    handelDelete (id) {
-      this.$confirm(`确定对[id=${id}]的行导出excel表格吗?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-      })
-    }
+    // }
   }
 }
 </script>

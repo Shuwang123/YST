@@ -7,7 +7,6 @@
       <el-form-item>
         <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
         <el-button type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus">新增供应商</el-button>
-        <!--<el-button type="danger" @click="deleteHandle()" icon="el-icon-delete" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
       </el-form-item>
     </el-form>
 
@@ -18,8 +17,8 @@
       v-loading="dataListLoading"
       :header-cell-style="$cxObj.tableHeaderStyle"
       style="width: 100%;">
-      <!--<el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>-->
       <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
+      <!--<el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>-->
       <!--<el-table-column prop="Id" header-align="center" :align="$store.state.common.align" width="50" label="ID"></el-table-column>-->
 
       <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="100" label="编码"></el-table-column>
@@ -34,9 +33,6 @@
           <el-button type="primary" size="mini" plain icon="el-icon-edit"
                      @click="addOrUpdateHandle(scope.row.Code)">编辑
           </el-button>
-          <!--<el-button type="danger" size="mini" plain icon="el-icon-delete"-->
-                     <!--@click="deleteHandle(scope.row.Id)">删除-->
-          <!--</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -56,7 +52,7 @@
 <script type="text/ecmascript-6">
 import AddOrUpdate from './add-or-update'
 import API from '@/api'
-import {formatDate} from '@/utils/validate'
+import { formatDate } from '@/utils/validate'
 export default {
   name: 'supplier',
   components: {
@@ -66,19 +62,13 @@ export default {
     return {
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载v-loading
-
       pageSize: 13,
       pageIndex: 1,
       totalPage: 1,
       dataForm: {
-        Name: ''
-      },
-
+        Name: ''},
       dataList: []
     }
-  },
-
-  computed: {
   },
   mounted () {
     this.getDataList()
@@ -118,40 +108,6 @@ export default {
         this.$refs.addOrUpdate.init(Code)
       })
     }
-    // 删除
-    // deleteHandle (id) {
-    //   var ids = id ? [id] : this.dataListSelections.map(function (item) {
-    //     return item.Id
-    //   })
-    //   var dataJSON = {ids: ids.join()}
-    //   this.$confirm(`确定对[ids=${ids.join()}]进行[${id === undefined ? '批量删除' : '删除'}]操作?`, '提示', {
-    //     confirmButtonText: '确定',
-    //     cancelButtonText: '取消',
-    //     type: 'warning'
-    //   }).then(() => {
-    //     API.role.roleDelete(dataJSON).then((data) => {
-    //       if (data.code === '0000') {
-    //         this.$message({
-    //           type: 'success',
-    //           message: '删除成功!',
-    //           duration: 1000,
-    //           onClose: () => {
-    //             // if (ids.length === this.dataList.length) {
-    //             //   if (this.pageIndex > 1) {
-    //             //     this.pageIndex--
-    //             //   } else {
-    //             //     this.dataList = []
-    //             //   }
-    //             // }
-    //             this.getDataList()
-    //           }
-    //         })
-    //       } else {
-    //         this.$message.error(data.message)
-    //       }
-    //     })
-    //   })
-    // }
   }
 }
 </script>

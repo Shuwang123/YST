@@ -1,10 +1,10 @@
 <template>
   <div class="mod-meun">
 
-    <!--头部查询 搭配 新增-->
+    <!--头部查询 新增-->
     <el-form :inline="true" :model="dataForm" @submit.native.prevent="searchMenu">
       <el-form-item>
-        <el-input v-model="objMenu.name" placeholder="菜单名称" clearable @keyup.prevent="searchMenu"></el-input>
+        <el-input v-model="objMenu.name" placeholder="菜单名称" clearable @clear="searchMenu"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" @click="searchMenu">查询</el-button>
@@ -79,7 +79,7 @@ export default {
       objMenu: {
         name: '',
         pageIndex: 1, // 当前页索引
-        pageSize: 13, // 页码大小10 20 30 100
+        pageSize: 13,
         IsPaging: true // 后端需求的数据，是否分页
       },
       allMenus: 0 // 分页功能 // 表中数据总量
@@ -124,18 +124,7 @@ export default {
 
     getDataList () {
       this.dataMenu = []
-      this.postMenu()
-      // API.permission.list().then(result => {
-      // API.permission.add({
-      // }).then(result => {
-      //   if (result.data) {
-      //     var tempdataList = treeDataTranslate(result.data.permissionList, 'id')
-      //     tempdataList.sort((a, b) => {
-      //       return a.showOrder - b.showOrder
-      //     })
-      //     this.dataMenu.push(...tempdataList)
-      //   }
-      // })
+      this.postMenu() // 请求菜单接口
     },
     // 切换处理
     toggleHandle (index, row) {
@@ -212,9 +201,7 @@ export default {
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 .mod {
-  &-meun {
-    margin:10px;
-  }
+  &-meun { margin:10px; }
 }
 .slz-footer {margin-top: 5px}
 </style>

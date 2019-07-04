@@ -103,6 +103,8 @@
     <div style="text-align: right; margin-top: 30px">
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="chenxiPrint()">小票补打</el-button>
+        <!--<el-button type="primary" @click="dataFormSubmitA()">退号</el-button>-->
+        <!--<el-button type="primary" @click="dataFormSubmitA()">再次挂号</el-button>-->
         <el-button @click="visible = false">关闭</el-button>
         <!--<el-button type="primary" @click="dataFormAdd()">挂号不打印</el-button>-->
       </span>
@@ -169,6 +171,42 @@ export default {
       unit = unit.substr(unit.length - n.length)
       for (var i = 0; i < n.length; i++) str += '零壹贰叁肆伍陆柒捌玖'.charAt(n.charAt(i)) + unit.charAt(i)
       return str.replace(/零(千|百|拾|角)/g, '零').replace(/(零)+/g, '零').replace(/零(万|亿|元)/g, '$1').replace(/(亿)万|壹(拾)/g, '$1$2').replace(/^元零?|零分/g, '').replace(/元$/g, '元整')
+    },
+
+    // 表单提交
+    dataFormSubmitA () {
+      // this.$refs['dataForm'].validate((valid) => {
+      //   if (valid) {
+      //     var params = {
+      //       StoreId: this.$store.getters.getAccountCurrentHandleStore,
+      //       AccountId: this.doctorId, // 医生id
+      //       UserId: this.dataForm.UserId, // 患者id
+      //       OrderType: 1, // 1挂号 2退号
+      //       DiagnosisType: this.dataForm.DiagnosisType, // 初诊 复诊
+      //       RegisterAmount: this.dataForm.RegisterAmount, // 挂号费
+      //       ConsultationAmount: this.dataForm.ConsultationAmount, // 诊疗费
+      //       PaymentWay: this.dataForm.PaymentWay,
+      //       Remark: this.dataForm.PaymentWay
+      //     }
+      //     console.log(params)
+      //     API.register.registerSubmit(params).then(result => {
+      //       if (result.code === '0000') {
+      //         this.$message({
+      //           message: `${'挂号成功'}`,
+      //           type: 'success',
+      //           duration: 3000
+      //         })
+      //         this.visible = false
+      //       } else {
+      //         this.$message.error(result.message)
+      //       }
+      //     })
+      //   } else {
+      //     this.$alert('挂号信息不完整! ', '提示', {
+      //       confirmButtonText: '确定'
+      //     })
+      //   }
+      // })
     }
   }
 }

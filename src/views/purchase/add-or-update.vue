@@ -28,7 +28,6 @@
           :header-cell-style="$cxObj.tableHeaderStyle40px"
           row-class-name="purchaseTableRowClass"
           style="width: 100%;">
-          <!--ascending descending-->
           <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
           <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
           <el-table-column prop="CategoryName" header-align="center" :align="$store.state.common.align" width="100" label="药态" :show-overflow-tooltip="true"></el-table-column>
@@ -183,7 +182,7 @@ export default {
         if (result.code === '0000' && result.data.length > 0) {
           this.dataList = result.data
           this.totalPage = result.total
-          console.log(result.data)
+          // console.log(result.data)
           if (this.dataListViews.length === 0) {
             this.dataListViews = this.dataListViews.concat(result.data) // 会打散拼接到尾巴，旧数组不变
           } else if (this.dataListViews.some(item => item.Code === result.data[0].Code || item.Code === result.data[this.pageSize - 1]).Code) {
@@ -249,11 +248,11 @@ export default {
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
 .mod {
-  &-purchase-child {
+  &-purchase-child /deep/ {
     margin:10px;
-    & /deep/ .el-dialog {width: 70%}
-    & /deep/ .el-dialog__body {padding: 0 20px}
-    & /deep/ .purchaseTableRowClass {
+    .el-dialog {width: 70%}
+    .el-dialog__body {padding: 0 20px}
+    .purchaseTableRowClass {
       height: 30px;
       line-height: 30px;
     }

@@ -2,10 +2,10 @@
   <div class="mod-store">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.storeName" placeholder="门店名称" clearable></el-input>
+        <el-input v-model="dataForm.storeName" placeholder="门店名称" clearable @clear="getDataList()"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.storeCode" placeholder="门店编码" clearable></el-input>
+        <el-input v-model="dataForm.storeCode" placeholder="门店编码" clearable @clear="getDataList()"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
@@ -27,7 +27,6 @@
       <el-table-column prop="Name" header-align="center" align="center" label="门店名称" width="100" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Id" header-align="center" align="center" label="门店ID" width="70"></el-table-column>
       <!--<el-table-column prop="Code" header-align="center" align="center" width="100px" label="门店编码"></el-table-column>-->
-
       <!--<el-table-column prop="FullName" header-align="right" align="right" label="地区" width="170" :show-overflow-tooltip="true"></el-table-column>-->
       <!--<el-table-column prop="Address" header-align="left" align="left" label="地址详情" width="170" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column header-align="center" align="left" label="地区：详细地址" min-width="150" :show-overflow-tooltip="true">
@@ -35,7 +34,6 @@
           <span>{{scope.row.FullName}}：{{scope.row.Address}}</span>
         </template>
       </el-table-column>
-
       <el-table-column prop="Contact" header-align="center" align="center" label="联系人" min-width="100"></el-table-column>
       <el-table-column prop="Phone" header-align="center" align="center" label="联系电话" min-width="119"></el-table-column>
       <el-table-column header-align="center" align="center" label="创建时间" min-width="150">
@@ -54,9 +52,6 @@
         </template>
       </el-table-column>
     </el-table>
-    <!--"LicenseCode": null,-->
-    <!--"NickName": null,-->
-    <!--"IsSettingLicenseCode": "空"   这三个返回的不知道干啥的，没有使用-->
 
     <el-pagination
       @size-change="sizeChangeHandle"
@@ -104,8 +99,7 @@ export default {
   },
   methods: {
     selectionChangeHandle (val) {
-      this.dataListSelections = val
-      // console.log(this.dataListSelections) 传递一个数组，数组中元素为选中的行的row信息
+      this.dataListSelections = val // 数组中元素就是row的信息
     },
     getDataList () {
       const _this = this

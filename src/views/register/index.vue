@@ -17,10 +17,10 @@
 
               <el-form-item v-show="isVisible[0].child">
                 <el-input v-model="dataForm.doctorName" placeholder="请输入医生姓名"
-                          @clear="comBranch" clearable style="width: 119px"></el-input>
+                          @clear="comBranch()" clearable style="width: 119px"></el-input>
               </el-form-item>
 
-              <span v-show="isVisible[1].child">
+              <span v-show="isVisible[1].child || isVisible[2].child">
                 <el-form-item>
                   <el-select v-model="dataForm.AccountId" placeholder="选择医生" clearable style="width: 100px">
                     <el-option v-for="item in storeDoctorArr" :key="item.Id"
@@ -29,7 +29,7 @@
                 </el-form-item>
                 <el-form-item>
                   <el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="患者/患者电话"
-                            clearable style="width: 119px"></el-input>
+                            clearable @clear="comBranch()" style="width: 119px"></el-input>
                 </el-form-item>
                 <!--<el-form-item>-->
                   <!--<el-input v-model="dataForm.MobilePhone" placeholder="患者电话" clearable style="width: 119px"></el-input>-->
@@ -37,7 +37,7 @@
                 <el-form-item>
                   <el-date-picker
                     size="mini"
-                    v-model="valueTime"
+                    v-model="valueTime" @change="comBranch()"
                     type="daterange"
                     range-separator="至"
                     start-placeholder="开始日期"
@@ -49,8 +49,7 @@
               </span>
 
               <el-form-item>
-                <el-button @click="isVisible[0].child ===  true ? $refs.firstTab.getDataList() : $refs.secondTab.getDataList()"
-                           size="mini">查询</el-button>
+                <el-button @click="comBranch()" size="mini">查询</el-button>
               </el-form-item>
             </el-col>
             <el-col :span="3" style="text-align: right;padding-right: 10px">
@@ -72,6 +71,12 @@
           <second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>
         </transition>
       </el-tab-pane>
+      <el-tab-pane label="" name="three">
+        <span slot="label"><i class=""></i> 退费列表</span>
+        <transition name="chenxi">
+          <three-tab v-if="isVisible[2].child" ref="threeTab" :fatherDataForm="dataForm"></three-tab>
+        </transition>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -79,12 +84,15 @@
 import API from '@/api'
 import FirstTab from './first-tab'
 import SecondTab from './second-tab'
+import ThreeTab from './three-tab'
 import ComStore from '../common/com-store'
 export default {
   watch: {
     'dataForm.AccountId': function () {
       if (this.isVisible[1].child === true) {
         this.$refs.secondTab.getDataList()
+      } else if (this.isVisible[2].child === true) {
+        this.$refs.threeTab.getDataList()
       }
     },
     'dataForm.patientNameOrMobilePhone': function (val, oldval) {
@@ -124,6 +132,7 @@ export default {
       },
       isVisible: [
         {child: true},
+        {child: false},
         {child: false}
       ],
       valueTime: [],
@@ -133,7 +142,8 @@ export default {
   components: {
     ComStore,
     FirstTab,
-    SecondTab
+    SecondTab,
+    ThreeTab
   },
   methods: {
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
@@ -142,18 +152,20 @@ export default {
         this.dataForm.patientNameOrMobilePhone = ''
         this.valueTime = null
         this.getStoreAllDoctor() // 门店切换时，获取对应门店下所有医生
-        this.$nextTick(() => { // 等待watch那计算完毕才执行查询
-          this.comBranch()
-        })
+        this.comBranch()
       }
     },
     // 共同的分支方法
     comBranch () {
-      if (this.isVisible[0].child === true) {
-        this.$refs.firstTab.getDataList()
-      } else {
-        this.$refs.secondTab.getDataList()
-      }
+      this.$nextTick(() => { // 等待watch那计算完毕才执行查询
+        if (this.isVisible[0].child === true) {
+          this.$refs.firstTab.getDataList()
+        } else if (this.isVisible[1].child === true) {
+          this.$refs.secondTab.getDataList()
+        } else if (this.isVisible[2].child === true) {
+          this.$refs.threeTab.getDataList()
+        }
+      })
     },
     // 当门店改变时，获取门店下所有医生（只是给表头的查询下拉option赋初始值而已）
     getStoreAllDoctor () {
@@ -192,6 +204,11 @@ export default {
             return index === 1 ? {child: true} : {child: false}
           })
           break
+        case 'three':
+          this.isVisible = this.isVisible.map((item, index) => {
+            return index === 2 ? {child: true} : {child: false}
+          })
+          break
       }
       this.$nextTick(() => {
         this.isVisible.forEach((item, index) => {
@@ -202,6 +219,9 @@ export default {
             } else if (index === 1) {
               this.num = 1
               this.$refs.secondTab.getDataList() // 挂号列表
+            } else if (index === 2) {
+              this.num = 2
+              this.$refs.threeTab.getDataList() // 挂号列表
             }
             return false
           }
@@ -218,17 +238,10 @@ export default {
   transform: translate(40px, 30px);
   opacity: 0;
 }
-/*.chenxi-enter-to, .chenxi-leave {
-transform: translate(0, 0);
-opacity: 1;
-}*/
 .chenxi-enter-active,
 .chenxi-leave-active {
   transition: all 0.6s ease;
 }
-/*.chenxi-leave-to {
-  transform: translateX(-100px, 0);
-}*/
 
 .mod {
   &-storeRegister /deep/ {
@@ -246,20 +259,16 @@ opacity: 1;
   }
 }
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
-.mod-storeRegister{
-  & /deep/ .el-form-item {
-    margin-bottom: 0px;
-  }
-  & /deep/ .el-dialog__body {
-    padding-top: 10px;
-  }
+.mod-storeRegister /deep/ {
+  .el-form-item { margin-bottom: 0px; }
+  .el-dialog__body { padding-top: 10px; }
   /*表头高重写35高*/
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td,
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td {
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td,
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td {
     padding: 0 !important;
   }
   /*& /deep/ .el-tabs__content {background-color: #F0F0F0}*/
-  & /deep/ .storeStockListRow {
+  .storeStockListRow {
     color: #606266;
     & td {padding: 0;}
     & td .cell{
@@ -268,9 +277,4 @@ opacity: 1;
     }
   }
 }
-/*.mod-purchaseList {*/
-  /*& /deep/ .el-dialog__header {*/
-    /*background-color: #1CA579;*/
-  /*}*/
-/*}*/
 </style>

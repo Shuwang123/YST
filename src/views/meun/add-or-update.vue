@@ -3,7 +3,8 @@
     v-dialogDrag :title="!dataForm.id ? '新增' : '修改'" width="700px"
     :close-on-click-modal="false" :visible.sync="visible"
     @close="handleClose">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" v-loading="dataListLoading"
+             @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="类型：" prop="UrlType">
         <el-radio-group v-model="dataForm.urlType">
           <el-radio :label="1">菜单</el-radio>
@@ -86,6 +87,7 @@ export default {
     return {
       // menuList: [],
       visible: false,
+      dataListLoading: false,
       elPopoverElTreeVisible: false, // 控制弹出框的显隐，单击v-popover可以切换这个值
 
       dataForm: {
@@ -184,13 +186,10 @@ export default {
     // undefined时‘添加’就用默认dataForm值，传值表示‘编辑’
     init (Id) {
       this.visible = true
-      function getOneRow () {
-        return API.menu.getEdit({id: Id})
-      }
-      function getMenuTree () {
-        return API.menu.getTree() // 这个API请求未执行(百度到底咋回事，以前访问失败)
-      }
+      function getOneRow () { return API.menu.getEdit({id: Id}) }
+      function getMenuTree () { return API.menu.getTree() } // 这个API请求未执行(百度到底咋回事，以前访问失败)
       if (Id) {
+        this.dataListLoading = true
         this.$ios.all([getOneRow(), getMenuTree()]).then(this.$ios.spread((result, response) => {
           if (result.code === '0000' && response.code === '0000') {
             // 请求对应单行的数据! 作为编辑弹窗的初始值（为什么弄并发请求呢? 因为程序自动选择菜单树那步可能会在完整的菜单树渲染完毕之前执行，导致此时菜单节点为空根本就无法选中）
@@ -216,6 +215,7 @@ export default {
             this.$nextTick(() => {
               this.menuListTreeSetCurrentNode()
             })
+            this.dataListLoading = false
           }
         }))
       } else {
@@ -242,9 +242,6 @@ export default {
     dataFormSubmit () {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          // if (this.dataForm.parentId === -9999) {
-          //   this.dataForm.parentId = null
-          // }
           var tick = !this.dataForm.id ? API.menu.add(this.dataForm) : API.menu.edit(this.dataForm)
           this.visible = false
           tick.then(response => {
@@ -257,7 +254,6 @@ export default {
                   this.$emit('refreshDataList')
                 }
               })
-              // console.log(this.dataForm.menuUrl)
             }
           })
         }

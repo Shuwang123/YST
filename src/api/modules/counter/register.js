@@ -19,6 +19,14 @@ export function registerSubmit (params) {
     data: requestParam(params)
   })
 }
+// 挂号费：退费功能
+export function registerRevoke (params) {
+  return request({
+    url: requestUrl('/YstApiSaleOrder/CancelRegister'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
 
 // 获取当前门店：当天所有挂号列表
 export function getRegisterList (params) {

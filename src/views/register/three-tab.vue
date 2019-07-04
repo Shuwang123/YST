@@ -32,17 +32,16 @@
           <p><span style="display: inline-block;width: 45%;text-align: right;padding-right: 7px">￥</span>{{scope.row.RegisterAmount}}</p>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" align="center" label="收费状态" min-width="190">
+      <el-table-column header-align="center" align="center" label="状态" min-width="190">
         <template slot-scope="scope">
-          <span>{{scope.row.DiagnosisTypeName}} / {{scope.row.RegisterStatusName}} / {{scope.row.RegisterOrderStatusName}}</span>
+          <span>已{{scope.row.RegisterOrderStatusName}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
-        <template slot-scope="scope">
-          <el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
-          <el-button type="text" size="mini" @click="registerRevoke(scope.row.Id)">退挂号费</el-button>
-        </template>
-      </el-table-column>
+      <!--<el-table-column prop="" label="操作" width="150" header-align="center" align="center">-->
+        <!--<template slot-scope="scope">-->
+          <!--<el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
     </el-table>
     <el-pagination
       @size-change="sizeChangeHandle"
@@ -53,12 +52,12 @@
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
-    <second-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate"></second-tab-add-or-update>
+    <three-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate"></three-tab-add-or-update>
   </div>
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import SecondTabAddOrUpdate from './second-tab-add-or-update'
+import ThreeTabAddOrUpdate from './three-tab-add-or-update'
 import { mapGetters } from 'vuex'
 import {calcAge} from '@/utils/validate'
 
@@ -85,7 +84,7 @@ export default {
       totalPage: 1
     }
   },
-  components: { SecondTabAddOrUpdate },
+  components: { ThreeTabAddOrUpdate },
   mounted () {
     window.onresize = () => {
       this.chenxiHeight = document.documentElement['clientHeight'] - 303 // 273 测试老半天333
@@ -106,7 +105,7 @@ export default {
         MobilePhone: this.fatherDataForm.MobilePhone, // 患者电话
         WrokFrom: this.fatherDataForm.StartDate, // 开始时间
         WrokTo: this.fatherDataForm.EndDate, // 结束时间
-        Status: '2' // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部
+        Status: '-1' // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部
       }
       // 获取挂号列表
       // console.log(params)
@@ -133,37 +132,13 @@ export default {
     currentChangeHandle (val) {
       this.pageIndex = val
       this.getDataList()
-    },
-    addOrUpdateHandle (patientId) {
-      this.addOrUpdateVisible = true
-      this.$nextTick(() => {
-        this.$refs.addOrUpdate.init(patientId)
-      })
-    },
-    registerRevoke (id) {
-      this.$prompt('请输入退费原因', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /./,
-        inputErrorMessage: '未输入退费原因'
-      }).then(({ value }) => {
-        var obj = {
-          id: id,
-          remark: value}
-        API.register.registerRevoke(obj).then(result => {
-          console.log(result)
-          if (result.code === '0000') {
-            this.getDataList()
-            this.$message.success(`退费操作成功`)
-          }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消退费操作'
-        })
-      })
     }
+    // addOrUpdateHandle (patientId) {
+    //   this.addOrUpdateVisible = true
+    //   this.$nextTick(() => {
+    //     this.$refs.addOrUpdate.init(patientId)
+    //   })
+    // }
   }
 }
 </script>

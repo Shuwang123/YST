@@ -1,18 +1,6 @@
 <template>
   <div class="storeStock-first-tab">
     <!--chenxiHeight命名法-->
-    <!--<div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">-->
-      <!--<el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">-->
-        <!--&lt;!&ndash;<el-form-item label="">个人想法，因为门店的医生没筛选，所以这儿可能留着做input search&ndash;&gt;-->
-          <!--&lt;!&ndash;<el-select v-model="dataForm.Order" placeholder="排序" size="mini" clearable style="width: 120px">&ndash;&gt;-->
-            <!--&lt;!&ndash;<el-option v-for="item in OrderArr" :key="item.text" :label="item.text" :value="item.val"></el-option>&ndash;&gt;-->
-          <!--&lt;!&ndash;</el-select>&ndash;&gt;-->
-        <!--&lt;!&ndash;</el-form-item>&ndash;&gt;-->
-        <!--&lt;!&ndash;<el-form-item>&ndash;&gt;-->
-          <!--&lt;!&ndash;<el-button icon="el-icon-search" @click="pageIndex = 1; getDataList()" size="mini">查询</el-button>&ndash;&gt;-->
-        <!--&lt;!&ndash;</el-form-item>&ndash;&gt;-->
-      <!--</el-form>-->
-    <!--</div>-->
     <el-table
       :height="chenxiHeight"
       :data="dataList"
@@ -97,15 +85,15 @@ export default {
         id: '',
         userName: '',
         nickName: this.fatherDataForm.doctorName, // 医生姓名search
-        roleId: this.$store.getters.getAllDoctorIdArr.join(),
+        roleId: this.$store.getters.getAllDoctorIdArr.join(), // 角色名里includes('医生')，对应的id存在vuex里
         canViewStores: this.$store.getters.getAccountCurrentHandleStore
       }
-      console.log(params)
+      // console.log(params)
       API.adminUser.adminUserList(params).then(response => {
         if (response.code === '0000') {
           if (response.data) { this.dataList = response.data }
           this.totalPage = response.total
-          console.log(this.dataList)
+          // console.log(this.dataList)
         } else {
           this.$message.error(response.message)
         }
@@ -138,14 +126,6 @@ export default {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(row)
-      })
-    },
-    handelDelete (id) {
-      this.$confirm(`确定对[id=${id}]的行导出excel表格吗?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
       })
     }
   }

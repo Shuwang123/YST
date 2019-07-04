@@ -4,7 +4,7 @@
     :title="!dataForm.roleId ? '新增' : '修改'" width="700px"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="80px">
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" v-loading="dataListLoading" label-width="80px">
       <!--<el-form-item label="角色编码" prop="roleCode">-->
         <!--<el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="true"></el-input>-->
         <!--&lt;!&ndash;<el-input v-model="dataForm.Id" placeholder="角色编码Id" :disabled="dataForm.Id == 0"></el-input>&ndash;&gt;-->
@@ -43,6 +43,7 @@ import {Currency} from '../../utils/validate'
 export default {
   data () {
     return {
+      dataListLoading: false,
       siEdit: true,
       nodes: [],
 
@@ -81,13 +82,11 @@ export default {
       })
       this.dataForm.Id = id || 0
       this.visible = true
-      // console.log(id)
       this.$nextTick(() => {
         if (this.dataForm.Id) {
-          // this.isEdit = false
+          this.dataListLoading = true
           // 根据角色的id获取那个角色的单独的：固定Id Name Desctiption 并且返回Items（其中有这个角色以前的权限：RoleId+MenuId）
           API.role.roleDetail({id: id}).then(result => {
-            console.log(result)
             if (result.code === '0000') {
               this.dataForm.Name = result.data.Name
               this.dataForm.Description = result.data.Description
@@ -97,34 +96,19 @@ export default {
                 for (var i = 0; i < result.data.Items.length; i++) {
                   arr.push(result.data.Items[i].MenuId)
                 }
-                // console.log(arr.join())
-                // this.checkedKey = arr
                 this.$refs.menuListTree.setCheckedKeys(arr) // 上面那个思路貌似同理，但实际上好像不稳定，有时候出不来
               }
+              this.dataListLoading = false
             }
-            // if (response.code === '0000' && response.data && response.data.permissionList) {
-            //   this.data2 = treeDataTranslate(response.data.permissionList, 'id')
-            //   console.log(this.data2)
-            // }
           })
-        } else {
-          // API.role.rolePermissonList().then(response => {
-          //   console.log(response)
-          //   if (response.code === '0000' && response.data.permissionList) {
-          //     this.data2 = treeDataTranslate(response.data.permissionList, 'id')
-          //     console.log(this.data2)
-          //   }
-          // })
         }
       })
     },
     handleClose () {
-      // this.checkedKey = []
       this.$refs['dataForm'].resetFields()
       this.$refs.menuListTree.setCheckedKeys([])
       this.dataForm.Id = ''
       this.dataForm.Description = '' // 上面的清空表单，这个貌似没被清掉，不知道为啥子
-      // this.isEdit = true
     },
     // 表单提交
     dataFormSubmit () {
@@ -182,9 +166,8 @@ export default {
   .el-dialog__body {padding-bottom: 0}
   .ownScrollbar {margin-bottom: 0}
 }
-.ownScrollbar::-webkit-scrollbar {
-  width: 7px;
-}
+.ownScrollbar:hover::-webkit-scrollbar { width: 7px; }
+.ownScrollbar::-webkit-scrollbar { width: 0; }
 .ownScrollbar::-webkit-scrollbar-thumb {
   border-radius: 3px;
   box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
