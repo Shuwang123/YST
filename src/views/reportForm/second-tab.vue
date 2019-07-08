@@ -119,25 +119,8 @@ export default {
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(patientId)
       })
-    },
-
-    // 收费后确认药材出库
-    comfireDispensing (Code) {
-      this.$confirm(`确定出库吗?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        // console.log(Code)
-        API.register.saleOrderSubmit({saleOrderCode: Code}).then(result => {
-          if (result.code === '0000') {
-            this.getDataList()
-          } else {
-            this.$message.error(result.message)
-          }
-        })
-      })
     }
+
   }
 }
 </script>

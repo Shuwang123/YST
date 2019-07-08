@@ -214,36 +214,47 @@ export default {
         },
         tooltip: {
           trigger: 'item',
-          // backgroundColor: 'rgba(0,0,0,0.5)',
-          // padding: [10, 20],
-          // textStyle: {
-          //   color: '#fff',
-          //   fontSize: 16,
-          //   lineHeight: '16px'
-          // },
-          // position: function (point, params, dom, rect, size) {
-          //   return [point[0] + 10, point[1] - dom.offsetHeight - 10]
-          // },
-          // formatter: function (params) {
-          //   var res = ''
-          //   res += params.name + ' : ' + params.value[2] + '&nbsp;台'
-          //   return res
-          // }
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          padding: [0, 10],
+          textStyle: {
+            color: '#fff',
+            fontSize: 14,
+            lineHeight: '14px'
+          },
+          position: function (point, params, dom, rect, size) {
+            return [point[0] + 10, point[1] - dom.offsetHeight - 10]
+          },
+          formatter: function (params) {
+            var res = ''
+            res += params.name + ' <br/> ' + params.value + '&nbsp;元<br/>'
+                + '占比&nbsp;' + params.percent + '%'
+            // console.log(params)
+            return res
+          }
         },
+
         series: [{
           name: '',
           type: 'pie',
+          // center: ['79%', '19%'],
           radius: ['0%', '55%'],
+          itemStyle: {
+            emphasis: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.8)'
+            }
+          },
           label: {
             normal: {
               formatter: '{b|{b}：\n} {c}￥{per|{d}%}',
-              backgroundColor: '#eee',
-              borderColor: '#aaa',
+              backgroundColor: '#f1f2f7',
+              borderColor: '#eee',
               borderWidth: 1,
               borderRadius: 4,
-              shadowBlur: 3,
-              shadowOffsetX: 2,
-              shadowOffsetY: 2,
+              shadowBlur: 1, // 水玉度
+              shadowOffsetX: 1,
+              shadowOffsetY: 1,
               shadowColor: '#999',
               padding: [0, 7],
               rich: {

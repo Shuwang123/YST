@@ -51,7 +51,7 @@
       </div>
 
       <el-tab-pane label="" name="first">
-        <span slot="label"><i class="el-icon-document"></i> 金额报表</span>
+        <span slot="label"><i class="el-icon-document"></i> 日期报表</span>
         <transition name="chenxi">
           <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
