@@ -109,7 +109,7 @@ export default {
           PrescriptionName: this.fatherDataForm.PrescriptionName,
           CategoryOne: '-2' // 一级分类 -2查询所有 1内服2外用3制膏4水丸5水蜜丸
         }
-        console.log(params)
+        // console.log(params)
         API.register.getRegisterList(params).then(result => { // 获取待就诊列表（挂号列表为基础筛选：医生）或者以后还可能筛选挂号单本身的状态
           if (result.code === '0000') {
             this.dataList = this.fatherDataForm.AccountId === '' ? [] : result.data.map(item => {

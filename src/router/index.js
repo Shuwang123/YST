@@ -59,8 +59,12 @@ var router = new Router({
         /* 医生模块：待就诊Begin treatment、recipel */
         {path: '/doctor/treatment', component: _import('doctor/index'), name: 'treatment', meta: {title: '待就诊', keepAlive: false}},
         {path: '/doctor/recipel', component: _import('doctorRp/index'), name: 'recipel', meta: {title: '开方', keepAlive: false}},
-        {path: '/doctor/agreement', component: _import('agreementRecipel/index'), name: 'agreement', meta: {title: '协定方', keepAlive: false}}
+        {path: '/doctor/agreement', component: _import('agreementRecipel/index'), name: 'agreement', meta: {title: '协定方', keepAlive: false}},
         /* 柜台模块End */
+
+        /* 门诊报表 start */
+        {path: '/store/report', component: _import('reportForm/index'), name: 'reportForm', meta: {title: '门诊报表', keepAlive: false}}
+        /* 门诊报表 end */
       ]
     },
     {path: '*', name: 'error401', component: _import('errorPage401/error401')}

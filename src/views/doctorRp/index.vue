@@ -5,7 +5,6 @@
         <el-aside width="75%" style="border-right: 1px solid #DCDFE6; padding-right: 5px;min-width: 700px;">
           <div id="leftHeightPatient">
             <p style="text-align: center;font-size: 16px; padding: 5px 0 20px 0;">
-              <!--꧁<span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;"> 处方笺 </span>꧂-->
               <span style="position: relative; top: 10px;font-size: 18px; font-weight: 600;cursor: pointer"
                     @click="cutOut = !cutOut" :title="cutOut ? '点击收起' : '点击展开'"> 处方笺
                 <b style="font-weight: 700;font-size: 12px;color: #409EFF;
@@ -146,7 +145,7 @@
             <el-button type="warning" plain size="mini" @click="openAgreementRecipelList('40', '-2')">协定方</el-button>
             <el-button type="warning" plain size="mini" @click="openAgreementRecipelList('41', '-2')">经典方</el-button>
             <el-button type="warning" plain size="mini" @click="openAgreementRecipelList('42', '-2')">理疗产品</el-button>
-            <!--<el-button type="warning" plain size="medium" disabled>名验方</el-button>-->
+            <!--<el-button type="warning" plain disabled>名验方</el-button>-->
           </div>
 
           <el-autocomplete
@@ -166,24 +165,22 @@
             <el-tab-pane v-for="item in drugsCategoryArr" :key="item.id" :label="item.text" :name="item.id"></el-tab-pane>
           </el-tabs>
           <div class="rightUlStyle">
-            <ul class="ownScrollbar xx">
+            <ul class="ul-true">
               <li v-for="item in rightUlData" :key="item.Id">
                 <el-tooltip class="item" effect="light" :content="item.ShowName+' [余量'+item.Quantity+']'" placement="left">
                   <el-row style="clear: both">
-                    <!--<span v-text="item.ShowName === null ? '000' : item.ShowName"></span> {{item.Id}}余{{item.Quantity}}g/预{{item.RedLine}}-->
 
                     <!--药材名+剩余量+操作-->
                     <el-col :span="6">
                     <span v-text="item.ShowName === null ? '无' : item.ShowName"
                           style="display: inline-block; vertical-align: middle; width: 50px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">
-                    </span>
+                  </span>
                     </el-col>
                     <el-col :span="12" :style="{color: item.Quantity - item.RedLine > 0 ? '#333' : item.Quantity === 0 ? '#ccc' : '#e4392c'}">
-                    <span style="display: inline-block; vertical-align: middle;text-align: left;padding-left: 10px;
-                                 overflow: hidden;width: 100px; white-space: nowrap;text-overflow: ellipsis">
-                      {{item.Quantity}} / {{item.RedLine}}
-                      <!--{{item.Id}} {{item.Quantity}}/{{item.RedLine}}-->
-                    </span>
+                  <span style="display: inline-block; vertical-align: middle;text-align: left;padding-left: 10px;
+                               overflow: hidden;width: 100px; white-space: nowrap;text-overflow: ellipsis">
+                    {{item.Quantity}} / {{item.RedLine}}<!--{{item.Id}}-->
+                  </span>
                     </el-col>
 
                     <el-col :span="6" v-if="item.Quantity > 0" style="text-align: right;padding-right: 7px">
@@ -224,7 +221,7 @@
               <el-input-number v-model="Total" @change="countTotalPrice(leftTableData)" :min="1" :step="1" :max="30" style="width: 95px"></el-input-number> 剂
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="16">
             <el-form-item label="用法：" prop="DrugRate_0">
               每日
               <el-select v-model="dataForm.DrugRate_0" style="width: 70px">
@@ -236,7 +233,12 @@
                 <el-option v-for="item in DrugRateOptionsArr"
                            :key="item.lab" :label="item.lab" :value="item.val"></el-option>
               </el-select>
-              次服
+              次，
+              <el-select v-model="dataForm.DrugRate_2" style="width: 78px">
+                <el-option label="饭前" value="1"></el-option>
+                <el-option label="饭后" value="2"></el-option>
+                <el-option label="睡前" value="3"></el-option>
+              </el-select> 服。
             </el-form-item>
           </el-col>
           <el-col :span="24" class="yizhuCss">
@@ -363,7 +365,7 @@ export default {
     },
     Total (val, oldval) {
       if (val === undefined) {
-        console.log(val)
+        // console.log(val)
         this.Total = 1
       }
     },
@@ -583,6 +585,7 @@ export default {
         // Dte: '', // 用药间隔
         DrugRate_0: '1', // 每日几剂 搭配计算属性
         DrugRate_1: '1', // 一剂分几次服
+        DrugRate_2: '1', // 饭前服、饭后服、睡前服
         DoctorAdvice: [], // 医嘱
         RegisterAmount: 0, // 挂号费
         ConsultationAmount: 0, // 诊疗费
@@ -658,7 +661,7 @@ export default {
     },
     // 只医生‘直接开方’才用：子组件点击载入 传给 父组件
     zairuFun (row) {
-      console.log(row)
+      // console.log(row)
       // var allAge = calcAge(row.BirthDate) // !!!!!!这得到18岁 或 10月 1月
       var allAge = row.BirthDate // !!!!!!这得到18岁 或 10月 1月
       if (allAge.substr(allAge.length - 1) === '月') {
@@ -720,10 +723,11 @@ export default {
       this.drugsCategoryArr = brr
     },
     zairuFunAgreement (agreementId) {
-      console.log(agreementId)
+      // console.log(agreementId)
       API.register.getRegisterInfo({id: agreementId}).then(result => {
         if (result.code === '0000') {
-          console.log(result.data)
+          // console.log(result.data)
+
           // this.dataForm.SpellName = ''
           // this.dataForm.agreementRecipelId = result.data.Id // 协定方id
           // StoreId: '' // 门店
@@ -753,7 +757,7 @@ export default {
 
           this.getStoreCategorytypeStock()
           this.countTotalPrice(this.leftTableData) // 载入协定方后立马计算价格
-          console.log(this.leftTableData)
+          // console.log(this.leftTableData)
         }
       })
     },
@@ -790,9 +794,9 @@ export default {
         StoreId: this.$store.getters.getAccountCurrentHandleStore,
         MobilePhone: this.$route.query.MobilePhone // 如果这儿接受到的是电话0，那代表是直接开方模式，0的查询结果自然为空咯
       }
-      console.log(params)
+      // console.log(params)
       API.member.getMemberList(params).then(result => {
-        console.log(result.data) // 如果是医生直接开方这儿会报错的因为是[][0].xx空数组报错的!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // console.log(result.data) // 如果是医生直接开方这儿会报错的因为是[][0].xx空数组报错的!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         if (result.code === '0000') {
           var allAge = calcAge(result.data[0].BirthDate) // !!!!!!这得到18岁 或 10月 1月
           if (allAge.substr(allAge.length - 1) === '月') {
@@ -863,7 +867,7 @@ export default {
     },
     // 1.当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
-      console.log(row)
+      // console.log(row)
       if (this.leftTableData.some(item => item.Code === row.Code)) {
         // this.$alert(`[${row.ShowName}] 已添加！`, '提示', {
         this.$message(`[${row.ShowName}] 已添加！`)
@@ -918,7 +922,7 @@ export default {
     },
     // 一级药态被点击时
     handleChange (leftLab) {
-      console.log(leftLab)
+      // console.log(leftLab)
       if (this.leftTableData.length === 0) { // 没开任何药材时直接切换直接加载呗，都没药材记录还提示啥子嘛
         this.comOneCategoryChangeFunction(leftLab) // 一级药态切换后，右边的4个二级药态也要重新排列
 
@@ -1106,11 +1110,11 @@ export default {
             CategoryOne: this.dataForm.CategoryOne,
             WorkAmount: this.dataForm.WorkAmount // 加工费
           }
-          console.log(paramsEdit) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
-          console.log(paramsCreate) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
+          // console.log(paramsEdit) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
+          // console.log(paramsCreate) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
           // var tick = API.register.sendRecipelToEdit(paramsEdit)
           var tick = this.$route.query.MobilePhone === '0' ? API.register.registerSubmit(paramsCreate) : API.register.sendRecipelToEdit(paramsEdit)
-          console.log(this.$route.query.MobilePhone)
+          // console.log(this.$route.query.MobilePhone)
           tick.then((data) => {
             if (data.code === '0000') {
               this.$message({
@@ -1164,44 +1168,57 @@ export default {
 }
 
 .doctor-recipel /deep/ {
-  /*.el-select-dropdown__item {float: left}*/
   background-color: #fff;
   margin: 0 10px;
   border: 1px solid #DCDFE6;
-  .el-radio-button--mini .el-radio-button__inner {
-    padding: 7px 9px;
-  }
+  .el-radio-button--mini .el-radio-button__inner { padding: 7px 9px; }
   .el-main {position: relative;}
-  .el-main::-webkit-scrollbar { width: 0px; }
+  .el-main::-webkit-scrollbar { width: 0; }
 
-  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar, .el-table__body-wrapper.is-scrolling-left::-webkit-scrollbar, .ownScrollbar::-webkit-scrollbar {
-    width: 7px;
-    /*z-index: -1;*/
-  }
-  .ownScrollbar:hover::-webkit-scrollbar {
-    /*display: block;*/
-  }
-  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-thumb, .el-table__body-wrapper.is-scrolling-left::-webkit-scrollbar-thumb, .ownScrollbar::-webkit-scrollbar-thumb {
+  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar,
+  .el-table__body-wrapper.is-scrolling-left::-webkit-scrollbar { width: 0; }
+  .el-table__body-wrapper.is-scrolling-none:hover::-webkit-scrollbar,
+  .el-table__body-wrapper.is-scrolling-left:hover::-webkit-scrollbar { width: 7px; }
+  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-thumb,
+  .el-table__body-wrapper.is-scrolling-left::-webkit-scrollbar-thumb {
     border-radius: 3px;
     box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
     background-color: #eee;
   }
-  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-track, .el-table__body-wrapper.is-scrolling-left::-webkit-scrollbar-track, .ownScrollbar::-webkit-scrollbar-track {
+  .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-track,
+  .el-table__body-wrapper.is-scrolling-left::-webkit-scrollbar-track {
     border-radius: 0;
     box-shadow: inset 0 0 5px rgba(0,0,0,0);
     background-color: rgba(0,0,0,0);
   }
 
-  /*rightUlStyle 容器div*/
+  /*ul滚动条*/
+  .ul-true::-webkit-scrollbar { width: 7px; opacity: 0}
+  .ul-true:hover::-webkit-scrollbar {
+    width: 7px; opacity: 1;
+  }
+  .ul-true::-webkit-scrollbar-thumb {
+    border-radius: 3px;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+    background-color: #eee;
+  }
+  .ul-true::-webkit-scrollbar-track {
+    border-radius: 0;
+    box-shadow: inset 0 0 5px rgba(0,0,0,0);
+    background-color: rgba(0,0,0,0);
+  }
+
+  /*rightUStyle 容器div*/
   .rightUlStyle {
     position: relative;
     width: 80%;
     min-width: 190px;
     ul {
-      width: 100%;
+      width: 15vw;
       min-height: 550px; // 拿尺子对着电脑屏幕量过，就这个值吧
       max-height: 550px;
       overflow-y: scroll;
+      overflow-x: hidden !important;
       background-color: #fff;
       box-shadow: 0 0 10px 1px #f1f2f7 inset;
       li {
@@ -1213,6 +1230,7 @@ export default {
         font-size: 15px;
       }
     }
+
     ol {
       position: absolute;
       top: 0;
@@ -1253,18 +1271,13 @@ export default {
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
 .doctor-recipel /deep/ {
   .el-form-item__label {font-weight: 700}
-  .el-form-item {
-    margin-bottom: 7px;
-  }
-  .el-dialog__body {
-    padding-top: 10px;
-  }
+  .el-form-item { margin-bottom: 7px; }
+  .el-dialog__body { padding-top: 10px; }
   /*表头高重写35高*/
   .el-table--medium th, .el-table--medium td, & .el-table th, & .el-table td,
   .el-table--medium th, .el-table--medium td, & .el-table th, & .el-table td {
     padding: 0 !important;
   }
-  /*& /deep/ .el-tabs__content {background-color: #F0F0F0}*/
   .purchaseListRow {
     color: #606266;
     td {padding: 0;}

@@ -119,7 +119,7 @@ export default {
           }
           this.dataListLoading = false
         })
-        console.log(params)
+        // console.log(params)
       })
     },
     getDataListChild () {
@@ -140,52 +140,6 @@ export default {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id, type)
-      })
-    },
-    handelDelete (id) {
-      this.$confirm(`确定对[id=${id}]的采购单进行 '删除' 操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        API.purchase.deletePurchase({ids: id, reason: '没有原因，要啥子原因嘛'}).then((result) => {
-          if (result.code === '0000') {
-            this.$message({
-              type: 'success',
-              message: '删除成功!',
-              duration: 1000,
-              onClose: () => {
-                this.getDataList(this.status)
-              }
-            })
-          } else {
-            this.$message.error(result.message)
-          }
-        })
-      })
-    },
-    handelStatus4 (id) {
-      this.$confirm(`确定对[id=${id}]的采购单进行 '添加到未入库列表' 操作?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        console.log('俺睡觉了快递费')
-        console.log(id)
-        API.purchase.handleStatus4({ids: id}).then((result) => {
-          if (result.code === '0000') {
-            this.$message({
-              type: 'success',
-              message: '修改成功!',
-              duration: 1000,
-              onClose: () => {
-                this.getDataList(this.status)
-              }
-            })
-          } else {
-            this.$message.error(result.message)
-          }
-        })
       })
     }
   }

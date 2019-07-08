@@ -53,7 +53,7 @@
           <el-form-item label="当前积分" prop="Points">
             <el-input v-model="dataForm.Points" disabled></el-input>
           </el-form-item>
-          <el-form-item label="扣除积分" prop="EditPoints">
+          <el-form-item label="操作" prop="EditPoints">
             <el-input-number v-model="dataForm.EditPoints"
                              :min="-dataForm.Points" :max="10000" :step="100"></el-input-number>
           </el-form-item>
@@ -310,10 +310,14 @@ export default {
   div.time-line-items {
     position:relative;
     width: 315px;
-    padding: 0 10px 20px 35px;
+    padding: 0 10px 20px 39px;
+    &:nth-child(1) i {
+      background-color: #409EFF;
+      box-shadow: 0 0 5px 1px #409EFF;
+    }
     i {
       position: absolute;
-      left: 0;
+      left: 4px;
       top: 7px;
       width: 12px;
       height: 12px;
@@ -322,7 +326,7 @@ export default {
     }
     strong {
       position: absolute;
-      left: 5px;
+      left: 9px;
       top: 19px;
       width: 2px;
       height: 119px;

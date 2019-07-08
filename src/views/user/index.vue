@@ -41,13 +41,13 @@
       <el-table-column type="index" label="序号" :align="$store.state.common.align" width="50px"></el-table-column>
       <el-table-column prop="StoreName" header-align="center" :align="$store.state.common.align" label="所属门店" width="100" :show-tooltip-when-overflow="true"></el-table-column>
       <!--<el-table-column prop="Id" header-align="center" :align="$store.state.common.align" label="ID" width="50"></el-table-column>-->
-      <!--<el-table-column prop="UserName" header-align="right" align="right" label="注册账号" width="119"></el-table-column>-->
-      <!--<el-table-column prop="NickName" header-align="left" align="left" label="昵称" width="100"></el-table-column>-->
-      <el-table-column header-align="center" align="left" label="登陆账号 / 昵称" min-width="150" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <span style="display: inline-block;padding-left: 23%">{{scope.row.UserName}} ( {{scope.row.NickName}} )</span>
-        </template>
-      </el-table-column>
+      <el-table-column prop="UserName" header-align="center" align="left" label="登陆账号" min-width="119" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="NickName" header-align="center" align="left" label="昵称" width="100"></el-table-column>
+      <!--<el-table-column header-align="center" align="left" label="登陆账号 / 昵称" min-width="150" :show-overflow-tooltip="true">-->
+        <!--<template slot-scope="scope">-->
+          <!--<span style="display: inline-block;padding-left: 23%">{{scope.row.UserName}} ( {{scope.row.NickName}} )</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <el-table-column prop="RoleName" header-align="center" :align="$store.state.common.align" label="角色" min-width="100"></el-table-column>
       <el-table-column prop="Phone" header-align="center" :align="$store.state.common.align" label="联系电话" min-width="119"></el-table-column>
       <el-table-column header-align="center" :align="$store.state.common.align" label="创建时间" min-width="150">

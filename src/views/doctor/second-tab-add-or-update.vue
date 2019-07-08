@@ -7,7 +7,6 @@
     <div style="width: 580px" v-loading="dataListLoading">
       <el-row>
         <el-col :span="12">
-          <!-- style="border-bottom: 1px solid #333;"-->
           <p>处方编号：<span v-text="registerAllData.Code"></span></p>
         </el-col>
         <el-col :span="12" style="text-align: right;padding-right: 10px">
@@ -29,11 +28,9 @@
 
       <!--循环-->
       <el-row style="margin: 5px 0">
-        <!--<el-col :span="12" style="font-size: 16px;">RP：[{{registerAllData.StatusName}}]</el-col>-->
         <el-col :span="12" v-if="registerAllData.SaleOrderItems">
           RP：[{{registerAllData.CategoryOneName}}] - [{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}]
-          1 剂 {{registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g，
-          共 {{registerAllData.Total * registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g
+          总重 {{registerAllData.Total * registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g
         </el-col>
         <el-col :span="12" style="text-align: right;padding-right: 15px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
       </el-row>
@@ -42,8 +39,6 @@
           <span style="display: inline-block;width: 70px;text-align: right">{{item.ProductName}}</span>
           <span style="display: inline-block;width: 70px;text-align: left">{{item.RefundableQty}} {{item.Unit}}</span>
         </el-col>
-        <!--<i style="position: absolute;right: 33%;bottom: 50%;transform: rotate(-23deg);border: 2px solid #e4393c;box-shadow: 0 0 10px 1px #e4393c;-->
-                  <!--color: #e4393c;font-size: 30px;padding: 10px 10px;border-radius: 30px;opacity: .9">{{registerAllData.OrderAmount}}元，已收款</i>-->
       </el-row>
 
       <!--footer height: 30px;line-height: 30px-->
@@ -86,7 +81,6 @@
 
     <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
-        <!--<el-button type="primary" @click="dataFormSubmitA()">打印</el-button>-->
         <el-button @click="visible = false">关闭</el-button>
       </span>
     </div>
@@ -127,84 +121,48 @@ export default {
         give: '', // 找零
         PaymentWay: 1 // 支付方式
       }
-    },
-    // 收银提交接口
-    dataFormSubmitA () {
-      this.$refs['dataForm'].validate((valid) => {
-        if (valid) {
-          if (this.dataForm.reality === 0 && this.registerAllData.OrderAmount > 0) {
-            this.$alert('实收金额未填! ', '提示', {
-              confirmButtonText: '确定'
-            })
-            return false
-          }
-          var params = {
-            // id: this.registerAllData.Id,
-            // PaymentWay: this.dataForm.PaymentWay, // 支付方式
-            // ActualAmount: this.registerAllData.OrderAmount // 实收金额 this.dataForm.reality 不是这个
-          }
-          console.log(params)
-          API.register.cashierSubmit(params).then(result => {
-            if (result.code === '0000') {
-              this.$message({
-                message: `${'提交成功'}`,
-                type: 'success',
-                duration: 1500
-              })
-              this.visible = false
-            } else {
-              this.$message.error(result.message)
-            }
-          })
-        } else {
-          this.$alert('实收金额未填! ', '提示', {
-            confirmButtonText: '确定'
-          })
-        }
-      })
     }
-
   }
 }
 </script>
 <style rel="stylesheet/scss" lang="scss" scoped>
-  .registerIndex /deep/ .el-form-item {
-    margin-bottom: 0;
+.registerIndex /deep/ .el-form-item {
+  margin-bottom: 0;
+}
+.ownScrollbar /deep/ {
+  span {
+    display: inline-block;
+    width: 70px;
+    text-align: right;
+    height: 30px;
+    line-height: 30px;
   }
-  .ownScrollbar /deep/ {
-    span {
-      display: inline-block;
-      width: 70px;
-      text-align: right;
-      height: 30px;
-      line-height: 30px;
-    }
-  }
+}
 
-  /*出诊 复诊样式覆盖*/
-  .registerIndex /deep/ {
-    .el-radio-button--mini .el-radio-button__inner {
-      padding: 7px 9px;
-    }
-    /*只要半场动画*/
-    .v-enter {opacity: 0}
-    .v-enter-active {transition: all .4s ease}
-    .v-leave-active {position:absolute}
+/*出诊 复诊样式覆盖*/
+.registerIndex /deep/ {
+  .el-radio-button--mini .el-radio-button__inner {
+    padding: 7px 9px;
   }
-  .ownScrollbar::-webkit-scrollbar,
-  .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar {
-    width: 7px;
-  }
-  .ownScrollbar::-webkit-scrollbar-thumb,
-  .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-thumb {
-    border-radius: 3px;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
-    background-color: #DDDEE0;
-  }
-  .ownScrollbar::-webkit-scrollbar-track,
-  .purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-track {
-    border-radius: 0;
-    box-shadow: inset 0 0 5px rgba(0,0,0,0);
-    background-color: rgba(0,0,0,0);
-  }
+  /*只要半场动画*/
+  .v-enter {opacity: 0}
+  .v-enter-active {transition: all .4s ease}
+  .v-leave-active {position:absolute}
+}
+.ownScrollbar::-webkit-scrollbar,
+.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar {
+  width: 7px;
+}
+.ownScrollbar::-webkit-scrollbar-thumb,
+.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-thumb {
+  border-radius: 3px;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+  background-color: #DDDEE0;
+}
+.ownScrollbar::-webkit-scrollbar-track,
+.purchaseListInfo /deep/ .el-table--scrollable-y .el-table__body-wrapper::-webkit-scrollbar-track {
+  border-radius: 0;
+  box-shadow: inset 0 0 5px rgba(0,0,0,0);
+  background-color: rgba(0,0,0,0);
+}
 </style>

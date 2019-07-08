@@ -1,5 +1,5 @@
 <template>
-  <div class="mod-purchaseList">
+  <div class="mod-wait">
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
       <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
         <!--<el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">-->
@@ -28,7 +28,6 @@
         </el-form>
       </div>
 
-      <!--<el-tab-pane label="成品药品" name="second" disabled="true">-->
       <el-tab-pane label="" name="first">
         <span slot="label"><i class="el-icon-date"></i> 待就诊患者</span>
         <transition name="chenxi">
@@ -93,7 +92,7 @@ export default {
   },
   watch: {
     'value6': function () {
-      console.log(this.value6)
+      // console.log(this.value6)
       if (this.value6 !== [] && this.value6 !== null) {
         this.dataForm.StartDate = this.value6[0]
         this.dataForm.EndDate = this.value6[1]
@@ -110,11 +109,6 @@ export default {
         this.dataForm.AccountId = ''
         this.dataForm.currentDoctorName = ''
         this.getStoreAllDoctor() // 切换门店后，更新头部下拉option的选项 在这触发 初始化，不要崇拜…代替pageInit方法
-        // if (this.isVisible[0].child === true) {
-        //   this.$refs.firstTab.getDataList()
-        // } else {
-        //   this.$refs.secondTab.getDataList()
-        // }
       }
     },
     // 当门店改变时，获取门店下所有医生
@@ -136,7 +130,7 @@ export default {
           })
           this.dataForm.AccountId = response.data.length === 0 ? '' : response.data[0].Id
           this.dataForm.currentDoctorName = response.data.length === 0 ? '' : response.data[0].NickName
-          // 这儿存在问题，如果是药房类型账号来判断当然没问题，但如账号本身就有医生那应该是直接选择自己id的，以后处理下，应该问题不大
+          // 这儿存在问题，如果是药房类型账号来判断当然没问题，但如账号本身就有医生那应该是直接选择自己id的
         } else {
           this.$message.error(response.message)
         }
@@ -210,20 +204,13 @@ export default {
   transform: translate(40px, 30px);
   opacity: 0;
 }
-/*.chenxi-enter-to, .chenxi-leave {
-transform: translate(0, 0);
-opacity: 1;
-}*/
 .chenxi-enter-active,
 .chenxi-leave-active {
   transition: all 0.6s ease;
 }
-/*.chenxi-leave-to {
-  transform: translateX(-100px, 0);
-}*/
 
 .mod {
-  &-purchaseList /deep/ {
+  &-wait /deep/ {
     margin-left: 10px;
     /*max-height: 810px;*/
     overflow: hidden;
@@ -238,20 +225,15 @@ opacity: 1;
   }
 }
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
-.mod-purchaseList {
-  & /deep/ .el-form-item {
-    margin-bottom: 14px;
-  }
-  & /deep/ .el-dialog__body {
-    padding-top: 10px;
-  }
+.mod-wait /deep/ {
+  .el-form-item { margin-bottom: 14px; }
+  .el-dialog__body { padding-top: 10px; }
   /*表头高重写35高*/
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td,
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td {
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td,
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td {
     padding: 0 !important;
   }
-  /*& /deep/ .el-tabs__content {background-color: #F0F0F0}*/
-  & /deep/ .purchaseListRow {
+  .purchaseListRow {
     color: #606266;
     & td {padding: 0;}
     & td .cell{
@@ -260,9 +242,4 @@ opacity: 1;
     }
   }
 }
-/*.mod-purchaseList {*/
-  /*& /deep/ .el-dialog__header {*/
-    /*background-color: #1CA579;*/
-  /*}*/
-/*}*/
 </style>

@@ -316,7 +316,7 @@ export default {
         this.dataForm.agreementRecipelId = agreementRecipelId
         API.register.getRegisterInfo({id: this.dataForm.agreementRecipelId}).then(result => {
           if (result.code === '0000') {
-            console.log(result.data)
+            // console.log(result.data)
             this.dataForm.SpellName = ''
             this.dataForm.agreementRecipelId = result.data.Id // 协定方id
             // StoreId: '' // 门店

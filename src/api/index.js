@@ -18,6 +18,8 @@ import * as inventory from './modules/drugs/inventory' // 门店库存(cx) 库�
 import * as register from './modules/counter/register' // 柜台(cx) 挂号
 import * as member from './modules/counter/member' // 柜台(cx) 挂号
 
+import * as report from './modules/report/report' // 报表模块
+
 export default {
   // 手机盘点及相关接口
   common,
@@ -34,5 +36,7 @@ export default {
   inventory,
 
   register,
-  member
+  member,
+
+  report
 }
