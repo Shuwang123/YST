@@ -29,12 +29,15 @@
 
       <!--循环-->
       <el-row style="margin: 5px 0">
-        <el-col :span="12" v-if="registerAllData.SaleOrderItems">
+        <!--<el-col :span="12" style="font-size: 16px;">RP：[{{registerAllData.StatusName}}]</el-col> 下面行写了个vif，控制台报错找不0属性，后来加了v-if-->
+        <!--1 剂 {{registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g，-->
+        <el-col :span="18" v-if="registerAllData.SaleOrderItems">
           RP：[{{registerAllData.CategoryOneName}}] - [{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}]
-          1 剂 {{registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g，
-          共 {{registerAllData.Total * registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g
         </el-col>
-        <el-col :span="12" style="text-align: right;padding-right: 15px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
+        <el-col :span="6" v-if="registerAllData.SaleOrderItems" style="text-align: right;padding-right: 15px">
+          {{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味,
+          总计 {{registerAllData.Total * registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g
+        </el-col>
       </el-row>
       <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;">
         <el-col :span="8" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
@@ -46,7 +49,7 @@
       <!--footer height: 30px;line-height: 30px-->
       <el-row style="">
         <el-row style="height: 30px;line-height: 30px">
-          <el-col :span="24">帖数：一剂 ￥{{registerAllData.DrugOneAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</el-col>
+          <el-col :span="24">帖数：共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</el-col>
         </el-row>
         <el-col :span="12">
           <el-row>
@@ -135,7 +138,7 @@
             <td colspan="2" height="26">
               <div style="position: relative;margin-left: 36px">
                 <span style="position: absolute;bottom: 0;left: -36px; width: 36px">帖数：</span>
-                <p>一剂 ￥{{registerAllData.DrugOneAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</p>
+                <p>共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</p>
               </div>
             </td>
           </tr>

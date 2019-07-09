@@ -1,8 +1,8 @@
 <template>
   <el-container class="day-report-form" v-loading="dataListLoading">
-    <!--左-->
+    <!--左 v-show="dataList.MemberCount !== undefined"-->
     <el-aside width="650px">
-      <div class="mode-one" style="padding: 15px 0">
+      <div class="mode-one" style="margin: 15px 0">
         <b style="font-size: 16px;">门诊患者：</b>
         <el-badge :value="dataList.ConsultationMemberCount+'人'" :max="99" class="item" style="margin-right: 50px;margin-left: 40px">
           <el-button type="text" size="small">累计就诊</el-button>
@@ -33,7 +33,10 @@
           <td width="100">实收金额</td>
           <td width="100" align="center">{{dataList.OrderAmount}}</td>
           <td width="100">挂账金额</td>
-          <td width="100" align="center" bgcolor="#ffd700">{{dataList.OnAccountAmount}}</td>
+          <td width="100" v-if="!isEditing" align="center" bgcolor="#ffd700">{{dataList.OnAccountAmount}}</td>
+          <td width="100" v-else align="center" bgcolor="#ffd700">
+            <el-input-number v-model="dataList.OnAccountAmount" :max="1000" style="width: 100px" size="mini"></el-input-number>
+          </td>
         </tr>
       </table>
 
@@ -177,6 +180,9 @@
         <el-col :span="24">
           <div ref="container" style="width: 100%;min-width:650px; max-width: 750px;height: 400px;"></div>
         </el-col>
+        <el-col :span="24">
+          <el-button size="mini" @click="isEditing = false">确认修改</el-button>
+        </el-col>
       </el-row>
     </el-main>
   </el-container>
@@ -197,6 +203,7 @@ export default {
       chenxiHeight: document.documentElement['clientHeight'] - 303, // 心累，不要动
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
+      isEditing: false, // 加载
 
       dataList: {},
       // 图表参数
@@ -211,6 +218,16 @@ export default {
           x: 'right',
           y: 'middle',
           data: ['现金', '支付宝', '微信扫码', '银行卡', '医保', '客服手机', '代金券', '会员卡']
+        },
+        toolbox: {
+          show: true,
+          // orient: 'vertical',
+          feature: {
+            dataView: {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar']},
+            restore: {show: true},
+            saveAsImage: {show: true}
+          }
         },
         tooltip: {
           trigger: 'item',
@@ -347,7 +364,9 @@ export default {
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-.mode-one /deep/ {
-  span { font-size: 14px}
+.day-report-form /deep/ {
+  .el-main {
+    overflow: visible;
+  }
 }
 </style>

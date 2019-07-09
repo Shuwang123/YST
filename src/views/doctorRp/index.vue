@@ -223,21 +223,39 @@
           </el-col>
           <el-col :span="16">
             <el-form-item label="用法：" prop="DrugRate_0">
-              每日
-              <el-select v-model="dataForm.DrugRate_0" style="width: 70px">
-                <el-option v-for="item in DrugRateOptionsArr"
-                           :key="item.lab" :label="item.lab" :value="item.val"></el-option>
-              </el-select>
-              剂，一剂分
-              <el-select v-model="dataForm.DrugRate_1" style="width: 70px">
-                <el-option v-for="item in DrugRateOptionsArr"
-                           :key="item.lab" :label="item.lab" :value="item.val"></el-option>
-              </el-select>
-              次，
-              <el-select v-model="dataForm.DrugRate_2" style="width: 78px">
-                <el-option label="饭前" value="1"></el-option>
-                <el-option label="饭后" value="2"></el-option>
-                <el-option label="睡前" value="3"></el-option>
+              <span v-if="!unitIsG">
+                每日
+                <el-select v-model="dataForm.DrugRate_0" style="width: 70px">
+                  <el-option v-for="item in DrugRateOptionsArr"
+                             :key="item.lab" :label="item.lab" :value="item.val"></el-option>
+                </el-select>
+                剂，一剂分
+                <el-select v-model="dataForm.DrugRate_1" style="width: 70px">
+                  <el-option v-for="item in DrugRateOptionsArr"
+                             :key="item.lab" :label="item.lab" :value="item.val"></el-option>
+                </el-select>
+                次，
+              </span>
+              <span v-else>
+                每日
+                <el-select v-model="dataForm.DrugRate_0" style="width: 70px">
+                  <el-option v-for="item in DrugRateOptionsArr"
+                             :key="item.lab" :label="item.lab" :value="item.val"></el-option>
+                </el-select>
+                次，一次
+                <el-select v-model="dataForm.DrugRate_2" style="width: 70px">
+                  <el-option v-for="item in DrugRateOptionsArr_step5"
+                             :key="item.lab" :label="item.lab" :value="item.val"></el-option>
+                </el-select>
+                克，
+              </span>
+
+              <el-select v-model="dataForm.DrugRate_3" style="width: 117px">
+                <el-option label="空腹" value="空腹"></el-option>
+                <el-option label="晨起" value="晨起"></el-option>
+                <el-option label="睡前" value="睡前"></el-option>
+                <el-option label="饭前1小时" value="饭前1小时"></el-option>
+                <el-option label="饭后1小时" value="饭后1小时"></el-option>
               </el-select> 服。
             </el-form-item>
           </el-col>
@@ -382,13 +400,13 @@ export default {
           this.oldTwoTabsName = '饮片'
           break
         case '1002':
-          this.oldTwoTabsName = '颗粒'
-          break
-        case '1003':
           this.oldTwoTabsName = '精品饮片'
           break
+        case '1003':
+          this.oldTwoTabsName = '饮片3'
+          break
         case '1004':
-          this.oldTwoTabsName = '三九颗粒'
+          this.oldTwoTabsName = '饮片4'
           break
       }
     }
@@ -398,134 +416,159 @@ export default {
       rightButton: '',
       zhenduanOptions: [ // 诊断结果的下拉
         {
-          value: '上呼吸道感染',
-          label: '上呼吸道感染'
+          value: '咳嗽',
+          label: '咳嗽'
         }, {
-          value: '支气管炎',
-          label: '支气管炎'
+          value: '头痛',
+          label: '头痛'
         }, {
-          value: '风寒感冒',
-          label: '风寒感冒'
+          value: '眩晕',
+          label: '眩晕'
         }, {
-          value: '急性支气管炎',
-          label: '急性支气管炎'
+          value: '痹症',
+          label: '痹症'
         }, {
-          value: '胃炎',
-          label: '胃炎'
+          value: '胸痛',
+          label: '胸痛'
         }, {
-          value: '慢性胃炎',
-          label: '慢性胃炎'
+          value: '肋痛',
+          label: '肋痛'
         }, {
-          value: '脾肾阳虚',
-          label: '脾肾阳虚'
+          value: '胸脘痛',
+          label: '胸脘痛'
         }, {
-          value: '咽炎',
-          label: '咽炎'
+          value: '腹痛',
+          label: '腹痛'
         }, {
-          value: '风热犯肺',
-          label: '风热犯肺'
+          value: '呕吐',
+          label: '呕吐'
         }, {
-          value: '月经失调',
-          label: '月经失调'
+          value: '泄泻',
+          label: '泄泻'
+        }, {
+          value: '痛经',
+          label: '痛经'
+        }, {
+          value: '月经',
+          label: '月经'
+        }, {
+          value: '先期',
+          label: '先期'
+        }, {
+          value: '月经后期',
+          label: '月经后期'
+        }, {
+          value: '停经',
+          label: '停经'
+        }, {
+          value: '月经先后无定期',
+          label: '月经先后无定期'
+        }, {
+          value: '湿疹',
+          label: '湿疹'
+        }, {
+          value: '荨麻疹',
+          label: '荨麻疹'
+        }, {
+          value: '汗疹',
+          label: '汗疹'
+        }, {
+          value: '气虚',
+          label: '气虚'
+        }, {
+          value: '气血虚',
+          label: '气血虚'
+        }, {
+          value: '血瘀',
+          label: '血瘀'
+        }, {
+          value: '脾虚',
+          label: '脾虚'
+        }, {
+          value: '肾虚',
+          label: '肾虚'
+        }, {
+          value: '乳癖',
+          label: '乳癖'
+        }, {
+          value: '郁诊',
+          label: '郁诊'
+        }, {
+          value: '痛风',
+          label: '痛风'
+        }, {
+          value: '厌食',
+          label: '厌食'
+        }, {
+          value: '感冒',
+          label: '感冒'
         }, {
           value: '失眠',
           label: '失眠'
-        }, {
-          value: '颈椎病',
-          label: '颈椎病'
-        }, {
-          value: '气血不足',
-          label: '气血不足'
-        }, {
-          value: '便秘',
-          label: '便秘'
-        }, {
-          value: '扁桃体炎',
-          label: '扁桃体炎'
-        }, {
-          value: '腰肌劳损',
-          label: '腰肌劳损'
-        }, {
-          value: '原发性高血压',
-          label: '原发性高血压'
-        }, {
-          value: '痤疮',
-          label: '痤疮'
-        }, {
-          value: '带状疱疹',
-          label: '带状疱疹'
         }
       ],
       yizhuOptions: [ // 医嘱的下拉
         {
-          value: '饭前服用',
-          label: '饭前服用'
+          value: '无',
+          label: '无'
         }, {
-          value: '饭后服用',
-          label: '饭后服用'
+          value: '忌辛辣',
+          label: '忌辛辣'
         }, {
-          value: '不适随诊',
-          label: '不适随诊'
+          value: '忌油腻',
+          label: '忌油腻'
         }, {
-          value: '多饮水',
-          label: '多饮水'
+          value: '忌生冷',
+          label: '忌生冷'
         }, {
-          value: '清淡饮食',
-          label: '清淡饮食'
+          value: '忌烟酒',
+          label: '忌烟酒'
         }, {
-          value: '注意休息',
-          label: '注意休息'
+          value: '忌发物',
+          label: '忌发物'
         }, {
-          value: '低盐低脂饮食',
-          label: '低盐低脂饮食'
+          value: '忌荤腥',
+          label: '忌荤腥'
         }, {
-          value: '普食',
-          label: '普食'
+          value: '忌酸涩',
+          label: '忌酸涩'
         }, {
-          value: '无盐饮食',
-          label: '无盐饮食'
+          value: '忌刺激性食物',
+          label: '忌刺激性食物'
         }, {
-          value: '低嘌呤饮食',
-          label: '低嘌呤饮食'
+          value: '忌光敏性食物',
+          label: '忌光敏性食物'
         }, {
-          value: '流汁饮食',
-          label: '流汁饮食'
+          value: '忌难消化食物',
+          label: '忌难消化食物'
         }, {
-          value: '少渣饮食',
-          label: '少渣饮食'
+          value: '备孕禁服',
+          label: '备孕禁服'
         }, {
-          value: '软食',
-          label: '软食'
+          value: '怀孕禁服',
+          label: '怀孕禁服'
         }, {
-          value: '忌烟',
-          label: '忌烟'
+          value: '经期停服',
+          label: '经期停服'
         }, {
-          value: '忌酒',
-          label: '忌酒'
+          value: '感冒停服',
+          label: '感冒停服'
         }, {
-          value: '高热量饮食',
-          label: '高热量饮食'
-        }, {
-          value: '高蛋白饮食',
-          label: '高蛋白饮食'
-        }, {
-          value: '肾炎饮食',
-          label: '肾炎饮食'
-        }, {
-          value: '禁食',
-          label: '禁食'
-        }, {
-          value: '多活动',
-          label: '多活动'
-        }, {
-          value: '随意活动',
-          label: '随意活动'
+          value: '忌与西药同服',
+          label: '忌与西药同服'
         }
       ],
       DrugRateOptionsArr: [
         {lab: '1', val: '1'}, {lab: '2', val: '2'}, {lab: '3', val: '3'},
         {lab: '4', val: '4'}, {lab: '5', val: '5'}, {lab: '6', val: '6'},
         {lab: '7', val: '7'}, {lab: '8', val: '8'}, {lab: '9', val: '9'}
+      ],
+      unitIsG: false, // 除了丸子用法是g之外，用法都是次
+      DrugRateOptionsArr_step5: [
+        {lab: '5', val: '5'}, {lab: '10', val: '10'}, {lab: '15', val: '15'},
+        {lab: '20', val: '20'}, {lab: '25', val: '25'}, {lab: '30', val: '30'},
+        {lab: '35', val: '35'}, {lab: '40', val: '40'}, {lab: '45', val: '45'},
+        {lab: '50', val: '50'}
       ],
       cutOut: true, // 收起，显示
       litterArr: [
@@ -557,7 +600,7 @@ export default {
       addOrUpdateVisibleAgreement: false,
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
-      chenxiHeight: 490, // 这个是测试出来的固定值，用于第一次初始化页面吧，如果以后页面的格式需要调整，可以测试一个初始值来填在这就行了
+      chenxiHeight: 479, // 这个是测试出来的固定值，用于第一次初始化页面吧，如果以后页面的格式需要调整，可以测试一个初始值来填在这就行了
       pageIndex: 1,
       pageSize: 30, // 50 标准
       totalPage: 1,
@@ -583,9 +626,11 @@ export default {
 
         SpellName: '',
         // Dte: '', // 用药间隔
-        DrugRate_0: '1', // 每日几剂 搭配计算属性
-        DrugRate_1: '1', // 一剂分几次服
-        DrugRate_2: '1', // 饭前服、饭后服、睡前服
+        DrugRate_0: '3', // 每日几剂，几次 搭配计算属性
+        DrugRate_1: '3', // 一剂分几次服
+        DrugRate_2: '5', // 一次几克
+
+        DrugRate_3: '饭前1小时', // 饭前服、饭后服、睡前服...
         DoctorAdvice: [], // 医嘱
         RegisterAmount: 0, // 挂号费
         ConsultationAmount: 0, // 诊疗费
@@ -610,7 +655,11 @@ export default {
   computed: {
     // 服用方法
     'DrugRate': function () {
-      return `共${this.Total}剂，每日${this.dataForm.DrugRate_0}剂，一剂分${this.dataForm.DrugRate_1}次服`
+      if (!this.unitIsG) {
+        return `每日${this.dataForm.DrugRate_0}剂，一剂分${this.dataForm.DrugRate_1}次，${this.dataForm.DrugRate_3}服`
+      } else {
+        return `每日${this.dataForm.DrugRate_0}次，一次${this.dataForm.DrugRate_2}克，${this.dataForm.DrugRate_3}服`
+      }
     },
     // 药方总重量
     categoryAllWeight () {
@@ -693,22 +742,27 @@ export default {
         case '1':
           this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
           this.dataForm.oldCategoryOneName = '汤剂'
+          this.unitIsG = false
           break
         case '3':
-          this.filterCategory(['1004']) // 制膏只有三九
+          this.filterCategory(['1003']) // 制膏只有三九
           this.dataForm.oldCategoryOneName = '制膏'
+          this.unitIsG = false
           break
         case '4':
-          this.filterCategory(['1001', '1003']) // 制丸只有饮片
+          this.filterCategory(['1001', '1002']) // 制丸只有饮片
           this.dataForm.oldCategoryOneName = '水泛丸'
+          this.unitIsG = true
           break
         case '5':
-          this.filterCategory(['1001', '1003']) // 制丸只有饮片
+          this.filterCategory(['1001', '1002']) // 制丸只有饮片
           this.dataForm.oldCategoryOneName = '水蜜丸'
+          this.unitIsG = true
           break
         case '2':
           this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
           this.dataForm.oldCategoryOneName = '外用'
+          this.unitIsG = false
           break
       }
     },
@@ -1034,100 +1088,110 @@ export default {
       }
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          // 此为普通流程的开方参数，常规流程的开方的参数应该传给edit接口
-          var paramsEdit = {
-            id: this.$route.query.registerFormId, //
-            DiagnosisType: this.dataForm.DiagnosisType, // 出诊、复诊
-            RegisterStatus: '2', // 已支付（在编辑 追加的情况下，理论上是肯定收费了就不需要传递这个字段了的，但是后端有其他考虑，所以这儿还需要把这个字段传递到后端）
-            Remark: '', // 备注
-            FamilyIllness: '', // 家族史????
-            DepartmentType: '1', // 科室???????
-            PersonalIllness: '', // 个人史?????????
-            AgoIllness: '', // 既往史?????????????????
+          this.$confirm('请检查<i style="color: #409EFF">总剂数、服用方法</i>等是否已填写完毕！ </br>点击确认即可发送', '小助手提示', {
+            dangerouslyUseHTMLString: true,
+            closeOnClickModal: false,
+            closeOnPressEscape: false,
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning'
+          }).then(() => {
+            // 此为普通流程的开方参数，常规流程的开方的参数应该传给edit接口
+            var paramsEdit = {
+              id: this.$route.query.registerFormId, //
+              DiagnosisType: this.dataForm.DiagnosisType, // 出诊、复诊
+              RegisterStatus: '2', // 已支付（在编辑 追加的情况下，理论上是肯定收费了就不需要传递这个字段了的，但是后端有其他考虑，所以这儿还需要把这个字段传递到后端）
+              Remark: '', // 备注
+              FamilyIllness: '', // 家族史????
+              DepartmentType: '1', // 科室???????
+              PersonalIllness: '', // 个人史?????????
+              AgoIllness: '', // 既往史?????????????????
 
-            // NowIllness: this.dataForm.NowIllness, // 现病史
-            // DiseaseTime: this.dataForm.DiseaseTime, // 发病时间
-            MainSuit: this.dataForm.MainSuit, // 主诉
-            DiseaseInfo: this.dataForm.DiseaseInfo.join('，'), // 诊断信息
-            DrugRate: this.DrugRate, // 用药频率
-            DoctorAdvice: this.dataForm.DoctorAdvice.join('， '), // 医嘱
-            Total: this.Total, // 总剂数
-            ItemsJson: JSON.stringify(this.leftTableData.map(item => {
-              var obj = {
-                ProductId: item.Id,
-                ProductCode: item.Code,
-                ProductName: item.ShowName,
-                CostPrice: item.CostPrice,
-                SalePrice: item.SalePrice,
-                RealPrice: item.SalePrice,
-                Quantity: item.myNum,
-                SupplierId: 0,
-                SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
-              }
-              return obj
-            })),
-            CategoryOne: this.dataForm.CategoryOne,
-            WorkAmount: this.dataForm.WorkAmount // 加工费
-          }
-          // ‘直接开方’参数，直接开方的参数应该传给create接口
-          var paramsCreate = {
-            StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
-            AccountId: this.$route.query.DoctorId, // 医生
-            UserId: this.dataForm.UserId, // 患者
-            OrderType: '1',
-            DiagnosisType: this.dataForm.DiagnosisType,
-
-            RegisterStatus: '1', // 未支付
-            RegisterAmount: this.dataForm.ConsultationAmount,
-            ConsultationAmount: 0,
-            PaymentWay: '',
-            Remark: '',
-            DepartmentType: '',
-            AgoIllness: '',
-
-            MainSuit: this.dataForm.MainSuit,
-            DiseaseInfo: this.dataForm.DiseaseInfo.join('，'), // 诊断结果
-
-            // NowIllness: this.dataForm.NowIllness,
-            // DiseaseTime: this.dataForm.DiseaseTime,
-            DoctorAdvice: this.dataForm.DoctorAdvice.join('，'),
-            DrugRate: this.DrugRate,
-            Total: this.Total,
-            ItemsJson: JSON.stringify(this.leftTableData.map(item => {
-              var obj = {
-                ProductId: item.Id,
-                ProductCode: item.Code,
-                ProductName: item.ShowName,
-                CostPrice: item.CostPrice,
-                SalePrice: item.SalePrice,
-                RealPrice: item.SalePrice,
-                Quantity: item.myNum,
-                SupplierId: 0,
-                SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
-              }
-              return obj
-            })),
-            CategoryOne: this.dataForm.CategoryOne,
-            WorkAmount: this.dataForm.WorkAmount // 加工费
-          }
-          // console.log(paramsEdit) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
-          // console.log(paramsCreate) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
-          // var tick = API.register.sendRecipelToEdit(paramsEdit)
-          var tick = this.$route.query.MobilePhone === '0' ? API.register.registerSubmit(paramsCreate) : API.register.sendRecipelToEdit(paramsEdit)
-          // console.log(this.$route.query.MobilePhone)
-          tick.then((data) => {
-            if (data.code === '0000') {
-              this.$message({
-                message: `${'发送成功'}`,
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.$router.push({path: '/doctor/treatment'})
+              // NowIllness: this.dataForm.NowIllness, // 现病史
+              // DiseaseTime: this.dataForm.DiseaseTime, // 发病时间
+              MainSuit: this.dataForm.MainSuit, // 主诉
+              DiseaseInfo: this.dataForm.DiseaseInfo.join('，'), // 诊断信息
+              DrugRate: this.DrugRate, // 用药频率
+              DoctorAdvice: this.dataForm.DoctorAdvice.join('， '), // 医嘱
+              Total: this.Total, // 总剂数
+              ItemsJson: JSON.stringify(this.leftTableData.map(item => {
+                var obj = {
+                  ProductId: item.Id,
+                  ProductCode: item.Code,
+                  ProductName: item.ShowName,
+                  CostPrice: item.CostPrice,
+                  SalePrice: item.SalePrice,
+                  RealPrice: item.SalePrice,
+                  Quantity: item.myNum,
+                  SupplierId: 0,
+                  SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
                 }
-              })
-            } else {
-              this.$message.error(data.message)
+                return obj
+              })),
+              CategoryOne: this.dataForm.CategoryOne,
+              WorkAmount: this.dataForm.WorkAmount // 加工费
             }
+            // ‘直接开方’参数，直接开方的参数应该传给create接口
+            var paramsCreate = {
+              StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
+              AccountId: this.$route.query.DoctorId, // 医生
+              UserId: this.dataForm.UserId, // 患者
+              OrderType: '1',
+              DiagnosisType: this.dataForm.DiagnosisType,
+
+              RegisterStatus: '1', // 未支付
+              RegisterAmount: this.dataForm.ConsultationAmount,
+              ConsultationAmount: 0,
+              PaymentWay: '',
+              Remark: '',
+              DepartmentType: '',
+              AgoIllness: '',
+
+              MainSuit: this.dataForm.MainSuit,
+              DiseaseInfo: this.dataForm.DiseaseInfo.join('，'), // 诊断结果
+
+              // NowIllness: this.dataForm.NowIllness,
+              // DiseaseTime: this.dataForm.DiseaseTime,
+              DoctorAdvice: this.dataForm.DoctorAdvice.join('，'),
+              DrugRate: this.DrugRate,
+              Total: this.Total,
+              ItemsJson: JSON.stringify(this.leftTableData.map(item => {
+                var obj = {
+                  ProductId: item.Id,
+                  ProductCode: item.Code,
+                  ProductName: item.ShowName,
+                  CostPrice: item.CostPrice,
+                  SalePrice: item.SalePrice,
+                  RealPrice: item.SalePrice,
+                  Quantity: item.myNum,
+                  SupplierId: 0,
+                  SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
+                }
+                return obj
+              })),
+              CategoryOne: this.dataForm.CategoryOne,
+              WorkAmount: this.dataForm.WorkAmount // 加工费
+            }
+            // console.log(paramsEdit) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
+            // console.log(paramsCreate) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
+            // var tick = API.register.sendRecipelToEdit(paramsEdit)
+            var tick = this.$route.query.MobilePhone === '0' ? API.register.registerSubmit(paramsCreate) : API.register.sendRecipelToEdit(paramsEdit)
+            // console.log(this.$route.query.MobilePhone)
+            tick.then((data) => {
+              if (data.code === '0000') {
+                this.$message({
+                  message: `${'发送成功'}`,
+                  type: 'success',
+                  duration: 1500,
+                  onClose: () => {
+                    this.$router.push({path: '/doctor/treatment'})
+                  }
+                })
+              } else {
+                this.$message.error(data.message)
+              }
+            })
+          }).catch(() => {
           })
         }
       })
@@ -1154,8 +1218,8 @@ export default {
   .yizhuCss {
     .popper__arrow { display: none } // 把三角尖隐藏
     .el-select-dropdown.el-popper.is-multiple {
-      min-width: 800px !important;
-      width: 800px !important;
+      min-width: 660px !important;
+      width: 660px !important;
       top: -140px !important;
       left: 0 !important;
     }
@@ -1271,7 +1335,7 @@ export default {
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
 .doctor-recipel /deep/ {
   .el-form-item__label {font-weight: 700}
-  .el-form-item { margin-bottom: 7px; }
+  .el-form-item { margin-bottom: 0px; }
   .el-dialog__body { padding-top: 10px; }
   /*表头高重写35高*/
   .el-table--medium th, .el-table--medium td, & .el-table th, & .el-table td,

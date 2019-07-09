@@ -44,13 +44,15 @@
               </el-form-item>
               <el-form-item>
                 <el-button @click="comTabFunction()" size="mini">查询</el-button>
+                <el-button v-show="isVisible[0].child" @click="$refs.firstTab.isEditing = true"
+                           size="mini" :disabled="buttonIsDisabled">编辑日报表</el-button>
               </el-form-item>
             </el-col>
           </el-row>
         </el-form>
       </div>
 
-      <el-tab-pane label="" name="first">
+      <el-tab-pane label="" name="first" style="margin-top: 1px">
         <span slot="label"><i class="el-icon-document"></i> 日期报表</span>
         <transition name="chenxi">
           <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
@@ -105,6 +107,8 @@ export default {
         {child: false}
       ],
       valueTime: [],
+      timeGap: undefined,
+      buttonIsDisabled: true,
       pickerOptions: { // 报表时间范围查询，快速选择
         shortcuts: [{
           text: '今天',
@@ -131,7 +135,10 @@ export default {
             end.setTime(end.getTime() - 3600 * 1000 * 24 * 1)
             picker.$emit('pick', [start, end])
           }
-        }]
+        }],
+        disabledDate (time) {
+          return time.getTime() > Date.now() + 3600 * 24 * 1 * 1000
+        }
       },
       storeDoctorArr: []
     }
@@ -177,6 +184,31 @@ export default {
       }
     },
     comTabFunction () {
+      // 不管啥时候，先判断当前时期是否只相差一天（要判断就先要计算当前的两个时间戳相隔的天数）
+      let s1 = new Date(this.dataForm.StartDate)
+      let s2 = new Date(this.dataForm.EndDate)
+      let runTime = parseInt((s2.getTime() - s1.getTime()) / 1000)
+      let year = Math.floor(runTime / 86400 / 365)
+      runTime = runTime % (86400 * 365)
+      let month = Math.floor(runTime / 86400 / 30)
+      runTime = runTime % (86400 * 30)
+      let day = Math.floor(runTime / 86400)
+      runTime = runTime % 86400
+      let hour = Math.floor(runTime / 3600)
+      runTime = runTime % 3600
+      let minute = Math.floor(runTime / 60)
+      runTime = runTime % 60
+      let second = runTime
+      console.log(year + ',' + month + ',' + day + ',' + hour + ',' + minute + ',' + second)
+      this.timeGap = day
+      if (this.timeGap === 1 && this.isVisible[0].child) {
+        this.buttonIsDisabled = false
+      } else {
+        this.buttonIsDisabled = true
+      }
+      console.log(this.buttonIsDisabled, this.timeGap)
+
+      // 后刷新页面
       this.$nextTick(() => { // 等待watch那计算完毕才执行查询
         if (this.isVisible[0].child === true) {
           this.$refs.firstTab.getDataList()

@@ -333,13 +333,13 @@ export default {
                 this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
                 break
               case '3':
-                this.filterCategory(['1004']) // 制膏只有三九
+                this.filterCategory(['1003']) // 制膏只有三九
                 break
               case '4':
-                this.filterCategory(['1001', '1003']) // 制丸只有饮片
+                this.filterCategory(['1001', '1002']) // 制丸只有饮片
                 break
               case '5':
-                this.filterCategory(['1001', '1003'])
+                this.filterCategory(['1001', '1002'])
                 break
               case '2':
                 this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
@@ -442,13 +442,13 @@ export default {
             this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
             break
           case '3':
-            this.filterCategory(['1004']) // 制膏只有三九
+            this.filterCategory(['1003']) // 制膏只有三九
             break
           case '4':
-            this.filterCategory(['1001', '1003']) // 制丸只有饮片
+            this.filterCategory(['1001', '1002']) // 制丸只有饮片
             break
           case '5':
-            this.filterCategory(['1001', '1003'])
+            this.filterCategory(['1001', '1002'])
             break
           case '2':
             this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
@@ -487,13 +487,13 @@ export default {
               this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
               break
             case '3':
-              this.filterCategory(['1004']) // 制膏只有三九
+              this.filterCategory(['1003']) // 制膏只有三九
               break
             case '4':
-              this.filterCategory(['1001', '1003']) // 制丸只有饮片
+              this.filterCategory(['1001', '1002']) // 制丸只有饮片
               break
             case '5':
-              this.filterCategory(['1001', '1003'])
+              this.filterCategory(['1001', '1002'])
               break
             case '2':
               this.filterCategory(['1001', '1002', '1003', '1004']) // 外用

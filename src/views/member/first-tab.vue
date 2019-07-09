@@ -41,6 +41,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="MobilePhone" header-align="center" align="center" min-width="110" label="电话"></el-table-column>
+      <el-table-column prop="Points" header-align="center" align="center" min-width="100" label="当前积分"></el-table-column>
       <el-table-column prop="Address" header-align="center" align="center" label="地址" min-width="130" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="AllergyHistory" header-align="left" align="left" label="过敏史" width="" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column header-align="center" align="center" label="创建时间 / 创建人" min-width="170">
