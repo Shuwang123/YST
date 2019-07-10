@@ -199,14 +199,14 @@ export default {
       let minute = Math.floor(runTime / 60)
       runTime = runTime % 60
       let second = runTime
-      console.log(year + ',' + month + ',' + day + ',' + hour + ',' + minute + ',' + second)
+      // console.log(year + ',' + month + ',' + day + ',' + hour + ',' + minute + ',' + second)
       this.timeGap = day
       if (this.timeGap === 1 && this.isVisible[0].child) {
         this.buttonIsDisabled = false
       } else {
         this.buttonIsDisabled = true
       }
-      console.log(this.buttonIsDisabled, this.timeGap)
+      // console.log(this.buttonIsDisabled, this.timeGap)
 
       // 后刷新页面
       this.$nextTick(() => { // 等待watch那计算完毕才执行查询

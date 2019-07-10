@@ -28,11 +28,15 @@
 
       <!--循环-->
       <el-row style="margin: 5px 0">
-        <el-col :span="12" v-if="registerAllData.SaleOrderItems">
+        <!--<el-col :span="12" style="font-size: 16px;">RP：[{{registerAllData.StatusName}}]</el-col> 下面行写了个vif，控制台报错找不0属性，后来加了v-if-->
+        <!--1 剂 {{registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g，-->
+        <el-col :span="18" v-if="registerAllData.SaleOrderItems">
           RP：[{{registerAllData.CategoryOneName}}] - [{{registerAllData.SaleOrderItems[0].CategoryName.substring(4)}}]
-          总重 {{registerAllData.Total * registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g
         </el-col>
-        <el-col :span="12" style="text-align: right;padding-right: 15px">{{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味</el-col>
+        <el-col :span="6" v-if="registerAllData.SaleOrderItems" style="text-align: right;padding-right: 15px">
+          {{registerAllData.SaleOrderItems ? registerAllData.SaleOrderItems.length : ''}} 味,
+          总计 {{registerAllData.Total * registerAllData.SaleOrderItems.map(item => item.Quantity).reduce((pren, nextm) => pren + nextm)}} g
+        </el-col>
       </el-row>
       <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;position: relative">
         <el-col :span="8" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
@@ -44,18 +48,16 @@
       <!--footer height: 30px;line-height: 30px-->
       <el-row>
         <el-row style="height: 30px;line-height: 30px">
-          <el-col :span="24">帖数：一剂 ￥{{registerAllData.DrugOneAmount}}，共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</el-col>
+          <el-col :span="24">帖数：共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</el-col>
         </el-row>
         <el-col :span="12">
           <el-row>
             <el-col :span="24">
               <span style="display: inline-block;width: 17%;vertical-align: top;">用法：</span>
-              <!--<span style="display: inline-block;width: 81%;vertical-align: bottom;min-height: 20px;">先吃饭后吃药，加点水不放糖，水温50°，好好睡觉不要打游戏，不听的话你又要来看我</span>-->
               <span style="display: inline-block;width: 81%;vertical-align: bottom;min-height: 20px;">{{registerAllData.DrugRate}}</span>
             </el-col>
             <el-col :span="24">
               <span style="display: inline-block;width: 17%;vertical-align: top;">医嘱：</span>
-              <!--<span style="display: inline-block;width: 81%;vertical-align: bottom;min-height: 20px;">先吃饭后吃药，加点水不放糖，水温50°，好好睡觉不要打游戏，不听的话你又要来看我</span>-->
               <span style="display: inline-block;width: 81%;vertical-align: bottom;min-height: 20px;">{{registerAllData.DoctorAdvice}}</span>
             </el-col>
           </el-row>

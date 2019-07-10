@@ -78,7 +78,7 @@
 
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定添加</el-button>
+      <el-button type="primary" @click="isOKClick = true; dataFormSubmit()" :disabled="isOKClick">确定添加</el-button>
     </span>
   </el-dialog>
 </template>
@@ -130,7 +130,8 @@ export default {
         Keywords1: Letter(),
         Keywords3: Letter(),
         Keywords5: Letter()
-      }
+      },
+      isOKClick: false
     }
   },
   methods: {
@@ -196,6 +197,7 @@ export default {
         Keywords4: '',
         Keywords5: ''
       }
+      this.isOKClick = false
     },
     categoryChange (id) {
       this.drugsCategoryList.forEach(item => {

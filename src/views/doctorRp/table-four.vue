@@ -15,7 +15,7 @@
     <!--<el-table-column prop="Quantity" header-align="center" align="center" label="余量" :show-overflow-tooltip="true"></el-table-column>-->
     <el-table-column header-align="center" align="center" label="单价" min-width="100">
       <template slot-scope="scope">
-        {{Number(scope.row.SalePrice).toFixed(2)}}
+        {{Number(scope.row.StoreSalePrice).toFixed(2)}}
       </template>
     </el-table-column>
     <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="数量" min-width="150">
@@ -35,10 +35,10 @@
     </el-table-column>
     <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="总价" min-width="100">
       <template slot-scope="scope">
-        {{Number(scope.row.SalePrice * scope.row.myNum).toFixed(2)}}
+        {{Number(scope.row.StoreSalePrice * scope.row.myNum).toFixed(2)}}
       </template>
     </el-table-column>
-    <!--<el-table-column prop="SalePrice" header-align="center" align="center" label="总价" width="70"></el-table-column>-->
+    <!--<el-table-column prop="StoreSalePrice" header-align="center" align="center" label="总价" width="70"></el-table-column>-->
   </div>
 </template>
 
@@ -64,12 +64,3 @@ export default {
   }
 }
 </script>
-
-<style rel="stylesheet/scss" lang="scss" scoped>
-  /*.recipelAgeUnit /deep/ {*/
-  /*display: inline-block;*/
-  /*.el-input__inner {*/
-  /*padding: 0 5px;*/
-  /*}*/
-  /*}*/
-</style>

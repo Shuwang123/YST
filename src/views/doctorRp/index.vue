@@ -889,7 +889,7 @@ export default {
           this.dataList = result.data // 这个dataList有啥子用哟？好像没用起来
           this.rightUlData = result.data
           this.totalPage = result.total
-          // console.log(result.data)
+          console.log(result.data)
         } else {
           // this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
           this.dataList = []
@@ -915,7 +915,7 @@ export default {
     countTotalPrice (obj) {
       var sum = 0
       obj.forEach(item => {
-        sum += item.SalePrice * item.myNum
+        sum += item.StoreSalePrice * item.myNum
       })
       this.allMoney = (sum * this.Total).toFixed(2)
     },
@@ -1120,8 +1120,8 @@ export default {
                   ProductCode: item.Code,
                   ProductName: item.ShowName,
                   CostPrice: item.CostPrice,
-                  SalePrice: item.SalePrice,
-                  RealPrice: item.SalePrice,
+                  SalePrice: item.StoreSalePrice,
+                  RealPrice: item.StoreSalePrice,
                   Quantity: item.myNum,
                   SupplierId: 0,
                   SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
@@ -1161,8 +1161,8 @@ export default {
                   ProductCode: item.Code,
                   ProductName: item.ShowName,
                   CostPrice: item.CostPrice,
-                  SalePrice: item.SalePrice,
-                  RealPrice: item.SalePrice,
+                  SalePrice: item.StoreSalePrice,
+                  RealPrice: item.StoreSalePrice,
                   Quantity: item.myNum,
                   SupplierId: 0,
                   SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
