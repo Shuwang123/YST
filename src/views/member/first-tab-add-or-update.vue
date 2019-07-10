@@ -52,7 +52,7 @@
     </el-form>
 
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="dataFormSubmit()">确定添加</el-button>
+      <el-button type="primary" @click="isOKClick = true; dataFormSubmit()" :disabled="isOKClick">确定添加</el-button>
       <el-button @click="visible = false">取消</el-button>
     </span>
   </el-dialog>
@@ -94,7 +94,8 @@ export default {
         BirthDate: Currency('此为必填项'),
         Source: Currency('此为必填项'),
         MobilePhone: Phone(1)
-      }
+      },
+      isOKClick: false
     }
   },
   watch: {
@@ -190,6 +191,7 @@ export default {
         Address: '',
         Source: '20' // 患者来源
       }
+      this.isOKClick = false
       this.$refs['dataForm'].clearValidate()
     },
     // 表单提交

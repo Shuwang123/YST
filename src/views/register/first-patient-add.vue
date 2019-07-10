@@ -49,7 +49,8 @@
 
     <div style="text-align: right; margin-top: 210px">
       <el-button @click="$store.commit('setRegisterStep', 2); $emit('childEven')">返回</el-button>
-      <el-button type="primary" @click=" $store.commit('setRegisterStep', 2); dataFormSubmit()">新增</el-button>
+      <el-button type="primary" @click="isOKClick = true; $store.commit('setRegisterStep', 2); dataFormSubmit()"
+                 :disabled="isOKClick">新增</el-button>
     </div>
   </div>
 </template>
@@ -89,7 +90,8 @@ export default {
         Source: Currency('此为必填项'),
         MobilePhone: Phone(1)
       },
-      dataList: null
+      dataList: null,
+      isOKClick: false
     }
   },
   watch: {
@@ -145,6 +147,7 @@ export default {
         Address: '',
         Source: '20' // 患者来源
       }
+      this.isOKClick = false
     },
     // 表单提交
     dataFormSubmit () {
