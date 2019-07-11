@@ -313,7 +313,7 @@
 
               <!--药方总重量：只针对制膏制丸 [用的计算属性处理]-->
               <el-tooltip placement="top">
-                <div slot="content">加工费规则：<br/><br/>1000g以下算120元，1000g以上每多100g加10元</div>
+                <div slot="content">加工费规则：<br/><br/>待编辑</div>
                 <span v-show="dataForm.CategoryOne !== '1' &&
                         dataForm.CategoryOne !== '2' && leftTableData.length !== 0">
                 ；总重量：{{categoryAllWeight}} g</span>
@@ -387,10 +387,30 @@ export default {
         this.Total = 1
       }
     },
+    // 监听药费的变化，及时算出当前药材总重量，最后搭配一级药态计算出：水丸（水泛丸）、水蜜丸、39制膏 它三的加工费
     allMoney (val, oldval) {
-      if (this.dataForm.CategoryOne === '3' || this.dataForm.CategoryOne === '4' || this.dataForm.CategoryOne === '5') {
-        this.dataForm.WorkAmount = this.categoryAllWeight <= 1000 ? 120 : Math.ceil((this.categoryAllWeight - 1000) / 100) * 10 + 120
-      } else {
+      // 当前处方药材累计总重量
+      var drugWeight = this.categoryAllWeight
+
+      // 999颗粒制膏：加工费 <=2000g全算100元,之后每增加200g算10元，零头100<=x<200算5元
+      var limit2000g = drugWeight <= 2000
+      if (!limit2000g)
+        var percent200 = (drugWeight - 2000) % 200 >= 100 ? 1 : 0
+
+      // 饮片制水泛丸：加工费 <=1000g全算80元,之后每增加100g算8元，零头50<=x<100算4元
+      // 饮片制水蜜丸：加工费 <=1000g全算100元,之后每增加100g算10元，零头50<=x<100算5元
+      var limit1000g = drugWeight <= 1000
+      if (!limit1000g)
+        var percent100 = (drugWeight - 1000) % 100 >= 50 ? 1 : 0
+
+      // console.log(drugWeight, limit2000g, percent200, limit1000g, percent100)
+      if (this.dataForm.CategoryOne === '3') { // 999颗粒：制膏
+        this.dataForm.WorkAmount = limit2000g ? 100 : 100 + Math.floor((drugWeight - 2000) / 200) * 10 + percent200 * 5
+      } else if (this.dataForm.CategoryOne === '4') { // 饮片制丸：水泛丸
+        this.dataForm.WorkAmount = limit1000g ? 80 : 80 + Math.floor((drugWeight - 1000) / 100) * 8 + percent100 * 4
+      } else if (this.dataForm.CategoryOne === '5') { // 饮片制丸：水蜜丸
+        this.dataForm.WorkAmount = limit1000g ? 100 : 100 + Math.floor((drugWeight - 1000) / 100) * 10 + percent100 * 5
+      } else { // 其他的那些没有加工费
         this.dataForm.WorkAmount = 0
       }
     },
@@ -627,7 +647,7 @@ export default {
         SpellName: '',
         // Dte: '', // 用药间隔
         DrugRate_0: '3', // 每日几剂，几次 搭配计算属性
-        DrugRate_1: '3', // 一剂分几次服
+        DrugRate_1: '1', // 一剂分几次服
         DrugRate_2: '5', // 一次几克
 
         DrugRate_3: '饭前1小时', // 饭前服、饭后服、睡前服...
@@ -802,6 +822,8 @@ export default {
             item.myNum = item.Quantity
             item.ShowName = item.ProductName
             item.Code = item.ProductCode
+
+            item.StoreSalePrice = item.SalePrice
             return item
           })
 
@@ -811,7 +833,7 @@ export default {
 
           this.getStoreCategorytypeStock()
           this.countTotalPrice(this.leftTableData) // 载入协定方后立马计算价格
-          // console.log(this.leftTableData)
+          console.log(this.leftTableData)
         }
       })
     },
@@ -923,7 +945,6 @@ export default {
     addDrugs (row) {
       // console.log(row)
       if (this.leftTableData.some(item => item.Code === row.Code)) {
-        // this.$alert(`[${row.ShowName}] 已添加！`, '提示', {
         this.$message(`[${row.ShowName}] 已添加！`)
         return false
       }

@@ -13,7 +13,7 @@ export function getDayReport (params) {
 // 创建日报表（在获取后的基础上稍微修改）
 export function createDayReport (params) {
   return request({
-    url: requestUrl('/YstApiMenu/Edit'),
+    url: requestUrl('/YstApiSaleOrder/CreateDayReport'),
     method: 'post',
     data: requestParam(params)
   })

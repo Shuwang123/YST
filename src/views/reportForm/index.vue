@@ -44,7 +44,7 @@
               </el-form-item>
               <el-form-item>
                 <el-button @click="comTabFunction()" size="mini">查询</el-button>
-                <el-button v-show="isVisible[0].child" @click="$refs.firstTab.isEditing = true"
+                <el-button v-show="isVisible[0].child" @click="$refs.firstTab.isEditing = !$refs.firstTab.isEditing"
                            size="mini" :disabled="buttonIsDisabled">编辑日报表</el-button>
               </el-form-item>
             </el-col>
