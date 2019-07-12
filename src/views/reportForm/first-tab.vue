@@ -63,7 +63,7 @@
             <td width="100">代金券</td>
             <td width="100" align="left">{{dataList.CouponPay}}</td>
             <td width="100">会员卡</td>
-            <td width="100" align="left">？？？</td>
+            <td width="100" align="left">{{dataList.MemberPay}}</td>
           </tr>
         </table>
 
@@ -333,12 +333,10 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import { mapGetters } from 'vuex'
 import { calcAge } from '@/utils/validate'
 import { echarts } from '../common/echarts.min.js'
 export default {
-  components: { FirstTabAddOrUpdate },
   name: 'stockFirst',
   props: ['fatherDataForm'],
   data () {
@@ -489,7 +487,7 @@ export default {
             {value: result.data.MedicalPay, name: '医保'},
             {value: result.data.WechatPhonePay, name: '客服手机'},
             {value: result.data.CouponPay, name: '代金券'},
-            {value: result.data.Cash, name: '会员卡'}]
+            {value: result.data.MemberPay, name: '会员卡'}]
         } else {
           this.$message.error(result.message)
         }

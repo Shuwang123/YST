@@ -108,14 +108,15 @@
               <td colspan="2"><p>金额
                 <span style="display: inline-block;width: 200px;text-align: right">收费方式</span></p></td>
             </tr>
-            <tr>
+            <!--已收取挂号费的不需要药打印挂号费-->
+            <tr v-show="registerAllData.RegisterStatus === 1">
               <td>挂号费</td>
               <td colspan="2"><p>￥{{registerAllData.RegisterAmount}}
                 <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
             </tr>
             <tr>
               <td>药品费</td>
-              <td colspan="2"><p>￥{{registerAllData.TotalAmount - registerAllData.RegisterAmount}}
+              <td colspan="2"><p>￥{{(registerAllData.TotalAmount - registerAllData.RegisterAmount).toFixed(2)}}
                 <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
             </tr>
             <tr valign="bottom">
@@ -601,7 +602,7 @@ export default {
   }
   .el-form-item {
     position: relative;
-    top: 2px;
+    top: 6px;
   }
 }
 

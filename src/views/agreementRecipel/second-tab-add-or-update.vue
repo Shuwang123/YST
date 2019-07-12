@@ -95,13 +95,13 @@
           <div class="rightUlStyle">
             <ul class="ownScrollbar xx">
               <li v-for="item in rightUlData" :key="item.Id">
-                <el-tooltip class="item" effect="light" :content="item.ShowName+' [余量'+item.Quantity+']'" placement="left">
+                <el-tooltip class="item" effect="light" :content="item.ProductName+' [余量'+item.Quantity+']'" placement="left">
                   <el-row style="clear: both">
                     <!--<span v-text="item.ShowName === null ? '000' : item.ShowName"></span> {{item.Id}}余{{item.Quantity}}g/预{{item.RedLine}}-->
 
                     <!--药材名+剩余量+操作-->
                     <el-col :span="6">
-                    <span v-text="item.ShowName === null ? '无' : item.ShowName"
+                    <span v-text="item.ProductName === null ? '无' : item.ProductName"
                           style="display: inline-block; vertical-align: middle; width: 50px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">
                     </span>
                     </el-col>
@@ -219,7 +219,6 @@ export default {
       drugsCategoryArrCopy: [], // 初始化的时候就保存一个有全部信息的副本，以后用于提取
       oldTabsName: '1001', // 二级态记录
       activeName: '1001',
-      dataList: [],
       leftTable: 'TableOne', // 左侧表格 组件的引用名切换哟，这的值决定
       leftTableData: [], // 左侧表格的数据
       rightUl: '', // 右侧列表
@@ -349,20 +348,17 @@ export default {
           // 左边table 字段转换下
           this.leftTableData = result.data.SaleOrderItems.map(item => {
             item.CategoryName = item.CategoryName.substring(4)
-            item.Id = item.ProductId // 这个字段为什么要转换，可能看起来很懵逼，就是后端的接口一会那个字段一会这个字段搞出来的，如果不转化一下，编辑提交的情况下有bug
+            item.ProductId = item.ProductId // 这个字段为什么要转换，可能看起来很懵，就是后端的接口一会那个字段一会这个字段搞出来的，如果不转化一下，直接就使用会有bug（就是代表同一个东西的字段，后端取名没有统一）
             item.myNum = item.Quantity
-            item.ShowName = item.ProductName
-            item.Code = item.ProductCode
             return item
           })
-
-          this.getStoreCategorytypeStock()
 
           // 根据协定方的药态，控制右边药态的初始选中值
           this.oldTabsName = String(result.data.SaleOrderItems[0].CategoryId)
           this.activeName = String(result.data.SaleOrderItems[0].CategoryId)
           // console.log(this.dataForm.agreementRecipelId)
           // console.log(this.leftTableData)
+          this.getStoreCategorytypeStock()
         })
       } else {
         // 后初始化页面的右上角：
@@ -378,22 +374,25 @@ export default {
 
     // 右侧‘添加’药材的小模块：获取 对应门店 对应药态下的 对应药材库
     getStoreCategorytypeStock () {
-      API.drugs.getDrugsList({
-        Name: '',
+      var params = {
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: true,
-        SpellName: this.dataForm.SpellName,
-        CategoryId: this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001
         StoreId: this.$store.getters.getAccountCurrentHandleStore, // 传不传门店id决定了是否返回库存余量!!!（另外这儿可以能有点问题要处理，因为可能是药房的账号进来，那这样的话如果药房的权限大于医生，那门店库存也更正变大了，这是个要考虑的地方）
-        CodeOrBarCode: '' // 暂无
-      }).then(result => {
+        ProductCodeOrBarCode: '',
+        ProductName: '',
+        SpellName: this.dataForm.SpellName,
+        Order: '',
+        BrandId: '',
+        CategoryId: this.activeName, // 1001 药态
+        SearchType: 2 }
+      console.log(params)
+      API.storeStock.getStoreStock(params).then(result => {
         if (result.code === '0000' && result.data.length > 0) {
-          this.dataList = result.data // 这个dataList有啥子用哟？好像没用起来
+          console.log(result.data)
           this.rightUlData = result.data
           this.totalPage = result.total
         } else {
-          this.dataList = []
           this.rightUlData = []
           this.totalPage = 0
           this.$message({ message: `${result.message}`, type: 'warning', duration: 3000 })
@@ -405,8 +404,7 @@ export default {
     // 1.当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
       console.log(row)
-      if (this.leftTableData.some(item => item.Code === row.Code)) {
-        // this.$alert(`[${row.ShowName}] 已添加！`, '提示', {
+      if (this.leftTableData.some(item => item.ProductCode === row.ProductCode)) {
         this.$alert(`<b style="color: #409EFF;font-size: 14px;font-weight: 500">[${row.ShowName}]</b> 已添加！`, '提示', {
           confirmButtonText: '确定',
           dangerouslyUseHTMLString: true,
@@ -422,7 +420,7 @@ export default {
     delDrugs (row) {
       console.log(this.leftTableData, row)
       this.leftTableData.forEach((item, i) => {
-        if (item.Code === row.Code) {
+        if (item.ProductCode === row.ProductCode) {
           this.leftTableData.splice(i, 1)
           return false
         }
@@ -638,9 +636,9 @@ export default {
             DrugRate: this.dataForm.DrugRate, // 用法
             ItemsJson: JSON.stringify(this.leftTableData.map(item => {
               var obj = {
-                ProductId: item.Id,
-                ProductCode: item.Code,
-                ProductName: item.ShowName,
+                ProductId: item.ProductId,
+                ProductCode: item.ProductCode,
+                ProductName: item.ProductName,
                 CostPrice: item.CostPrice,
                 SalePrice: item.SalePrice,
                 RealPrice: item.SalePrice,
@@ -666,9 +664,9 @@ export default {
             DrugRate: this.dataForm.DrugRate, // 用法
             ItemsJson: JSON.stringify(this.leftTableData.map(item => {
               var obj = {
-                ProductId: item.Id,
-                ProductCode: item.Code,
-                ProductName: item.ShowName,
+                ProductId: item.ProductId,
+                ProductCode: item.ProductCode,
+                ProductName: item.ProductName,
                 CostPrice: item.CostPrice,
                 SalePrice: item.SalePrice,
                 RealPrice: item.SalePrice,

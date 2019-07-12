@@ -250,7 +250,7 @@
     </span>
     <span v-else-if="stepActive === 2" slot="footer" class="dialog-footer">
       <el-button @click="chenxiPrint()">打印入库单</el-button>
-      <el-button @click="excelExports('caiwu')">导出Excel(财务入库单)</el-button>
+      <!--<el-button @click="excelExports('caiwu')">导出Excel(财务入库单)</el-button>-->
     </span>
   </el-dialog>
 </template>
@@ -529,83 +529,85 @@ export default {
       }
     },
     excelExports (excelType) {
-      // var jsonData = []
-      // var str = '' // 列标题
-      // if (excelType === 'purchase') { // 药房采购单导出，发给厂商用的
-      //   jsonData = this.dataList.Items.map(item => {
-      //     return {
-      //       dCategory: item.CategoryName,
-      //       dCode: item.ProductCode,
-      //       dName: item.ProductName,
-      //       dNumber: item.Quantity,
-      //       // dStoreSalePrice: item.StoreSalePrice,
-      //       dInventoryQuantity: item.InventoryQuantity
-      //     }
-      //   })
-      //   str = `<tr>
-      //           <th colspan="6"><h3>重庆渝北一善堂中医门诊部(采购单)</h3></th>
-      //         </tr>
-      //         <tr>
-      //           <td height="20">药态</td> <td height="20">编码</td>
-      //           <td height="20">药名</td> <td height="20">采购量</td>
-      //           <td height="20">采购价</td> <td height="20">库存余量</td>
-      //         </tr>`
-      // } else if (excelType === 'caiwu') { // 入库后入库单导出，给财务拿去算账的
-      //   jsonData = this.dataList.Items.map(item => {
-      //     return {
-      //       dCode: item.ProductCode, // 商品编码
-      //       dName: item.ProductName, // 药品名称
-      //       dSpecification: item.Specification, // 规格
-      //       dSupplierName: this.dataList.SupplierName, // 供应商 （生成厂家）// dProductBatchNo: item.ProductBatchNo, // 批号??? BatchNo
-      //
-      //       dUnit: item.Unit, // 单位
-      //       dQuantity: item.Quantity, // 数量
-      //       dCostPrice: item.CostPrice, // 单价
-      //       dActualShipAmount: item.ActualShipAmount // 金额
-      //       // dCreatedTime: this.dataList.CreatedTime | this.myDateFilter('yyyy-MM-dd hh:mm:ss'), // 生成时间
-      //       // dTimeTo: this.dataList.CreatedTime | this.myDateFilter('yyyy-MM-dd hh:mm:ss'), // 有效期至
-      //       // dZhijian: '合格' // 质检情况
-      //     }
-      //   })
-      //   str = `<tr>
-      //           <th colspan="8"><h3>重庆渝北一善堂中医门诊部(入库单)</h3></th>
-      //         </tr>
-      //         <tr>
-      //           <td height="20">编号</td> <td height="20">药材名</td>
-      //           <td height="20">规格</td> <td height="20">生产厂家</td>
-      //           <td height="20">单位</td> <td height="20">数  量</td>
-      //           <td height="20">单价</td> <td height="20">金   额</td>
-      //         </tr>`
-      // }
-      //
-      // // 循环遍历，每行加入tr标签，每个单元格加td标签
-      // for (let i = 0; i < jsonData.length; i++) {
-      //   str += '<tr>'
-      //   for (let item in jsonData[i]) {
-      //     // 增加\t为了不让表格显示科学计数法或者其他格式
-      //     str += `<td align="left" height="20">${jsonData[i][item] + '\t'}</td>`
-      //   }
-      //   str += '</tr>'
-      // }
-      //
-      // // Worksheet名
-      // let worksheet = 'Sheet1'
-      // let uri = 'data:application/vnd.ms-excel;base64,' // 使用浏览器的功能
-      // // 下载的表格模板数据
-      // let template = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
-      // xmlns:x="urn:schemas-microsoft-com:office:excel"
-      // xmlns="http://www.w3.org/TR/REC-html40">
-      //      <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
-      //      <x:Name>${worksheet}</x:Name>
-      //      <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
-      //      </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
-      //      </head>
-      //      <body><table align="left" border="1">${str}</table></body>
-      // </html>`
-      //
-      // // 下载模板
-      // // btoa()方法用于创建一base-64编码的字符串。该方法使用 "A-Z", "a-z", "0-9", "+", "/" 和 "=" 字符来编码字符串
-      // window.location.href = uri + window.btoa(unescape(encodeURIComponent(template)))
+      var str = '' // 列标题
+      var jsonData = []
+      if (excelType === 'purchase') { // 药房采购单导出，发给厂商用的
+        str = `<tr>
+                <th colspan="4"><h3>重庆渝北一善堂中医门诊部(采购单)</h3></th>
+              </tr>
+              <tr>
+                <th height="20" width="100">药态</th> <th width="100" height="20">编码</th>
+                <th height="20" width="100">药名</th> <th width="100" height="20">采购量</th>
+              </tr>`
+        // <!--<td height="20">采购价</td> <td height="20">库存余量</td>-->
+        jsonData = this.dataList.Items.map(item => {
+          return {
+            dCategory: item.CategoryName,
+            dCode: item.ProductCode,
+            dName: item.ProductName,
+            dNumber: item.Quantity
+            // dStoreSalePrice: item.StoreSalePrice,
+            // dInventoryQuantity: item.InventoryQuantity
+          }
+        })
+      }
+      else if (excelType === 'caiwu')
+      { // 财务入库后入库单导出，给财务拿去算账的
+        str = `<tr>
+                <th colspan="8"><h3>重庆渝北一善堂中医门诊部(入库单)</h3></th>
+              </tr>
+              <tr>
+                <td height="20">编号</td> <td height="20">药材名</td>
+                <td height="20">规格</td> <td height="20">生产厂家</td>
+                <td height="20">单位</td> <td height="20">数  量</td>
+                <td height="20">单价</td> <td height="20">金   额</td>
+              </tr>`
+        jsonData = this.dataList.Items.map(item => {
+          return {
+            dCode: item.ProductCode, // 商品编码
+            dName: item.ProductName, // 药品名称
+            dSpecification: item.Specification, // 规格
+            dSupplierName: this.dataList.SupplierName, // 供应商 （生成厂家）// dProductBatchNo: item.ProductBatchNo, // 批号??? BatchNo
+
+            dUnit: item.Unit, // 单位
+            dQuantity: item.Quantity, // 数量
+            dCostPrice: item.CostPrice, // 单价
+            dActualShipAmount: item.ActualShipAmount // 金额
+            // dCreatedTime: this.dataList.CreatedTime | this.myDateFilter('yyyy-MM-dd hh:mm:ss'), // 生成时间
+            // dTimeTo: this.dataList.CreatedTime | this.myDateFilter('yyyy-MM-dd hh:mm:ss'), // 有效期至
+            // dZhijian: '合格' // 质检情况
+          }
+        })
+      }
+
+      // 循环遍历，每行加入tr标签，每个单元格加td标签
+      for (let i = 0; i < jsonData.length; i++) {
+        str += '<tr>'
+        for (let item in jsonData[i]) {
+          // 增加\t为了不让表格显示科学计数法或者其他格式
+          str += `<td align="left" height="20">${jsonData[i][item] + '\t'}</td>`
+        }
+        str += '</tr>'
+      }
+
+      // Worksheet名
+      let worksheet = 'Sheet1'
+      let uri = 'data:application/vnd.ms-excel;base64,' // 使用浏览器的功能
+      // 下载的表格模板数据
+      let template = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
+      xmlns:x="urn:schemas-microsoft-com:office:excel"
+      xmlns="http://www.w3.org/TR/REC-html40">
+           <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
+           <x:Name>${worksheet}</x:Name>
+           <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
+           </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
+           </head>
+           <body><table align="left" border="1">${str}</table></body>
+      </html>`
+
+      // 下载模板
+      // btoa()方法用于创建一base-64编码的字符串。该方法使用 "A-Z", "a-z", "0-9", "+", "/" 和 "=" 字符来编码字符串
+      window.location.href = uri + window.btoa(unescape(encodeURIComponent(template)))
     },
     // 打印功能
     chenxiPrint () {

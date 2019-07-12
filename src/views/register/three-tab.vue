@@ -32,6 +32,7 @@
           <p><span style="display: inline-block;width: 45%;text-align: right;padding-right: 7px">￥</span>{{scope.row.RegisterAmount}}</p>
         </template>
       </el-table-column>
+      <el-table-column prop="Remark" header-align="center" align="left" label="退费原因" min-width="100" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column header-align="center" align="center" label="状态" min-width="190">
         <template slot-scope="scope">
           <span>已{{scope.row.RegisterOrderStatusName}}</span>

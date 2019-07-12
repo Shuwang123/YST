@@ -114,7 +114,10 @@
         width="500px"
         title="小票内容"
         :visible.sync="innerVisible"
-        append-to-body>
+        append-to-body
+        :close-on-click-modal="false"
+        :close-on-press-escape="false"
+        :show-close="true">
         <!--打印层：要求打印纸设置（12.00 * 93.10） chrome：无边距、无页眉页脚打印-->
         <div id="chenxiPrint">
           <table width="100%" style="font-size: 12px;padding-right: 55px">

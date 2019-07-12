@@ -797,43 +797,58 @@ export default {
       this.drugsCategoryArr = brr
     },
     zairuFunAgreement (agreementId) {
-      // console.log(agreementId)
       API.register.getRegisterInfo({id: agreementId}).then(result => {
         if (result.code === '0000') {
-          // console.log(result.data)
-
-          // this.dataForm.SpellName = ''
-          // this.dataForm.agreementRecipelId = result.data.Id // 协定方id
-          // StoreId: '' // 门店
-          // this.dataForm.AccountId = result.data.AccountId // 医生
+          console.log(result.data)
           // this.dataForm.MainCure = result.data.MainCure // 主治
           // this.dataForm.Effect = result.data.Effect // 功效
           // this.dataForm.Explain = result.data.Explain // 说明
-          // this.dataForm.PrescriptionName = result.data.PrescriptionName // 处方名
-          // this.dataForm.DrugRate = result.data.DrugRate // 用法
           this.dataForm.oldCategoryOne = String(result.data.CategoryOne) // 药态一级记录 1内服2外用3制膏4水丸5水蜜丸
           this.dataForm.CategoryOne = String(result.data.CategoryOne) // 药态一级分类 1内服2外用3制膏4水丸5水蜜丸
           this.comOneCategoryChangeFunction(this.dataForm.CategoryOne)
-
-          // 左边table 字段转换下
+          // 1、把协定方里保存的药材克数存下来
           this.leftTableData = result.data.SaleOrderItems.map(item => {
-            item.CategoryName = item.CategoryName.substring(4)
-            item.Id = item.ProductId // 这个字段为什么要转换，可能看起来很懵逼，就是后端的接口一会那个字段一会这个字段搞出来的，如果不转化一下，编辑提交的情况下有bug
-            item.myNum = item.Quantity
-            item.ShowName = item.ProductName
-            item.Code = item.ProductCode
-
-            item.StoreSalePrice = item.SalePrice
-            return item
+            return {myNum: item.Quantity}
           })
 
           // 根据协定方的药态，控制右边药态的初始选中值
           this.oldTabsName = String(result.data.SaleOrderItems[0].CategoryId)
           this.activeName = String(result.data.SaleOrderItems[0].CategoryId)
-
           this.getStoreCategorytypeStock()
-          this.countTotalPrice(this.leftTableData) // 载入协定方后立马计算价格
-          console.log(this.leftTableData)
+
+          // 2、用协定方里的药材编码请求库存里最新的药材售价
+          // 因为协定方的SalePrice是保存的旧的售价，之后如果售价有更新，那协定方计算价格就错误了，所以这需要使用协定方里保存的
+          // 药材的编码重新请求一次门店库存接口，目的就是拿到最新的药材售价
+          this.$nextTick(() => {
+            API.storeStock.getStoreStock({
+              PageIndex: 1,
+              PageSize: 100,
+              IsPaging: true,
+              StoreId: this.$store.getters.getAccountCurrentHandleStore, // 传不传门店id决定了是否返回库存余量!!!（另外这儿可以能有点问题要处理，因为可能是药房的账号进来，那这样的话如果药房的权限大于医生，那门店库存也更正变大了，这是个要考虑的地方）
+              ProductCodeOrBarCode: result.data.SaleOrderItems.map(item => {
+                return item.ProductCode
+              }).join(),
+              CategoryId: this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001
+              SearchType: 2 // 1表示才够用2查询库存用
+            }).then(response => {
+              if (response.code === '0000' && response.data.length > 0) {
+                // console.log(response.data)
+                // 左边table 字段转换下
+                response.data.forEach((item, i) => {
+                  this.leftTableData[i].CategoryName = item.CategoryName
+                  this.leftTableData[i].Id = item.ProductId
+                  this.leftTableData[i].ShowName = item.ProductName
+                  this.leftTableData[i].Code = item.ProductCode
+                  this.leftTableData[i].StoreSalePrice = item.StoreSalePrice
+                })
+                this.countTotalPrice(this.leftTableData) // 载入协定方后立马计算价格
+                this.leftTableData.push()
+                console.log(this.leftTableData)
+              } else {
+                this.$message({ message: `${result.message}`, type: 'warning', duration: 3000 })
+              }
+            })
+          })
         }
       })
     },
@@ -911,7 +926,7 @@ export default {
           this.dataList = result.data // 这个dataList有啥子用哟？好像没用起来
           this.rightUlData = result.data
           this.totalPage = result.total
-          console.log(result.data)
+          // console.log(result.data)
         } else {
           // this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
           this.dataList = []
@@ -1356,7 +1371,7 @@ export default {
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
 .doctor-recipel /deep/ {
   .el-form-item__label {font-weight: 700}
-  .el-form-item { margin-bottom: 0px; }
+  .el-form-item { margin-bottom: 7px; }
   .el-dialog__body { padding-top: 10px; }
   /*表头高重写35高*/
   .el-table--medium th, .el-table--medium td, & .el-table th, & .el-table td,
