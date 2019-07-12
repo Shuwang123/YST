@@ -473,7 +473,7 @@ export default {
         EndDay: this.fatherDataForm.EndDate // 结束时间
       }
       // 获取挂号列表
-      // console.log(params)
+      console.log(params)
       API.report.getDayReport(params).then(result => {
         if (result.code === '0000') {
           this.dataList = result.data
