@@ -32,12 +32,15 @@ service.interceptors.response.use(response => {
     NProgress.done()
     return response
   }
-  if (response.data && response.data.code === 403) { // 未登录
+  if (response.data && response.data.code === '403') { // 未登录
     removeStore('userInfo')
     router.push({ name: 'login' })
-  } else if (response.data && response.data.code === 401) {
+  } else if (response.data.code === '110' && response.data.message === '账号已过期') {
+    removeStore('userInfo')
+    router.push({ name: 'login' })
+  } else if (response.data && response.data.code === '401') {
     Message.error({ message: '您没有权限进行相关操作' })
-  } else if (response.data.code !== '200' && response.data.code !== 409) { // 添加返回码409的处理
+  } else if (response.data.code !== '200' && response.data.code !== '409') { // 添加返回码409的处理
     if (typeof response.data.data === 'object' && response.data.data === Array) {
       response.data.data.forEach(message => {
         Message.error({message: message})
@@ -55,14 +58,14 @@ service.interceptors.response.use(response => {
   return response.data
 }, error => {
   NProgress.done()
-  if (error.response && error.response.data && error.response.data.status === 403) {
+  if (error.response && error.response.data && error.response.data.status === '403') {
     removeStore('userInfo')
     router.push({ name: 'login' })
     Message.error({message: '请重新登录'})
-  } else if (error.response && error.response.data && error.response.data.status === 401) {
+  } else if (error.response && error.response.data && error.response.data.status === '401') {
     router.push({ name: 'error401' })
     Message.error({message: '您没有权限进行相关操作'})
-  } else if (error.response && error.response.data && error.response.data.status === 404) {
+  } else if (error.response && error.response.data && error.response.data.status === '401') {
     router.push({ name: 'error404' })
     Message.error({message: '您没有权限进行相关操作'})
   } else {
