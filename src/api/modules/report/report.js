@@ -24,6 +24,6 @@ export function getDoctorReport (params) {
   return request({
     url: requestUrl('/YstApiSaleOrder/DoctorDayReport'),
     method: 'post',
-    params: requestParam(params)
+    data: requestParam(params)
   })
 }
