@@ -533,9 +533,10 @@ export default {
             WorkAmount: this.dataForm.WorkAmount, // 加工费
             DJAmount: this.dataForm.DJAmount, // 代煎费用
             ExpressAmount: this.dataForm.ExpressAmount, // 快递费
-            OtherAmount: this.dataForm.OtherAmount // 其他费用
+            OtherAmount: this.dataForm.OtherAmount, // 其他费用
+            IntroducePeople: this.dataForm.PrescriptionName // 其他费用
           }
-          // console.log(params)
+          console.log(params)
           API.register.cashierSubmit(params).then(result => {
             if (result.code === '0000') {
               this.$message({
