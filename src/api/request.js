@@ -46,10 +46,10 @@ service.interceptors.response.use(response => {
         Message.error({message: message})
       })
     } else {
-      Message.success({
-        message: '响应成功！1000',
-        duration: 1000
-      })
+      // Message.success({
+      //   message: '响应成功！1000',
+      //   duration: 1000
+      // })
       // Message.success({message: response.data.message})
     }
   }
@@ -69,7 +69,9 @@ service.interceptors.response.use(response => {
     router.push({ name: 'error404' })
     Message.error({message: '您没有权限进行相关操作'})
   } else {
-    Message.error({message: error.message})
+    Message.error({message: `${error.message}`})
+    // removeStore('userInfo')
+    // router.push({ name: 'login' })
   }
   return Promise.reject(error)
 })

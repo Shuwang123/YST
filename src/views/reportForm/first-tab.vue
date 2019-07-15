@@ -335,7 +335,8 @@
 import API from '@/api'
 import { mapGetters } from 'vuex'
 import { calcAge } from '@/utils/validate'
-import { echarts } from '../common/echarts.min.js'
+import { echarts } from '../../../static/echarts.min'
+// import { echarts } from 'vue-echarts'
 export default {
   name: 'stockFirst',
   props: ['fatherDataForm'],
