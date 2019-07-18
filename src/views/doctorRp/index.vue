@@ -364,6 +364,73 @@ import TableTwo from './table-two'
 import TableThree from './table-three'
 import TableFour from './table-four'
 export default {
+  // 离开开方页
+  beforeRouteLeave (to, from, next) {
+    if (from.path === '/doctor/recipel' && this.leftTableData.join() !== '' && this.dataForm.MobilePhone !== '') {
+      this.$confirm(`是否在离开页面前临时保存处方？`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        closeOnClickModal: false,
+        closeOnPressEscape: false,
+        type: 'warning'
+      }).then(() => {
+        var arr = {
+          // StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
+          doctorId: this.$route.query.DoctorId, // 医生
+          memberPhone: this.dataForm.MobilePhone, // 会员号（患者）
+
+          oneDrugCategory: this.dataForm.oldCategoryOne,
+          childDrugCategory: this.dataForm.oldTabsName,
+          zhusu: this.dataForm.MainSuit,
+          zhenduan: this.dataForm.DiseaseInfo,
+
+          recipelItems: this.leftTableData, // 处方明细
+          agent: this.Total, // 剂
+          uses: [this.dataForm.DrugRate_0, this.dataForm.DrugRate_1, this.dataForm.DrugRate_2, this.dataForm.DrugRate_3], // 用法
+          yizhu: this.dataForm.DoctorAdvice}
+        this.$store.commit('setRecipelSaveFiles', arr)
+        next()
+      }).catch(() => {
+        this.$message({type: 'info', message: '放弃处方'})
+        next()
+      })
+    } else {
+      next()
+    }
+  },
+  // 进入开方页
+  beforeRouteEnter (to, from, next) {
+    if (to.path === '/doctor/recipel') {
+      next(vm => {
+        // 这儿的[]==[]为false…… 还有神奇的vm，都不晓得哪冒出来的，居然可以直接用，这查查资料
+        if (vm.$store.getters.getRecipelSaveFiles.some(item => {
+          return item.memberPhone === vm.$route.query.MobilePhone && item.doctorId === vm.$route.query.DoctorId
+        })) {
+          // console.log(window.sessionStorage.getItem('modPurchaseList'))
+          vm.$confirm(`你有历史处方，是否调用？`, '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            closeOnClickModal: false,
+            closeOnPressEscape: false,
+            type: 'warning'
+          }).then(() => {
+            var sessionRecipel = vm.$store.getters.getRecipelSaveFiles
+            console.log(sessionRecipel)
+            sessionRecipel.forEach((item, index) => {
+              if (item.memberPhone === vm.$route.query.MobilePhone && item.doctorId === vm.$route.query.DoctorId) {
+                vm.leftTableData = sessionRecipel[index].recipelItems
+                vm.$store.commit('delRecipelSaveFiles', index)
+                return false
+              }
+            })
+          }).catch(() => {
+
+          })
+        }
+        next()
+      })
+    }
+  },
   components: {
     AgreementDialog,
     PatientListPop,
@@ -1157,7 +1224,7 @@ export default {
         })
       }
       // console.log(this.dataForm.CategoryOne, this.dataForm.olCategoryOne, this.activeName, this.oldTabsName)
-      // this.rightCategoryChangeClick(this.activeName) // 切换了一节药态导致二级药态也切换，需要模拟一下点击二级药态时的一些方法
+      // this.rightCategoryChangeCick(this.activeName) // 切换了一节药态导致二级药态也切换，需要模拟一下点击二级药态时的一些方法
     },
 
     // 二级药态被点击时

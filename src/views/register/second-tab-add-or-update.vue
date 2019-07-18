@@ -37,7 +37,7 @@
         </el-row>
         <el-row>
           <el-col :span="24"><span>挂号费：</span>{{registerAllData.RegisterAmount}}￥</el-col>
-          <el-col :span="24"><span>诊疗费：</span>{{registerAllData.ConsultationAmount}}￥</el-col>
+          <!--<el-col :span="24"><span>诊疗费：</span>{{registerAllData.ConsultationAmount}}￥</el-col>-->
 
           <el-col :span="24"><span>支付状态：</span>{{registerAllData.RegisterStatusName}}</el-col>
           <el-col :span="24"><span>付费方式：</span>{{registerAllData.PaymentWayName}}</el-col>

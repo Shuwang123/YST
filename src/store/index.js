@@ -33,7 +33,10 @@ const state = {
   accountLoginInfoAll: null, // result.data 来源session session来源login.vue
   accountIsDoctor: '', // 判断是否是医生 true false
   accountCurrentHandleStore: '', // （初始值居然是null，不是‘’刷新清空内存情况下）只针对当前手选门店 在采购单、药房、医生这几个模块 手动改变comstore的option时响应变化
-  allDoctorIdArr: '' // 医生类角色的所有角色Id
+  allDoctorIdArr: '', // 医生类角色的所有角色Id
+
+  // 2019 07 18
+  recipelSaveFiles: [] // 离开开方页时的存档，进入开方页时调用
 }
 
 const store = new Vuex.Store({

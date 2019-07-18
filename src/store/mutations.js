@@ -59,5 +59,15 @@ export default {
   setAllDoctorIdArr (state, content) {
     state.allDoctorIdArr = content // 先存给Vuex，同时下面顺手给sessionStorage
     setAccountData('allDoctorIdArr', content)
+  },
+
+  // 2019 07 18 离开开方页时的存档，进入开方页时调用
+  setRecipelSaveFiles (state, content) {
+    state.recipelSaveFiles.push(content) // 先存给Vuex，同时下面顺手给sessionStorage
+    setAccountData('recipels', state.recipelSaveFiles) // recipels: []
+  },
+  delRecipelSaveFiles (state, index) {
+    state.recipelSaveFiles.splice(index, 1) // 先存给Vuex，同时下面顺手给sessionStorage
+    setAccountData('recipels', state.recipelSaveFiles) // recipels: []
   }
 }

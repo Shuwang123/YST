@@ -1,5 +1,5 @@
 /**
- * 是否有权限
+ * 〇 是否有权限
  * @param {*} key    陈希登陆退出等问题，以下四个方法
  */
 export function isAuth (key) {
@@ -29,8 +29,8 @@ export function removeStore (name) {
 
 
 
-/** chenxi 陈希start   用的时候必须先：import {setStore} from '@/utils'
- * import {key} from '@/utils' 陈希2019.5.5对账号登陆后返回的：账号信息、是否是医生类账号、当前选中门店等状态进行封装；提供 给采购、挂号、开方模块 使用
+/** ① chenxi 陈希start   用的时候必须先：import {setStore} from '@/utils'
+ * import {key} from '@/utils' 陈希2019.5.5对账号登陆后返回的：账号信息、是否是医生类账号、当前选中门店等状态进行封装；提供给 采购、挂号、开方模块 使用
  * accountLoginInfoAll、accountIsDoctor、accountCurrentHandleStore 账号信息、是否是医生类账号、当前选中门店
  */
 export function setAccountData (name, content) {
@@ -46,12 +46,11 @@ export function getAccountData (name) {
   var getStr = window.sessionStorage.getItem(name) !== undefined ? window.sessionStorage.getItem(name) : ''
   return JSON.parse(getStr)
 }
-/** chenxi 陈希end    用的时候必须先：import {setStore} from '@/utils'
- */
 export function removeAccountData (name) {
   if (!name) return
   window.sessionStorage.removeItem(name)
 }
+
 
 
 

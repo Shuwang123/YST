@@ -65,5 +65,9 @@ new Vue({
     if (this.$store.getters.getAllDoctorIdArr === '') {
       this.$store.commit('setAllDoctorIdArr', getAccountData('allDoctorIdArr'))
     }
+
+    if (this.$store.getters.getRecipelSaveFiles === '') {
+      this.$store.commit('setRecipelSaveFiles', getAccountData('recipels'))
+    }
   }
 })
