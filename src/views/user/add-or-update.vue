@@ -55,12 +55,12 @@
           <p style="font-weight: 700;font-size: 18px;margin-bottom: 10px">医生类型账号：</p>
           <!--医生类型的账号，会设置挂号费 2019.07.01-->
           <el-form-item label="挂号费" prop="RegisterAmount">
-            <el-input-number v-model="dataForm.RegisterAmount" :precision="2" :min="1" :step="0.1" :max="1000"></el-input-number>
+            <el-input-number v-model="dataForm.RegisterAmount" :precision="2" :min="0" :step="0.1" :max="1000"></el-input-number>
           </el-form-item>
-          <el-form-item label="诊室" prop="Room">
+          <el-form-item label="诊室">
             <el-input v-model="dataForm.Room" placeholder="诊室"></el-input>
           </el-form-item>
-          <el-form-item label="排班" prop="OrderWork">
+          <el-form-item label="排班">
             <el-input v-model="dataForm.OrderWork" placeholder="排班"></el-input>
           </el-form-item>
         </el-col>
@@ -123,9 +123,9 @@ export default {
         // Password: Currency('密码不能为空'),
         NickName: Currency('别名必填'),
         Phone: Phone(1),
-        RegisterAmount: Currency('挂号费必填'),
-        Room: Currency('医生诊室必填'),
-        OrderWork: Currency('排班信息必填')
+        RegisterAmount: Currency('挂号费必填')
+        // Room: Currency('医生诊室必填'),
+        // OrderWork: Currency('排班信息必填')
         // StoreId: Currency('门店必选'),
         // RoleId: Currency('角色必选')
       }

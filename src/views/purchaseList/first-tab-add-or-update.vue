@@ -69,7 +69,7 @@
             <!--现采购价：就是进价!!!-->
             <el-table-column v-if="editType === 'A'" :key="Math.random()" label="现采购价" header-align="center" :align="$store.state.common.align" width="115">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.CostPrice" :precision="4" :step="0.01" :min="0.01" :max="1000" size="mini" controls-position="right" style="width: 105px"></el-input-number>
+                <el-input-number v-model="scope.row.CostPrice" :precision="4" :step="0.01" :min="0.001" :max="1000" size="mini" controls-position="right" style="width: 105px"></el-input-number>
               </template>
             </el-table-column>
             <el-table-column v-else prop="CostPrice" header-align="center" label="现采购价" align="center"></el-table-column>

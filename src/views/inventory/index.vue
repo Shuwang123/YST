@@ -2,7 +2,7 @@
     <div class="mod-storeStock">
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
       <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
-        <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+        <el-form :inline="true" :model="dataForm">
           <com-store :paramsFather="{
             'label_0': '',
             'size_1': 'mini',
@@ -12,11 +12,14 @@
             'must_5': true,
             'isTrigger': true
           }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
+
           <el-form-item>
-            <el-input v-model="dataForm.ProductName" placeholder="商品名称" size="mini" clearable style="width: 100px"></el-input>
+            <el-input v-model="dataForm.ProductName" placeholder="商品名称" size="mini"
+                      clearable @clear="tabChange()" @keyup.enter.native="tabChange()" style="width: 100px"></el-input>
           </el-form-item>
           <el-form-item>
-            <el-input v-model="dataForm.SpellName" placeholder="商品拼音" size="mini" clearable style="width: 100px"></el-input>
+            <el-input v-model="dataForm.SpellName" placeholder="商品拼音" size="mini"
+                      clearable @clear="tabChange()" @keyup.enter.native="tabChange()" style="width: 100px"></el-input>
           </el-form-item>
           <el-form-item>
             <el-input v-model="dataForm.ProductCodeOrBarCode" placeholder="商品编码" size="mini" clearable style="width: 100px"></el-input>
@@ -118,6 +121,7 @@ export default {
     tabChange () {
       this.$nextTick(() => {
         if (this.isVisible[0].child) {
+          this.$refs.firstTab.pageIndex = 1 // enter查询时出现的bug，这个bug和点击search按钮的bug处理方式差不多
           this.$refs.firstTab.getDataList()
         } else if (this.isVisible[1].child) {
           this.$refs.secondTab.getDataList()

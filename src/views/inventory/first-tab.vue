@@ -72,7 +72,7 @@
       <!--<el-table-column prop="AvgCostPrice" header-align="center" align="center" label="成本 (avg)" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column header-align="center" align="center" label="成本 (avg)" width="120" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <span>{{scope.row.AvgCostPrice.toFixed(2)}}</span>
+          <span>{{scope.row.AvgCostPrice.toFixed(4)}}</span>
         </template>
       </el-table-column>
       <!--<el-table-column prop="Amount" header-align="center" align="center" label="成本总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
@@ -83,7 +83,7 @@
           <el-input-number v-if="scope.row.isDblclick===true"
                            @blur="tableInputBlur(scope.row)"
                            v-model="scope.row.StoreSalePrice" :precision="2"
-                           :min="0.10" :step="0.01" :max="10000" size="mini"></el-input-number>
+                           :min="0.01" :step="0.10" :max="10000" size="mini"></el-input-number>
           <span v-else>{{Number(scope.row.StoreSalePrice).toFixed(2)}}</span>
         </template>
       </el-table-column>
@@ -176,7 +176,7 @@ export default {
         CategoryId: this.dataForm.CategoryId,
         Order: this.dataForm.Order
       }
-      // console.log(params)
+      console.log(params)
       API.storeStock.getStoreStock(params).then(result => {
         if (result.code === '0000') {
           this.dataList = result.data.map(item => {
@@ -184,9 +184,7 @@ export default {
             return item
           })
           this.totalPage = result.total
-          // console.log(result.data.map(item => {
-          //   return {name: item.ProductName, num: item.LeftRedLine}
-          // }))
+          console.log(result.data)
 
           API.drugs.getDrugsCategory().then(response => {
             if (response.code === '0000') {

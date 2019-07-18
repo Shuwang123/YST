@@ -58,7 +58,7 @@
       <el-table-column header-align="center" :align="$store.state.common.align" label="采购量" min-width="110">
         <template slot-scope="scope">
           <el-input-number v-model="scope.row.myNum" :precision="2" :step="1"
-                           @change="handleChange" :min="0.1" :max="10000" size="mini"></el-input-number>
+                           @change="handleChange" :min="1" :max="50000" size="mini"></el-input-number>
         </template>
       </el-table-column>
       <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->

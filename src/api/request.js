@@ -25,7 +25,6 @@ service.interceptors.request.use(config => {
 }, error => {
   return Promise.reject(error)
 })
-
 // response拦截器
 service.interceptors.response.use(response => {
   if (JSON.stringify(response.headers) == '{"content-type":"application/vnd.ms-excel;charset=UTF-8"}') {

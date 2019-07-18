@@ -22,7 +22,9 @@
         <el-menu-item class="site-topbar__avatar" index="1-2">
           <el-dropdown placement="bottom" :hide-on-click="false">
             <span class="el-dropdown-link">
-              <img src="~@/assets/img/avatar.png" :alt="$store.state.user.name" class="zhuanzhuanzhuan">{{$store.state.user.name}}
+              <img src="~@/assets/img/avatar.png" :alt="$store.state.user.name" class="zhuanzhuanzhuan">
+              <!--{{$store.state.user.name}}-->
+              {{$store.getters.getAccountLoginInfoAll.NickName}}
             </span>
             <el-dropdown-menu slot="dropdown">
               <el-dropdown-item @click.native="updatePasswordHandle()">修改密码</el-dropdown-item>

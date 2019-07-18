@@ -129,9 +129,10 @@
             :header-cell-style="$cxObj.tableHeaderStyle30px"
             style="width: 100%;">
             <component :is="this.leftTable" ref="leftCurrentTable"
-                       @tableEvent="delDrugs" @tableNumberEvent="consoleTable"
-                       @blurEvent="$refs.customInput.focus()">
+                       @blurEvent="$refs.customInput.focus()"
+                       @tableEvent="delDrugs" @tableNumberEvent="consoleTable">
             </component>
+            <!---->
             <!--v-if="addOrUpdateVisible" ref="patientListPop" @childEven="zairuFun"-->
           </el-table>
         </el-aside>
@@ -148,18 +149,33 @@
             <!--<el-button type="warning" plain disabled>名验方</el-button>-->
           </div>
 
-          <el-autocomplete
-            ref="customInput"
-            popper-class="my-autocomplete"
-            v-model="dataForm.SpellName"
-            :fetch-suggestions="querySearch"
-            :placeholder="`请输入药材拼音首字母 ${$store.getters.getAccountCurrentHandleStore}`" style="min-width: 190px; width: 100%" size="small"
-            @select="addDrugs" @blur="dataForm.SpellName = ''">
-            <i slot="prefix" class="el-input__icon el-icon-search"></i>
-            <template slot-scope="{ item }">
-              <div>{{ item.ShowName }} 余<span style="color: red">{{ item.Quantity }}</span></div>
-            </template>
-          </el-autocomplete>
+          <!--<el-autocomplete 这用组件实现的时候聚焦的时候玩不动，最后自己实现了一个类似的功能，下面挨着的那个-->
+            <!--ref="customInput"-->
+            <!--popper-class="my-autocomplete"-->
+            <!--v-model="dataForm.SpellName"-->
+            <!--:fetch-suggestions="querySearch"-->
+            <!--:placeholder="`请输入药材拼音首字母 ${$store.getters.getAccountCurrentHandleStore}`" style="min-width: 190px; width: 100%" size="small"-->
+            <!--@select="addDrgs" @blur="dataForm.SpellName = ''">-->
+            <!--<i slot="prefix" class="el-input__icon el-icon-search"></i>-->
+            <!--<template slot-scope="{ item }">-->
+              <!--<div>{{ item.ShowName }} 余<span style="color: red">{{ item.Quantity }}</span></div>-->
+            <!--</template>-->
+          <!--</el-autocomplete>-->
+          <div style="position: relative">
+            <el-input v-model="dataForm.SpellName" ref="customInput"
+                      @blur="dataForm.SpellName = ''; rightIsFocus = false"
+                      @focus="rightIsFocus = true"
+
+                      @keyup.38.native="autoSelectUpper()"
+                      @keyup.40.native="autoSelectDown()"
+                      @keyup.enter.native="addDrugs"
+                      placeholder="请输入药材拼音首字母" style="min-width: 190px; width: 100%" size="small"></el-input>
+            <ul v-show="rightIsFocus && dataForm.SpellName !== ''"
+                class="own-methods"
+                ref="ownMethods">
+              <li v-for="(item, index) in rightUlData" :key="item.Id" :class="[index === keyCode_40Count ? 'isLi' : '']">{{item.ShowName}}</li>
+            </ul>
+          </div>
 
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane v-for="item in drugsCategoryArr" :key="item.id" :label="item.text" :name="item.id"></el-tab-pane>
@@ -184,7 +200,7 @@
                     </el-col>
 
                     <el-col :span="6" v-if="item.Quantity > 0" style="text-align: right;padding-right: 7px">
-                      <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)"-->
+                      <!--<el-button type="text" size="mini" @click="cutOut = false; adDrugs(item)"-->
                       <el-button type="text" size="mini" @click="addDrugs(item)"
                                  style="font-size: 15px;font-weight: 600">添加</el-button>
                     </el-col>
@@ -226,10 +242,10 @@
               <span v-if="!unitIsG">
                 每日
                 <el-select v-model="dataForm.DrugRate_0" style="width: 70px">
-                  <el-option v-for="item in DrugRateOptionsArr"
+                  <el-option v-for="item in DrugRateOptionsArr_step0"
                              :key="item.lab" :label="item.lab" :value="item.val"></el-option>
                 </el-select>
-                剂，一剂分
+                剂，分
                 <el-select v-model="dataForm.DrugRate_1" style="width: 70px">
                   <el-option v-for="item in DrugRateOptionsArr"
                              :key="item.lab" :label="item.lab" :value="item.val"></el-option>
@@ -307,7 +323,7 @@
               <el-tooltip placement="top">
                 <div slot="content">医生直接开方时：<br/><br/>需填写挂号费</div>
                 <span v-if="$route.query.MobilePhone === '0'">
-                  + <el-input-number v-model="dataForm.ConsultationAmount" :min="1" :max="1000" style="width: 100px" size="mini"></el-input-number>
+                  + <el-input-number v-model="dataForm.ConsultationAmount" :min="0" :max="1000" style="width: 100px" size="mini"></el-input-number>
                 </span>
               </el-tooltip>
 
@@ -373,12 +389,13 @@ export default {
       }
     },
     'dataForm.SpellName': function (val, oldval) {
-      if (val === '') { // 只有清空SpellName，激活了的字母按钮都要清空样式
-        this.litterArr.forEach(item => {
-          item.isActive = false
-        })
-      }
+      // console.log(val)
+      var isEmpty = val === '' ? true : false // 右上角输入
       this.getStoreCategorytypeStock()
+
+      if (isEmpty) { // 输入框被清空时，要清空已激活的字母按钮的样式
+        this.litterArr.forEach(item => { item.isActive = false })
+      }
       // console.log(this.rightUlData)
     },
     Total (val, oldval) {
@@ -433,6 +450,7 @@ export default {
   },
   data () {
     return {
+      isActiveLi: true,
       rightButton: '',
       zhenduanOptions: [ // 诊断结果的下拉
         {
@@ -578,6 +596,11 @@ export default {
           label: '忌与西药同服'
         }
       ],
+      DrugRateOptionsArr_step0: [
+        {lab: '0.5', val: '0.5'},{lab: '1', val: '1'}, {lab: '2', val: '2'}, {lab: '3', val: '3'},
+        {lab: '4', val: '4'}, {lab: '5', val: '5'}, {lab: '6', val: '6'},
+        {lab: '7', val: '7'}, {lab: '8', val: '8'}, {lab: '9', val: '9'}
+      ],
       DrugRateOptionsArr: [
         {lab: '1', val: '1'}, {lab: '2', val: '2'}, {lab: '3', val: '3'},
         {lab: '4', val: '4'}, {lab: '5', val: '5'}, {lab: '6', val: '6'},
@@ -585,9 +608,51 @@ export default {
       ],
       unitIsG: false, // 除了丸子用法是g之外，用法都是次
       DrugRateOptionsArr_step5: [
-        {lab: '5', val: '5'}, {lab: '10', val: '10'}, {lab: '15', val: '15'},
-        {lab: '20', val: '20'}, {lab: '25', val: '25'}, {lab: '30', val: '30'},
-        {lab: '35', val: '35'}, {lab: '40', val: '40'}, {lab: '45', val: '45'},
+        {lab: '5', val: '5'},
+        {lab: '6', val: '6'},
+        {lab: '7', val: '7'},
+        {lab: '8', val: '8'},
+        {lab: '9', val: '9'},
+        {lab: '10', val: '10'},
+        {lab: '11', val: '11'},
+        {lab: '12', val: '12'},
+        {lab: '13', val: '13'},
+        {lab: '14', val: '14'},
+        {lab: '15', val: '15'},
+        {lab: '16', val: '16'},
+        {lab: '17', val: '17'},
+        {lab: '18', val: '18'},
+        {lab: '19', val: '19'},
+        {lab: '20', val: '20'},
+        {lab: '21', val: '21'},
+        {lab: '22', val: '22'},
+        {lab: '23', val: '23'},
+        {lab: '24', val: '24'},
+        {lab: '25', val: '25'},
+        {lab: '26', val: '26'},
+        {lab: '27', val: '27'},
+        {lab: '28', val: '28'},
+        {lab: '29', val: '29'},
+        {lab: '30', val: '30'},
+        {lab: '31', val: '31'},
+        {lab: '32', val: '32'},
+        {lab: '33', val: '33'},
+        {lab: '34', val: '34'},
+        {lab: '35', val: '35'},
+        {lab: '36', val: '36'},
+        {lab: '37', val: '37'},
+        {lab: '38', val: '38'},
+        {lab: '39', val: '39'},
+        {lab: '40', val: '40'},
+        {lab: '41', val: '41'},
+        {lab: '42', val: '42'},
+        {lab: '43', val: '43'},
+        {lab: '44', val: '44'},
+        {lab: '45', val: '45'},
+        {lab: '46', val: '46'},
+        {lab: '47', val: '47'},
+        {lab: '48', val: '48'},
+        {lab: '49', val: '49'},
         {lab: '50', val: '50'}
       ],
       cutOut: true, // 收起，显示
@@ -611,7 +676,6 @@ export default {
       oldTwoTabsName: '饮片', // 二级药态记录
       activeName: '1001',
 
-      dataList: [],
       leftTable: 'TableOne', // 左侧表格 组件的引用名切换哟，这的值决定
       leftTableData: [], // 左侧表格的数据
       rightUl: '', // 右侧列表
@@ -646,11 +710,11 @@ export default {
 
         SpellName: '',
         // Dte: '', // 用药间隔
-        DrugRate_0: '3', // 每日几剂，几次 搭配计算属性
-        DrugRate_1: '1', // 一剂分几次服
+        DrugRate_0: '1', // 每日几剂，几次 搭配计算属性
+        DrugRate_1: '3', // 一剂分几次服
         DrugRate_2: '5', // 一次几克
 
-        DrugRate_3: '饭前1小时', // 饭前服、饭后服、睡前服...
+        DrugRate_3: '饭后1小时', // 饭前服、饭后服、睡前服...
         DoctorAdvice: [], // 医嘱
         RegisterAmount: 0, // 挂号费
         ConsultationAmount: 0, // 诊疗费
@@ -669,14 +733,18 @@ export default {
         DrugRate_0: Currency('用法必填')
       },
       Total: 1, // 剂数
-      allMoney: 0
+      allMoney: 0,
+
+      isClickRightAddButton: false,
+      rightIsFocus: false,
+      keyCode_40Count: 0 // 在右上角的输入框中按下‘↓’键，总次数统计
     }
   },
   computed: {
     // 服用方法
     'DrugRate': function () {
       if (!this.unitIsG) {
-        return `每日${this.dataForm.DrugRate_0}剂，一剂分${this.dataForm.DrugRate_1}次，${this.dataForm.DrugRate_3}服`
+        return `每日${this.dataForm.DrugRate_0}剂，分${this.dataForm.DrugRate_1}次，${this.dataForm.DrugRate_3}服`
       } else {
         return `每日${this.dataForm.DrugRate_0}次，一次${this.dataForm.DrugRate_2}克，${this.dataForm.DrugRate_3}服`
       }
@@ -701,6 +769,17 @@ export default {
     var youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
     var zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
     this.chenxiHeight = parseInt(youHeight) - parseInt(zuoHeight)
+  },
+  updated () {
+    // console.log('out')
+    if (this.isClickRightAddButton) {
+      // console.log('--in')
+      this.$nextTick(() => {
+        this.$refs.leftCurrentTable.$refs.chd.focus() //
+      })
+      this.isClickRightAddButton = false
+    }
+    // console.log('底下分割线——————————————————')
   },
   methods: {
     selHide1 () { // 当前select的下拉option块部分 隐藏的时候触发此方法
@@ -763,26 +842,31 @@ export default {
           this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
           this.dataForm.oldCategoryOneName = '汤剂'
           this.unitIsG = false
+          this.dataForm.DrugRate_0 = '1'
           break
         case '3':
           this.filterCategory(['1003']) // 制膏只有三九
           this.dataForm.oldCategoryOneName = '制膏'
           this.unitIsG = false
+          this.dataForm.DrugRate_0 = '1'
           break
         case '4':
           this.filterCategory(['1001', '1002']) // 制丸只有饮片
           this.dataForm.oldCategoryOneName = '水泛丸'
           this.unitIsG = true
+          this.dataForm.DrugRate_0 = '3'
           break
         case '5':
           this.filterCategory(['1001', '1002']) // 制丸只有饮片
           this.dataForm.oldCategoryOneName = '水蜜丸'
           this.unitIsG = true
+          this.dataForm.DrugRate_0 = '3'
           break
         case '2':
           this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
           this.dataForm.oldCategoryOneName = '外用'
           this.unitIsG = false
+          this.dataForm.DrugRate_0 = '1'
           break
       }
     },
@@ -912,10 +996,13 @@ export default {
     },
     // 右侧药材列表展示的模块：获取 对应门店 对应药态下的 对应药材库
     getStoreCategorytypeStock () {
+      this.rightUlData = [] // 网速可能差时，响应的值可以能与操作对应不上，就容易出现bug
+      this.totalPage = 0
+      this.keyCode_40Count = 0 // 在右上角的输入框中按下‘↓’键，总次数统计
       API.drugs.getDrugsList({
         Name: '',
         PageIndex: this.pageIndex,
-        PageSize: this.pageSize,
+        PageSize: 50,
         IsPaging: true,
         SpellName: this.dataForm.SpellName,
         CategoryId: this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001
@@ -923,13 +1010,11 @@ export default {
         CodeOrBarCode: '' // 暂无
       }).then(result => {
         if (result.code === '0000' && result.data.length > 0) {
-          this.dataList = result.data // 这个dataList有啥子用哟？好像没用起来
           this.rightUlData = result.data
           this.totalPage = result.total
           // console.log(result.data)
         } else {
           // this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
-          this.dataList = []
           this.rightUlData = []
           this.totalPage = 0
           this.$message({ message: `${result.message}`, type: 'warning', duration: 3000 })
@@ -939,13 +1024,31 @@ export default {
     },
 
     // 右上角的下拉options展示
-    querySearch (keyWord, callback) {
-      if (keyWord === '') {
-        let arr = []
-        callback(arr)
-        return false
-      } else { // 这个返回的内容就是下拉options的内容
-        setTimeout(() => { callback(this.rightUlData) }, 400)
+    // querySearch (keyWord, callback) {
+    //   if (keyWord === '') {
+    //     callback([]) // return false
+    //   } else { // 这个返回的内容就是下拉options的内容
+    //     setTimeout(() => { callback(this.rightUlData) }, 400)
+    //   }
+    // },
+    autoSelectUpper () {
+      var len = this.rightUlData.length
+      // console.log('上', len)
+      if (this.keyCode_40Count > 0) {
+        this.keyCode_40Count--
+        if (this.keyCode_40Count >= 5) {
+          this.$refs.ownMethods.scrollBy(0, -30)
+        }
+      }
+    },
+    autoSelectDown () {
+      var len = this.rightUlData.length
+      // console.log('下', len)
+      if (this.keyCode_40Count < len - 1) {
+        this.keyCode_40Count++
+        if (this.keyCode_40Count > 6) {
+          this.$refs.ownMethods.scrollBy(0, 30)
+        }
       }
     },
     // 后面有三个方法会共同调用这个方法：计算总价
@@ -958,18 +1061,26 @@ export default {
     },
     // 1.当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
-      // console.log(row)
-      if (this.leftTableData.some(item => item.Code === row.Code)) {
-        this.$message(`[${row.ShowName}] 已添加！`)
-        return false
-      }
-      // row.myNum = 0 // 让后端加字段，要改所有的类型的，这自己加，就没这种问题了myNum
-      this.leftTableData.push(row)
+      var selectRow = this.rightUlData[this.keyCode_40Count]
+      // console.log(row, selectRow) // row有可能是enter事件对象obj，也有可能就是被click的当行的row
 
-      // this.$nextTick(() => {}) push数据后，需要聚焦，为什么不用nextTick，因为聚焦不了啊，弄个时间器把时间间隔弄稳定点
-      setTimeout(() => {
-        this.$refs.leftCurrentTable.$refs.chd.focus()
-      }, 500)
+      if (row.Code === undefined) { // 通过enter添加时：row代表enter事件对象obj
+        if (this.leftTableData.some(item => item.Code === selectRow.Code)) {
+          this.$message(`[${selectRow.ShowName}] 已添加！`)
+          return false
+        }
+        this.isClickRightAddButton = true // leftCurrentTable
+        this.leftTableData.push(selectRow)
+      } else { // 通过click添加时：row代表一行的数据
+        if (this.leftTableData.some(item => item.Code === row.Code)) {
+          this.$message(`[${row.ShowName}] 已添加！`)
+          return false
+        }
+        this.isClickRightAddButton = true // leftCurrentTable
+        this.leftTableData.push(row)
+      }
+
+      // row.myNum = 0 // 让后端加字段，要改所有的类型的，这自己加，就没这种问题了myNum
       this.countTotalPrice(this.leftTableData)
     },
     // 2.当点击左边table的‘删除’按钮的时候
@@ -1245,6 +1356,43 @@ export default {
   }
 }
 .doctor-recipel /deep/ {
+  /*2019 07 18 实现聚焦功能的时候，发现官网给的组件使用不方便，自己大概模拟的一个*/
+  .own-methods {
+    position: absolute;
+    top: 36px;
+    width: 100%;
+    min-height: 231px;
+    max-height: 231px;
+    padding: 7px 0 0;
+    border: 1px solid #EBEEF5;
+    border-radius: 5px;
+    -webkit-box-shadow: 0 0 10px 0 #EBEEF5;
+    box-shadow: 0 0 10px 0 #EBEEF5;
+    z-index: 999;
+    overflow: scroll;
+    background-color: #fff;
+    li {
+      box-sizing: content-box;
+      height: 20px;
+      line-height: 20px;
+      padding: 5px 0 5px 10px;
+    }
+    .isLi {
+      background-color: bisque;
+    }
+    &::-webkit-scrollbar {width: 7px;}
+    &::-webkit-scrollbar-thumb {
+      border-radius: 3px;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
+      background-color: #eee;
+    }
+    &::-webkit-scrollbar-track {
+      border-radius: 0;
+      box-shadow: inset 0 0 5px rgba(0,0,0,0);
+      background-color: rgba(0,0,0,0);
+    }
+  }
+
   /*诊断结果的样式*/
   .el-select-dropdown__wrap {padding-bottom: 5px;}
   .el-select-dropdown__item {float: left; display: block !important;}

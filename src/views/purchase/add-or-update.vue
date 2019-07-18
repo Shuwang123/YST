@@ -8,7 +8,8 @@
       @close="handleClose">
       <el-form :model="dataForm" :rules="dataRule" ref="dataForm" label-width="0" :inline="true">
         <el-form-item label="" prop="SpellName">
-          <el-input v-model="dataForm.SpellName" placeholder="拼音搜索" size="mini" clearable @clear="drugsSearch()"></el-input>
+          <el-input v-model="dataForm.SpellName" placeholder="拼音搜索" @keyup.enter.native="drugsSearch()"
+                    size="mini" clearable @clear="drugsSearch()"></el-input>
         </el-form-item>
         <el-form-item label="">
           <el-select v-model="dataForm.Order" placeholder="排序" clearable @change="drugsSearch()" size="mini" style="width: 120px">
@@ -51,7 +52,7 @@
           @size-change="sizeChangeHandle"
           @current-change="currentChangeHandle"
           :current-page="pageIndex"
-          :page-sizes="[10, 20, 50, 100]"
+          :page-sizes="[50, 100, 150]"
           :page-size="pageSize"
           :total="totalPage"
           layout="prev, pager, next, jumper, sizes, total">
@@ -78,7 +79,7 @@ export default {
       visible: false,
       dataListLoading: false, // 加载v-loading
       pageIndex: 1,
-      pageSize: 10,
+      pageSize: 100,
       totalPage: 0,
       orderArr: [{
         text: '库存减预警（小到大）',

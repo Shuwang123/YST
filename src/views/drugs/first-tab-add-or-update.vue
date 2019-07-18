@@ -24,6 +24,7 @@
       <el-form-item label="单位" prop="Unit">
         <el-select v-model="dataForm.Unit" placeholder="请选择药品单位" style="width: 184px">
           <el-option label="克" value="g"></el-option>
+          <el-option label="条" value="条"></el-option>
           <el-option label="毫升" value="ML"></el-option>
         </el-select>
       </el-form-item>

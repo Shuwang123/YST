@@ -38,7 +38,7 @@ export default {
   data () {
     return {
       ruleForm: {
-        name: 'superman',
+        name: '',
         pass: ''
       },
       rules: {
