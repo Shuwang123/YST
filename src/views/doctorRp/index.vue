@@ -130,7 +130,8 @@
             style="width: 100%;">
             <component :is="this.leftTable" ref="leftCurrentTable"
                        @blurEvent="$refs.customInput.focus()"
-                       @tableEvent="delDrugs" @tableNumberEvent="consoleTable">
+                       @tableEvent="delDrugs"
+                       @tableNumberEvent="consoleTable">
             </component>
             <!---->
             <!--v-if="addOrUpdateVisible" ref="patientListPop" @childEven="zairuFun"-->
@@ -140,17 +141,16 @@
         <!--右侧药材：tabs标签页切换引导组件切换-->
         <!---->
         <!--其实这儿感觉可以不用传递一级药态dataForm.CategoryOne，直接传递-2查询全部，因为载入后我做了相应的自动切换药态的功能-->
-        <!---->
+        <!--名验方-->
         <el-main width="25%" style="padding: 0 10px 40px; border-bottom: 1px solid #DCDFE6;">
           <div style="margin: 5px 0;width: 279px;overflow: hidden;cursor: pointer">
             <el-button type="warning" plain size="mini" @click="openAgreementRecipelList('40', '-2')">协定方</el-button>
             <el-button type="warning" plain size="mini" @click="openAgreementRecipelList('41', '-2')">经典方</el-button>
             <el-button type="warning" plain size="mini" @click="openAgreementRecipelList('42', '-2')">理疗产品</el-button>
-            <!--<el-button type="warning" plain disabled>名验方</el-button>-->
           </div>
 
           <!--<el-autocomplete 这用组件实现的时候聚焦的时候玩不动，最后自己实现了一个类似的功能，下面挨着的那个-->
-            <!--ref="customInput"-->
+            <!--ref="customnput"-->
             <!--popper-class="my-autocomplete"-->
             <!--v-model="dataForm.SpellName"-->
             <!--:fetch-suggestions="querySearch"-->
@@ -162,7 +162,8 @@
             <!--</template>-->
           <!--</el-autocomplete>-->
           <div style="position: relative">
-            <el-input v-model="dataForm.SpellName" ref="customInput"
+            <el-input v-model="dataForm.SpellName"
+                      ref="customInput"
                       @blur="dataForm.SpellName = ''; rightIsFocus = false"
                       @focus="rightIsFocus = true"
 
@@ -173,7 +174,9 @@
             <ul v-show="rightIsFocus && dataForm.SpellName !== ''"
                 class="own-methods"
                 ref="ownMethods">
-              <li v-for="(item, index) in rightUlData" :key="item.Id" :class="[index === keyCode_40Count ? 'isLi' : '']">{{item.ShowName}}</li>
+              <li v-for="(item, index) in rightUlData" :key="item.Id" :class="[index === keyCode_40Count ? 'isLi' : '']">
+                {{ item.ShowName }} 余<span style="color: red">{{ item.Quantity }}</span>
+              </li>
             </ul>
           </div>
 
@@ -735,8 +738,8 @@ export default {
       Total: 1, // 剂数
       allMoney: 0,
 
-      isClickRightAddButton: false,
-      rightIsFocus: false,
+      isClickRightAddButton: false, // 搭配 updated () {} 聚焦
+      rightIsFocus: false, // 判断右上角输入框是否处于聚焦状态
       keyCode_40Count: 0 // 在右上角的输入框中按下‘↓’键，总次数统计
     }
   },
@@ -770,16 +773,12 @@ export default {
     var zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
     this.chenxiHeight = parseInt(youHeight) - parseInt(zuoHeight)
   },
+  // 右上角的输入框按下enter的时候（或者单击add按钮的时候），左边的table最后行聚焦
   updated () {
-    // console.log('out')
     if (this.isClickRightAddButton) {
-      // console.log('--in')
-      this.$nextTick(() => {
-        this.$refs.leftCurrentTable.$refs.chd.focus() //
-      })
-      this.isClickRightAddButton = false
+      this.$refs.leftCurrentTable.$refs.chd.focus()
+      this.isClickRightAddButton = false // 搭配 updated () {} 聚焦
     }
-    // console.log('底下分割线——————————————————')
   },
   methods: {
     selHide1 () { // 当前select的下拉option块部分 隐藏的时候触发此方法
@@ -1027,23 +1026,22 @@ export default {
     // querySearch (keyWord, callback) {
     //   if (keyWord === '') {
     //     callback([]) // return false
-    //   } else { // 这个返回的内容就是下拉options的内容
+    //   } else { // 这个返回的内容 就是 下拉options的内容
     //     setTimeout(() => { callback(this.rightUlData) }, 400)
     //   }
     // },
+    // ‘上’ 键
     autoSelectUpper () {
-      var len = this.rightUlData.length
-      // console.log('上', len)
       if (this.keyCode_40Count > 0) {
         this.keyCode_40Count--
         if (this.keyCode_40Count >= 5) {
-          this.$refs.ownMethods.scrollBy(0, -30)
+          this.$refs.ownMethods.scrollBy(0, -30) // 30px的高度是根据li的高度来定的
         }
       }
     },
+    // ‘下’ 键
     autoSelectDown () {
       var len = this.rightUlData.length
-      // console.log('下', len)
       if (this.keyCode_40Count < len - 1) {
         this.keyCode_40Count++
         if (this.keyCode_40Count > 6) {
@@ -1062,21 +1060,25 @@ export default {
     // 1.当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
       var selectRow = this.rightUlData[this.keyCode_40Count]
-      // console.log(row, selectRow) // row有可能是enter事件对象obj，也有可能就是被click的当行的row
+      // console.log(row, selectRow)
+      // row 有可能是enter事件的obj对象，也有可能就是被click时当行的row
 
-      if (row.Code === undefined) { // 通过enter添加时：row代表enter事件对象obj
-        if (this.leftTableData.some(item => item.Code === selectRow.Code)) {
+      // 通过enter添加：此时row代表enter事件的obj对象
+      if (row.Code === undefined) {
+        if (!selectRow) { return false } // 没有搜索结果的时候敲回车不让执行
+        if (this.dataForm.SpellName === '') { return false } // 在查询关键字为空的是以后敲回车也不让执行
+        if (this.leftTableData.some(item => item.Code === selectRow.Code)) { // 发现重复添加的药材时也不让执行
           this.$message(`[${selectRow.ShowName}] 已添加！`)
           return false
         }
-        this.isClickRightAddButton = true // leftCurrentTable
+        this.isClickRightAddButton = true // 搭配 updated () {} 聚焦
         this.leftTableData.push(selectRow)
-      } else { // 通过click添加时：row代表一行的数据
+      } else { // 通过click添加：此时row代表一行的数据
         if (this.leftTableData.some(item => item.Code === row.Code)) {
           this.$message(`[${row.ShowName}] 已添加！`)
           return false
         }
-        this.isClickRightAddButton = true // leftCurrentTable
+        this.isClickRightAddButton = true
         this.leftTableData.push(row)
       }
 
@@ -1096,8 +1098,7 @@ export default {
     // 3.改变myNum
     consoleTable () {
       this.leftTableData.push() // 这个可能会非常懵逼，目的是每次改变任何的myNum的值都会重新渲染左边的table，把push()拿掉就能找到问题在哪，这就是这个push()没任何实际参数但还是要写一个在这的原因；别的方法vue的$set也行
-      this.countTotalPrice(this.leftTableData)
-      // console.log(this.leftTableData)
+      this.countTotalPrice(this.leftTableData) // console.log(this.leftTableData)
     },
 
     // 二级药态被锁定时：其之后的相关的逻辑需要重新跑一次
