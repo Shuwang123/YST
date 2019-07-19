@@ -366,8 +366,8 @@ import TableFour from './table-four'
 export default {
   // 离开开方页
   beforeRouteLeave (to, from, next) {
-    if (from.path === '/doctor/recipel' && this.leftTableData.join() !== '' && this.dataForm.MobilePhone !== '') {
-      this.$confirm(`是否在离开页面前临时保存处方？`, '提示', {
+    if (from.path === '/doctor/recipel' && this.leftTableData.join() !== '' && this.dataForm.MobilePhone !== '' && this.isSubmit === false) {
+      this.$confirm(`是否在离开页面前保存临时处方？`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         closeOnClickModal: false,
@@ -380,7 +380,7 @@ export default {
           memberPhone: this.dataForm.MobilePhone, // 会员号（患者）
 
           oneDrugCategory: this.dataForm.oldCategoryOne,
-          childDrugCategory: this.dataForm.oldTabsName,
+          childDrugCategory: this.oldTabsName,
           zhusu: this.dataForm.MainSuit,
           zhenduan: this.dataForm.DiseaseInfo,
 
@@ -402,12 +402,11 @@ export default {
   beforeRouteEnter (to, from, next) {
     if (to.path === '/doctor/recipel') {
       next(vm => {
-        // 这儿的[]==[]为false…… 还有神奇的vm，都不晓得哪冒出来的，居然可以直接用，这查查资料
+        // vm，都不晓得哪冒出来的，居然可以直接用，这查查资料
         if (vm.$store.getters.getRecipelSaveFiles.some(item => {
           return item.memberPhone === vm.$route.query.MobilePhone && item.doctorId === vm.$route.query.DoctorId
         })) {
-          // console.log(window.sessionStorage.getItem('modPurchaseList'))
-          vm.$confirm(`你有历史处方，是否调用？`, '提示', {
+          vm.$confirm(`你有历史开方记录，是否调用？`, '提示', {
             confirmButtonText: '确定',
             cancelButtonText: '取消',
             closeOnClickModal: false,
@@ -418,13 +417,35 @@ export default {
             console.log(sessionRecipel)
             sessionRecipel.forEach((item, index) => {
               if (item.memberPhone === vm.$route.query.MobilePhone && item.doctorId === vm.$route.query.DoctorId) {
-                vm.leftTableData = sessionRecipel[index].recipelItems
+                vm.dataForm.oldCategoryOne = sessionRecipel[index].oneDrugCategory
+                vm.dataForm.CategoryOne = sessionRecipel[index].oneDrugCategory
+                vm.oldTabsName = sessionRecipel[index].childDrugCategory
+                vm.activeName = sessionRecipel[index].childDrugCategory
+                vm.getStoreCategorytypeStock()
+
+                vm.leftTableData = sessionRecipel[index].recipelItems // 还原处方
+                // 患者信息不用还原，不管是直接开方进来后选患者，还是就诊进来，都自己就有患者信息了，所以不用利用session中的患者电话重新查询了
+                vm.dataForm.MainSuit = sessionRecipel[index].zhusu
+                vm.dataForm.DiseaseInfo = sessionRecipel[index].zhenduan
+                vm.Total = sessionRecipel[index].agent
+                vm.dataForm.DrugRate_0 = sessionRecipel[index].uses[0]
+                vm.dataForm.DrugRate_1 = sessionRecipel[index].uses[1]
+                vm.dataForm.DrugRate_2 = sessionRecipel[index].uses[2]
+                vm.dataForm.DrugRate_3 = sessionRecipel[index].uses[3]
+                vm.dataForm.DoctorAdvice = sessionRecipel[index].yizhu
+
                 vm.$store.commit('delRecipelSaveFiles', index)
                 return false
               }
             })
           }).catch(() => {
-
+            var sessionRecipel = vm.$store.getters.getRecipelSaveFiles
+            sessionRecipel.forEach((item, index) => {
+              if (item.memberPhone === vm.$route.query.MobilePhone && item.doctorId === vm.$route.query.DoctorId) {
+                vm.$store.commit('delRecipelSaveFiles', index)
+                return false
+              }
+            })
           })
         }
         next()
@@ -520,8 +541,7 @@ export default {
   },
   data () {
     return {
-      isActiveLi: true,
-      rightButton: '',
+      isActiveLi: true, // 右上角的药材拼音输入框的下拉样式
       zhenduanOptions: [ // 诊断结果的下拉
         {
           value: '咳嗽',
@@ -807,7 +827,8 @@ export default {
 
       isClickRightAddButton: false, // 搭配 updated () {} 聚焦
       rightIsFocus: false, // 判断右上角输入框是否处于聚焦状态
-      keyCode_40Count: 0 // 在右上角的输入框中按下‘↓’键，总次数统计
+      keyCode_40Count: 0, // 在右上角的输入框中按下‘↓’键，总次数统计
+      isSubmit: false // 退出保存判断
     }
   },
   computed: {
@@ -892,8 +913,51 @@ export default {
       this.dataForm.Code = row.Code
       // this.dataForm.RegisterAmount = 0 // 这两个没用，就只是提交的时候直接提交
       // this.dataForm.ConsultationAmount = 0
-    },
+      if (this.$store.getters.getRecipelSaveFiles.some(item => {
+        return item.memberPhone === this.dataForm.MobilePhone && item.doctorId === this.$route.query.DoctorId
+      })) {
+        this.$confirm(`你有历史开方记录，是否调用？`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          closeOnClickModal: false,
+          closeOnPressEscape: false,
+          type: 'warning'
+        }).then(() => {
+          var sessionRecipel = this.$store.getters.getRecipelSaveFiles
+          sessionRecipel.forEach((item, index) => {
+            if (item.memberPhone === this.dataForm.MobilePhone && item.doctorId === this.$route.query.DoctorId) {
+              this.dataForm.oldCategoryOne = sessionRecipel[index].oneDrugCategory
+              this.dataForm.CategoryOne = sessionRecipel[index].oneDrugCategory
+              this.oldTabsName = sessionRecipel[index].childDrugCategory
+              this.activeName = sessionRecipel[index].childDrugCategory
+              this.getStoreCategorytypeStock()
 
+              this.leftTableData = sessionRecipel[index].recipelItems // 还原处方
+              // 患者信息不用还原，不管是直接开方进来后选患者，还是就诊进来，都自己就有患者信息了，所以不用利用session中的患者电话重新查询了
+              this.dataForm.MainSuit = sessionRecipel[index].zhusu
+              this.dataForm.DiseaseInfo = sessionRecipel[index].zhenduan
+              this.Total = sessionRecipel[index].agent
+              this.dataForm.DrugRate_0 = sessionRecipel[index].uses[0]
+              this.dataForm.DrugRate_1 = sessionRecipel[index].uses[1]
+              this.dataForm.DrugRate_2 = sessionRecipel[index].uses[2]
+              this.dataForm.DrugRate_3 = sessionRecipel[index].uses[3]
+              this.dataForm.DoctorAdvice = sessionRecipel[index].yizhu
+
+              this.$store.commit('delRecipelSaveFiles', index)
+              return false
+            }
+          })
+        }).catch(() => {
+          var sessionRecipel = this.$store.getters.getRecipelSaveFiles
+          sessionRecipel.forEach((item, index) => {
+            if (item.memberPhone === this.dataForm.MobilePhone && item.doctorId === this.$route.query.DoctorId) {
+              this.$store.commit('delRecipelSaveFiles', index)
+              return false
+            }
+          })
+        })
+      }
+    },
     // 打开协定方列表接口
     openAgreementRecipelList (typeNum, Category) {
       this.addOrUpdateVisibleAgreement = true
@@ -1311,6 +1375,7 @@ export default {
             cancelButtonText: '取消',
             type: 'warning'
           }).then(() => {
+            this.isSubmit = true // 提交之后的退出，不用保存处方了（退出保存控制）
             // 此为普通流程的开方参数，常规流程的开方的参数应该传给edit接口
             var paramsEdit = {
               id: this.$route.query.registerFormId, //
