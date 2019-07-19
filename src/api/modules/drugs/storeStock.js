@@ -33,7 +33,7 @@ export function getStockHistory (params) {
 // 获取批次信息
 export function getStockBatch (params) {
   return request({
-    url: requestUrl('/YstStoreInventory/LoadDataHistory'),
+    url: requestUrl('/YstStoreInventory/LoadDataBatch'),
     method: 'post',
     data: requestParam(params)
   })

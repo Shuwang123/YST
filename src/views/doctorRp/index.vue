@@ -164,7 +164,7 @@
           <div style="position: relative">
             <el-input v-model="dataForm.SpellName"
                       ref="customInput"
-                      @blur="dataForm.SpellName = ''; rightIsFocus = false"
+                      @blur="rightTopInputBlur()"
                       @focus="rightIsFocus = true"
 
                       @keyup.38.native="autoSelectUpper()"
@@ -174,7 +174,8 @@
             <ul v-show="rightIsFocus && dataForm.SpellName !== ''"
                 class="own-methods"
                 ref="ownMethods">
-              <li v-for="(item, index) in rightUlData" :key="item.Id" :class="[index === keyCode_40Count ? 'isLi' : '']">
+              <li v-for="(item, index) in rightUlData" :key="item.Id"
+                  :class="[index === keyCode_40Count ? 'isLi' : '']" @click="addDrugs(item)">
                 <span style="display: inline-block; vertical-align: middle; width: 60px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">{{ item.ShowName }}</span>
                 <span style="color: #e4393c;">{{item.CategoryId === '1002' ? '精品' : ''}}</span>
                 余<span style="color: red">{{ item.Quantity }}</span>
@@ -1146,7 +1147,7 @@ export default {
         if (result.code === '0000' && result.data.length > 0) {
           this.rightUlData = result.data
           this.totalPage = result.total
-          console.log(result.data)
+          // console.log(result.data)
         } else {
           // this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
           this.rightUlData = []
@@ -1184,6 +1185,13 @@ export default {
         }
       }
     },
+    // 鼠标点击时，输入框失去焦点，其实li就没被点中，导致click=addDrugs并没有触发，所以li延迟一下才消失比较好
+    rightTopInputBlur () {
+      setTimeout(() => {
+        this.rightIsFocus = false
+        this.dataForm.SpellName = ''
+      }, 100)
+    },
     // 后面有三个方法会共同调用这个方法：计算总价
     countTotalPrice (obj) {
       var sum = 0
@@ -1195,7 +1203,7 @@ export default {
     // 1.当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
       var selectRow = this.rightUlData[this.keyCode_40Count]
-      // console.log(row, selectRow)
+      console.log(row, selectRow)
       // row 有可能是enter事件的obj对象，也有可能就是被click时当行的row
 
       // 通过enter添加：此时row代表enter事件的obj对象
@@ -1215,6 +1223,10 @@ export default {
       } else { // 通过click添加：此时row代表一行的数据
         if (this.leftTableData.some(item => item.Code === row.Code)) {
           this.$message(`[${row.ShowName}] 已添加！`)
+          return false
+        }
+        if (row.Quantity <= 0) { // 发现重复添加的药材时也不让执行
+          this.$message(`[${selectRow.ShowName}] 没有库存！`)
           return false
         }
         this.isClickRightAddButton = true
@@ -1519,6 +1531,10 @@ export default {
       height: 20px;
       line-height: 20px;
       padding: 5px 0 5px 10px;
+      &:hover {
+        cursor: pointer;
+        background-color: bisque;
+      }
     }
     .isLi {
       background-color: bisque;

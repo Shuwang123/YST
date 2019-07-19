@@ -108,9 +108,8 @@ export default {
         PageSize: this.pageSize,
         IsPaging: this.IsPaging,
         StoreId: this.fatherDataForm.StoreId, // 门店ID
-        ProductCodeOrBarCode: this.fatherDataForm.ProductCodeOrBarCode, // 产品编码
-        // ProductName: this.fatherDataForm.ProductName, // 产品名称
-        SupplierId: this.dataForm.SupplierId,
+        SupplierId: this.dataForm.SupplierId, // 供应商
+        ProductCodeOrBarCode: this.fatherDataForm.ProductCodeOrBarCode, // 产品编码 // ProductName: this.fatherDataForm.ProductName, // 产品名称
         BatchNo: this.dataForm.BatchNo
       }
       API.storeStock.getStockBatch(params).then(result => {
