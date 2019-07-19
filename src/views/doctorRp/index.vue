@@ -175,7 +175,9 @@
                 class="own-methods"
                 ref="ownMethods">
               <li v-for="(item, index) in rightUlData" :key="item.Id" :class="[index === keyCode_40Count ? 'isLi' : '']">
-                {{ item.ShowName }} 余<span style="color: red">{{ item.Quantity }}</span>
+                <span style="display: inline-block; vertical-align: middle; width: 60px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">{{ item.ShowName }}</span>
+                <span style="color: #e4393c;">{{item.CategoryId === '1002' ? '精品' : ''}}</span>
+                余<span style="color: red">{{ item.Quantity }}</span>
               </li>
             </ul>
           </div>
@@ -186,20 +188,20 @@
           <div class="rightUlStyle">
             <ul class="ul-true">
               <li v-for="item in rightUlData" :key="item.Id">
-                <el-tooltip class="item" effect="light" :content="item.ShowName+' [余量'+item.Quantity+']'" placement="left">
+                <el-tooltip class="item" effect="light" :content="`${item.ShowName} [余量${item.Quantity}]${item.CategoryId === '1002' ? '精' : ''}`" placement="left">
                   <el-row style="clear: both">
 
                     <!--药材名+剩余量+操作-->
                     <el-col :span="6">
-                    <span v-text="item.ShowName === null ? '无' : item.ShowName"
-                          style="display: inline-block; vertical-align: middle; width: 50px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">
-                  </span>
+                      <span v-text="item.ShowName === null ? '无' : item.ShowName"
+                            style="display: inline-block; vertical-align: middle; width: 50px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">
+                      </span>
                     </el-col>
                     <el-col :span="12" :style="{color: item.Quantity - item.RedLine > 0 ? '#333' : item.Quantity === 0 ? '#ccc' : '#e4392c'}">
-                  <span style="display: inline-block; vertical-align: middle;text-align: left;padding-left: 10px;
-                               overflow: hidden;width: 100px; white-space: nowrap;text-overflow: ellipsis">
-                    {{item.Quantity}} / {{item.RedLine}}<!--{{item.Id}}-->
-                  </span>
+                      <span style="display: inline-block; vertical-align: middle;text-align: left;padding-left: 10px;
+                                   overflow: hidden;width: 100px; white-space: nowrap;text-overflow: ellipsis">
+                        {{item.Quantity}} {{item.CategoryId === '1002' ? '精品' : ''}} <!--{{item.Id}} {{item.RedLine}}-->
+                      </span>
                     </el-col>
 
                     <el-col :span="6" v-if="item.Quantity > 0" style="text-align: right;padding-right: 7px">
@@ -223,7 +225,7 @@
             <el-pagination @size-change="sizeChangeHandle"
               @current-change="currentChangeHandle"
               :current-page="pageIndex"
-              :page-sizes="[10,20,50,100]"
+              :page-sizes="[50,100]"
               :page-size="pageSize"
               :total="totalPage"
               layout="prev, pager, next" :pager-count="5" small>
@@ -776,7 +778,7 @@ export default {
       dataListLoading: false, // 加载
       chenxiHeight: 479, // 这个是测试出来的固定值，用于第一次初始化页面吧，如果以后页面的格式需要调整，可以测试一个初始值来填在这就行了
       pageIndex: 1,
-      pageSize: 30, // 50 标准
+      pageSize: 50, // 50 标准
       totalPage: 1,
       dataForm: {
         UserName: '',
@@ -913,6 +915,8 @@ export default {
       this.dataForm.Code = row.Code
       // this.dataForm.RegisterAmount = 0 // 这两个没用，就只是提交的时候直接提交
       // this.dataForm.ConsultationAmount = 0
+
+      // 调用历史处方
       if (this.$store.getters.getRecipelSaveFiles.some(item => {
         return item.memberPhone === this.dataForm.MobilePhone && item.doctorId === this.$route.query.DoctorId
       })) {
@@ -1127,22 +1131,22 @@ export default {
     // 右侧药材列表展示的模块：获取 对应门店 对应药态下的 对应药材库
     getStoreCategorytypeStock () {
       this.rightUlData = [] // 网速可能差时，响应的值可以能与操作对应不上，就容易出现bug
-      this.totalPage = 0
+      // this.totalPage = 0 // 注释的这样影响分页
       this.keyCode_40Count = 0 // 在右上角的输入框中按下‘↓’键，总次数统计
-      API.drugs.getDrugsList({
+      var params = {
         Name: '',
         PageIndex: this.pageIndex,
         PageSize: 50,
         IsPaging: true,
         SpellName: this.dataForm.SpellName,
-        CategoryId: this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001
+        CategoryId: this.activeName === '1002' ? '1001,1002' : this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001 (20190719 如果是精品类型的，需要请求精品 和 普通 特殊处理)
         StoreId: this.$store.getters.getAccountCurrentHandleStore, // 传不传门店id决定了是否返回库存余量!!!（另外这儿可以能有点问题要处理，因为可能是药房的账号进来，那这样的话如果药房的权限大于医生，那门店库存也更正变大了，这是个要考虑的地方）
-        CodeOrBarCode: '' // 暂无
-      }).then(result => {
+        CodeOrBarCode: ''} // 暂无
+      API.drugs.getDrugsList(params).then(result => {
         if (result.code === '0000' && result.data.length > 0) {
           this.rightUlData = result.data
           this.totalPage = result.total
-          // console.log(result.data)
+          console.log(result.data)
         } else {
           // this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
           this.rightUlData = []
@@ -1202,6 +1206,10 @@ export default {
           this.$message(`[${selectRow.ShowName}] 已添加！`)
           return false
         }
+        if (selectRow.Quantity <= 0) { // 发现重复添加的药材时也不让执行
+          this.$message(`[${selectRow.ShowName}] 没有库存！`)
+          return false
+        }
         this.isClickRightAddButton = true // 搭配 updated () {} 聚焦
         this.leftTableData.push(selectRow)
       } else { // 通过click添加：此时row代表一行的数据
@@ -1232,8 +1240,9 @@ export default {
       this.countTotalPrice(this.leftTableData) // console.log(this.leftTableData)
     },
 
-    // 二级药态被锁定时：其之后的相关的逻辑需要重新跑一次
+    // 二级 子级 药态被锁定时：其之后的相关的逻辑需要重新跑一次
     comTwoCategoryChangeFunction (two) {
+      this.pageIndex = 1 // 切换药态时，都重置为第一页
       switch (two) {
         case '1001':
           this.leftTable = 'TableOne'
@@ -1341,6 +1350,7 @@ export default {
     },
     // 当前页
     currentChangeHandle (val) {
+      console.log(val)
       this.pageIndex = val
       this.getStoreCategorytypeStock()
     },
