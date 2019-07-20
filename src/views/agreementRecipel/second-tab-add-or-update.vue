@@ -4,7 +4,7 @@
     :title="openType === 'add' ? '创建经典方' : openType === 'see' ? '查看经典方' : '编辑经典方'" :width="'1200px'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose" class="registerIndex">
-    <el-form ref="dataForm" :rules="dataRule" :model="dataForm" label-width="80px" size="mini">
+    <el-form v-loading="dataListLoading" ref="dataForm" :rules="dataRule" :model="dataForm" label-width="80px" size="mini">
       <el-container class="doctor-recipel" style="padding-left: 20px">
         <el-aside width="67%" style="border-right: 1px solid #DCDFE6; padding-right: 5px;min-width: 700px;">
           <div id="leftHeightPatient">
@@ -24,11 +24,6 @@
                       <el-input v-model="dataForm.PrescriptionName" placeholder="请输入名称" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>
                     </el-form-item>
                   </el-col>
-                  <!--<el-col :span="12">-->
-                    <!--<el-form-item label="科室">-->
-                      <!--<el-input v-model="dataForm.AgoIllness" placeholder="请输入科室" style="width: 75%" :disabled="openType === 'see' ? true : false"></el-input>-->
-                    <!--</el-form-item>-->
-                  <!--</el-col>-->
                 </el-row>
                 <el-row>
                   <el-col :span="24">
@@ -74,7 +69,6 @@
             :height="chenxiHeight"
             :data="leftTableData"
             stripe
-            v-loading="dataListLoading"
             row-class-name="purchaseListRow"
             :header-cell-style="$cxObj.tableHeaderStyle30px"
             style="width: 100%;">
@@ -85,9 +79,10 @@
 
         <!--右侧药材：tabs标签页切换引导组件切换-->
         <el-main width="30%" style="padding: 10px 10px 0; border-bottom: 1px solid #DCDFE6;">
-          <el-input v-model="dataForm.SpellName" @blur="dataForm.SpellName = ''"
+          <el-input v-model="dataForm.SpellName" @blur="controlRightTopInputBlur()" style="min-width: 190px; width: 100%"
                     :placeholder="`请输入要查询的药材, 门店：${$store.getters.getAccountCurrentHandleStore}`"
-                    style="min-width: 190px; width: 100%" size="small" clearable><i slot="prefix" class="el-input__icon el-icon-search"></i>
+                    size="small" clearable>
+            <i slot="prefix" class="el-input__icon el-icon-search"></i>
           </el-input>
           <el-tabs v-model="activeName" @tab-click="handleClick">
             <el-tab-pane v-for="item in drugsCategoryArr" :key="item.id" :label="item.text" :name="item.id" :disabled="openType === 'see' ? true : false"></el-tab-pane>
@@ -97,26 +92,22 @@
               <li v-for="item in rightUlData" :key="item.Id">
                 <el-tooltip class="item" effect="light" :content="item.ProductName+' [余量'+item.Quantity+']'" placement="left">
                   <el-row style="clear: both">
-                    <!--<span v-text="item.ShowName === null ? '000' : item.ShowName"></span> {{item.Id}}余{{item.Quantity}}g/预{{item.RedLine}}-->
-
                     <!--药材名+剩余量+操作-->
                     <el-col :span="6">
-                    <span v-text="item.ProductName === null ? '无' : item.ProductName"
-                          style="display: inline-block; vertical-align: middle; width: 50px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">
-                    </span>
+                      <span v-text="item.ProductName === null ? '无' : item.ProductName"
+                            style="display: inline-block; vertical-align: middle; width: 50px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">
+                      </span>
                     </el-col>
                     <el-col :span="12" :style="{color: item.Quantity - item.RedLine > 0 ? '#333' : item.Quantity === 0 ? '#ccc' : '#e4392c'}">
-                    <span style="display: inline-block; vertical-align: middle;text-align: left;padding-left: 10px;
-                                 overflow: hidden;width: 100px; white-space: nowrap;text-overflow: ellipsis">
-                      {{item.Quantity}} / {{item.RedLine}}
-                      <!--{{item.Id}} {{item.Quantity}}/{{item.RedLine}}-->
-                    </span>
+                      <span style="display: inline-block; vertical-align: middle;text-align: left;padding-left: 10px;
+                                   overflow: hidden;width: 100px; white-space: nowrap;text-overflow: ellipsis">
+                        {{item.Quantity}} / {{item.RedLine}}
+                      </span>
                     </el-col>
 
                     <el-col :span="6" style="text-align: right;padding-right: 7px">
                       <el-button type="text" size="mini" @click="addDrugs(item)"
-                                 style="font-size: 15px;font-weight: 600" v-if="openType === 'see' ? false : true">添加</el-button>
-                      <!--<el-button type="text" size="mini" @click="cutOut = false; addDrugs(item)">添加</el-button>-->
+                                 style="font-size: 15px;font-weight: 600" v-if="openType === 'see' ? false : true">{{item.CategoryId === 1002 ? '[精] ' : ''}}添加</el-button>
                     </el-col>
                   </el-row>
                 </el-tooltip>
@@ -140,7 +131,6 @@
                              :page-size="pageSize"
                              :total="totalPage"
                              layout="prev, pager, next" :pager-count="5" small>
-                <!--layout="prev, pager, next, jumper, sizes, total" background>-->
               </el-pagination>
             </div>
           </div>
@@ -149,7 +139,7 @@
     </el-form>
 
     <span slot="footer" class="dialog-footer">
-      <el-button v-if="openType !== 'see'" type="primary" @click="send()" size="medium">保存协定方</el-button>
+      <el-button v-if="openType !== 'see'" type="primary" @click="send()" size="medium">保存经典方</el-button>
       <el-button v-if="openType !== 'see'" @click="visible = false">取消</el-button>
       <el-button v-if="openType === 'see'" @click="visible = false">关闭</el-button>
     </span>
@@ -282,9 +272,10 @@ export default {
       this.leftTableData = []
       this.oldTabsName = '1001'
       this.activeName = '1001'
+      this.leftTable = 'TableOne'
     },
 
-    // 一级药态点击时，对应的二级药态变化
+    // 一级药态切换后 二级药态需要重新过滤
     filterCategory (arr) {
       var brr = []
       for (let i = 0; i < arr.length; i++) {
@@ -294,10 +285,51 @@ export default {
       }
       this.drugsCategoryArr = brr
     },
+    // 一级药态切换后，二级药态的展示重新过滤
+    comOneCategoryChangeFunction (one) { // one：一级药态 - [饮片1001、颗粒1002、精品1003、三九1004]
+      switch (one) {
+        case '1':
+          this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
+          break
+        case '3':
+          this.filterCategory(['1003']) // 制膏只有 三九
+          break
+        case '4':
+          this.filterCategory(['1001', '1002']) // 制丸只有 饮片
+          break
+        case '5':
+          this.filterCategory(['1001', '1002']) // 制丸只有 饮片
+          break
+        case '2':
+          this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
+          break
+      }
+    },
 
+    // 二级药态 锁定时：表格要切换，药材要重新请求（请求药材通过其他方法处理的）
+    comTwoCategoryChangeFunction (two) {
+      this.pageIndex = 1 // 切换药态时，都重置为第一页
+      switch (two) {
+        case '1001':
+          this.leftTable = 'TableOne'
+          this.rightUl = 'ul-one'
+          break
+        case '1002':
+          this.leftTable = 'TableTwo'
+          this.rightUl = 'ul-one'
+          break
+        case '1003':
+          this.leftTable = 'TableThree'
+          this.rightUl = 'ul-one'
+          break
+        case '1004':
+          this.leftTable = 'TableFour'
+          this.rightUl = 'ul-one'
+          break
+      }
+    },
     pageInit (agreementRecipelId, type) { // type 'add see edit'
       this.visible = true
-      this.dataListLoading = true
       this.openType = type
       // this.dataForm.AccountId = AccountId
 
@@ -310,12 +342,11 @@ export default {
         }
         this.drugsCategoryArrCopy = this.drugsCategoryArr
       })
-
       if (agreementRecipelId) { // 查看、和 编辑 都需要初始化
+        this.dataListLoading = true
         this.dataForm.agreementRecipelId = agreementRecipelId
         API.register.getRegisterInfo({id: this.dataForm.agreementRecipelId}).then(result => {
           if (result.code === '0000') {
-            // console.log(result.data)
             this.dataForm.SpellName = ''
             this.dataForm.agreementRecipelId = result.data.Id // 协定方id
             // StoreId: '' // 门店
@@ -327,53 +358,43 @@ export default {
             this.dataForm.DrugRate = result.data.DrugRate // 用法
             this.dataForm.oldCategoryOne = String(result.data.CategoryOne) // 药态一级记录 1内服2外用3制膏4水丸5水蜜丸
             this.dataForm.CategoryOne = String(result.data.CategoryOne) // 药态一级分类 1内服2外用3制膏4水丸5水蜜丸
-            switch (this.dataForm.CategoryOne) { // [饮片1001、颗粒1002、精品1003、三九1004]
-              case '1':
-                this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
-                break
-              case '3':
-                this.filterCategory(['1003']) // 制膏只有三九
-                break
-              case '4':
-                this.filterCategory(['1001', '1002']) // 制丸只有饮片
-                break
-              case '5':
-                this.filterCategory(['1001', '1002'])
-                break
-              case '2':
-                this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
-                break
-            }
-          }
-          // 左边table 字段转换下
-          this.leftTableData = result.data.SaleOrderItems.map(item => {
-            item.CategoryName = item.CategoryName.substring(4)
-            item.ProductId = item.ProductId // 这个字段为什么要转换，可能看起来很懵，就是后端的接口一会那个字段一会这个字段搞出来的，如果不转化一下，直接就使用会有bug（就是代表同一个东西的字段，后端取名没有统一）
-            item.myNum = item.Quantity
-            return item
-          })
 
-          // 根据协定方的药态，控制右边药态的初始选中值
-          this.oldTabsName = String(result.data.SaleOrderItems[0].CategoryId)
-          this.activeName = String(result.data.SaleOrderItems[0].CategoryId)
-          // console.log(this.dataForm.agreementRecipelId)
-          // console.log(this.leftTableData)
-          this.getStoreCategorytypeStock()
+            this.comOneCategoryChangeFunction(this.dataForm.CategoryOne) // 一级药态处理
+            this.leftTableData = result.data.SaleOrderItems.map(item => { // 左边table 字段转换下
+              item.CategoryName = item.CategoryName.substring(4)
+              item.ProductId = item.ProductId // 这个字段为什么要转换，就是后端的接口一会那个字段一会这个字段搞出来的，如果不转化一下，直接就使用会有bug（就是代表同一个东西的字段，后端取名没有统一）
+              item.myNum = item.Quantity
+              return item
+            })
+
+            // console.log(this.leftTableData)// console.log(result.data)
+            // 根据协定方的药态，控制右边药态的初始选中值
+            if (result.data.SaleOrderItems.some(item => String(item.CategoryId) === '1002')) { // 如果是精品类型的协定方，就要避免第一味药就出现普通饮片的可能
+              this.oldTabsName = '1002'
+              this.activeName = '1002'
+            } else {
+              this.oldTabsName = String(result.data.SaleOrderItems[0].CategoryId)
+              this.activeName = String(result.data.SaleOrderItems[0].CategoryId)
+            }
+            this.comTwoCategoryChangeFunction(this.oldTabsName) // 二级药态处理 切换table表格
+
+            this.getStoreCategorytypeStock()
+            this.dataListLoading = false
+          }
         })
-      } else {
-        // 后初始化页面的右上角：
+      } else { // 后初始化页面的右上角：
         this.getStoreCategorytypeStock() // 这往上的代码都必须执行，不能写在下面的代码的后面，以免被return false影响
       }
-
-      // 如果是直接开方，传递的电话就是0了，还请求屁的患者信息，因为请求结果肯定是[]没有的
-      // if (this.$route.query.MobilePhone === '0') {
-      //   return false
-      // }
-      this.dataListLoading = false
     },
 
+    controlRightTopInputBlur () {
+      setTimeout(() => {
+        this.dataForm.SpellName = ''
+      }, 100)
+    },
     // 右侧‘添加’药材的小模块：获取 对应门店 对应药态下的 对应药材库
     getStoreCategorytypeStock () {
+      this.rightUlData = []
       var params = {
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
@@ -384,12 +405,11 @@ export default {
         SpellName: this.dataForm.SpellName,
         Order: '',
         BrandId: '',
-        CategoryId: this.activeName, // 1001 药态
+        CategoryId: this.activeName === '1002' ? '1001,1002' : this.activeName, // 1001 药态
         SearchType: 2 }
-      console.log(params)
       API.storeStock.getStoreStock(params).then(result => {
         if (result.code === '0000' && result.data.length > 0) {
-          console.log(result.data)
+          // console.log(result.data)
           this.rightUlData = result.data
           this.totalPage = result.total
         } else {
@@ -397,7 +417,6 @@ export default {
           this.totalPage = 0
           this.$message({ message: `${result.message}`, type: 'warning', duration: 3000 })
         }
-        // this.dataListLoading = false
       })
     },
 
@@ -405,7 +424,7 @@ export default {
     addDrugs (row) {
       console.log(row)
       if (this.leftTableData.some(item => item.ProductCode === row.ProductCode)) {
-        this.$alert(`<b style="color: #409EFF;font-size: 14px;font-weight: 500">[${row.ShowName}]</b> 已添加！`, '提示', {
+        this.$alert(`<b style="color: #409EFF;font-size: 14px;font-weight: 500">[${row.ProductName}]</b> 已添加！`, '提示', {
           confirmButtonText: '确定',
           dangerouslyUseHTMLString: true,
           closeOnClickModal: true,
@@ -418,7 +437,6 @@ export default {
     },
     // 2.当点击左边table的‘删除’按钮的时候
     delDrugs (row) {
-      console.log(this.leftTableData, row)
       this.leftTableData.forEach((item, i) => {
         if (item.ProductCode === row.ProductCode) {
           this.leftTableData.splice(i, 1)
@@ -432,46 +450,13 @@ export default {
     },
 
     // 一级药态被点击时
-    handleChange (leftLab) {
-      console.log(leftLab)
+    handleChange (val) {
       if (this.leftTableData.length === 0) { // 没开任何药材时直接切换直接加载呗，都没药材记录还提示啥子嘛
-        switch (leftLab) { // [饮片1001、颗粒1002、精品1003、三九1004]
-          case '1':
-            this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
-            break
-          case '3':
-            this.filterCategory(['1003']) // 制膏只有三九
-            break
-          case '4':
-            this.filterCategory(['1001', '1002']) // 制丸只有饮片
-            break
-          case '5':
-            this.filterCategory(['1001', '1002'])
-            break
-          case '2':
-            this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
-            break
-        }
+        this.comOneCategoryChangeFunction(val) // 一级药态切换后，要重新过滤对应的新的二级药态出来
         this.activeName = this.drugsCategoryArr[0].id
-        switch (this.activeName) {
-          case '1001':
-            this.leftTable = 'TableOne'
-            this.rightUl = 'ul-one'
-            break
-          case '1002':
-            this.leftTable = 'TableTwo'
-            this.rightUl = 'ul-one'
-            break
-          case '1003':
-            this.leftTable = 'TableThree'
-            this.rightUl = 'ul-one'
-            break
-          case '1004':
-            this.leftTable = 'TableFour'
-            this.rightUl = 'ul-one'
-            break
-        }
-        this.dataForm.oldCategoryOne = leftLab
+        this.comTwoCategoryChangeFunction(this.activeName) // 二级药态确定后，要切换对应的table
+
+        this.dataForm.oldCategoryOne = val
         this.oldTabsName = this.activeName
         this.getStoreCategorytypeStock()
       } else { // 有的时候提示是否确定切换tabs
@@ -480,75 +465,25 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          switch (leftLab) { // [饮片1001、颗粒1002、精品1003、三九1004]
-            case '1':
-              this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
-              break
-            case '3':
-              this.filterCategory(['1003']) // 制膏只有三九
-              break
-            case '4':
-              this.filterCategory(['1001', '1002']) // 制丸只有饮片
-              break
-            case '5':
-              this.filterCategory(['1001', '1002'])
-              break
-            case '2':
-              this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
-              break
-          }
+          this.comOneCategoryChangeFunction(val) // 一级药态切换后，要重新过滤对应的新的二级药态出来
           this.activeName = this.drugsCategoryArr[0].id
-          switch (this.activeName) {
-            case '1001':
-              this.leftTable = 'TableOne'
-              this.rightUl = 'ul-one'
-              break
-            case '1002':
-              this.leftTable = 'TableTwo'
-              this.rightUl = 'ul-one'
-              break
-            case '1003':
-              this.leftTable = 'TableThree'
-              this.rightUl = 'ul-one'
-              break
-            case '1004':
-              this.leftTable = 'TableFour'
-              this.rightUl = 'ul-one'
-              break
-          }
-          this.dataForm.oldCategoryOne = leftLab
+          this.comTwoCategoryChangeFunction(this.activeName) // 二级药态确定后，要切换对应的table
+
+          this.dataForm.oldCategoryOne = val
           this.oldTabsName = this.activeName
           this.getStoreCategorytypeStock()
           this.leftTableData = [] // 不只切换，还需要清空左边table信息
         }).catch(() => {
           this.dataForm.CategoryOne = this.dataForm.oldCategoryOne
-          this.activeName = this.oldTabsName // 依靠oldTabsName切回上一步，table、ul、和tableData都不需要变了，就是取消切换药态的操作
+          this.activeName = this.oldTabsName // 依靠oldTabsName返回上一步，table、ul、和tableData都不需要变了，就是取消切换药态的操作
         })
       }
-      // console.log(this.dataForm.CategoryOne, this.dataForm.oldCategoryOne, this.activeName, this.oldTabsName)
-      // this.rightCategoryChangeClick(this.activeName) // 切换了一节药态导致二级药态也切换，需要模拟一下点击二级药态时的一些方法
     },
 
+    // 二级药态变化
     handleClick (tab, event) {
       if (this.leftTableData.length === 0) { // 没开任何药材时直接切换直接加载呗，都没药材记录还提示啥子嘛
-        switch (tab.name) {
-          case '1001':
-            this.leftTable = 'TableOne'
-            this.rightUl = 'ul-one'
-            break
-          case '1002':
-            this.leftTable = 'TableTwo'
-            this.rightUl = 'ul-one'
-            break
-          case '1003':
-            this.leftTable = 'TableThree'
-            this.rightUl = 'ul-one'
-            break
-          case '1004':
-            this.leftTable = 'TableFour'
-            this.rightUl = 'ul-one'
-            break
-        }
+        this.comTwoCategoryChangeFunction(tab.name) // 二级药态确定后，要切换对应的table
         this.oldTabsName = this.activeName
         this.getStoreCategorytypeStock()
       } else { // 有的时候提示是否确定切换tabs
@@ -557,24 +492,7 @@ export default {
           cancelButtonText: '取消',
           type: 'warning'
         }).then(() => {
-          switch (tab.name) {
-            case '1001':
-              this.leftTable = 'TableOne'
-              this.rightUl = 'ul-one'
-              break
-            case '1002':
-              this.leftTable = 'TableTwo'
-              this.rightUl = 'ul-one'
-              break
-            case '1003':
-              this.leftTable = 'TableThree'
-              this.rightUl = 'ul-one'
-              break
-            case '1004':
-              this.leftTable = 'TableFour'
-              this.rightUl = 'ul-one'
-              break
-          }
+          this.comTwoCategoryChangeFunction(tab.name) // 二级药态确定后，要切换对应的table
           this.oldTabsName = this.activeName
           this.getStoreCategorytypeStock()
           this.leftTableData = [] // 不只切换，还需要清空左边table信息
@@ -619,15 +537,15 @@ export default {
         })
         return false
       }
-      console.log(this.leftTableData)
+      // console.log(this.leftTableData)
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           // 编辑协定方，调用旧的正常开方里编辑挂号信息的接口，是另一个接口，编辑挂号信息
           var paramsEdit = {
-            id: this.dataForm.agreementRecipelId, // 协定方id，查看和编辑时候都有（不过这儿只可能是编辑提交）
             // StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
             // AccountId: this.dataForm.AccountId, // 医生id
             // OrderType: '41', // 创建经典方
+            id: this.dataForm.agreementRecipelId, // 协定方id，查看和编辑时候都有（不过这儿只可能是编辑提交）
 
             MainCure: this.dataForm.MainCure, // 主治
             Effect: this.dataForm.Effect, // 功效
@@ -653,9 +571,9 @@ export default {
 
           // 创建协定方，调用旧的创建挂号单的接口
           var paramsCreate = {
-            StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
             // AccountId: this.dataForm.AccountId, // 医生id
-            OrderType: '41', // 创建协定方
+            StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
+            OrderType: '41', // 创建经典方
 
             MainCure: this.dataForm.MainCure, // 主治
             Effect: this.dataForm.Effect, // 功效
@@ -722,11 +640,8 @@ export default {
 
     .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar, .el-table__body-wrapper.is-scrolling-left::-webkit-scrollbar, .ownScrollbar::-webkit-scrollbar {
       width: 7px;
-      /*z-index: -1;*/
     }
-    .ownScrollbar:hover::-webkit-scrollbar {
-      /*display: block;*/
-    }
+
     .el-table__body-wrapper.is-scrolling-none::-webkit-scrollbar-thumb, .el-table__body-wrapper.is-scrolling-left::-webkit-scrollbar-thumb, .ownScrollbar::-webkit-scrollbar-thumb {
       border-radius: 3px;
       box-shadow: inset 0 0 5px rgba(0,0,0,0.1);
@@ -795,18 +710,13 @@ export default {
   }
   /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
   .doctor-recipel /deep/ {
-    .el-form-item {
-      margin-bottom: 7px;
-    }
-    .el-dialog__body {
-      padding-top: 10px;
-    }
+    .el-form-item { margin-bottom: 7px; }
+    .el-dialog__body { padding-top: 10px; }
     /*表头高重写35高*/
     .el-table--medium th, .el-table--medium td, & .el-table th, & .el-table td,
     .el-table--medium th, .el-table--medium td, & .el-table th, & .el-table td {
       padding: 0 !important;
     }
-    /*& /deep/ .el-tabs__content {background-color: #F0F0F0}*/
     .purchaseListRow {
       color: #606266;
       td {padding: 0;}

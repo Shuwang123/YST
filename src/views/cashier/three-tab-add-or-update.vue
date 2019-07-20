@@ -42,7 +42,9 @@
       <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;position: relative">
         <el-col :span="8" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
           <span style="display: inline-block;width: 70px;text-align: right">{{item.ProductName}}</span>
-          <span style="display: inline-block;width: 70px;text-align: left">{{item.RefundableQty}} {{item.Unit}}</span>
+          <span style="display: inline-block;width: 70px;text-align: left">
+            {{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}
+          </span>
         </el-col>
       </el-row>
 
@@ -125,7 +127,7 @@
                 <li v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId"
                     style="float: left;width: 33%;text-align: center;height: 24px;line-height: 24px">
                   <span style="display: inline-block;width: 70px;text-align: right;margin-right: 5px">{{item.ProductName}}</span>
-                  <span style="display: inline-block;">{{item.RefundableQty}}</span> {{item.Unit}}
+                  <span style="display: inline-block;">{{item.RefundableQty}}</span> {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}
                 </li>
               </ul>
             </td>
@@ -269,7 +271,7 @@
             <tr  style="font-size: 12px" v-for="(item, ind) in registerAllData.SaleOrderItems.slice((index - 1) * 10, (index * 10))" :key="item.ProductCode">
               <td width="50" height="16">{{ind + (index - 1) * 10 + 1}}</td>
               <td width="70">{{item.ProductCode}}</td>
-              <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.ProductName}}</p></td>
+              <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.ProductName}}{{item.CategoryId === 1002 ? '[精]' : ''}}</p></td>
               <td width="70" align="center"><p style="width: 70px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.Specification}}</p></td>
               <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{registerAllData.DoctorName}}</p></td>
 

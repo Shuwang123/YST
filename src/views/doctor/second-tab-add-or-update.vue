@@ -41,7 +41,7 @@
       <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;position: relative">
         <el-col :span="8" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
           <span style="display: inline-block;width: 70px;text-align: right">{{item.ProductName}}</span>
-          <span style="display: inline-block;width: 70px;text-align: left">{{item.RefundableQty}} {{item.Unit}}</span>
+          <span style="display: inline-block;width: 70px;text-align: left">{{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}</span>
         </el-col>
       </el-row>
 

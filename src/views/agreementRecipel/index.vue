@@ -3,7 +3,6 @@
     <el-tabs type="border-card" v-model="activeName" @tab-click="handleClick">
       <div style="background-color: #F5F7FA;margin-bottom: -15px;border-radius: 0 0 0 0;padding: 1px 3px">
         <el-form :inline="true" :model="dataForm" @keyup.enter.native="doctorHandle()" size="mini">
-        <!--<el-form :inline="true" :model="dataForm">-->
           <com-store :paramsFather="{
             'label_0': '',
             'size_1': 'mini',
@@ -13,24 +12,31 @@
             'must_5': true,
             'isTrigger': true
           }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
+
           <el-form-item v-if="isVisible[0].child">
             <el-select @change="doctorHandle()" v-model="dataForm.AccountId" placeholder="医生" :disabled="$store.getters.getAccountIsDoctor ? true : false" style="width: 100px">
               <el-option v-for="item in storeDoctorArr" :key="item.Id"
                          :label="`${item.Id}-${item.NickName}`" :value="item.Id"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item>
+            <el-select @change="doctorHandle()" v-model="dataForm.agreementStatus" placeholder="状态" style="width: 100px">
+              <el-option :label="'可用'" :value="'1,2,3,5,6'"></el-option>
+              <el-option :label="'废弃'" :value="'-1'"></el-option>
+              <el-option :label="'全部展示'" :value="''"></el-option>
+            </el-select>
+          </el-form-item>
+          <!--<el-button v-if="$store.getters.getAccountIsDoctor"
+          :disabled="dataForm.AccountId === '' ? true : false"-->
 
           <el-form-item>
             <el-input v-model="dataForm.PrescriptionName" placeholder="处方名"
                       @clear="doctorHandle()" clearable style="width: 119px"></el-input>
           </el-form-item>
-          <!--<el-form-item>-->
-            <!--<el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="处方名/主治功效" clearable style="width: 139px"></el-input>-->
-          <!--</el-form-item>-->
+          <!--<el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="处方名/主治功效" clearable style="width: 139px"></el-input>-->
 
           <el-form-item>
             <el-button @click="doctorHandle()" size="mini">查询</el-button>
-            <!--<el-button v-if="$store.getters.getAccountIsDoctor" :disabled="dataForm.AccountId === '' ? true : false"-->
             <el-button type="primary"
                        @click="isVisible[0].child ? addAgreement() : addClassics()">
               {{isVisible[0].child ? '添加协定方' : '添加经典方'}}</el-button>
@@ -38,21 +44,20 @@
         </el-form>
       </div>
 
-      <!--<el-tab-pane label="成品药品" name="second" disabled="true">-->
       <el-tab-pane label="" name="first">
         <span slot="label"><i class="el-icon-date"></i> 协定方列表</span>
         <transition name="chenxi">
           <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
-      <el-tab-pane label="" name="second" :disabled="$store.getters.getAccountIsDoctor ? true : false">
+      <el-tab-pane label="" name="second" :disabled="$store.getters.getAccountIsDoctor ? true : false"><!-- 医生没有权限编辑经典方，只有门店管理员可以编辑经典方 -->
         <span slot="label"><i class=""></i> 经典方列表</span>
         <transition name="chenxi">
           <second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>
         </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="third" disabled>
-        <span slot="label"><i class=""></i> xx</span>
+        <span slot="label"><i class=""></i> xx</span><!--<el-tab-pane label="成品药品" name="second" disabled="true">-->
         <transition name="chenxi">
           <first-tab v-if="isVisible[2].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
@@ -83,7 +88,9 @@ export default {
         View: true, // 是否显示门店筛选组件
         StartDate: '',
         EndDate: '',
-        PrescriptionName: '' // 协定方名
+        PrescriptionName: '', // 协定方名
+
+        agreementStatus: '1,2,3,5,6' // 协定方状态
       },
       isVisible: [
         {child: true},
@@ -107,8 +114,7 @@ export default {
       console.log(this.value6)
       if (this.value6 !== [] && this.value6 !== null) {
         this.dataForm.StartDate = this.value6[0]
-        this.dataForm.EndDate = this.value6[1]
-        // console.log(this.dataForm.StartDate) // console.log(this.dataForm.EndDate)
+        this.dataForm.EndDate = this.value6[1] // console.log(this.dataForm.StartDate) // console.log(this.dataForm.EndDate)
       } else {
         this.dataForm.StartDate = ''
         this.dataForm.EndDate = ''
@@ -130,11 +136,6 @@ export default {
         this.dataForm.AccountId = ''
         this.dataForm.currentDoctorName = ''
         this.getStoreAllDoctor() // 切换门店后，更新头部下拉option的选项 在这触发 初始化，不要崇拜…代替pageInit方法
-        // if (this.isVisible[0].child === true) {
-        //   this.$refs.firstTab.getDataList()
-        // } else {
-        //   this.$refs.secondTab.getDataList()
-        // }
       }
     },
     // 当门店改变时，获取门店下所有医生
@@ -230,17 +231,10 @@ export default {
   transform: translate(40px, 30px);
   opacity: 0;
 }
-/*.chenxi-enter-to, .chenxi-leave {
-transform: translate(0, 0);
-opacity: 1;
-}*/
 .chenxi-enter-active,
 .chenxi-leave-active {
   transition: all 0.6s ease;
 }
-/*.chenxi-leave-to {
-  transform: translateX(-100px, 0);
-}*/
 
 .mod {
   &-purchaseList /deep/ {
@@ -258,20 +252,15 @@ opacity: 1;
   }
 }
 /*以下样式cx重写的，改变form中内部控件的行间距等默认22px太高*/
-.mod-purchaseList {
-  & /deep/ .el-form-item {
-    margin-bottom: 14px;
-  }
-  & /deep/ .el-dialog__body {
-    padding-top: 10px;
-  }
+.mod-purchaseList /deep/ {
+  .el-form-item { margin-bottom: 14px; }
+  .el-dialog__body { padding-top: 10px; }
   /*表头高重写35高*/
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td,
-  & /deep/ .el-table--medium th, & /deep/ .el-table--medium td, & /deep/ .el-table th, & /deep/ .el-table td {
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td,
+  .el-table--medium th, .el-table--medium td, .el-table th, .el-table td {
     padding: 0 !important;
   }
-  /*& /deep/ .el-tabs__content {background-color: #F0F0F0}*/
-  & /deep/ .purchaseListRow {
+ .purchaseListRow {
     color: #606266;
     & td {padding: 0;}
     & td .cell{
@@ -280,9 +269,4 @@ opacity: 1;
     }
   }
 }
-/*.mod-purchaseList {*/
-  /*& /deep/ .el-dialog__header {*/
-    /*background-color: #1CA579;*/
-  /*}*/
-/*}*/
 </style>

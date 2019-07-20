@@ -547,6 +547,9 @@ export default {
       isActiveLi: true, // 右上角的药材拼音输入框的下拉样式
       zhenduanOptions: [ // 诊断结果的下拉
         {
+          value: '无',
+          label: '无'
+        }, {
           value: '咳嗽',
           label: '咳嗽'
         }, {
@@ -1027,12 +1030,23 @@ export default {
           this.comOneCategoryChangeFunction(this.dataForm.CategoryOne)
           // 1、把协定方里保存的药材克数存下来
           this.leftTableData = result.data.SaleOrderItems.map(item => {
-            return {myNum: item.Quantity}
+            item.myNum = item.Quantity
+
+            item.Id = item.ProductId
+            item.Code = item.ProductCode
+            item.ShowName = item.ProductName
+            return item
           })
 
-          // 根据协定方的药态，控制右边药态的初始选中值
-          this.oldTabsName = String(result.data.SaleOrderItems[0].CategoryId)
-          this.activeName = String(result.data.SaleOrderItems[0].CategoryId)
+          // 根据协定方的药态，控制右边 子药态 的初始选中值
+          if (result.data.SaleOrderItems.some(item => String(item.CategoryId) === '1002')) { // 如果是精品类型的协定方，就要避免第一味药就出现普通饮片的可能
+            this.oldTabsName = '1002'
+            this.activeName = '1002'
+          } else {
+            this.oldTabsName = String(result.data.SaleOrderItems[0].CategoryId)
+            this.activeName = String(result.data.SaleOrderItems[0].CategoryId)
+          }
+          this.comTwoCategoryChangeFunction(this.activeName) // table也要切换 子级药态
           this.getStoreCategorytypeStock()
 
           // 2、用协定方里的药材编码请求库存里最新的药材售价
@@ -1041,28 +1055,33 @@ export default {
           this.$nextTick(() => {
             API.storeStock.getStoreStock({
               PageIndex: 1,
-              PageSize: 100,
+              PageSize: 100, // 协定方上的药材应该只有30味左右吧，100够了 搭配的下面的ProductCodeOrBarCode查询应该不可能超出100味，如果出问题可以留意这
               IsPaging: true,
               StoreId: this.$store.getters.getAccountCurrentHandleStore, // 传不传门店id决定了是否返回库存余量!!!（另外这儿可以能有点问题要处理，因为可能是药房的账号进来，那这样的话如果药房的权限大于医生，那门店库存也更正变大了，这是个要考虑的地方）
               ProductCodeOrBarCode: result.data.SaleOrderItems.map(item => {
                 return item.ProductCode
-              }).join(),
-              CategoryId: this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001
+              }).join(), // 通过批量的药材编码查询出最新的门店里库存药品的信息（主要目的拿到最新的价格）
+              CategoryId: this.activeName === '1002' ? '1001,1002' : this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001 ？？？ 这是精品的时候还有问题
               SearchType: 2 // 1表示才够用2查询库存用
             }).then(response => {
               if (response.code === '0000' && response.data.length > 0) {
-                // console.log(response.data)
+                console.log(response.data)
                 // 左边table 字段转换下
-                response.data.forEach((item, i) => {
-                  this.leftTableData[i].CategoryName = item.CategoryName
-                  this.leftTableData[i].Id = item.ProductId
-                  this.leftTableData[i].ShowName = item.ProductName
-                  this.leftTableData[i].Code = item.ProductCode
-                  this.leftTableData[i].StoreSalePrice = item.StoreSalePrice
+                // 搭配上面的1、（温馨提示）这的逻辑比较乱也比较复杂，超级需要耐心
+                // 搭配上面的1、（温馨提示）这的逻辑比较乱也比较复杂，超级需要耐心
+                // 搭配上面的1、（温馨提示）这的逻辑比较乱也比较复杂，超级需要耐心
+                this.leftTableData.forEach(item => { // 搭配上面的1、（温馨提示）这的逻辑比较乱也比较复杂，超级需要耐心
+                  response.data.forEach(inner => {
+                    if (item.Code === inner.ProductCode) {
+                      item.CostPrice = inner.LastCostPrice
+                      item.StoreSalePrice = inner.StoreSalePrice
+                      return false
+                    }
+                  })
                 })
                 this.countTotalPrice(this.leftTableData) // 载入协定方后立马计算价格
                 this.leftTableData.push()
-                console.log(this.leftTableData)
+                // console.log(this.leftTableData)
               } else {
                 this.$message({ message: `${result.message}`, type: 'warning', duration: 3000 })
               }
@@ -1203,7 +1222,7 @@ export default {
     // 1.当点击右侧药材列表的‘添加’按钮的时候
     addDrugs (row) {
       var selectRow = this.rightUlData[this.keyCode_40Count]
-      console.log(row, selectRow)
+      // console.log(row, selectRow)
       // row 有可能是enter事件的obj对象，也有可能就是被click时当行的row
 
       // 通过enter添加：此时row代表enter事件的obj对象
@@ -1232,7 +1251,6 @@ export default {
         this.isClickRightAddButton = true
         this.leftTableData.push(row)
       }
-
       // row.myNum = 0 // 让后端加字段，要改所有的类型的，这自己加，就没这种问题了myNum
       this.countTotalPrice(this.leftTableData)
     },
@@ -1309,7 +1327,6 @@ export default {
         })
       }
       // console.log(this.dataForm.CategoryOne, this.dataForm.olCategoryOne, this.activeName, this.oldTabsName)
-      // this.rightCategoryChangeCick(this.activeName) // 切换了一节药态导致二级药态也切换，需要模拟一下点击二级药态时的一些方法
     },
 
     // 二级药态被点击时
@@ -1362,7 +1379,6 @@ export default {
     },
     // 当前页
     currentChangeHandle (val) {
-      console.log(val)
       this.pageIndex = val
       this.getStoreCategorytypeStock()
     },

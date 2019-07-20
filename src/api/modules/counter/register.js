@@ -46,6 +46,19 @@ export function getRegisterInfo (params) {
   })
 }
 
+// 20190719 作废 协定方 或 经典方
+//
+export function deleteAgreement (params) {
+  return request({
+    url: requestUrl('/YstApiSaleOrder/CancelSaleOrder'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+
+
+
 // 正常流程下的医生开方或者药房辅助开方，调用的 edit 接口(‘直接开方’调用的create接口)
 export function sendRecipelToEdit (params) {
   return request({
