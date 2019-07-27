@@ -79,7 +79,7 @@
 
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="isOKClick = true; dataFormSubmit()" :disabled="isOKClick">确定添加</el-button>
+      <el-button type="primary" @click="dataFormSubmit()" :disabled="isOKClick">确定添加</el-button>
     </span>
   </el-dialog>
 </template>
@@ -210,16 +210,20 @@ export default {
     },
     // 表单提交
     dataFormSubmit () {
+      this.isOKClick = true
+      setTimeout(() => {
+        this.isOKClick = false
+      }, 2000)
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var params = {
             Id: this.Id,
-            Name: this.dataForm.Name, // 药典名
+            Name: this.dataForm.Name.replace(/\s/g, ''), // 药典名
             CategoryId: this.dataForm.CategoryId,
             CategoryName: this.dataForm.CategoryName,
 
-            ShowName: this.dataForm.ShowName,
-            SpellName: this.dataForm.SpellName,
+            ShowName: this.dataForm.ShowName.replace(/\s/g, ''), // 全部都要去空格
+            SpellName: this.dataForm.SpellName.replace(/\s/g, ''), // 全部都要去空格
             Unit: this.dataForm.Unit,
             Specification: this.dataForm.Specification,
             SalePrice: '',
@@ -230,7 +234,6 @@ export default {
               this.dataForm.Keywords4, this.dataForm.Keywords5
             ].join()
           }
-          // console.log(params)
           var tick = !this.Id ? API.drugs.createDrugs(params) : API.drugs.submitEdit(params)
           tick.then((data) => {
             if (data.code === '0000') {

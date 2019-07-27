@@ -291,7 +291,7 @@
 
     <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dataFormSubmit()">确认收费并打印</el-button>
+        <el-button type="primary" @click="dataFormSubmit()" :disabled="isOKClick">确认收费并打印</el-button>
         <el-button @click="visible = false">关闭</el-button>
       </span>
     </div>
@@ -350,7 +350,9 @@ export default {
         {label: '医保', value: 5},
         {label: '微信客服手机', value: 6},
         {label: '代金券', value: 7},
-        {label: '会员卡', value: 8}]
+        {label: '会员卡', value: 8}
+      ],
+      isOKClick: false
     }
   },
   watch: {
@@ -491,9 +493,14 @@ export default {
         PrescriptionName: '无' // 介绍人
       }
       this.paymentAdd = false
+      this.isOKClick = false
     },
     // 收银提交接口
     dataFormSubmit () {
+      this.isOKClick = true
+      setTimeout(() => {
+        this.isOKClick = false
+      }, 1000)
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           // var  Actual = Number(this.dataForm.PayAmount) + Number(this.dataForm.OnlinePayAmount)

@@ -2,10 +2,12 @@
   <div v-if="show3" class="ownScrollbar" style="min-height: 400px;max-height: 600px;overflow-y: scroll;">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item label="">
-        <el-input v-model="dataForm.UserName" placeholder="姓名" size="mini" clearable style="width: 100px"></el-input>
+        <el-input v-model="dataForm.UserName" placeholder="姓名" size="mini"
+                  @clear="getDataList()" clearable style="width: 100px"></el-input>
       </el-form-item>
       <el-form-item label="">
-        <el-input v-model="dataForm.MobilePhone" placeholder="患者电话" size="mini" clearable style="width: 120px"></el-input>
+        <el-input v-model="dataForm.MobilePhone" placeholder="患者电话" size="mini"
+                  @clear="getDataList()" clearable style="width: 120px"></el-input>
       </el-form-item>
       <el-form-item>
         <!--<el-button icon="el-icon-search" @click="getDataList()" size="mini">查询</el-button>-->

@@ -62,3 +62,12 @@ export function drugsOn (params) {
     data: requestParam(params)
   })
 }
+
+// 药品批量导入：Excel
+export function drugsBatchExcel (params) {
+  return request({
+    url: requestUrl('/YstApiProduct/Import'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}

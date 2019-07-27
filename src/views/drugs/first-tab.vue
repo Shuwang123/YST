@@ -2,10 +2,10 @@
   <div class="first-tab">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.drugsName" placeholder="药名" clearable @clear="getDataList()" style="width: 150px"></el-input>
+        <el-input v-model="dataForm.drugsName" placeholder="药材名称" clearable @clear="getDataList()" style="width: 150px"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.drugsSpell" placeholder="请输入拼音首字母" clearable @clear="getDataList()" style="width: 150px"></el-input>
+        <el-input v-model="dataForm.drugsSpell" placeholder="拼音首字母" clearable @clear="getDataList()" style="width: 150px"></el-input>
       </el-form-item>
       <el-form-item>
         <el-select v-model="dataForm.CategoryId" placeholder="药品种类" @change="getDataList()"
@@ -18,6 +18,7 @@
         <el-button type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus">新建药品</el-button>
         <el-button type="danger" @click="handelShelfOff()" :disabled="this.dataListSelections.length <= 0">批量下架</el-button>
         <el-button type="success" @click="handelShelfOn()" :disabled="this.dataListSelections.length <= 0">批量上架</el-button>
+        <el-button type="success" @click="importExcel()">批量导入</el-button>
       </el-form-item>
     </el-form>
 
@@ -90,18 +91,20 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[10, 18, 20, 50, 100]"
+      :page-sizes="[10, 30, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
     <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></first-tab-add-or-update>
+    <first-tab-excel v-if="excelPopVisible" ref="excelPop" @childExcel="getDataList"></first-tab-excel>
   </div>
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
 import { mapGetters } from 'vuex'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
+import FirstTabExcel from './first-tab-excel'
 export default {
   name: 'drugs',
   data () {
@@ -111,9 +114,10 @@ export default {
 
       storePayInfoVisible: false, // 这个未发现用处
       addOrUpdateVisible: false,
+      excelPopVisible: false,
       dataListLoading: false, // 加载
 
-      pageSize: 18,
+      pageSize: 100,
       pageIndex: 1,
       totalPage: 1,
       dataForm: {
@@ -125,7 +129,10 @@ export default {
       dataListSelections: []
     }
   },
-  components: { FirstTabAddOrUpdate },
+  components: {
+    FirstTabAddOrUpdate,
+    FirstTabExcel
+  },
   created () { this.getDrugsCategory() },
   mounted () {
     this.getDataList()
@@ -142,7 +149,7 @@ export default {
     getDrugsCategory () {
       API.drugs.getDrugsCategory().then(result => {
         if (result.code === '0000') {
-          this.drugsCategoryList = result.data
+          this.drugsCategoryList = result.data.slice(1)
         }
       })
     },
@@ -256,14 +263,20 @@ export default {
           return 'dimColumn'
         }
       }
+    },
+    importExcel () {
+      this.excelPopVisible = true
+      this.$nextTick(() => {
+        this.$refs.excelPop.init()
+      })
     }
   }
 }
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
-.el-table {
-  & /deep/ .on-row {
+.el-table /deep/ {
+  .on-row {
     color: #606266;
     & td {padding: 0;}
     & td .cell{
@@ -271,7 +284,7 @@ export default {
       line-height: 35px;
     }
   }
-  & /deep/ .off-row {
+  .off-row {
     color: #ccc;
     & td {padding: 0;}
     & td .cell{
@@ -279,6 +292,6 @@ export default {
       line-height: 35px;
     }
   }
-  & /deep/ .highlightColumn { color: #409EFF } /*这儿只管上架状态的列的样式，‘未上架的列的样式’ 干脆全跟着 ‘未上架的行的样式’ 混*/
+  .highlightColumn { color: #409EFF } /*这儿只管上架状态的列的样式，‘未上架的列的样式’ 干脆全跟着 ‘未上架的行的样式’ 混*/
 }
 </style>

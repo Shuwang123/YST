@@ -88,7 +88,7 @@
     </el-row>
 
     <span slot="footer" class="dialog-footer">
-      <el-button type="primary" @click="isOKClick = true; dataFormSubmit()" :disabled="isOKClick">确认兑换</el-button>
+      <el-button type="primary" @click="dataFormSubmit()" :disabled="isOKClick">确认兑换</el-button>
       <el-button @click="visible = false">取消</el-button>
     </span>
   </el-dialog>
@@ -260,6 +260,10 @@ export default {
     },
     // 表单提交
     dataFormSubmit () {
+      this.isOKClick = true
+      setTimeout(() => {
+        this.isOKClick = false
+      }, 1000)
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var params = {

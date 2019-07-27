@@ -424,9 +424,12 @@ export default {
                 vm.dataForm.CategoryOne = sessionRecipel[index].oneDrugCategory
                 vm.oldTabsName = sessionRecipel[index].childDrugCategory
                 vm.activeName = sessionRecipel[index].childDrugCategory
+                vm.comTwoCategoryChangeFunction(vm.activeName) // 把table切换了来哟
                 vm.getStoreCategorytypeStock()
 
-                vm.leftTableData = sessionRecipel[index].recipelItems // 还原处方
+                // 还原处方
+                vm.leftTableData = sessionRecipel[index].recipelItems
+                vm.countTotalPrice(vm.leftTableData) // 计算价格
                 // 患者信息不用还原，不管是直接开方进来后选患者，还是就诊进来，都自己就有患者信息了，所以不用利用session中的患者电话重新查询了
                 vm.dataForm.MainSuit = sessionRecipel[index].zhusu
                 vm.dataForm.DiseaseInfo = sessionRecipel[index].zhenduan
@@ -768,11 +771,11 @@ export default {
         {content: 'M', isActive: false}, {content: 'Z', isActive: false}],
       drugsCategoryArr: [], // 先请求药品种类
       drugsCategoryArrCopy: [], // 初始化的时候就保存一个保存有全部信息的副本，以后用于提取
-      oldTabsName: '1001', // 二级药态记录
-      oldTwoTabsName: '饮片', // 二级药态记录
-      activeName: '1001',
+      oldTabsName: '1002', // 二级药态记录
+      oldTwoTabsName: '精品饮片', // 二级药态记录
+      activeName: '1002',
 
-      leftTable: 'TableOne', // 左侧表格 组件的引用名切换哟，这的值决定
+      leftTable: 'TableTwo', // 左侧表格 组件的引用名切换哟，这的值决定
       leftTableData: [], // 左侧表格的数据
       rightUl: '', // 右侧列表
       rightUlData: [], // 右侧列表的数据
@@ -977,31 +980,31 @@ export default {
     comOneCategoryChangeFunction (one) { // one：一级药态 - [饮片1001、颗粒1002、精品1003、三九1004]
       switch (one) {
         case '1':
-          this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
+          this.filterCategory(['1002', '1003', '1004']) // 汤剂
           this.dataForm.oldCategoryOneName = '汤剂'
           this.unitIsG = false
           this.dataForm.DrugRate_0 = '1'
           break
         case '3':
-          this.filterCategory(['1003']) // 制膏只有三九
+          this.filterCategory(['1003']) // 制膏只有 三九
           this.dataForm.oldCategoryOneName = '制膏'
           this.unitIsG = false
           this.dataForm.DrugRate_0 = '1'
           break
         case '4':
-          this.filterCategory(['1001', '1002']) // 制丸只有饮片
+          this.filterCategory(['1002']) // 制丸只有 饮片
           this.dataForm.oldCategoryOneName = '水泛丸'
           this.unitIsG = true
           this.dataForm.DrugRate_0 = '3'
           break
         case '5':
-          this.filterCategory(['1001', '1002']) // 制丸只有饮片
+          this.filterCategory(['1002']) // 制丸只有 饮片
           this.dataForm.oldCategoryOneName = '水蜜丸'
           this.unitIsG = true
           this.dataForm.DrugRate_0 = '3'
           break
         case '2':
-          this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
+          this.filterCategory(['1002', '1003', '1004']) // 外用
           this.dataForm.oldCategoryOneName = '外用'
           this.unitIsG = false
           this.dataForm.DrugRate_0 = '1'
@@ -1021,7 +1024,7 @@ export default {
     zairuFunAgreement (agreementId) {
       API.register.getRegisterInfo({id: agreementId}).then(result => {
         if (result.code === '0000') {
-          console.log(result.data)
+          // console.log(result.data)
           // this.dataForm.MainCure = result.data.MainCure // 主治
           // this.dataForm.Effect = result.data.Effect // 功效
           // this.dataForm.Explain = result.data.Explain // 说明
@@ -1065,7 +1068,7 @@ export default {
               SearchType: 2 // 1表示才够用2查询库存用
             }).then(response => {
               if (response.code === '0000' && response.data.length > 0) {
-                console.log(response.data)
+                // console.log(response.data)
                 // 左边table 字段转换下
                 // 搭配上面的1、（温馨提示）这的逻辑比较乱也比较复杂，超级需要耐心
                 // 搭配上面的1、（温馨提示）这的逻辑比较乱也比较复杂，超级需要耐心
@@ -1102,7 +1105,7 @@ export default {
         if (result.code === '0000') {
           this.drugsCategoryArr = result.data.filter((item, ind) => {
             return ind > 0
-          })
+          }).slice(1) // 不需要饮片1001
           this.drugsCategoryArrCopy = this.drugsCategoryArr
         }
       })

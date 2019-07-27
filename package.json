@@ -16,6 +16,7 @@
   "dependencies": {
     "axios": "^0.18.0",
     "element-ui": "^2.3.7",
+    "file-saver": "^2.0.2",
     "js-file-download": "^0.4.1",
     "js-md5": "^0.7.3",
     "js-xlsx": "^0.8.22",
@@ -34,7 +35,7 @@
     "vue-router": "^3.0.1",
     "vue-ydui": "^1.1.8",
     "vuex": "^3.0.1",
-    "xlsx": "^0.12.12",
+    "xlsx": "^0.12.13",
     "xlsx-style": "^0.8.13"
   },
   "devDependencies": {
@@ -87,6 +88,7 @@
     "postcss-url": "^7.2.1",
     "rimraf": "^2.6.0",
     "sass-loader": "^6.0.7",
+    "script-loader": "^0.7.2",
     "selenium-server": "^3.0.1",
     "semver": "^5.3.0",
     "shelljs": "^0.7.6",

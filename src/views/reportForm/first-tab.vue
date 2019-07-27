@@ -336,7 +336,6 @@ import API from '@/api'
 import { mapGetters } from 'vuex'
 import { calcAge } from '@/utils/validate'
 // import { echarts } from '../../../static/echarts.min.js'
-// import { echarts } from '../../../static/echarts.min.js'
 var echarts = require('../../../static/echarts.min.js')
 export default {
   name: 'stockFirst',
@@ -408,9 +407,12 @@ export default {
               shadowColor: 'rgba(0, 0, 0, 0.8)'
             }
           },
+          labelLine: {
+
+          },
           label: {
             normal: {
-              formatter: '{b|{b}：\n} {c}￥{per|{d}%}',
+              formatter: '{b|{b}}：\n {c}￥{per|{d}%}',
               backgroundColor: '#f1f2f7',
               borderColor: '#eee',
               borderWidth: 1,

@@ -205,9 +205,9 @@ export default {
         {content: 'M', isActive: false}, {content: 'Z', isActive: false}],
       drugsCategoryArr: [], // 先请求药品种类
       drugsCategoryArrCopy: [], // 初始化的时候就保存一个保存有全部信息的副本，以后用于提取
-      oldTabsName: '1001', // 二级态记录
-      activeName: '1001',
-      leftTable: 'TableOne', // 左侧表格 组件的引用名切换哟，这的值决定
+      oldTabsName: '1002', // 二级态记录
+      activeName: '1002',
+      leftTable: 'TableTwo', // 左侧表格 组件的引用名切换哟，这的值决定
       leftTableData: [], // 左侧表格的数据
       rightUl: '', // 右侧列表
       rightUlData: [], // 右侧列表的数据
@@ -268,9 +268,9 @@ export default {
         // Status: '3,5,6', // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部
       }
       this.leftTableData = []
-      this.oldTabsName = '1001'
-      this.activeName = '1001'
-      this.leftTable = 'TableOne'
+      this.oldTabsName = '1002'
+      this.activeName = '1002'
+      this.leftTable = 'TableTwo'
     },
 
     // 一级药态切换后 二级药态需要重新过滤
@@ -287,19 +287,19 @@ export default {
     comOneCategoryChangeFunction (one) { // one：一级药态 - [饮片1001、颗粒1002、精品1003、三九1004]
       switch (one) {
         case '1':
-          this.filterCategory(['1001', '1002', '1003', '1004']) // 汤剂
+          this.filterCategory(['1002', '1003', '1004']) // 汤剂
           break
         case '3':
           this.filterCategory(['1003']) // 制膏只有 三九
           break
         case '4':
-          this.filterCategory(['1001', '1002']) // 制丸只有 饮片
+          this.filterCategory(['1002']) // 制丸只有 饮片
           break
         case '5':
-          this.filterCategory(['1001', '1002']) // 制丸只有 饮片
+          this.filterCategory(['1002']) // 制丸只有 饮片
           break
         case '2':
-          this.filterCategory(['1001', '1002', '1003', '1004']) // 外用
+          this.filterCategory(['1002', '1003', '1004']) // 外用
           break
       }
     },
@@ -331,58 +331,59 @@ export default {
       this.openType = type
       this.dataForm.AccountId = AccountId
 
-      // 先请求药品种类提供给下拉列表
+      // 先请求药品种类提供给下拉列表 (有力气可以换成并发请求，响应细节看起来更舒服)
       API.drugs.getDrugsCategory().then(result => {
         if (result.code === '0000') {
           this.drugsCategoryArr = result.data.filter((item, ind) => {
             return ind > 0
-          })
-        }
-        this.drugsCategoryArrCopy = this.drugsCategoryArr
-      })
-      if (agreementRecipelId) { // 查看、和 编辑 都需要初始化
-        this.dataListLoading = true
-        this.dataForm.agreementRecipelId = agreementRecipelId
-        API.register.getRegisterInfo({id: this.dataForm.agreementRecipelId}).then(result => {
-          if (result.code === '0000') {
-            this.dataForm.SpellName = ''
-            this.dataForm.agreementRecipelId = result.data.Id // 协定方id
-            // StoreId: '' // 门店
-            // this.dataForm.AccountId = result.data.AccountId // 医生
-            this.dataForm.MainCure = result.data.MainCure // 主治
-            this.dataForm.Effect = result.data.Effect // 功效
-            this.dataForm.Explain = result.data.Explain // 说明
-            this.dataForm.PrescriptionName = result.data.PrescriptionName // 处方名
-            this.dataForm.DrugRate = result.data.DrugRate // 用法
-            this.dataForm.oldCategoryOne = String(result.data.CategoryOne) // 药态一级记录 1内服2外用3制膏4水丸5水蜜丸
-            this.dataForm.CategoryOne = String(result.data.CategoryOne) // 药态一级分类 1内服2外用3制膏4水丸5水蜜丸
+          }).slice(1)
+          this.drugsCategoryArrCopy = this.drugsCategoryArr
 
-            this.comOneCategoryChangeFunction(this.dataForm.CategoryOne) // 一级药态处理
-            this.leftTableData = result.data.SaleOrderItems.map(item => { // 左边table 字段转换下
-              item.CategoryName = item.CategoryName.substring(4)
-              item.ProductId = item.ProductId // 这个字段为什么要转换，就是后端的接口一会那个字段一会这个字段搞出来的，如果不转化一下，直接就使用会有bug（就是代表同一个东西的字段，后端取名没有统一）
-              item.myNum = item.Quantity
-              return item
+          if (agreementRecipelId) { // 查看、和 编辑 都需要初始化
+            this.dataListLoading = true
+            this.dataForm.agreementRecipelId = agreementRecipelId
+            API.register.getRegisterInfo({id: this.dataForm.agreementRecipelId}).then(result => {
+              if (result.code === '0000') {
+                this.dataForm.SpellName = ''
+                this.dataForm.agreementRecipelId = result.data.Id // 协定方id
+                // StoreId: '' // 门店
+                // this.dataForm.AccountId = result.data.AccountId // 医生
+                this.dataForm.MainCure = result.data.MainCure // 主治
+                this.dataForm.Effect = result.data.Effect // 功效
+                this.dataForm.Explain = result.data.Explain // 说明
+                this.dataForm.PrescriptionName = result.data.PrescriptionName // 处方名
+                this.dataForm.DrugRate = result.data.DrugRate // 用法
+                this.dataForm.oldCategoryOne = String(result.data.CategoryOne) // 药态一级记录 1内服2外用3制膏4水丸5水蜜丸
+                this.dataForm.CategoryOne = String(result.data.CategoryOne) // 药态一级分类 1内服2外用3制膏4水丸5水蜜丸
+
+                this.comOneCategoryChangeFunction(this.dataForm.CategoryOne) // 一级药态处理
+                this.leftTableData = result.data.SaleOrderItems.map(item => { // 左边table 字段转换下
+                  item.CategoryName = item.CategoryName.substring(4)
+                  item.ProductId = item.ProductId // 这个字段为什么要转换，就是后端的接口一会那个字段一会这个字段搞出来的，如果不转化一下，直接就使用会有bug（就是代表同一个东西的字段，后端取名没有统一）
+                  item.myNum = item.Quantity
+                  return item
+                })
+
+                // console.log(this.leftTableData)// console.log(result.data)
+                // 根据协定方的药态，控制右边药态的初始选中值
+                if (result.data.SaleOrderItems.some(item => String(item.CategoryId) === '1002')) { // 如果是精品类型的协定方，就要避免第一味药就出现普通饮片的可能
+                  this.oldTabsName = '1002'
+                  this.activeName = '1002'
+                } else {
+                  this.oldTabsName = String(result.data.SaleOrderItems[0].CategoryId)
+                  this.activeName = String(result.data.SaleOrderItems[0].CategoryId)
+                }
+                this.comTwoCategoryChangeFunction(this.oldTabsName) // 二级药态处理 切换table表格
+
+                this.getStoreCategorytypeStock()
+                this.dataListLoading = false
+              }
             })
-
-            // console.log(this.leftTableData)// console.log(result.data)
-            // 根据协定方的药态，控制右边药态的初始选中值
-            if (result.data.SaleOrderItems.some(item => String(item.CategoryId) === '1002')) { // 如果是精品类型的协定方，就要避免第一味药就出现普通饮片的可能
-              this.oldTabsName = '1002'
-              this.activeName = '1002'
-            } else {
-              this.oldTabsName = String(result.data.SaleOrderItems[0].CategoryId)
-              this.activeName = String(result.data.SaleOrderItems[0].CategoryId)
-            }
-            this.comTwoCategoryChangeFunction(this.oldTabsName) // 二级药态处理 切换table表格
-
-            this.getStoreCategorytypeStock()
-            this.dataListLoading = false
+          } else { // 后初始化页面的右上角：
+            this.getStoreCategorytypeStock() // 这往上的代码都必须执行，不能写在下面的代码的后面，以免被return false影响
           }
-        })
-      } else { // 后初始化页面的右上角：
-        this.getStoreCategorytypeStock() // 这往上的代码都必须执行，不能写在下面的代码的后面，以免被return false影响
-      }
+        }
+      })
     },
 
     controlRightTopInputBlur () {

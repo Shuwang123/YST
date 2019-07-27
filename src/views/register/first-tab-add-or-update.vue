@@ -176,7 +176,7 @@
 
       <div style="text-align: right; margin-top: 30px">
         <span slot="footer" class="dialog-footer">
-          <el-button type="primary" @click="dataFormSubmit()">挂号</el-button>
+          <el-button type="primary" @click="dataFormSubmit()" :disabled="isOKClick">挂号</el-button>
           <el-button @click="outerVisible = false">取消</el-button>
           <!--<el-button type="primary" @click="innerVisible = true">打开内层 Dialog</el-button>-->
         </span>
@@ -296,7 +296,8 @@ export default {
           value: 8
         }
       ],
-      registerAllData: {}
+      registerAllData: {},
+      isOKClick: false
     }
   },
   created () {
@@ -359,11 +360,16 @@ export default {
         ConsultationAmount: 0 // 诊疗费
       }
       this.RegisterBool = false // 禁用
+      this.isOKClick = false
       this.$refs['dataForm'].clearValidate()
     },
 
     // 表单提交
     dataFormSubmit () {
+      this.isOKClick = true
+      setTimeout(() => {
+        this.isOKClick = false
+      }, 1000)
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           var params = {

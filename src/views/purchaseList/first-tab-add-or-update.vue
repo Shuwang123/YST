@@ -242,8 +242,12 @@
     <span v-if="editType !== ''" slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
       <!--<el-button v-if="editType === 'A'" type="primary" @click="dataFormAdd()">新增药材</el-button>-->
-      <el-button v-if="editType === 'A'" type="primary" @click="dataFormSubmitA()">保存</el-button>
-      <el-button v-else-if="editType === 'B'" type="primary" @click="dataFormSubmitB()">确定入库</el-button>
+      <el-button v-if="editType === 'A'" type="primary" @click="dataFormSubmitA()"
+                 :disabled="rukuIsDisabled">保存
+      </el-button>
+      <el-button v-else-if="editType === 'B'" type="primary" @click="dataFormSubmitB()"
+                 :disabled="rukuIsDisabled">确定入库
+      </el-button>
     </span>
     <span v-else-if="stepActive === 0" slot="footer" class="dialog-footer">
       <el-button @click="excelExports('purchase')">导出Excel(采购单)</el-button>
@@ -314,7 +318,9 @@ export default {
         }]
       },
       pickerOptions_1: null,
-      pages: 1 // 打印循环 相关参数
+      pages: 1, // 打印循环 相关参数
+
+      rukuIsDisabled: false // 入库时防止双击带来一些bug
     }
   },
   methods: {
@@ -633,6 +639,10 @@ export default {
       this.OrderTotalPrice = 0
     },
     dataFormSubmitA () { // 编辑的提交 采购数量和价格
+      this.rukuIsDisabled = true
+      setTimeout(() => {
+        this.rukuIsDisabled = false
+      }, 2000)
       var params = {
         Address: this.dataList.Address,
         Buyer: this.dataList.Buyer,
@@ -680,6 +690,10 @@ export default {
       })
     },
     dataFormSubmitB () { // 入库的提交 批次号
+      this.rukuIsDisabled = true
+      setTimeout(() => {
+        this.rukuIsDisabled = false
+      }, 2000)
       if (this.dataList.Items.some(item => item.lll === 0 || item.lll === '' || item.lll === null)) {
         this.$alert('批次号未完整录入!', '提示', {
           confirmButtonText: '确定'
