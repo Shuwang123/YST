@@ -17,7 +17,7 @@
 
               <!--<el-form-item>-->
                 <!--<el-select v-model="dataForm.AccountId" placeholder="医生"-->
-                           <!--@change="comTabFunction()" @clear="comTabFunction()" clearable style="width: 100px">-->
+                           <!--@change="comTabunction()" @clear="comTabunction()" clearable style="width: 100px">-->
                   <!--<el-option v-for="item in storeDoctorArr" :key="item.Id"-->
                              <!--:label="`${item.Id} ${item.NickName}`" :value="item.Id">-->
                   <!--</el-option>-->
@@ -25,7 +25,7 @@
               <!--</el-form-item>-->
               <!--<el-form-item>-->
                 <!--<el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="患者/患者电话"-->
-                          <!--@clear="comTabFunction()" clearable style="width: 119px"></el-input>-->
+                          <!--@clear="comTabunction()" clearable style="width: 119px"></el-input>-->
               <!--</el-form-item>-->
 
               <el-form-item>
@@ -115,7 +115,7 @@ export default {
           onClick (picker) {
             const end = new Date()
             const start = new Date()
-            end.setTime(end.getTime() + 3600 * 1000 * 24 * 1)
+            end.setTime(end.getTime() + 3600 * 1000 * 24 * 0)
             picker.$emit('pick', [start, end])
           }
         }, {
@@ -124,6 +124,7 @@ export default {
             const end = new Date()
             const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 1)
+            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1)
             picker.$emit('pick', [start, end])
           }
         }, {
@@ -132,12 +133,12 @@ export default {
             const end = new Date()
             const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 2)
-            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1)
+            end.setTime(end.getTime() - 3600 * 1000 * 24 * 2)
             picker.$emit('pick', [start, end])
           }
         }],
         disabledDate (time) {
-          return time.getTime() > Date.now() + 3600 * 24 * 1 * 1000
+          return time.getTime() > Date.now() + 3600 * 24 * 0 * 1000
         }
       },
       storeDoctorArr: []
@@ -171,7 +172,7 @@ export default {
         return `${y}-${m}-${d}`
       }
       var curDate = myFormat(new Date())
-      var nextDate = myFormat(new Date(new Date().getTime() + 3600 * 24 * 1000))
+      var nextDate = myFormat(new Date(new Date().getTime() + 3600 * 24 * 1000 * 0))
       this.valueTime = [curDate, nextDate]
     },
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
@@ -201,7 +202,7 @@ export default {
       let second = runTime
       // console.log(year + ',' + month + ',' + day + ',' + hour + ',' + minute + ',' + second)
       this.timeGap = day
-      if (this.timeGap === 1 && this.isVisible[0].child) {
+      if (this.timeGap === 0 && this.isVisible[0].child) {
         this.buttonIsDisabled = false
       } else {
         this.buttonIsDisabled = true

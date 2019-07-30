@@ -35,9 +35,11 @@
                   start-placeholder="开始日期"
                   end-placeholder="结束日期"
                   value-format="yyyy-MM-dd"
-                  style="width: 260px">
+                  style="width: 260px"
+                  :picker-options="pickerOptions">
                 </el-date-picker>
               </el-form-item>
+
               <el-form-item>
                 <el-button @click="comTabFunction()" size="mini">查询</el-button>
               </el-form-item>
@@ -122,6 +124,47 @@ export default {
         {child: false}
       ],
       valueTime: [],
+      pickerOptions: { // 报表时间范围查询，快速选择
+        shortcuts: [{
+          text: '今天',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            end.setTime(end.getTime() + 3600 * 1000 * 24 * 0)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '昨天',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1)
+            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '前天',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 2)
+            end.setTime(end.getTime() - 3600 * 1000 * 24 * 2)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一周',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 6)
+            end.setTime(end.getTime() - 3600 * 1000 * 24 * 0)
+            picker.$emit('pick', [start, end])
+          }
+        }],
+        disabledDate (time) {
+          return time.getTime() > Date.now() + 3600 * 24 * 0 * 1000
+        }
+      },
       storeDoctorArr: []
     }
   },

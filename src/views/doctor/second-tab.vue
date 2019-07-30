@@ -44,8 +44,11 @@
       </el-table-column>
       <el-table-column prop="" label="操作" :width="status === 1 ? 280 : 150" header-align="center" align="center">
         <template slot-scope="scope">
-          <!--<el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">就诊</el-button>-->
+          <!--<el-button type="text" @click="addOrUpdaeHandle(scope.row.Id)">就诊</el-button>-->
           <el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
+          <!--<el-button type="text"-->
+                     <!--@click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&DoctorName=${scope.row.DoctorName}&DoctorId=${fatherDataForm.AccountId}&registerFormId=${scope.row.Id}`)">-->
+            <!--重新编辑</el-button>-->
           <el-button type="text"
                      @click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&DoctorName=${scope.row.DoctorName}&DoctorId=${fatherDataForm.AccountId}&registerFormId=${scope.row.Id}`)">
             再次就诊</el-button>

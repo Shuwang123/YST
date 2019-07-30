@@ -17,7 +17,7 @@
             <el-input v-model="dataForm.ProductName" placeholder="商品名称" size="mini"
                       clearable @clear="tabChange()" @keyup.enter.native="tabChange()" style="width: 100px"></el-input>
           </el-form-item>
-          <el-form-item>
+          <el-form-item v-show="isVisible[0].child">
             <el-input v-model="dataForm.SpellName" placeholder="商品拼音" size="mini"
                       clearable @clear="tabChange()" @keyup.enter.native="tabChange()" style="width: 100px"></el-input>
           </el-form-item>

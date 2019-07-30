@@ -105,7 +105,9 @@
                     </el-col>
                     <el-col :span="6" style="text-align: right;padding-right: 7px"> <!--@click="cutOut = false; addDrugs(item)"-->
                       <el-button type="text" size="mini" @click="addDrugs(item)"
-                                 style="font-size: 15px;font-weight: 600" v-if="openType === 'see' ? false : true">{{item.CategoryId === 1002 ? '[精] ' : ''}}添加</el-button>
+                                 style="font-size: 15px;font-weight: 600" v-if="openType === 'see' ? false : true">
+                        {{item.CategoryId === 1002 ? '[精] ' : ''}}{{item.CategoryId === 1005 ? '[贵] ' : ''}}添加
+                      </el-button>
                     </el-col>
                   </el-row>
                 </el-tooltip>
@@ -336,7 +338,7 @@ export default {
         if (result.code === '0000') {
           this.drugsCategoryArr = result.data.filter((item, ind) => {
             return ind > 0
-          }).slice(1)
+          }).slice(1, 4)
           this.drugsCategoryArrCopy = this.drugsCategoryArr
 
           if (agreementRecipelId) { // 查看、和 编辑 都需要初始化
@@ -404,7 +406,7 @@ export default {
         SpellName: this.dataForm.SpellName,
         Order: '',
         BrandId: '',
-        CategoryId: this.activeName === '1002' ? '1001,1002' : this.activeName, // 1001 药态
+        CategoryId: this.activeName === '1002' ? '1001,1002,1005' : this.activeName, // 1001 药态
         SearchType: 2 }
       API.storeStock.getStoreStock(params).then(result => {
         if (result.code === '0000' && result.data.length > 0) {

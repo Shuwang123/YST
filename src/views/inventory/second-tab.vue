@@ -140,7 +140,7 @@ export default {
         StartDate: this.dataForm.StartDate,
         EndDate: this.dataForm.EndDate
       }
-      console.log(this.value6)
+      console.log(this.value6,params)
       API.storeStock.getStockHistory(params).then(result => {
         if (result.code === '0000') {
           this.dataList = result.data

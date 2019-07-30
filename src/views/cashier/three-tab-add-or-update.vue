@@ -41,9 +41,12 @@
       </el-row>
       <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;position: relative">
         <el-col :span="8" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
-          <span style="display: inline-block;width: 70px;text-align: right">{{item.ProductName}}</span>
+          <span style="display: inline-block;width: 70px;text-align: right;
+            overflow: hidden;white-space: nowrap; text-overflow: ellipsis;vertical-align: bottom">
+            {{item.ProductName}}
+          </span>
           <span style="display: inline-block;width: 70px;text-align: left">
-            {{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}
+            {{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}{{item.CategoryId === 1005 ? '[贵]' : ''}}
           </span>
         </el-col>
       </el-row>
@@ -126,8 +129,13 @@
               <ul style="list-style-type: none;padding: 0;margin: 0;min-height: 260px;border-bottom: 1px solid #333;">
                 <li v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId"
                     style="float: left;width: 33%;text-align: center;height: 24px;line-height: 24px">
-                  <span style="display: inline-block;width: 70px;text-align: right;margin-right: 5px">{{item.ProductName}}</span>
-                  <span style="display: inline-block;">{{item.RefundableQty}}</span> {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}
+                  <span style="display: inline-block;width: 70px;text-align: right;
+                    overflow: hidden;white-space: nowrap; text-overflow: ellipsis;vertical-align: bottom">
+                    {{item.ProductName}}
+                  </span>
+                  <span style="display: inline-block;width: 70px;text-align: left">
+                    {{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}{{item.CategoryId === 1005 ? '[贵]' : ''}}
+                  </span>
                 </li>
               </ul>
             </td>
@@ -248,7 +256,7 @@
           <div>
             <div style="text-align: center;font-size: 18px;font-weight: 900">重庆渝北一善堂中医门诊部（出库单）</div>
             <div>
-              <div style="display: inline-block;width: 30%;text-align: left">供货企业：{{registerAllData.DoctorName}}</div>
+              <div style="display: inline-block;width: 30%;text-align: left">出库门店：{{registerAllData.StoreName}}</div>
               <div style="display: inline-block;width: 25%;text-align: right" v-if="registerAllData.CreatedOn">出库时间：{{registerAllData.CreatedOn | myDateFilter('yyyy-MM-dd')}}</div>
               <div style="display: inline-block;width: 40%;text-align: right">单据编号：{{registerAllData.Code}}</div>
             </div>
@@ -260,7 +268,7 @@
               <td>商品编码</td>
               <td>商品名称</td>
               <td>规格</td>
-              <td>生成厂家</td>
+              <!--<td>生成厂家</td>-->
 
               <td>单位</td>
               <td>数量</td>
@@ -271,9 +279,9 @@
             <tr  style="font-size: 12px" v-for="(item, ind) in registerAllData.SaleOrderItems.slice((index - 1) * 10, (index * 10))" :key="item.ProductCode">
               <td width="50" height="16">{{ind + (index - 1) * 10 + 1}}</td>
               <td width="70">{{item.ProductCode}}</td>
-              <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.ProductName}}{{item.CategoryId === 1002 ? '[精]' : ''}}</p></td>
+              <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.ProductName}}{{item.CategoryId === 1002 ? '[精]' : ''}}{{item.CategoryId === 1005 ? '[贵]' : ''}}</p></td>
               <td width="70" align="center"><p style="width: 70px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.Specification}}</p></td>
-              <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{registerAllData.DoctorName}}</p></td>
+              <!--<td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{registerAllData.DoctorName}}</p></td>-->
 
               <td width="50">{{item.Unit}}</td>
               <td width="70">{{item.Quantity}}</td>
@@ -283,7 +291,7 @@
             </tr>
             <tr style="font-size: 12px">
               <td colspan="2" align="center" height="16">总 {{registerAllData.SaleOrderItems.length}} 笔</td>
-              <td colspan="6" align="left" style="padding: 0 10px;font-weight: bold">{{index === pages ? '全部总计：￥' + sumCountAll(registerAllData.SaleOrderItems) +
+              <td colspan="5" align="left" style="padding: 0 10px;font-weight: bold">{{index === pages ? '全部总计：￥' + sumCountAll(registerAllData.SaleOrderItems) +
                 '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;大写：' + sumChinese(sumCountAll(registerAllData.SaleOrderItems)) : ''}}</td>
               <td colspan="2" align="center">本页合计：{{sumCount(index)}}</td>
             </tr>
@@ -292,6 +300,7 @@
           <div>
             <div style="display: inline-block;width: 30%;text-align: left">创建人：{{registerAllData.DoctorName}}</div>
             <div style="display: inline-block;width: 25%;text-align: right">出库人：{{registerAllData.OrderLevelName}}</div>
+            <!--<div style="display: inline-block;width: 25%;text-align: right">出库人：{{$store.getters.getAccountLoginInfoAll.NickName}}</div>-->
             <div style="display: inline-block;width: 40%;text-align: right;">第 {{index}} 页，共 {{pages}} 页</div>
           </div>
           <div style="page-break-after: always"></div>
@@ -354,7 +363,7 @@ export default {
             result.data.BirthDate = calcAge(result.data.BirthDate)
             this.registerAllData = result.data
             this.dataListLoading = false
-            // console.log('查看', result.data)
+            console.log('查看', result.data)
           }
         })
       }

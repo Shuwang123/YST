@@ -18,7 +18,7 @@
         <el-button type="primary" @click="addOrUpdateHandle()" icon="el-icon-plus">新建药品</el-button>
         <el-button type="danger" @click="handelShelfOff()" :disabled="this.dataListSelections.length <= 0">批量下架</el-button>
         <el-button type="success" @click="handelShelfOn()" :disabled="this.dataListSelections.length <= 0">批量上架</el-button>
-        <el-button type="success" @click="importExcel()">批量导入</el-button>
+        <!--<el-button type="success" @click="importExcel()">批量导入</el-button>-->
       </el-form-item>
     </el-form>
 
@@ -263,13 +263,13 @@ export default {
           return 'dimColumn'
         }
       }
-    },
-    importExcel () {
-      this.excelPopVisible = true
-      this.$nextTick(() => {
-        this.$refs.excelPop.init()
-      })
     }
+    // ,importExcel () {
+    //   this.excelPopVisible = true
+    //   this.$nextTick(() => {
+    //     this.$refs.excelPop.init()
+    //   })
+    // }
   }
 }
 </script>

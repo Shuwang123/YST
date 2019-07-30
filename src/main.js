@@ -22,7 +22,7 @@ import '../theme/index.css'
 import '@/element-ui'
 import '@/assets/scss/index.scss'
 import store from './store'
-import "@/assets/font/iconfont.css"
+import '@/assets/font/iconfont.css'
 import { isAuth, getAccountData } from '@/utils' // sessionStorage
 Vue.use(VueCookie)
 Vue.config.productionTip = false

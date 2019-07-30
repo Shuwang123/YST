@@ -177,7 +177,7 @@
               <li v-for="(item, index) in rightUlData" :key="item.Id"
                   :class="[index === keyCode_40Count ? 'isLi' : '']" @click="addDrugs(item)">
                 <span style="display: inline-block; vertical-align: middle; width: 60px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">{{ item.ShowName }}</span>
-                <span style="color: #e4393c;">{{item.CategoryId === '1002' ? '精品' : ''}}</span>
+                <span style="color: #e4393c;">{{item.CategoryId === '1002' ? '精品' : ''}}{{item.CategoryId === '1005' ? '贵细' : ''}}</span>
                 余<span style="color: red">{{ item.Quantity }}</span>
               </li>
             </ul>
@@ -189,7 +189,8 @@
           <div class="rightUlStyle">
             <ul class="ul-true">
               <li v-for="item in rightUlData" :key="item.Id">
-                <el-tooltip class="item" effect="light" :content="`${item.ShowName} [余量${item.Quantity}]${item.CategoryId === '1002' ? '精' : ''}`" placement="left">
+                <el-tooltip class="item" effect="light"
+                            :content="`${item.ShowName} [余量${item.Quantity}]${item.CategoryId === '1002' ? '精' : ''}${item.CategoryId === '1005' ? '贵' : ''}`" placement="left">
                   <el-row style="clear: both">
 
                     <!--药材名+剩余量+操作-->
@@ -201,7 +202,7 @@
                     <el-col :span="12" :style="{color: item.Quantity - item.RedLine > 0 ? '#333' : item.Quantity === 0 ? '#ccc' : '#e4392c'}">
                       <span style="display: inline-block; vertical-align: middle;text-align: left;padding-left: 10px;
                                    overflow: hidden;width: 100px; white-space: nowrap;text-overflow: ellipsis">
-                        {{item.Quantity}} {{item.CategoryId === '1002' ? '精品' : ''}} <!--{{item.Id}} {{item.RedLine}}-->
+                        {{item.Quantity}} {{item.CategoryId === '1002' ? '精品' : ''}}{{item.CategoryId === '1005' ? '贵细' : ''}} <!--{{item.Id}} {{item.RedLine}}-->
                       </span>
                     </el-col>
 
@@ -488,6 +489,7 @@ export default {
     'dataForm.SpellName': function (val, oldval) {
       // console.log(val)
       var isEmpty = val === '' ? true : false // 右上角输入
+      this.pageIndex = 1
       this.getStoreCategorytypeStock()
 
       if (isEmpty) { // 输入框被清空时，要清空已激活的字母按钮的样式
@@ -696,7 +698,7 @@ export default {
         }
       ],
       DrugRateOptionsArr_step0: [
-        {lab: '0.5', val: '0.5'},{lab: '1', val: '1'}, {lab: '2', val: '2'}, {lab: '3', val: '3'},
+        {lab: '0.5', val: '0.5'}, {lab: '1', val: '1'}, {lab: '2', val: '2'}, {lab: '3', val: '3'},
         {lab: '4', val: '4'}, {lab: '5', val: '5'}, {lab: '6', val: '6'},
         {lab: '7', val: '7'}, {lab: '8', val: '8'}, {lab: '9', val: '9'}
       ],
@@ -1064,7 +1066,7 @@ export default {
               ProductCodeOrBarCode: result.data.SaleOrderItems.map(item => {
                 return item.ProductCode
               }).join(), // 通过批量的药材编码查询出最新的门店里库存药品的信息（主要目的拿到最新的价格）
-              CategoryId: this.activeName === '1002' ? '1001,1002' : this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001 ？？？ 这是精品的时候还有问题
+              CategoryId: this.activeName === '1002' ? '1001,1002,1005' : this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001 ？？？ 这是精品的时候还有问题
               SearchType: 2 // 1表示才够用2查询库存用
             }).then(response => {
               if (response.code === '0000' && response.data.length > 0) {
@@ -1105,7 +1107,7 @@ export default {
         if (result.code === '0000') {
           this.drugsCategoryArr = result.data.filter((item, ind) => {
             return ind > 0
-          }).slice(1) // 不需要饮片1001
+          }).slice(1, 4) // 不需要饮片1001
           this.drugsCategoryArrCopy = this.drugsCategoryArr
         }
       })
@@ -1128,7 +1130,7 @@ export default {
       }
       // console.log(params)
       API.member.getMemberList(params).then(result => {
-        // console.log(result.data) // 如果是医生直接开方这儿会报错的因为是[][0].xx空数组报错的!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // console.log(result.data) // 如果是医生直接开方这儿会报错的因为是[][0].xx空数组报错的!!!!
         if (result.code === '0000') {
           var allAge = calcAge(result.data[0].BirthDate) // !!!!!!这得到18岁 或 10月 1月
           if (allAge.substr(allAge.length - 1) === '月') {
@@ -1162,7 +1164,7 @@ export default {
         PageSize: 50,
         IsPaging: true,
         SpellName: this.dataForm.SpellName,
-        CategoryId: this.activeName === '1002' ? '1001,1002' : this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001 (20190719 如果是精品类型的，需要请求精品 和 普通 特殊处理)
+        CategoryId: this.activeName === '1002' ? '1001,1002,1005' : this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001 (20190719 如果是精品类型的，需要请求精品 和 普通 特殊处理)
         StoreId: this.$store.getters.getAccountCurrentHandleStore, // 传不传门店id决定了是否返回库存余量!!!（另外这儿可以能有点问题要处理，因为可能是药房的账号进来，那这样的话如果药房的权限大于医生，那门店库存也更正变大了，这是个要考虑的地方）
         CodeOrBarCode: ''} // 暂无
       API.drugs.getDrugsList(params).then(result => {

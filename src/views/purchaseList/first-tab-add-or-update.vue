@@ -7,7 +7,8 @@
     <!--<el-col><div style="border-top: 1px dashed #ccc;padding-top: 10px;font-weight: 900">别名（选填）</div></el-col>-->
     <el-container v-loading="dataListLoading"><!-- display: none -->
       <el-aside :width="isAddActive === false ? '100%' : '60%'">
-        <div class="ownScrollbar" style="min-height: 500px;max-height: 500px;overflow-y: scroll;">
+        <div class="ownScrollbar" ref="ownOnscroll" @scroll="scroll"
+             style="min-height: 500px;max-height: 500px;overflow-y: scroll;">
 
           <!--头部状态-->
           <el-row>
@@ -58,7 +59,8 @@
             <!--采购数量-->
             <el-table-column v-if="editType === 'A'" :key="Math.random()" label="采购数量" header-align="center" :align="$store.state.common.align" width="115">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.Quantity" :step="1" :min="1" :max="50000" size="mini" controls-position="right" style="width: 105px"></el-input-number>
+                <el-input-number v-model="scope.row.Quantity"
+                                 :step="1" :min="1" :max="50000" size="mini" controls-position="right" style="width: 105px"></el-input-number>
               </template>
             </el-table-column>
             <el-table-column v-else prop="Quantity" :key="Math.random()" label="采购数量" header-align="center" align="center"></el-table-column>
@@ -192,7 +194,7 @@
             </table>
             <div>
               <div style="display: inline-block;width: 30%;text-align: left">创建人：{{dataList.CreatedByName}}</div>
-              <div style="display: inline-block;width: 25%;text-align: right">出库人：{{$store.getters.getAccountLoginInfoAll.NickName}}</div>
+              <div style="display: inline-block;width: 25%;text-align: right">入库人：{{$store.getters.getAccountLoginInfoAll.NickName}}</div>
               <div style="display: inline-block;width: 40%;text-align: right;">第 {{index}} 页，共 {{pages}} 页</div>
             </div>
             <div style="page-break-after: always"></div>
@@ -320,10 +322,23 @@ export default {
       pickerOptions_1: null,
       pages: 1, // 打印循环 相关参数
 
-      rukuIsDisabled: false // 入库时防止双击带来一些bug
+      rukuIsDisabled: false, // 入库时防止双击带来一些bug
+      lastPosition: 0
     }
   },
+  updated () {
+    this.scrollFun()
+  },
   methods: {
+    // 处理采购弹窗在input输入值之后，数据变化时滚动上的一些缺陷
+    scroll () {
+      this.lastPosition = event.target.scrollTop
+      // console.log('scroll', event.target.scrollTop)
+    },
+    scrollFun () {
+      this.$refs.ownOnscroll.scrollTo(0, this.lastPosition)
+    },
+
     // 打印页，每页的合计金额
     sumCount (n) {
       return this.dataList.Items.slice((n - 1) * 10, n * 10).map(item => item.CostPrice * item.Quantity).reduce((pren, nextm) => pren + nextm).toFixed(2)

@@ -12,6 +12,7 @@
     <el-table-column header-align="center" align="center" label="药名" min-width="100">
       <template slot-scope="scope">
         {{scope.row.ShowName}} {{String(scope.row.CategoryId) === '1002' ? '[精]' : ''}}
+        {{String(scope.row.CategoryId) === '1005' ? '[贵]' : ''}}
       </template>
     </el-table-column>
     <!--<el-table-column prop="Id" header-align="center" align="center" label="Id标识" width="70"></el-table-column>-->
