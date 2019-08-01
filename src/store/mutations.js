@@ -9,7 +9,7 @@ export default {
   [types.UPDATE_DOCUMENT_CLIENT_HEIGHT] (state, { height }) {
     state.documentClientHeight = height
   },
-  [types.UPDATE_DOCUMENT_CLIENT_IFRAME] (state, { height }){
+  [types.UPDATE_DOCUMENT_CLIENT_IFRAME] (state, { height }) {
     state.documentClientIFRMAE = height
   },
   [types.UPDATE_MENU_NAV_LIST] (state, list) {

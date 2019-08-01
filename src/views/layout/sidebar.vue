@@ -88,9 +88,9 @@ export default {
     this.routeHandle(this.$route)
 
     // cx
-    document.getElementsByClassName("site-sidebar__inner")[0].style.height = `${document.documentElement['clientHeight'] - 160}px`
+    document.getElementsByClassName('site-sidebar__inner')[0].style.height = `${document.documentElement['clientHeight'] - 160}px`
     window.onresize = () => {
-      var sideBar = document.getElementsByClassName("site-sidebar__inner")[0]
+      var sideBar = document.getElementsByClassName('site-sidebar__inner')[0]
       sideBar.style.overflowY = 'scroll'
       sideBar.style.height = `${document.documentElement['clientHeight'] - 160}px`
     }

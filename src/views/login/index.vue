@@ -1,36 +1,42 @@
 <template>
   <div class="content-box">
     <div class="box-main" align="center">
-      <div class="main-left">
-        <img src="@/assets/logo/login-img.png" class="main-left-img"/>
-      </div>
-      <div class="main-right">
+      <el-row>
+        <el-col :span="12" class="hidden-md-and-down">
+          <div class="main-left">
+            <img src="@/assets/logo/login-img.png" class="main-left-img"/>
+          </div>
+        </el-col>
 
-        <div class="main-right-logo">
-          <img src="@/assets/logo/login_logo.png" class="main-right-logo-img"/>
-        </div>
-        <div class="main-right-title">
-          <p class="main-right-title-p">一善堂</p>
-        </div>
-        <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm" @keyup.enter.native="submitForm('ruleForm')">
-          <el-form-item label="账号" prop="name">
-            <el-input v-model="ruleForm.name" placeholder="请输入登陆账号" clearable></el-input>
-          </el-form-item>
-          <el-form-item label="密码" prop="pass">
-            <el-input type="password" v-model="ruleForm.pass" placeholder="请输入登陆密码" clearable></el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
-            <el-button @click="resetForm('ruleForm')">重置</el-button>
-          </el-form-item>
-        </el-form>
-
-      </div>
+        <el-col :span="12" :sm="24" :md="24" :lg="12" :xl="12" class="own-left-class">
+          <div class="main-right">
+            <div class="main-right-logo">
+              <img src="@/assets/logo/login_logo.png" class="main-right-logo-img"/>
+            </div>
+            <div class="main-right-title">
+              <p class="main-right-title-p">一善堂</p>
+            </div>
+            <el-form :model="ruleForm" :rules="rules" ref="ruleForm" class="demo-ruleForm" @keyup.enter.native="submitForm('ruleForm')">
+              <el-form-item label="账号" prop="name">
+                <el-input v-model="ruleForm.name" placeholder="请输入登陆账号" clearable></el-input>
+              </el-form-item>
+              <el-form-item label="密码" prop="pass">
+                <el-input type="password" v-model="ruleForm.pass" placeholder="请输入登陆密码" clearable></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
+                <el-button @click="resetForm('ruleForm')">重置</el-button>
+              </el-form-item>
+            </el-form>
+          </div>
+        </el-col>
+      </el-row>
     </div>
   </div>
 </template>
 
 <script type="text/ecmascript-6">
+import 'element-ui/lib/theme-chalk/display.css'
 import API from '@/api'
 import md5 from 'js-md5'
 import {setStore, setAccountData} from '@/utils'
@@ -129,16 +135,27 @@ export default {
     background-color: #93defe;
   }
   .box-main{
-    width: 1100px;height: 100%;padding-top: 120px;margin: auto;overflow: hidden;
+    width: 100%;height: 100%;padding-top: 120px;
+    /*margin: auto;*/
+    overflow: hidden;
   }
   .main-left{
-    float:left;width: 432px;height: 440px;margin-left: 50px;
+    /*float:left;*/
+    display: inline-block;
+    width: 432px;height: 440px;
+    margin-left: 50px;
   }
   .main-left-img{
     width: 500px;height: 440px;
   }
   .main-right{
-    height: 360px;width: 400px;padding: 50px;background-color: #ffffff;border-radius: 6px;box-sizing: border-box;float: right;margin-right: 50px;position: relative;margin-top: 50px;
+    height: 360px;width: 400px;padding: 50px;background-color: #ffffff;
+    border-radius: 6px;
+    box-sizing: border-box;
+    /*float: left;*/
+    margin-right: 50px;
+    position: relative;
+    margin-top: 50px;
   }
   .main-right-logo{
     width: 120px;height: 120px;border:5px solid #93defe;border-radius: 100px;background-color: #ffffff;line-height: 110px;position: absolute;top: -60px;right: 140px;

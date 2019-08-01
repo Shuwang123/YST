@@ -44,14 +44,20 @@
       </el-table-column>
       <el-table-column prop="" label="操作" :width="status === 1 ? 280 : 150" header-align="center" align="center">
         <template slot-scope="scope">
-          <!--<el-button type="text" @click="addOrUpdaeHandle(scope.row.Id)">就诊</el-button>-->
           <el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
           <!--<el-button type="text"-->
                      <!--@click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&DoctorName=${scope.row.DoctorName}&DoctorId=${fatherDataForm.AccountId}&registerFormId=${scope.row.Id}`)">-->
             <!--重新编辑</el-button>-->
-          <el-button type="text"
-                     @click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&DoctorName=${scope.row.DoctorName}&DoctorId=${fatherDataForm.AccountId}&registerFormId=${scope.row.Id}`)">
-            再次就诊</el-button>
+          <el-button type="text" @click="$router.push({
+            name: 'recipel',
+            params: {
+              doctorId: fatherDataForm.AccountId,
+              row: scope.row
+            }
+          })">调用此处方</el-button>
+          <!--调用此次处方里的各种旧信息，最终create一张新的处方-->
+          <!--@click="$router.push(`/doctor/recipel?MobilePhone=${scope.row.MobilePhone}&DoctorName=${scope.row.DoctorName}&
+          DoctorId=${fatherDataForm.AccountId}&registerFormId=${scope.row.Id}`)">-->
         </template>
       </el-table-column>
     </el-table>
@@ -120,6 +126,7 @@ export default {
               item.BirthDate = calcAge(item.BirthDate)
               return item
             })
+            console.log(this.dataList)
             this.totalPage = result.total
           } else {
             this.$message.error(result.message)
