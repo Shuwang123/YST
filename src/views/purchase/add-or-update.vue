@@ -177,8 +177,9 @@ export default {
         SpellName: this.dataForm.SpellName,
         CategoryId: categoryid,
         StoreId: storeid, // 传不传门店id决定了是否返回库存余量!!!
-        CodeOrBarCode: '', // 暂无
-        Order: this.dataForm.Order // 排序  ---LeftRedLineDesc  LeftRedLineAsc库存量-警告值 排序
+        CodeOrBarCode: '', // 多个商品编码,查询
+        Order: this.dataForm.Order, // 排序  ---LeftRedLineDesc  LeftRedLineAsc库存量-警告值 排序
+        WebStatus: 1
       }).then(result => {
         if (result.code === '0000' && result.data.length > 0) {
           this.dataList = result.data
