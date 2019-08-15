@@ -23,7 +23,9 @@
 
       <el-table-column prop="Quantity" header-align="center" align="center" label="采购总量" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="CreatedByName" header-align="center" align="center" label="操作人" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>
+      <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
+      <el-table-column prop="PurchaseOrderStatus" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>
+
       <el-table-column prop="" label="操作" :width="status === 1 ? 280 : 150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="text" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
@@ -98,6 +100,7 @@ export default {
         if (result.code === '0000') {
           if (this.status === 0) {
             this.dataList = result.data
+            // console.log(result.data) ??? 控制台不打印，有点看不懂这
             this.totalPage = result.total
           } else {
             this.dataList = result.data.filter(item => {

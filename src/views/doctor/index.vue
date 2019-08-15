@@ -19,7 +19,18 @@
                          :label="`${item.Id}-${item.NickName}`" :value="item.Id"></el-option>
             </el-select>
           </el-form-item>
+
           <el-form-item>
+            <el-input v-model="dataForm.PatientName" placeholder="患者姓名" @keyup.enter.native="doctorHandle()"
+                      @clear="doctorHandle()" clearable style="width: 119px"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-input v-model="dataForm.PatientPhone" placeholder="患者电话" @keyup.enter.native="doctorHandle()"
+                      @clear="doctorHandle()" clearable style="width: 119px"></el-input>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button @click="doctorHandle()">查询</el-button>
             <!--<el-button v-if="$store.getters.getAccountIsDoctor" :disabled="dataForm.AccountId === '' ? true : false"-->
             <el-button :disabled="dataForm.AccountId === '' ? true : false"
             @click="$router.push(`/doctor/recipel?MobilePhone=0&DoctorName=${dataForm.currentDoctorName}&DoctorId=${dataForm.AccountId}`)">
@@ -70,6 +81,9 @@ export default {
         AccountId: '', // 医生Id
         currentDoctorName: '', // 当前选中的医生名
         View: true, // 是否显示门店筛选组件
+
+        PatientName: '', // 患者姓名查询
+        PatientPhone: '', // 患者电话查询
         StartDate: '',
         EndDate: ''
       },
@@ -149,11 +163,13 @@ export default {
       })
     },
     doctorHandle () {
-      if (this.isVisible[0].child === true) {
-        this.$refs.firstTab.getDataList()
-      } else if (this.isVisible[1].child === true) {
-        this.$refs.secondTab.getDataList()
-      }
+      this.$nextTick(() => {
+        if (this.isVisible[0].child === true) {
+          this.$refs.firstTab.getDataList()
+        } else if (this.isVisible[1].child === true) {
+          this.$refs.secondTab.getDataList()
+        }
+      })
     },
     handleClick (tab, event) {
       // console.log(tab, event)

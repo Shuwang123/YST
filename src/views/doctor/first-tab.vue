@@ -99,8 +99,8 @@ export default {
           IsPaging: this.IsPaging,
           StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店Id（必须）
           Code: '', // 挂号单
-          UserName: '', // 患者姓名
-          MobilePhone: '', // 患者电话
+          UserName: this.fatherDataForm.PatientName, // 患者姓名
+          MobilePhone: this.fatherDataForm.PatientPhone, // 患者电话
           AccountId: this.fatherDataForm.AccountId, // 账户Id,医生Id
           WrokFrom: '', // 开始时间
           WrokTo: '', // 结束时间
@@ -119,7 +119,7 @@ export default {
           }
           this.dataListLoading = false
         })
-        // console.log(params)
+        console.log(params)
       })
     },
     getDataListChild () {

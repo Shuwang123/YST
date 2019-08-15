@@ -709,6 +709,8 @@ export default {
       setTimeout(() => {
         this.rukuIsDisabled = false
       }, 2000)
+
+      //  想取消批次号和生产日期的必填验证，就注释下面两个if即可，对代码其他模块没影响
       if (this.dataList.Items.some(item => item.lll === 0 || item.lll === '' || item.lll === null)) {
         this.$alert('批次号未完整录入!', '提示', {
           confirmButtonText: '确定'
@@ -721,6 +723,7 @@ export default {
         })
         return false
       }
+
       var params = {
         Code: this.dataList.Code,
         Id: this.dataList.Id,
@@ -729,13 +732,15 @@ export default {
           return {
             Id: item.Id, // 这是详情id，上面那个A的是药材ID
             ActualQuantity: item.Quantity,
-            productBatchNo: item.lll,
+            productBatchNo: item.lll, // 批次号初始值可以直接在这写个字符串 比如：'20190901'
             ProductionDate: item.ProductionDate, // 生产日期
             ExpiryDate: item.ExpiryDate // 有效期
+            // ProductionDate: new Date(), // 生产日期 这个玩意直接给生产日期默认一个值，方便一些及时需要的批量操作，减少手填批次号和生产日期的麻烦步骤
+            // ExpiryDate: new Date() // 有效期
           }
         }))
       }
-      console.log(params)
+      // console.log(params)
       API.purchase.editBatchNo(params).then(result => {
         if (result.code === '0000') {
           this.$message({
