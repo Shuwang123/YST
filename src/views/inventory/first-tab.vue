@@ -50,14 +50,18 @@
       </el-table-column>
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="CategoryName" header-align="center" align="center"
-                       label="药态" width="70" :show-overflow-tooltip="true"
 
-                       column-key="CategoryId"
-                       :filters="categoryTypeArr" :filter-multiple="false"
-                       filter-placement="bottom">
-                       <!--:filter-method="filterHandler"-->
-      </el-table-column>
+      <!--20190901 使用者觉得这的药态查询不显眼，改成头部的下拉了选药态了-->
+      <!--<el-table-column prop="CategoryName" header-align="center" align="center"-->
+                       <!--label="药态" width="70" :show-overflow-tooltip="true"-->
+                       <!--column-key="CategoryId"-->
+                       <!--:filters="categoryTypeArr" :filter-multiple="false"-->
+                       <!--filter-placement="bottom">-->
+                       <!--&lt;!&ndash;:filter-method="filterHandler"&ndash;&gt;-->
+      <!--</el-table-column>-->
+      <el-table-column prop="CategoryName" header-align="center" align="center"
+                       label="药态" width="70" :show-overflow-tooltip="true"></el-table-column>
+
       <el-table-column prop="ProductCode" header-align="center" align="center" label="药品编码" width="90"></el-table-column>
       <!--<el-table-column prop="ProductName" header-align="center" align="center" label="药名" min-width="80"></el-table-column>-->
       <el-table-column header-align="center" align="center" label="药名" min-width="80">
@@ -173,7 +177,9 @@ export default {
         // SupplierId: this.dataForm.SupplierId, // 供应商
         RedLine: this.dataForm.RedLine,
         BrandId: this.dataForm.BrandId,
-        CategoryId: this.dataForm.CategoryId,
+
+        // CategoryId: this.dataForm.CategoryId,
+        CategoryId: this.fatherDataForm.CategoryId,
         Order: this.dataForm.Order
       }
       console.log(params)

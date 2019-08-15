@@ -41,6 +41,8 @@
       <el-table-column prop="BillCode" header-align="center" align="center" label="账单编码" width="100" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="BillId" header-align="center" align="center" label="账单ID" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ProductCode" header-align="center" align="center" label="药品编码" width="90"></el-table-column>
+      <el-table-column prop="CategoryName" header-align="center" align="center"
+                       label="药态" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ProductName" header-align="center" align="center" label="药名" min-width="80"></el-table-column>
       <!--<el-table-column prop="CategoryName" header-align="center" align="center" label="种类" width="70" :show-overflow-tooltip="true"></el-table-column>-->
 
@@ -130,6 +132,8 @@ export default {
         PageSize: this.pageSize,
         IsPaging: this.IsPaging,
         StoreId: this.fatherDataForm.StoreId, // 门店ID
+        CategoryId: this.fatherDataForm.CategoryId,
+
         ProductCodeOrBarCode: this.fatherDataForm.ProductCodeOrBarCode, // 产品编码
         ProductName: this.fatherDataForm.ProductName, // 产品名称
         // SpellName: this.fatherDataForm.SpellName,

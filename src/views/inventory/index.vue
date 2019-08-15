@@ -12,6 +12,12 @@
             'must_5': true,
             'isTrigger': true
           }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
+          <el-form-item>
+            <el-select v-model="dataForm.CategoryId" placeholder="药品种类" @change="tabChange()"
+                       clearable @clear="tabChange()" style="width: 110px" size="mini">
+              <el-option v-for="item in drugsCategoryList" :key="item.id" :label="item.text" :value="item.id"></el-option>
+            </el-select>
+          </el-form-item>
 
           <el-form-item>
             <el-input v-model="dataForm.ProductName" placeholder="商品名称" size="mini"
@@ -65,8 +71,10 @@ export default {
         StoreId: '',
         ProductCodeOrBarCode: '',
         ProductName: '',
-        SpellName: ''
+        SpellName: '',
+        CategoryId: ''
       },
+      drugsCategoryList: [], // 先请求药品种类
       isVisible: [
         {child: true},
         {child: false},
@@ -80,7 +88,9 @@ export default {
     ThirdTab,
     ComStore
   },
-  created () {}, // this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
+  created () {
+    this.pageInit() // 先初始化arr 初始化供应商列表 // 初始化门店列表
+  },
   methods: {
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
@@ -96,6 +106,14 @@ export default {
       // //   }
       // // })
       // this.dataListLoading = false
+
+      // 先请求药品种类提供给下拉列表
+      API.drugs.getDrugsCategory().then(result => {
+        if (result.code === '0000') {
+          console.log(result.data)
+          this.drugsCategoryList = result.data.slice(1)
+        }
+      })
     },
     handleClick (tab, event) {
       switch (tab.name) {

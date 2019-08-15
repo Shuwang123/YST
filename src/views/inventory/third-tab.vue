@@ -29,6 +29,8 @@
       <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ProductCode" header-align="center" align="center" label="商品编码" width="90"></el-table-column>
       <el-table-column prop="SupplierName" header-align="center" align="center" label="供应商" min-width=""></el-table-column>
+      <el-table-column prop="CategoryName" header-align="center" align="center"
+                       label="药态" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ProductName" header-align="center" align="center" label="名称" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧？所以厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
 
@@ -108,6 +110,8 @@ export default {
         PageSize: this.pageSize,
         IsPaging: this.IsPaging,
         StoreId: this.fatherDataForm.StoreId, // 门店ID
+        CategoryId: this.fatherDataForm.CategoryId,
+
         SupplierId: this.dataForm.SupplierId, // 供应商
         ProductCodeOrBarCode: this.fatherDataForm.ProductCodeOrBarCode, // 产品编码 // ProductName: this.fatherDataForm.ProductName, // 产品名称
         BatchNo: this.dataForm.BatchNo
