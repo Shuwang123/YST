@@ -6,6 +6,7 @@ import { Message } from 'element-ui'
 import {removeStore} from '@/utils'
 import 'nprogress/nprogress.css'// Progress 进度条样式
 // 创建axios实例
+// service是axios创建的实例，一个obj
 const service = axios.create({
   timeout: 3000 * 10,
   withCredentials: true,
@@ -17,6 +18,8 @@ const service = axios.create({
   baseURL: '/proxyApi'
   // baseURL: '/'
 })
+service.baseURL = '/proxyApi'
+// service.baseURL = ''
 
 // request拦截器
 service.interceptors.request.use(config => {

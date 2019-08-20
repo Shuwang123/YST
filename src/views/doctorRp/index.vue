@@ -362,6 +362,12 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
+
+// import axios from 'axios'
+import {setAccountData, getAccountData} from '@/utils'
+import qs from 'qs'
+import request from '../../api/request'
+
 import '../common/icon/iconfont.css'
 import {calcAge, Currency, Letter, NumberInt, NumberFloat} from '@/utils/validate' // 自定义的计算年龄的方法，精确到月，至于精确到天，那种才生下来的娃，一个月不到不太可能中医
 import AgreementDialog from './agreement-dialog'
@@ -494,18 +500,18 @@ export default {
     'dataForm.SpellName': function (val, oldval) {
       // console.log(val)
       var isEmpty = val === '' ? true : false // 右上角输入
-      this.pageIndex = 1
-      this.getStoreCategorytypeStock()
-
-      if (isEmpty) { // 输入框被清空时，要清空已激活的字母按钮的样式
-        this.litterArr.forEach(item => { item.isActive = false })
+      if (isEmpty) {
+        this.litterArr.forEach(item => { // 重置 ABC 按钮
+          item.isActive = false
+        })
       }
-      // console.log(this.rightUlData)
+      this.pageIndex = 1
+      this.getStoreCategorytypeStock() // console.log(this.rightUlData)
     },
+
     Total (val, oldval) {
       if (val === undefined) {
-        // console.log(val)
-        this.Total = 1
+        this.Total = 1 // console.log(val)
       }
     },
     // 监听药费的变化，及时算出当前药材总重量，最后搭配一级药态计算出：水丸（水泛丸）、水蜜丸、39制膏 它三的加工费
@@ -844,7 +850,8 @@ export default {
       isClickRightAddButton: false, // 搭配 updated () {} 聚焦
       rightIsFocus: false, // 判断右上角输入框是否处于聚焦状态
       keyCode_40Count: 0, // 在右上角的输入框中按下‘↓’键，总次数统计
-      isSubmit: false // 退出保存判断
+      isSubmit: false, // 退出保存判断
+      source: null // 上一次请求对象
     }
   },
   computed: {
@@ -1185,7 +1192,8 @@ export default {
           return item
         })
         // ③ 处理处方的药态，g数，售价等
-        // 但里面保存的药材的历史售价，是有可能已改变了，所以需要从新请求一次每个药材对应的最新的售价，来重新覆盖
+        // 再次开方时，调用的旧处方，保存的那些药材的历史售价，是有可能变化的，
+        // 所以需要从新请求一次每个药材对应的最新的售价，来重新覆盖
         this.$nextTick(() => {
           API.storeStock.getStoreStock({
             PageIndex: 1,
@@ -1201,10 +1209,8 @@ export default {
             if (response.code === '0000' && response.data.length > 0) {
               // console.log(response.data)
               // 左边table 字段转换下
-              // 搭配上面的1、（温馨提示）这的逻辑比较乱也比较复杂，超级需要耐心
-              // 搭配上面的1、（温馨提示）这的逻辑比较乱也比较复杂，超级需要耐心
-              // 搭配上面的1、（温馨提示）这的逻辑比较乱也比较复杂，超级需要耐心
-              this.leftTableData.forEach(item => { // 搭配上面的1、（温馨提示）这的逻辑比较乱也比较复杂，超级需要耐心
+              // 搭配上面的1、（温馨提示）这需要耐心
+              this.leftTableData.forEach(item => { // 搭配上面的1、（温馨提示）这需要耐心
                 response.data.forEach(inner => {
                   if (item.Code === inner.ProductCode) {
                     item.CostPrice = inner.LastCostPrice
@@ -1213,7 +1219,7 @@ export default {
                   }
                 })
               })
-              this.countTotalPrice(this.leftTableData) // 载入协定方后立马计算价格
+              this.countTotalPrice(this.leftTableData) // 载入协定方后刷新计算价格
               this.leftTableData.push()
               // console.log(this.leftTableData)
             } else {
@@ -1274,11 +1280,15 @@ export default {
         this.dataListLoading = false
       })
     },
+
     // 右侧药材列表展示的模块：获取 对应门店 对应药态下的 对应药材库
     getStoreCategorytypeStock () {
-      this.rightUlData = [] // 网速可能差时，响应的值可以能与操作对应不上，就容易出现bug
-      // this.totalPage = 0 // 注释的这样影响分页
-      this.keyCode_40Count = 0 // 在右上角的输入框中按下‘↓’键，总次数统计
+      this.rightUlData = [] // this.totalPage = 0 // 注释这影响分页
+      this.keyCode_40Count = 0 // 在右上角的输入框中按下‘↓’键，总次数统计 $ios
+
+      if (this.source !== null) {
+        this.source.cancel('取消上一次请求') // console.log('此处执行时如果上一次请求已结束，则无法取消...')
+      }
       var params = {
         Name: '',
         PageIndex: this.pageIndex,
@@ -1288,31 +1298,40 @@ export default {
         CategoryId: this.activeName === '1002' ? '1001,1002,1005' : this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001 (20190719 如果是精品类型的，需要请求精品 和 普通 特殊处理)
         StoreId: this.$store.getters.getAccountCurrentHandleStore, // 传不传门店id决定了是否返回库存余量!!!（另外这儿可以能有点问题要处理，因为可能是药房的账号进来，那这样的话如果药房的权限大于医生，那门店库存也更正变大了，这是个要考虑的地方）
         CodeOrBarCode: ''} // 暂无
-      API.drugs.getDrugsList(params).then(result => {
+      this.source = this.$ios.CancelToken.source()
+      console.log(request.baseURL)
+      // API.drugs.getDrugsList(params, {cancelToken: this.source.token}).then(result => {
+      this.$ios.post(request.baseURL + '/YstApiProduct/LoadData', qs.stringify(params), {
+        headers: {'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'},
+        cancelToken: this.source.token
+      }).then(result => {
+        result = result.data
         if (result.code === '0000' && result.data.length > 0) {
           this.rightUlData = result.data
           this.totalPage = result.total
-          // console.log(result.data)
+          console.log(result.data)
         } else {
-          // this.$message({ message: '查询结果为空', type: 'warning', duration: 3000 })
           this.rightUlData = []
           this.totalPage = 0
           this.$message({ message: `${result.message}`, type: 'warning', duration: 3000 })
+          // console.log('响应成功，但有问题...', result)
         }
         this.dataListLoading = false
+      }).catch(res => {
+        console.log(res) // 取消上一次请求，成功提示
       })
     },
 
-    // 右上角的下拉options展示
-    // querySearch (keyWord, callback) {
+
+    // querySearch (keyWord, callback) { // 右上角的下拉options展示
     //   if (keyWord === '') {
     //     callback([]) // return false
     //   } else { // 这个返回的内容 就是 下拉options的内容
     //     setTimeout(() => { callback(this.rightUlData) }, 400)
     //   }
     // },
-    // ‘上’ 键
-    autoSelectUpper () {
+
+    autoSelectUpper () { // ‘上’ 键
       if (this.keyCode_40Count > 0) {
         this.keyCode_40Count--
         if (this.keyCode_40Count >= 5) {
@@ -1320,8 +1339,7 @@ export default {
         }
       }
     },
-    // ‘下’ 键
-    autoSelectDown () {
+    autoSelectDown () { // ‘下’ 键
       var len = this.rightUlData.length
       if (this.keyCode_40Count < len - 1) {
         this.keyCode_40Count++
