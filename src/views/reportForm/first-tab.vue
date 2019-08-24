@@ -112,6 +112,13 @@
             <td width="100">{{dataList.CNDrugYP3MemberCount}}</td>
           </tr>
           <tr height="25">
+            <td width="100">贵细</td>
+            <td width="100">{{dataList.CNDrugGXAmount}}</td>
+            <td width="100">{{dataList.YBCNDrugGXAmount}}</td>
+            <td width="100">{{dataList.ZFCNDrugGXAmount}}</td>
+            <td width="100">{{dataList.CNDrugGXMemberCount}}</td>
+          </tr>
+          <tr height="25">
             <td width="100">理疗</td>
             <td width="100">{{dataList.LLFAmount}}</td>
             <td width="100">{{dataList.YBLLFAmount}}</td>
