@@ -91,6 +91,35 @@
             <td width="100">{{dataList.CNDrugMemberCount}}</td>
           </tr>
           <tr height="25">
+            <td width="100">饮片</td>
+            <td width="100">{{dataList.CNDrugYPAmount}}</td>
+            <td width="100">{{dataList.YBCNDrugYPAmount}}</td>
+            <td width="100">{{dataList.ZFCNDrugYPAmount}}</td>
+            <td width="100">{{dataList.CNDrugYPMemberCount}}</td>
+          </tr>
+          <tr height="25">
+            <td width="100">精品饮片</td>
+            <td width="100">{{dataList.CNDrugJBYPAmount}}</td>
+            <td width="100">{{dataList.YBCNDrugJBYPAmount}}</td>
+            <td width="100">{{dataList.ZFCNDrugJBYPAmount}}</td>
+            <td width="100">{{dataList.CNDrugJBYPMemberCount}}</td>
+          </tr>
+          <tr height="25">
+            <td width="100">饮片3</td>
+            <td width="100">{{dataList.CNDrugYP3Amount}}</td>
+            <td width="100">{{dataList.YBCNDrugYP3Amount}}</td>
+            <td width="100">{{dataList.ZFCNDrugYP3Amount}}</td>
+            <td width="100">{{dataList.CNDrugYP3MemberCount}}</td>
+          </tr>
+          <tr height="25">
+            <td width="100">理疗</td>
+            <td width="100">{{dataList.LLFAmount}}</td>
+            <td width="100">{{dataList.YBLLFAmount}}</td>
+            <td width="100">{{dataList.ZFLLFAmount}}</td>
+            <td width="100">{{dataList.LLFMemberCount}}</td>
+          </tr>
+
+          <tr height="25">
             <td width="100">西药费</td>
             <td width="100">{{dataList.ENDrugAmount}}</td>
             <td width="100">{{dataList.YBENDrugAmount}}</td>
