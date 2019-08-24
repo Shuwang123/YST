@@ -331,7 +331,7 @@ export default {
     pageInit (agreementRecipelId, type, AccountId) { // type 'add see edit'
       this.visible = true
       this.openType = type
-      this.dataForm.AccountId = AccountId
+      this.dataForm.AccountId = String(AccountId)
 
       // 先请求药品种类提供给下拉列表 (有力气可以换成并发请求，响应细节看起来更舒服)
       API.drugs.getDrugsCategory().then(result => {
@@ -346,6 +346,7 @@ export default {
             this.dataForm.agreementRecipelId = agreementRecipelId
             API.register.getRegisterInfo({id: this.dataForm.agreementRecipelId}).then(result => {
               if (result.code === '0000') {
+                // console.log(result.data)
                 this.dataForm.SpellName = ''
                 this.dataForm.agreementRecipelId = result.data.Id // 协定方id
                 // StoreId: '' // 门店
@@ -366,7 +367,7 @@ export default {
                   return item
                 })
 
-                // console.log(this.leftTableData)// console.log(result.data)
+                // console.log(this.leftTableData)
                 // 根据协定方的药态，控制右边药态的初始选中值
                 if (result.data.SaleOrderItems.some(item => String(item.CategoryId) === '1002')) { // 如果是精品类型的协定方，就要避免第一味药就出现普通饮片的可能
                   this.oldTabsName = '1002'

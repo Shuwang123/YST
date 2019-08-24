@@ -18,6 +18,7 @@
 
       <el-table-column prop="TJDrugCount" header-align="center" align="center" label="汤剂" min-width="100"></el-table-column>
       <el-table-column prop="GFDrugCount" header-align="center" align="center" label="膏方" min-width="100"></el-table-column>
+      <el-table-column prop="YP3Amount" header-align="center" align="center" label="饮片3" min-width="100"></el-table-column>
       <el-table-column prop="WJDrugCount" header-align="center" align="center" label="丸剂" min-width="100"></el-table-column>
       <el-table-column prop="WorkAmount" header-align="center" align="center" label="加工费" min-width="100"></el-table-column>
 

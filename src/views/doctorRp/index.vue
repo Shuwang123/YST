@@ -69,16 +69,21 @@
                       </el-radio-group>
                     </el-form-item>
                   </el-col>
-                  <el-col :span="16">
-                    <el-form-item label="一级药态" prop="CategoryOne">
-                      <el-radio-group v-model="dataForm.CategoryOne"  @change="handleChange" size="mini">
-                        <el-radio label="1" border>汤剂</el-radio>
-                        <el-radio label="3" border>制膏</el-radio>
-                        <el-radio label="4" border>水泛丸</el-radio>
-                        <el-radio label="5" border>水蜜丸</el-radio>
-                        <el-radio label="2" border>外用</el-radio>
-                      </el-radio-group>
-                    </el-form-item>
+                  <el-col :xs="24" :sm="24" :md="24" :lg="16" :xl="16">
+                    <div style="min-width: 510px">
+                      <el-form-item label="一级药态" prop="CategoryOne">
+                        <el-radio-group v-model="dataForm.CategoryOne"  @change="handleChange" size="mini">
+                          <el-radio label="1" border>汤剂</el-radio>
+                          <el-radio label="3" border>制膏</el-radio>
+                          <el-radio label="4" border>水泛丸</el-radio>
+                          <el-radio label="5" border>水蜜丸</el-radio>
+                          <el-radio label="2" border>外用</el-radio>
+                          <el-radio label="41" border>理疗</el-radio>
+                        </el-radio-group>
+                      </el-form-item>
+                      <!--为什么理疗一级药态41，理疗二级药态1006-->
+                      <!--1~10留给中草药，方便以后扩展-->
+                    </div>
                   </el-col>
                 </el-row>
 
@@ -146,7 +151,7 @@
           <div style="margin: 5px 0;width: 279px;overflow: hidden;cursor: pointer">
             <el-button type="warning" plain size="mini" @click="openAgreementRecipelList('40', '-2')">协定方</el-button>
             <el-button type="warning" plain size="mini" @click="openAgreementRecipelList('41', '-2')">经典方</el-button>
-            <el-button type="warning" plain size="mini" @click="openAgreementRecipelList('42', '-2')">理疗产品</el-button>
+            <el-button type="warning" plain size="mini" @click="openAgreementRecipelList('42', '-2')">其它模块</el-button>
           </div>
 
           <!--<el-autocomplete 这用组件实现的时候聚焦的时候玩不动，最后自己实现了一个类似的功能，下面挨着的那个-->
@@ -167,8 +172,8 @@
                       @blur="rightTopInputBlur()"
                       @focus="rightIsFocus = true"
 
-                      @keyup.38.native="autoSelectUpper()"
-                      @keyup.40.native="autoSelectDown()"
+                      @keydown.38.native="autoSelectUpper()"
+                      @keydown.40.native="autoSelectDown()"
                       @keyup.enter.native="addDrugs"
                       placeholder="请输入药材拼音首字母" style="min-width: 190px; width: 100%" size="small"></el-input>
             <ul v-show="rightIsFocus && dataForm.SpellName !== ''"
@@ -311,9 +316,10 @@
               <el-input v-else
                         v-model="$route.query.DoctorName" placeholder="onlyReady" style="width: 110px" :disabled="true"></el-input>
             </el-form-item>
-            <!--{{$route.query.DoctorId}}-->
           </el-col>
           <el-col :span="14" style="font-weight: 500; font-size: 16px;cursor: pointer;">
+            <!-- 下面注释的医生id用于测试的，检查页面传递的医生id是否正确，有无bug，注释留着：有三种传递方式，1就诊2直接开方3在已就诊页调用历史开方 -->
+            <!--{{$route.query.DoctorId}}{{$route.params.doctorId}}-->
             <div style="width: 540px; overflow: hidden;text-align: center">
               总金额：<span style="display: inline-block;color: #e4393c;font-weight: 700">￥
               {{(Number(allMoney) + dataForm.WorkAmount + dataForm.ConsultationAmount).toFixed(2)}} =</span>
@@ -340,8 +346,8 @@
               <!--药方总重量：只针对制膏制丸 [用的计算属性处理]-->
               <el-tooltip placement="top">
                 <div slot="content">加工费规则：<br/><br/>待编辑</div>
-                <span v-show="dataForm.CategoryOne !== '1' &&
-                        dataForm.CategoryOne !== '2' && leftTableData.length !== 0">
+                <span v-show="dataForm.CategoryOne !== '1' && dataForm.CategoryOne !== '2' &&
+                        dataForm.CategoryOne !== '41' && leftTableData.length !== 0">
                 ；总重量：{{categoryAllWeight}} g</span>
               </el-tooltip>
 
@@ -357,7 +363,8 @@
       </div>
     </el-form>
     <patient-list-pop v-if="addOrUpdateVisible" ref="patientListPop" @childEven="zairuFun"></patient-list-pop>
-    <agreement-dialog v-if="addOrUpdateVisibleAgreement" ref="agreementPop" @childAgreementEven="zairuFunAgreement" :indexDoctorId="$route.query.DoctorId"></agreement-dialog>
+    <agreement-dialog v-if="addOrUpdateVisibleAgreement" ref="agreementPop" @childAgreementEven="zairuFunAgreement"
+                      :indexDoctorId="$route.query.DoctorId === undefined ? $route.params.doctorId : $route.query.DoctorId"></agreement-dialog>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -417,6 +424,8 @@ export default {
       next(vm => {
         // vm，都不晓得哪冒出来的，居然可以直接用，这查查资料
         if (vm.$store.getters.getRecipelSaveFiles.some(item => {
+          // 这的有个细节标注一下：没有判断医生已就诊列表那调用历史处方进来的判断细节，vm.$route.params.doctorId，感觉没必要那样写，如果以后影响使用，可以改这
+          // 因为真是那进来的（那本身就算一个利用历史数据表），还去提示一个调用session，有点不符合正常人的使用情况
           return item.memberPhone === vm.$route.query.MobilePhone && item.doctorId === vm.$route.query.DoctorId
         })) {
           vm.$confirm(`你有历史开方记录，是否调用？`, '提示', {
@@ -488,13 +497,13 @@ export default {
           let youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
           let zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
           this.chenxiHeight = parseInt(youHeight) - parseInt(zuoHeight)
-        }, 450)
+        }, 1000)
       } else {
         setTimeout(() => {
           let youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
           let zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
           this.chenxiHeight = parseInt(youHeight) - parseInt(zuoHeight)
-        }, 450)
+        }, 1000)
       }
     },
     'dataForm.SpellName': function (val, oldval) {
@@ -554,6 +563,9 @@ export default {
           break
         case '1004':
           this.oldTwoTabsName = '饮片4'
+          break
+        case '1006':
+          this.oldTwoTabsName = '理疗'
           break
       }
     }
@@ -918,7 +930,7 @@ export default {
       })
     },
     // 只医生‘直接开方’才用：子组件点击载入 传给 父组件
-    zairuFun (row) {
+    zairuFun (row) { // 直接开方进来后，选患者时触发这个方法
       // console.log(row)
       // var allAge = calcAge(row.BirthDate) // !!!!!!这得到18岁 或 10月 1月
       var allAge = row.BirthDate // !!!!!!这得到18岁 或 10月 1月
@@ -953,8 +965,11 @@ export default {
             if (item.memberPhone === this.dataForm.MobilePhone && item.doctorId === this.$route.query.DoctorId) {
               this.dataForm.oldCategoryOne = sessionRecipel[index].oneDrugCategory
               this.dataForm.CategoryOne = sessionRecipel[index].oneDrugCategory
+              this.comOneCategoryChangeFunction(this.dataForm.CategoryOne) // 一级药态确定后，把关联的子级药态的范围重新计算
+
               this.oldTabsName = sessionRecipel[index].childDrugCategory
               this.activeName = sessionRecipel[index].childDrugCategory
+              this.comTwoCategoryChangeFunction(this.activeName) // 自己药态确定后，立刻把table切换了来哟
               this.getStoreCategorytypeStock()
 
               this.leftTableData = sessionRecipel[index].recipelItems // 还原处方
@@ -1017,6 +1032,12 @@ export default {
           this.unitIsG = true
           this.dataForm.DrugRate_0 = '3'
           break
+        case '41':
+          this.filterCategory(['1006']) // 理疗只有 理疗
+          this.dataForm.oldCategoryOneName = '理疗'
+          this.unitIsG = true // 理疗的情况，这还需特殊处理，不过影响不是太大，可以直接先放这
+          this.dataForm.DrugRate_0 = '1' // 理疗的情况这个值没有意义
+          break
         case '2':
           this.filterCategory(['1002', '1003', '1004']) // 外用
           this.dataForm.oldCategoryOneName = '外用'
@@ -1038,13 +1059,13 @@ export default {
     zairuFunAgreement (agreementId) {
       API.register.getRegisterInfo({id: agreementId}).then(result => {
         if (result.code === '0000') {
-          // console.log(result.data)
+          console.log(result.data)
           // this.dataForm.MainCure = result.data.MainCure // 主治
           // this.dataForm.Effect = result.data.Effect // 功效
           // this.dataForm.Explain = result.data.Explain // 说明
           this.dataForm.oldCategoryOne = String(result.data.CategoryOne) // 药态一级记录 1内服2外用3制膏4水丸5水蜜丸
           this.dataForm.CategoryOne = String(result.data.CategoryOne) // 药态一级分类 1内服2外用3制膏4水丸5水蜜丸
-          this.comOneCategoryChangeFunction(this.dataForm.CategoryOne)
+          this.comOneCategoryChangeFunction(this.dataForm.CategoryOne) // 一级药态确定了，关联的二级药态的范围要重新计算
           // 1、把协定方里保存的药材克数存下来
           this.leftTableData = result.data.SaleOrderItems.map(item => {
             item.myNum = item.Quantity
@@ -1065,7 +1086,7 @@ export default {
             this.oldTabsName = String(result.data.SaleOrderItems[0].CategoryId)
             this.activeName = String(result.data.SaleOrderItems[0].CategoryId)
           }
-          this.comTwoCategoryChangeFunction(this.activeName) // table也要切换 子级药态
+          this.comTwoCategoryChangeFunction(this.activeName) // 二级药态确定了，立刻切换table也要切换 子级药态
           this.getStoreCategorytypeStock()
 
           // 2、用协定方里的药材编码请求库存里最新的药材售价
@@ -1117,134 +1138,145 @@ export default {
 
     pageInit () {
       // 基础
-      // 先请求药品种类提供给下拉列表
+      // 先请求所有的二级药态，处理后放到drugsCategoryArrCopy，保存我们需要的二级药态模版，以后直接拿此模版来使用
       API.drugs.getDrugsCategory().then(result => {
-        if (result.code === '0000') {
-          this.drugsCategoryArr = result.data.filter((item, ind) => {
-            return ind > 0
-          }).slice(1, 4) // 不需要饮片1001
-          this.drugsCategoryArrCopy = this.drugsCategoryArr
+        if (result.code === '0000') { // 最初 [10,1001,1002,1003,1004,1005,1006]
+          this.drugsCategoryArrCopy = result.data.filter((item, ind) => {
+            return ind > 0 // 不需要10中草药
+          }).slice(1, 6)// 不需要饮片1001
+          this.drugsCategoryArrCopy.splice(3,1)  // 这一步去除1005贵细 最后变成 [1002,1003,1004,1006]
+          this.filterCategory(['1002', '1003', '1004']) // console.log(result.data, this.drugsCategoryArrCopy, this.drugsCategoryArr)
+          // 在filterCategory方法中会给this.drugsCategoryArr赋值，所以就不在这赋值了
+
+
+          // 如果是医生已就诊列表再次开方进来的，会执行后面的分支，这个if不要放到上面的API的平级去了
+          // 因为此分支内部利用一级药态重新计算二级药态的时候，如果这个分支是放在外面的，那在执行下面的② 的那步的时候
+          // 可能想利用一级药态和二级药态的原始模版去重新计算展现出正确的二级药态子模版的时候，二级药态原始模版那玩意可能还没弄的出来呢，就导致二级药态一直是1002,1003,1004这种情况，最后出bug
+          // // ①说明是历史患者处方调用！！！！！！！！！！
+          if (this.$route.params.row !== undefined) { // 已就诊列表 调用历史开方
+            // console.log(this.$route.params.row, this.$route.params.doctorId)
+            let row = this.$route.params.row
+            // ① 先处理患者信息
+            // 利用旧的患者电话，更新出最新的患者信息（因为患者信息存在更改的情况，所以最好刷新一下）
+            var obj = {
+              PageIndex: this.pageIndex,
+              PageSize: this.pageSize,
+              IsPaging: true,
+              UserName: '',
+              StoreId: this.$store.getters.getAccountCurrentHandleStore,
+              MobilePhone: row.MobilePhone
+            }
+            API.member.getMemberList(obj).then(result => {
+              if (result.code === '0000') {
+                var allAge = calcAge(result.data[0].BirthDate) // !!!!!!这得到18岁 或 10月 1月
+                if (allAge.substr(allAge.length - 1) === '月') {
+                  this.dataForm.ageUnit = '0'
+                } else if (allAge.substr(allAge.length - 1) === '岁') {
+                  this.dataForm.ageUnit = '1'
+                }
+                this.dataForm.UserName = result.data[0].UserName
+                this.dataForm.Sex = result.data[0].Sex === 1 ? '男' : '女'
+                this.dataForm.BirthDate = allAge.substring(0, allAge.length - 1) // !!!!!!只取数不要单位，其实也可以parseInt
+                this.dataForm.MobilePhone = result.data[0].MobilePhone
+                this.dataForm.Address = result.data[0].Address
+                this.dataForm.UserId = result.data[0].Id
+                this.dataForm.Code = result.data[0].Code
+              } else {
+                this.$message.error(result.message)
+              }
+            })
+
+            // ② 后处理药态信息
+            // 一级药态是有直接记录的，可以直接调用（至于那种一级药态的编码和名称都改变了的情况，那就重新分析代码吧）
+            // console.log(row)
+            this.dataForm.oldCategoryOne = String(row.CategoryOne)
+            this.dataForm.CategoryOne = String(row.CategoryOne)
+            // 就是这会用到二级药态的原始模版（为了保证用的时候原始模版肯定存在），所以导致整个if语句都放到API的内部
+            this.comOneCategoryChangeFunction(this.dataForm.CategoryOne)
+
+            // 二级药态的确定，需要稍微处理下
+            if (row.SaleOrderItems.some(item => {
+              return String(item.CategoryId) === '1002' || String(item.CategoryId) === '1001' || String(item.CategoryId) === '1005'
+            })) { // 如果是精品类型的协定方，就要避免第一味药就出现普通饮片的可能
+              this.oldTabsName = '1002'
+              this.activeName = '1002'
+            } else {
+              this.oldTabsName = String(row.SaleOrderItems[0].CategoryId)
+              this.activeName = String(row.SaleOrderItems[0].CategoryId)
+            }
+            this.comTwoCategoryChangeFunction(this.activeName) // 把table切换了来哟
+            this.getStoreCategorytypeStock() //
+
+            // 然后历史处方里的开方g数可以直接使用
+            this.leftTableData = row.SaleOrderItems.map(item => {
+              item.myNum = item.Quantity
+
+              item.Id = item.ProductId
+              item.Code = item.ProductCode
+              item.ShowName = item.ProductName
+              return item
+            })
+            // ③ 处理处方的药态，g数，售价等
+            // 再次开方时，调用的旧处方，保存的那些药材的历史售价，是有可能变化的，// 所以需要从新请求一次每个药材对应的最新的售价，来重新覆盖
+            this.$nextTick(() => {
+              API.storeStock.getStoreStock({
+                PageIndex: 1,
+                PageSize: 100, // 协定方上的药材应该只有30味左右吧，100够了 搭配的下面的ProductCodeOrBarCode查询应该不可能超出100味，如果出问题可以留意这
+                IsPaging: true,
+                StoreId: this.$store.getters.getAccountCurrentHandleStore, // 传不传门店id决定了是否返回库存余量!!!（另外这儿可以能有点问题要处理，因为可能是药房的账号进来，那这样的话如果药房的权限大于医生，那门店库存也更正变大了，这是个要考虑的地方）
+                ProductCodeOrBarCode: row.SaleOrderItems.map(item => {
+                  return item.ProductCode
+                }).join(), // 通过批量的药材编码查询出最新的门店里库存药品的信息（主要目的拿到最新的价格）
+                CategoryId: this.activeName === '1002' ? '1001,1002,1005' : this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001 ？？？ 这是精品的时候还有问题
+                SearchType: 2 // 1表示才够用2查询库存用
+              }).then(response => {
+                if (response.code === '0000' && response.data.length > 0) {
+                  // console.log(response.data)
+                  // 左边table 字段转换下
+                  // 搭配上面的1、（温馨提示）这需要耐心
+                  this.leftTableData.forEach(item => { // 搭配上面的1、（温馨提示）这需要耐心
+                    response.data.forEach(inner => {
+                      if (item.Code === inner.ProductCode) {
+                        item.CostPrice = inner.LastCostPrice
+                        item.StoreSalePrice = inner.StoreSalePrice
+                        return false
+                      }
+                    })
+                  })
+                  this.countTotalPrice(this.leftTableData) // 载入协定方后刷新计算价格
+                  this.leftTableData.push()
+                  // console.log(this.leftTableData)
+                } else {
+                  this.$message({ message: `${response.message}`, type: 'warning', duration: 3000 })
+                }
+              })
+            })
+
+            // ④ 最后处理零散的其他的开方页的一些字段，剂数，主诉，医嘱，复诊，等小细节
+            this.dataForm.DiagnosisType = '2'
+            this.dataForm.MainSuit = row.MainSuit
+            this.dataForm.DiseaseInfo = row.DiseaseInfo.split('，')
+            this.Total = row.Total
+            // this.dataForm.DrugRate_0 = row.split('，')[0]
+            // this.dataForm.DrugRate_1 = row.split('，')[0]
+            // this.dataForm.DrugRate_2 = row.split('，')[0]
+            // this.dataForm.DrugRate_3 = row.split('，')[0]
+            this.dataForm.DoctorAdvice = row.DoctorAdvice === null ? row.DoctorAdvice : row.DoctorAdvice.split('，')
+            return false // 如果是历史开方记录调用，那调用完毕后，就直接中断后面的那些没必要的程序
+          } else {
+            // 如果是直接开方、就诊进来的，就执行这个分支，必须要要请求一次药材库存初始化页面
+            this.getStoreCategorytypeStock() // 初始化请求页面右上角药材列表
+          }
         }
       })
-      // 后初始化页面的右上角：
-      this.getStoreCategorytypeStock() // 这往上的代码都必须执行，不能写在下面的代码的后面，以免被return false影响
+      // 这往上的代码都必须执行，不能写在下面的代码的后面，以免被return false影响
 
-      // ①
-      // 说明是历史患者处方调用！！！！！！！！！！
-      if (this.$route.params.row !== undefined) {
-        // console.log(this.$route.params.row, this.$route.params.doctorId)
-        let row = this.$route.params.row
-        // ① 先处理患者信息
-        // 利用旧的患者电话，更新出最新的患者信息（因为患者信息存在更改的情况，所以最好刷新一下）
-        var obj = {
-          PageIndex: this.pageIndex,
-          PageSize: this.pageSize,
-          IsPaging: true,
-          UserName: '',
-          StoreId: this.$store.getters.getAccountCurrentHandleStore,
-          MobilePhone: row.MobilePhone
-        }
-        API.member.getMemberList(obj).then(result => {
-          if (result.code === '0000') {
-            var allAge = calcAge(result.data[0].BirthDate) // !!!!!!这得到18岁 或 10月 1月
-            if (allAge.substr(allAge.length - 1) === '月') {
-              this.dataForm.ageUnit = '0'
-            } else if (allAge.substr(allAge.length - 1) === '岁') {
-              this.dataForm.ageUnit = '1'
-            }
-            this.dataForm.UserName = result.data[0].UserName
-            this.dataForm.Sex = result.data[0].Sex === 1 ? '男' : '女'
-            this.dataForm.BirthDate = allAge.substring(0, allAge.length - 1) // !!!!!!只取数不要单位，其实也可以parseInt
-            this.dataForm.MobilePhone = result.data[0].MobilePhone
-            this.dataForm.Address = result.data[0].Address
-            this.dataForm.UserId = result.data[0].Id
-            this.dataForm.Code = result.data[0].Code
-          } else {
-            this.$message.error(result.message)
-          }
-        })
 
-        // ② 后处理药态信息
-        // 一级药态是有直接记录的，可以直接调用（至于那种一级药态的编码和名称都改变了的情况，那就重新分析代码吧）
-        this.dataForm.oldCategoryOne = String(row.CategoryOne)
-        this.dataForm.CategoryOne = String(row.CategoryOne)
-        this.comOneCategoryChangeFunction(this.dataForm.CategoryOne)
-
-        // 二级药态的确定，需要稍微处理下
-        if (row.SaleOrderItems.some(item => {
-          return String(item.CategoryId) === '1002' || String(item.CategoryId) === '1001' || String(item.CategoryId) === '1005'
-        })) { // 如果是精品类型的协定方，就要避免第一味药就出现普通饮片的可能
-          this.oldTabsName = '1002'
-          this.activeName = '1002'
-        } else {
-          this.oldTabsName = String(row.SaleOrderItems[0].CategoryId)
-          this.activeName = String(row.SaleOrderItems[0].CategoryId)
-        }
-        this.comTwoCategoryChangeFunction(this.activeName) // 把table切换了来哟
-        this.getStoreCategorytypeStock()
-        // 然后历史处方里的开方g数可以直接使用
-        this.leftTableData = row.SaleOrderItems.map(item => {
-          item.myNum = item.Quantity
-
-          item.Id = item.ProductId
-          item.Code = item.ProductCode
-          item.ShowName = item.ProductName
-          return item
-        })
-        // ③ 处理处方的药态，g数，售价等
-        // 再次开方时，调用的旧处方，保存的那些药材的历史售价，是有可能变化的，
-        // 所以需要从新请求一次每个药材对应的最新的售价，来重新覆盖
-        this.$nextTick(() => {
-          API.storeStock.getStoreStock({
-            PageIndex: 1,
-            PageSize: 100, // 协定方上的药材应该只有30味左右吧，100够了 搭配的下面的ProductCodeOrBarCode查询应该不可能超出100味，如果出问题可以留意这
-            IsPaging: true,
-            StoreId: this.$store.getters.getAccountCurrentHandleStore, // 传不传门店id决定了是否返回库存余量!!!（另外这儿可以能有点问题要处理，因为可能是药房的账号进来，那这样的话如果药房的权限大于医生，那门店库存也更正变大了，这是个要考虑的地方）
-            ProductCodeOrBarCode: row.SaleOrderItems.map(item => {
-              return item.ProductCode
-            }).join(), // 通过批量的药材编码查询出最新的门店里库存药品的信息（主要目的拿到最新的价格）
-            CategoryId: this.activeName === '1002' ? '1001,1002,1005' : this.activeName, // 被激活的tabs标签页的药材大方向的种类的类型id 1001 ？？？ 这是精品的时候还有问题
-            SearchType: 2 // 1表示才够用2查询库存用
-          }).then(response => {
-            if (response.code === '0000' && response.data.length > 0) {
-              // console.log(response.data)
-              // 左边table 字段转换下
-              // 搭配上面的1、（温馨提示）这需要耐心
-              this.leftTableData.forEach(item => { // 搭配上面的1、（温馨提示）这需要耐心
-                response.data.forEach(inner => {
-                  if (item.Code === inner.ProductCode) {
-                    item.CostPrice = inner.LastCostPrice
-                    item.StoreSalePrice = inner.StoreSalePrice
-                    return false
-                  }
-                })
-              })
-              this.countTotalPrice(this.leftTableData) // 载入协定方后刷新计算价格
-              this.leftTableData.push()
-              // console.log(this.leftTableData)
-            } else {
-              this.$message({ message: `${response.message}`, type: 'warning', duration: 3000 })
-            }
-          })
-        })
-
-        // ④ 最后处理零散的其他的开方页的一些字段，剂数，主诉，医嘱，复诊，等小细节
-        this.dataForm.DiagnosisType = '2'
-        this.dataForm.MainSuit = row.MainSuit
-        this.dataForm.DiseaseInfo = row.DiseaseInfo.split('，')
-        this.Total = row.Total
-        // this.dataForm.DrugRate_0 = row.split('，')[0]
-        // this.dataForm.DrugRate_1 = row.split('，')[0]
-        // this.dataForm.DrugRate_2 = row.split('，')[0]
-        // this.dataForm.DrugRate_3 = row.split('，')[0]
-        this.dataForm.DoctorAdvice = row.DoctorAdvice === null ? row.DoctorAdvice : row.DoctorAdvice.split('，')
-        return false // 如果是历史开方记录调用，那调用完毕后，就直接中断后面的那些没必要的程序
-      }
-      // 如果是直接开方，传递的电话就是0了，还请求屁的患者信息，因为请求结果肯定是[]没有的！！！！！！！！！！！
+      // ==> 如果是直接开方进来的，那就在这终止程序，传递的电话就是0了，还请求屁的患者信息，因为请求结果肯定是[]！
       if (this.$route.query.MobilePhone === '0') {
         return false
       }
-
+      // ==> 如果是就诊进来的，那就利用患者信息和医生信息
       this.dataListLoading = true
       // 请求会员信息，根据前一层路由传递的会员电话，其实会员信息正常是 只返回一条（自动填充患者的电话、年龄、性别、姓名、病历号...）
       var params = {
@@ -1253,7 +1285,7 @@ export default {
         IsPaging: true,
         UserName: '',
         StoreId: this.$store.getters.getAccountCurrentHandleStore,
-        MobilePhone: this.$route.query.MobilePhone // 如果这儿接受到的是电话0，那代表是直接开方模式，0的查询结果自然为空咯
+        MobilePhone: this.$route.query.MobilePhone // 如果这儿接受到的是电话0，那代表是直接开方模式，0的查询结果是空哟。
       }
       // console.log(params)
       API.member.getMemberList(params).then(result => {
@@ -1309,7 +1341,7 @@ export default {
         if (result.code === '0000' && result.data.length > 0) {
           this.rightUlData = result.data
           this.totalPage = result.total
-          console.log(result.data)
+          // console.log(result.data)
         } else {
           this.rightUlData = []
           this.totalPage = 0
@@ -1418,7 +1450,7 @@ export default {
     comTwoCategoryChangeFunction (two) {
       this.pageIndex = 1 // 切换药态时，都重置为第一页
       switch (two) {
-        case '1001':
+        case '1001': // 后面结构改变后1001和1005、饮片和贵细这种情况是不可能点击出来的，所以tableOne那个组件不可能调用
           this.leftTable = 'TableOne'
           this.rightUl = 'ul-one'
           break
@@ -1434,6 +1466,10 @@ export default {
           this.leftTable = 'TableFour'
           this.rightUl = 'ul-one'
           break
+        case '1006': // 1006这种情况是理疗，调用tableTwo那个吧
+          this.leftTable = 'TableTwo'
+          this.rightUl = 'ul-one'
+          break
       }
     },
     // 一级药态被点击时
@@ -1442,6 +1478,7 @@ export default {
       if (this.leftTableData.length === 0) { // 没开任何药材时直接切换直接加载呗，都没药材记录还提示啥子嘛
         this.comOneCategoryChangeFunction(leftLab) // 一级药态切换后，右边的4个二级药态也要重新排列
 
+        // console.log(this.drugsCategoryArr, '?????')
         this.activeName = this.drugsCategoryArr[0].id
         this.comTwoCategoryChangeFunction(this.activeName) // 二级药态被锁定时：其之后的相关的逻辑需要重新跑一次
 
@@ -1470,7 +1507,7 @@ export default {
           this.activeName = this.oldTabsName // 依靠oldTabsName切回上一步，table、ul、和tableData都不需要变了，就是取消切换药态的操作
         })
       }
-      // console.log(this.dataForm.CategoryOne, this.dataForm.olCategoryOne, this.activeName, this.oldTabsName)
+      // console.log(this.dataForm.Categoryne, this.dataForm.olCategoryne, this.activeName, this.oldTabsName)
     },
 
     // 二级药态被点击时

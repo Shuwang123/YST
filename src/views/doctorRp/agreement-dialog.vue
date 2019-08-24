@@ -105,7 +105,7 @@ export default {
         Code: '', // 挂号单
         UserName: '', // 患者姓名
         MobilePhone: '', // 患者电话
-        AccountId: this.num === '40' ? this.indexDoctorId : '', // 账户Id,医生Id 如果是经典方，那时属于门店，不需要绑定医生id；而协定方是绑定给医生id+门店的
+        AccountId: this.num === '40' ? this.indexDoctorId : '', // 账户Id,医生Id 如果是经典方，那是属于门店，不需要绑定医生id；而协定方是绑定给医生id+门店的
         WrokFrom: '', // 开始时间
         WrokTo: '', // 结束时间
         Status: '1,2,3,5,6', // -1作废（已废除的协定方不查询）1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部 ''表示协定方

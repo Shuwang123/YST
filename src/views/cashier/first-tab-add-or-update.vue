@@ -379,8 +379,8 @@ export default {
     // 实收监听
     'dataForm.PayAmount': function (val, oldval) {
       var sum = Number(val) + Number(this.dataForm.OnlinePayAmount)
-      console.log(val, this.dataForm.OnlinePaymentWay, sum)
-      if (Number(val) === 0 && String(val).length > 1) { // 000000 这种
+      console.log(val, this.dataForm.PaymentWay, sum)
+      if (val !== '0.' && Number(val) === 0 && String(val).length > 1) { // 000000 这种
         this.dataForm.PayAmount = ''
         return false
       }
@@ -408,8 +408,8 @@ export default {
     },
     'dataForm.OnlinePayAmount': function (val, oldval) {
       var sum = Number(val) + Number(this.dataForm.PayAmount)
-      console.log(this.dataForm.PaymentWay, val, sum)
-      if (Number(val) === 0 && String(val).length > 1) { // 000000 这种
+      console.log(val, this.dataForm.OnlinePaymentWay, sum)
+      if (val !== '0.' && Number(val) === 0 && String(val).length > 1) { // 000000 这种
         this.dataForm.OnlinePayAmount = ''
         return false
       }

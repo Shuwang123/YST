@@ -115,6 +115,14 @@ export default {
         this.dataForm.StartDate = ''
         this.dataForm.EndDate = ''
       }
+    },
+    'dataForm.AccountId': function (val, oldval) {
+      this.storeDoctorArr.forEach(item => {
+        if (val === item.Id) {
+          this.dataForm.currentDoctorName = item.NickName
+          return false
+        }
+      })
     }
   },
   methods: {

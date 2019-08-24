@@ -51,7 +51,7 @@
           <el-button type="text" @click="$router.push({
             name: 'recipel',
             params: {
-              doctorId: fatherDataForm.AccountId,
+              doctorId: String(fatherDataForm.AccountId),
               row: scope.row
             }
           })">调用此处方</el-button>
