@@ -652,12 +652,10 @@ export default {
       this.editType = ''
       this.isAddActive = false
       this.OrderTotalPrice = 0
+      this.rukuIsDisabled = false
     },
     dataFormSubmitA () { // 编辑的提交 采购数量和价格
       this.rukuIsDisabled = true
-      setTimeout(() => {
-        this.rukuIsDisabled = false
-      }, 2000)
       var params = {
         Address: this.dataList.Address,
         Buyer: this.dataList.Buyer,
@@ -696,6 +694,7 @@ export default {
           this.$emit('refreshDataList')
           this.visible = false
         } else {
+          this.rukuIsDisabled = false
           this.$message({
             type: 'error',
             message: `${result.message}`,
@@ -706,21 +705,20 @@ export default {
     },
     dataFormSubmitB () { // 入库的提交 批次号
       this.rukuIsDisabled = true
-      setTimeout(() => {
-        this.rukuIsDisabled = false
-      }, 2000)
 
       //  想取消批次号和生产日期的必填验证，就注释下面两个if即可，对代码其他模块没影响
       if (this.dataList.Items.some(item => item.lll === 0 || item.lll === '' || item.lll === null)) {
         this.$alert('批次号未完整录入!', '提示', {
           confirmButtonText: '确定'
         })
+        this.rukuIsDisabled = false
         return false
       }
       if (this.dataList.Items.some(item => item.ProductionDate === null)) {
         this.$alert('检测有商品的生成日期未填写!', '提示', {
           confirmButtonText: '确定'
         })
+        this.rukuIsDisabled = false
         return false
       }
 
@@ -751,6 +749,7 @@ export default {
           this.$emit('refreshDataList')
           this.visible = false
         } else {
+          this.rukuIsDisabled = false // 请求失败，按钮状态变为可再次点击
           this.$message({
             type: 'error',
             message: `${result.message}`,

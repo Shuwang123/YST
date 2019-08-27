@@ -70,7 +70,7 @@
                     </el-form-item>
                   </el-col>
                   <el-col :xs="24" :sm="24" :md="24" :lg="16" :xl="16">
-                    <div style="min-width: 510px">
+                    <div style="min-width: 660px">
                       <el-form-item label="一级药态" prop="CategoryOne">
                         <el-radio-group v-model="dataForm.CategoryOne"  @change="handleChange" size="mini">
                           <el-radio label="1" border>汤剂</el-radio>
@@ -78,9 +78,14 @@
                           <el-radio label="4" border>水泛丸</el-radio>
                           <el-radio label="5" border>水蜜丸</el-radio>
                           <el-radio label="2" border>外用</el-radio>
+
                           <el-radio label="41" border>理疗</el-radio>
+                          <el-radio label="11" border>西药</el-radio>
+                          <el-radio label="21" border>产品</el-radio>
                         </el-radio-group>
                       </el-form-item>
+                      <!--西药11，二级1008-->
+                      <!--产品21，二级1007-->
                       <!--为什么理疗一级药态41，理疗二级药态1006-->
                       <!--1~10留给中草药，方便以后扩展-->
                     </div>
@@ -347,7 +352,7 @@
               <el-tooltip placement="top">
                 <div slot="content">加工费规则：<br/><br/>待编辑</div>
                 <span v-show="dataForm.CategoryOne !== '1' && dataForm.CategoryOne !== '2' &&
-                        dataForm.CategoryOne !== '41' && leftTableData.length !== 0">
+                        dataForm.CategoryOne !== '41' && dataForm.CategoryOne !== '11' && dataForm.CategoryOne !== '21' && leftTableData.length !== 0">
                 ；总重量：{{categoryAllWeight}} g</span>
               </el-tooltip>
 
@@ -552,9 +557,9 @@ export default {
     },
     oldTabsName (val, oldval) {
       switch (val) {
-        case '1001':
-          this.oldTwoTabsName = '饮片'
-          break
+        // case '1001':
+        //   this.oldTwoTabsName = '饮片'
+        //   break
         case '1002':
           this.oldTwoTabsName = '精品饮片'
           break
@@ -566,6 +571,12 @@ export default {
           break
         case '1006':
           this.oldTwoTabsName = '理疗'
+          break
+        case '1007':
+          this.oldTwoTabsName = '产品'
+          break
+        case '1008':
+          this.oldTwoTabsName = '西药'
           break
       }
     }
@@ -1014,6 +1025,12 @@ export default {
           this.unitIsG = false
           this.dataForm.DrugRate_0 = '1'
           break
+        case '2':
+          this.filterCategory(['1002', '1003', '1004']) // 外用
+          this.dataForm.oldCategoryOneName = '外用'
+          this.unitIsG = false
+          this.dataForm.DrugRate_0 = '1'
+          break
         case '3':
           this.filterCategory(['1003']) // 制膏只有 三九
           this.dataForm.oldCategoryOneName = '制膏'
@@ -1038,11 +1055,17 @@ export default {
           this.unitIsG = true // 理疗的情况，这还需特殊处理，不过影响不是太大，可以直接先放这
           this.dataForm.DrugRate_0 = '1' // 理疗的情况这个值没有意义
           break
-        case '2':
-          this.filterCategory(['1002', '1003', '1004']) // 外用
-          this.dataForm.oldCategoryOneName = '外用'
-          this.unitIsG = false
-          this.dataForm.DrugRate_0 = '1'
+        case '11':
+          this.filterCategory(['1008']) //
+          this.dataForm.oldCategoryOneName = '西药'
+          this.unitIsG = true //
+          this.dataForm.DrugRate_0 = '1' //
+          break
+        case '21':
+          this.filterCategory(['1007']) //
+          this.dataForm.oldCategoryOneName = '产品'
+          this.unitIsG = true //
+          this.dataForm.DrugRate_0 = '1' //
           break
       }
     },
@@ -1141,10 +1164,12 @@ export default {
       // 先请求所有的二级药态，处理后放到drugsCategoryArrCopy，保存我们需要的二级药态模版，以后直接拿此模版来使用
       API.drugs.getDrugsCategory().then(result => {
         if (result.code === '0000') { // 最初 [10,1001,1002,1003,1004,1005,1006]
+          console.log(result.data)
           this.drugsCategoryArrCopy = result.data.filter((item, ind) => {
             return ind > 0 // 不需要10中草药
-          }).slice(1, 6)// 不需要饮片1001
-          this.drugsCategoryArrCopy.splice(3,1)  // 这一步去除1005贵细 最后变成 [1002,1003,1004,1006]
+          }).slice(1, 8)// 不需要饮片1001
+          this.drugsCategoryArrCopy.splice(3,1)  // 这一步去除1005贵细 最后变成 [1002,1003,1004,1006] 1007产 1008西
+          console.log(this.drugsCategoryArrCopy)
           this.filterCategory(['1002', '1003', '1004']) // console.log(result.data, this.drugsCategoryArrCopy, this.drugsCategoryArr)
           // 在filterCategory方法中会给this.drugsCategoryArr赋值，所以就不在这赋值了
 
@@ -1450,10 +1475,10 @@ export default {
     comTwoCategoryChangeFunction (two) {
       this.pageIndex = 1 // 切换药态时，都重置为第一页
       switch (two) {
-        case '1001': // 后面结构改变后1001和1005、饮片和贵细这种情况是不可能点击出来的，所以tableOne那个组件不可能调用
-          this.leftTable = 'TableOne'
-          this.rightUl = 'ul-one'
-          break
+        // case '1001': // 后面结构改变后1001和1005、饮片和贵细这种情况是不可能点击出来的，所以tableOne那个组件不可能调用
+        //   this.leftTable = 'TableOne'
+        //   this.rightUl = 'ul-one'
+        //   break
         case '1002':
           this.leftTable = 'TableTwo'
           this.rightUl = 'ul-one'
@@ -1467,6 +1492,15 @@ export default {
           this.rightUl = 'ul-one'
           break
         case '1006': // 1006这种情况是理疗，调用tableTwo那个吧
+          this.leftTable = 'TableTwo'
+          this.rightUl = 'ul-one'
+          break
+
+        case '1008': // 1008这种情况是西药，调用tableTwo那个吧
+          this.leftTable = 'TableTwo'
+          this.rightUl = 'ul-one'
+          break
+        case '1007': // 1006这种情况是产品，调用tableTwo那个吧
           this.leftTable = 'TableTwo'
           this.rightUl = 'ul-one'
           break

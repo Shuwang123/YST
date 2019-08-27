@@ -2,7 +2,7 @@
   <div class="mod-purchase">
     <el-form :inline="true" :model="dataForm" ref="dataForm" label-width="80px">
       <el-form-item>
-        <el-button type="primary" size="mini" @click="savePurchase()">保存采购单</el-button>
+        <el-button type="primary" size="mini" @click="savePurchase()" :disabled="isDisable">保存采购单</el-button>
         <el-button type="primary" @click="addOrUpdateHandle(dataForm.CategoryId, dataForm.StoreId)" size="mini" icon="el-icon-plus" :disabled="dataForm.StoreId > 0 ? false : true">商品导入</el-button>
         <el-button type="danger" @click="deleteHandle()" icon="el-icon-delete" :disabled="dataListSelections.length <= 0" size="mini">批量移除</el-button>
       </el-form-item>
@@ -124,7 +124,8 @@ export default {
 
       dataListSelections: [],
       dataList: [],
-      purchaseFormal: [] // 采购单正式列表
+      purchaseFormal: [], // 采购单正式列表
+      isDisable: false, // 保存采购单时防止重复点击
     }
   },
   components: {
@@ -369,6 +370,10 @@ export default {
     },
     // 正式提交采购单
     savePurchase () {
+      this.isDisable = true
+      setTimeout(() => {
+        this.isDisable = false
+      }, 1000)
       if (String(this.dataList) !== [] && String(this.dataList) !== '') {
         var params = {
           Buyer: this.dataForm.Buyer,
