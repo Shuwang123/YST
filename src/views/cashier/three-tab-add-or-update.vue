@@ -54,7 +54,7 @@
       <!--footer height: 30px;line-height: 30px-->
       <el-row>
         <el-row style="height: 30px;line-height: 30px">
-          <el-col :span="24">帖数：共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</el-col>
+          <el-col :span="24">帖数：共 {{registerAllData.Total}} 剂，订单总价 ￥{{Number(registerAllData.TotalAmount).toFixed(2)}}</el-col>
         </el-row>
         <el-col :span="12">
           <el-row>
@@ -148,7 +148,7 @@
             <td colspan="2" height="26">
               <div style="position: relative;margin-left: 36px">
                 <span style="position: absolute;bottom: 0;left: -36px; width: 36px">帖数：</span>
-                <p>共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</p>
+                <p>共 {{registerAllData.Total}} 剂，订单总价 ￥{{Number(registerAllData.TotalAmount).toFixed(2)}}</p>
 
               </div>
             </td>
@@ -227,7 +227,7 @@
           </tr>
           <tr>
             <td>药品费</td>
-            <td colspan="2"><p>￥{{registerAllData.TotalAmount - registerAllData.RegisterAmount}}
+            <td colspan="2"><p>￥{{Number(registerAllData.TotalAmount - registerAllData.RegisterAmount).toFixed(2)}}
               <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
           </tr>
           <tr valign="bottom">
@@ -237,8 +237,8 @@
           </tr>
 
           <tr>
-            <td colspan="1">合计：￥{{registerAllData.TotalAmount}}</td>
-            <td colspan="2"><p>大写：{{sumChinese(registerAllData.TotalAmount)}}</p></td>
+            <td colspan="1">合计：￥{{Number(registerAllData.TotalAmount).toFixed(2)}}</td>
+            <td colspan="2"><p>大写：{{sumChinese(Number(registerAllData.TotalAmount).toFixed(2))}}</p></td>
           </tr>
           <tr>
             <td colspan="3">需开发票请于15日内开具，逾期不补! </td>

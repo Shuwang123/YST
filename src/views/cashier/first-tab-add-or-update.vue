@@ -116,12 +116,14 @@
             <!--已收取挂号费的不需要药打印挂号费-->
             <tr v-show="registerAllData.RegisterStatus === 1">
               <td>挂号费</td>
-              <td colspan="2"><p>￥{{registerAllData.RegisterAmount}}
+              <!--<td colspan="2"><p>￥{{registerAllData.RegisterAmount}}-->
+              <td colspan="2"><p>￥0
                 <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
             </tr>
             <tr>
               <td>药品费</td>
-              <td colspan="2"><p>￥{{(registerAllData.TotalAmount - registerAllData.RegisterAmount).toFixed(2)}}
+              <!--<td colspan="2"><p>￥{{(registerAllData.TotalAmount - registerAllData.RegisterAmount).toFixed(2)}}-->
+              <td colspan="2"><p>￥{{Number(myFutureAmount).toFixed(2)}}
                 <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
             </tr>
             <tr valign="bottom">
@@ -133,8 +135,10 @@
             </tr>
 
             <tr>
-              <td colspan="1">合计：￥{{registerAllData.TotalAmount}}</td>
-              <td colspan="2"><p>大写：{{sumChinese(registerAllData.TotalAmount)}}</p></td>
+              <!--<td colspan="1">合计：￥{{registerAllData.TotalAmount}}</td>-->
+              <!--<td colspan="2"><p>大写：{{sumChinese(registerAllData.TotalAmount)}}</p></td>-->
+              <td colspan="1">合计：￥{{Number(myFutureAmount).toFixed(2)}}</td>
+              <td colspan="2"><p>大写：{{sumChinese(Number(myFutureAmount).toFixed(2)) }}</p></td>
             </tr>
             <tr>
               <td colspan="3">需开发票请于15日内开具，逾期不补! </td>
@@ -183,7 +187,7 @@
               <el-col :span="8">{{registerAllData.StatusName ? registerAllData.StatusName : '无'}}</el-col>
               <el-col :span="8">
                 <el-form-item label="折扣" prop="percentage">
-                  <el-input-number @change="myComputedAttr" v-model="dataForm.percentage" :min="1" :max="100" style="width: 95px"></el-input-number>
+                  <el-input-number @change="myComputedAttr" v-model="dataForm.percentage" :min="0" :max="100" style="width: 95px"></el-input-number>
                 </el-form-item>%
               </el-col>
             </el-row>

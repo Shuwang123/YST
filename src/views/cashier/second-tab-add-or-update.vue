@@ -54,7 +54,7 @@
       <!--footer height: 30px;line-height: 30px-->
       <el-row style="">
         <el-row style="height: 30px;line-height: 30px">
-          <el-col :span="24">帖数：共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</el-col>
+          <el-col :span="24">帖数：共 {{registerAllData.Total}} 剂，订单总价 ￥{{Number(registerAllData.TotalAmount).toFixed(2)}}</el-col>
         </el-row>
         <el-col :span="12">
           <el-row>
@@ -148,7 +148,7 @@
             <td colspan="2" height="26">
               <div style="position: relative;margin-left: 36px">
                 <span style="position: absolute;bottom: 0;left: -36px; width: 36px">帖数：</span>
-                <p>共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</p>
+                <p>共 {{registerAllData.Total}} 剂，订单总价 ￥{{Number(registerAllData.TotalAmount).toFixed(2)}}</p>
               </div>
             </td>
           </tr>

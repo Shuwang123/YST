@@ -53,7 +53,7 @@
       <!--footer height: 30px;line-height: 30px-->
       <el-row>
         <el-row style="height: 30px;line-height: 30px">
-          <el-col :span="24">帖数：共 {{registerAllData.Total}} 剂，订单总价 ￥{{registerAllData.TotalAmount}}</el-col>
+          <el-col :span="24">帖数：共 {{registerAllData.Total}} 剂，订单总价 ￥{{Number(registerAllData.TotalAmount).toFixed(2)}}</el-col>
         </el-row>
         <el-col :span="12">
           <el-row>
@@ -117,7 +117,7 @@ export default {
             result.data.BirthDate = calcAge(result.data.BirthDate)
             this.registerAllData = result.data
             this.dataListLoading = false
-            // console.log('查看', result.data)
+            console.log('查看', result.data)
           }
         })
       }
