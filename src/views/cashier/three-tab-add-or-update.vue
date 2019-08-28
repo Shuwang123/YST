@@ -241,7 +241,7 @@
             <td colspan="2"><p>大写：{{sumChinese(Number(registerAllData.TotalAmount).toFixed(2))}}</p></td>
           </tr>
           <tr>
-            <td colspan="3">需开发票请于15日内开具，逾期不补! </td>
+            <td colspan="3">药品为特殊商品，一经售出概不退换 </td>
           </tr>
           <tr>
             <td colspan="3">收费人员：xx</td>

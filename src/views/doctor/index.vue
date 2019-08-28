@@ -13,10 +13,15 @@
             'must_5': true,
             'isTrigger': true
           }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
+
+          <!--医生：可搜索-->
           <el-form-item>
-            <el-select @change="doctorHandle()" v-model="dataForm.AccountId" placeholder="医生" :disabled="$store.getters.getAccountIsDoctor ? true : false" style="width: 100px">
+            <el-select v-model="dataForm.AccountId" filterable style="width: 123px"
+                       :disabled="$store.getters.getAccountIsDoctor ? true : false"
+                       @change="doctorHandle()" :default-first-option="true" placeholder="请搜索医生">
               <el-option v-for="item in storeDoctorArr" :key="item.Id"
-                         :label="`${item.Id}-${item.NickName}`" :value="item.Id"></el-option>
+                      :label="`${item.Id}-${item.NickName}`" :value="item.Id">
+              </el-option>
             </el-select>
           </el-form-item>
 
@@ -31,7 +36,7 @@
 
           <el-form-item>
             <el-button @click="doctorHandle()">查询</el-button>
-            <!--<el-button v-if="$store.getters.getAccountIsDoctor" :disabled="dataForm.AccountId === '' ? true : false"-->
+            <!--<el-button v-if="$store.getters.getAccountIsDoctor" :disabled="dataForm.AccountI=d= === '' ? true : false"-->
             <el-button :disabled="dataForm.AccountId === '' ? true : false"
             @click="$router.push(`/doctor/recipel?MobilePhone=0&DoctorName=${dataForm.currentDoctorName}&DoctorId=${dataForm.AccountId}`)">
               直接就诊</el-button>
@@ -93,9 +98,11 @@ export default {
         {child: false},
         {child: false}
       ],
-      num: 0,
+      options: [], // 医生子模版
+      storeDoctorArr: [], // 医生根模版
+      loading: false, // 加载
+
       value6: [],
-      storeDoctorArr: [],
       isDoctor: false
     }
   },
@@ -142,20 +149,20 @@ export default {
         id: '',
         userName: '',
         nickName: '',
-        roleId: this.$store.getters.getAllDoctorIdArr.join(),
+        roleId: this.$store.getters.getAllDoctorIdArr.join(), // 本质是先获取门店下所有账号，然后再筛选出医生类型的账号
         canViewStores: this.$store.getters.getAccountCurrentHandleStore
       }
       API.adminUser.adminUserList(params).then(response => {
         if (response.code === '0000') {
+          // 先存好所有医生账号信息的模版
           this.storeDoctorArr = response.data.map(item => {
             return {Id: item.Id, NickName: item.NickName}
           })
           this.dataForm.AccountId = response.data.length === 0 ? '' : response.data[0].Id
           this.dataForm.currentDoctorName = response.data.length === 0 ? '' : response.data[0].NickName
           // 这儿存在问题，如果是药房类型账号来判断当然没问题，但如账号本身就有医生那应该是直接选择自己id的
-        } else {
-          this.$message.error(response.message)
-        }
+        } else { this.$message.error(response.message) }
+
         // 假如是医生类型的账号，得自动选择当前登陆的医生(如果门店下没医生自己，那就谁也不选!!!)，并且把html部分的下拉功能禁用!!!(2019.5.22解决)
         if (this.$store.getters.getAccountIsDoctor) {
           if (response.data.some(item => item.Id === Number(this.$store.getters.getAccountLoginInfoAll.AccountId))) {

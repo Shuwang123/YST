@@ -13,12 +13,17 @@
             'isTrigger': true
           }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
 
+          <!--医生：可搜索-->
           <el-form-item v-if="isVisible[0].child">
-            <el-select @change="doctorHandle()" v-model="dataForm.AccountId" placeholder="医生" :disabled="$store.getters.getAccountIsDoctor ? true : false" style="width: 100px">
+            <el-select v-model="dataForm.AccountId" filterable style="width: 123px"
+                       :disabled="$store.getters.getAccountIsDoctor ? true : false"
+                       @change="doctorHandle()" :default-first-option="true" placeholder="请搜索医生">
               <el-option v-for="item in storeDoctorArr" :key="item.Id"
-                         :label="`${item.Id}-${item.NickName}`" :value="item.Id"></el-option>
+                         :label="`${item.Id}-${item.NickName}`" :value="item.Id">
+              </el-option>
             </el-select>
           </el-form-item>
+
           <el-form-item>
             <el-select @change="doctorHandle()" v-model="dataForm.agreementStatus" placeholder="状态" style="width: 100px">
               <el-option :label="'可用'" :value="'1,2,3,5,6'"></el-option>

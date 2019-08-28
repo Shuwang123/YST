@@ -9,12 +9,13 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column prop="DoctorName" header-align="center" align="center" label="医生" min-width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="RegisterMemberCount" header-align="center" align="center" label="挂号人数" min-width="80"></el-table-column>
-      <el-table-column prop="ConsultationMemberCount" header-align="center" align="center" label="就诊人数" min-width="80"></el-table-column>
-      <el-table-column prop="KFMemberCount" header-align="center" align="center" label="开方人次" min-width="80"></el-table-column>
+      <el-table-column prop="RegisterMemberCount" header-align="center" align="center" label="挂号" min-width="60"></el-table-column>
+      <el-table-column prop="RegisterSumAmout" header-align="center" align="center" label="挂号费" min-width="80"></el-table-column>
+      <el-table-column prop="ConsultationMemberCount" header-align="center" align="center" label="就诊" min-width="60"></el-table-column>
+      <el-table-column prop="KFMemberCount" header-align="center" align="center" label="开方" min-width="60"></el-table-column>
 
-      <el-table-column prop="FirstDiagnosisMemberCount" header-align="center" align="center" label="初诊" min-width="70"></el-table-column>
-      <el-table-column prop="AgainDiagnosisMemberCount" header-align="center" align="center" label="复诊" min-width="70"></el-table-column>
+      <el-table-column prop="FirstDiagnosisMemberCount" header-align="center" align="center" label="初诊" min-width="60"></el-table-column>
+      <el-table-column prop="AgainDiagnosisMemberCount" header-align="center" align="center" label="复诊" min-width="60"></el-table-column>
 
       <el-table-column prop="TJDrugCount" header-align="center" align="center" label="汤剂" min-width="100"></el-table-column>
       <el-table-column prop="GFDrugCount" header-align="center" align="center" label="膏方" min-width="100"></el-table-column>
@@ -22,7 +23,7 @@
       <el-table-column prop="WJDrugCount" header-align="center" align="center" label="丸剂" min-width="100"></el-table-column>
       <el-table-column prop="WorkAmount" header-align="center" align="center" label="加工费" min-width="100"></el-table-column>
 
-      <el-table-column prop="ENDrugAmount" header-align="center" align="center" label="西药费" min-width="100"></el-table-column>
+      <el-table-column prop="ENDrugAmount" header-align="center" align="center" label="西药" min-width="100"></el-table-column>
       <el-table-column prop="ProductAmount" header-align="center" align="center" label="产品" min-width="100"></el-table-column>
       <el-table-column prop="LLAmount" header-align="center" align="center" label="理疗" min-width="100"></el-table-column>
       <el-table-column prop="OrderAmount" header-align="center" align="center" label="总金额" min-width="100"></el-table-column>

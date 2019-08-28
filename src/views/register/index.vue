@@ -188,11 +188,23 @@ export default {
     ThreeTab
   },
   methods: {
+    choseCurrentDay () { // 默选当天的时间
+      function myFormat (s) {
+        var y = s.getFullYear()
+        var m = s.getMonth() + 1 < 10 ? '0' + (s.getMonth() + 1) : s.getMonth() + 1
+        var d = s.getDate() < 10 ? '0' + s.getDate() : s.getDate()
+        return `${y}-${m}-${d}`
+      }
+      var curDate = myFormat(new Date())
+      var nextDate = myFormat(new Date(new Date().getTime() + 3600 * 24 * 1000 * 0))
+      this.valueTime = [curDate, nextDate]
+    },
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
         this.dataForm.AccountId = '' // 门店切换时，选择的医生筛选条件当然也清空
         this.dataForm.patientNameOrMobilePhone = ''
         this.valueTime = null
+        this.choseCurrentDay() // 门店切换时，重置默选当天时间
         this.getStoreAllDoctor() // 门店切换时，获取对应门店下所有医生
         this.comBranch()
       }

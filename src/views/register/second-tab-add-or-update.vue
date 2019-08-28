@@ -40,7 +40,7 @@
           <!--<el-col :span="24"><span>诊疗费：</span>{{registerAllData.ConsultationAmount}}￥</el-col>-->
 
           <el-col :span="24"><span>支付状态：</span>{{registerAllData.RegisterStatusName}}</el-col>
-          <el-col :span="24"><span>付费方式：</span>{{registerAllData.PaymentWayName}}</el-col>
+          <el-col :span="24"><span>付费方式：</span>{{registerAllData.RegisterPaymentWayName}}</el-col>
           <el-col :span="24"><span>看诊状态：</span>{{registerAllData.RegisterOrderStatusName}}</el-col>
         </el-row>
       </div>
@@ -82,7 +82,7 @@
             <tr valign="bottom">
               <td height="50"></td>
               <td colspan="2"><p>
-                <span style="display: inline-block;width: 210px;text-align: right">{{registerAllData.PaymentWayName}}</span></p></td>
+                <span style="display: inline-block;width: 210px;text-align: right">{{registerAllData.RegisterPaymentWayName}}</span></p></td>
             </tr>
 
             <tr>

@@ -180,7 +180,7 @@
                       @keydown.38.native="autoSelectUpper()"
                       @keydown.40.native="autoSelectDown()"
                       @keyup.enter.native="addDrugs"
-                      placeholder="请输入药材拼音首字母" style="min-width: 190px; width: 100%" size="small"></el-input>
+                      placeholder="请输入药材名或拼音首字母" style="min-width: 190px; width: 100%" size="small"></el-input>
             <ul v-show="rightIsFocus && dataForm.SpellName !== ''"
                 class="own-methods"
                 ref="ownMethods">
@@ -585,8 +585,7 @@ export default {
     return {
       isActiveLi: true, // 右上角的药材拼音输入框的下拉样式
       zhenduanOptions: [ // 诊断结果的下拉
-        {
-          value: '无',
+        { value: '无',
           label: '无'
         }, {
           value: '咳嗽',
@@ -1280,13 +1279,13 @@ export default {
             // ④ 最后处理零散的其他的开方页的一些字段，剂数，主诉，医嘱，复诊，等小细节
             this.dataForm.DiagnosisType = '2'
             this.dataForm.MainSuit = row.MainSuit
-            this.dataForm.DiseaseInfo = row.DiseaseInfo.split('，')
+            this.dataForm.DiseaseInfo = row.DiseaseInfo === null ? ['1'] : row.DiseaseInfo.split('，') // ?
             this.Total = row.Total
             // this.dataForm.DrugRate_0 = row.split('，')[0]
             // this.dataForm.DrugRate_1 = row.split('，')[0]
             // this.dataForm.DrugRate_2 = row.split('，')[0]
             // this.dataForm.DrugRate_3 = row.split('，')[0]
-            this.dataForm.DoctorAdvice = row.DoctorAdvice === null ? row.DoctorAdvice : row.DoctorAdvice.split('，')
+            this.dataForm.DoctorAdvice = row.DoctorAdvice === null ?  ['1'] : row.DoctorAdvice.split('，') // ?
             return false // 如果是历史开方记录调用，那调用完毕后，就直接中断后面的那些没必要的程序
           } else {
             // 如果是直接开方、就诊进来的，就执行这个分支，必须要要请求一次药材库存初始化页面
@@ -1410,7 +1409,7 @@ export default {
       setTimeout(() => {
         this.rightIsFocus = false
         this.dataForm.SpellName = ''
-      }, 100)
+      }, 200)
     },
     // 后面有三个方法会共同调用这个方法：计算总价
     countTotalPrice (obj) {
@@ -1500,7 +1499,7 @@ export default {
           this.leftTable = 'TableTwo'
           this.rightUl = 'ul-one'
           break
-        case '1007': // 1006这种情况是产品，调用tableTwo那个吧
+        case '1007': // 1007这种情况是产品，调用tableTwo那个吧
           this.leftTable = 'TableTwo'
           this.rightUl = 'ul-one'
           break
@@ -1629,6 +1628,7 @@ export default {
             type: 'warning'
           }).then(() => {
             this.isSubmit = true // 提交之后的退出，不用保存处方了（退出保存控制）
+
             // 此为普通流程的开方参数，常规流程的开方的参数应该传给edit接口
             var paramsEdit = {
               id: this.$route.query.registerFormId, //
@@ -1705,7 +1705,7 @@ export default {
               CategoryOne: this.dataForm.CategoryOne,
               WorkAmount: this.dataForm.WorkAmount // 加工费
             }
-            // ‘直接开方’参数，直接开方的参数应该传给create接口
+            // ‘已就诊历史调用’：create接口
             var paramsCreateHistory = {
               StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
               AccountId: this.$route.params.doctorId, // 医生

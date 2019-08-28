@@ -93,7 +93,7 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item label="支付方式"><!--患者支付方式-->
-                  <el-select v-model="dataForm.PaymentWay" style="width: 100px" placeholder="支付方式">
+                  <el-select v-model="dataForm.RegisterPaymentWay" style="width: 100px" placeholder="支付方式">
                     <el-option v-for="item in optionsPaymentType" :key="item.value"
                                :label="item.label" :value="item.value"></el-option>
                   </el-select>
@@ -155,7 +155,7 @@
             <tr valign="bottom">
               <td height="50"></td>
               <td colspan="2"><p>
-                <span style="display: inline-block;width: 210px;text-align: right">{{registerAllData.PaymentWayName}}</span></p></td>
+                <span style="display: inline-block;width: 210px;text-align: right">{{registerAllData.RegisterPaymentWayName}}</span></p></td>
             </tr>
 
             <tr>
@@ -163,7 +163,7 @@
               <td colspan="2"><p>大写：{{sumChinese(registerAllData.RegisterAmount)}}</p></td>
             </tr>
             <tr>
-              <td colspan="3">需开发票请于15日内开具，逾期不补! </td>
+              <td colspan="3">药品为特殊商品，一经售出概不退换 </td>
             </tr>
             <tr>
               <td colspan="3">收费人员：{{$store.getters.getAccountLoginInfoAll.NickName}}</td>
@@ -241,7 +241,7 @@ export default {
         UserId: '',
         Code: '',
 
-        PaymentWay: 1, // 支付方式
+        RegisterPaymentWay: 1, // 支付方式
         DiagnosisType: '1', // 看诊类型
         chargeType: '只挂号', // 收费类型（药房）
         RegisterAmount: '', // 挂号费 ''初始值
@@ -353,7 +353,7 @@ export default {
         UserId: '',
         Code: '',
 
-        PaymentWay: 1, // 支付方式
+        RegisterPaymentWay: 1, // 支付方式
         DiagnosisType: '1', // 看诊类型
         chargeType: '只挂号', // 收费类型（药房）
         RegisterAmount: '', // 挂号费
@@ -381,10 +381,10 @@ export default {
 
             RegisterAmount: this.dataForm.RegisterAmount, // 挂号费
             ConsultationAmount: this.dataForm.ConsultationAmount, // 诊疗费
-            RegisterStatus: 2, // 上面两个费用的支付状态，（默）1未支付 2已支付； 这儿的页面是前台挂号的嘛，99.99%都是已支付才挂号的所以直接一个2
+            RegisterPaymentWay: this.dataForm.RegisterPaymentWay,
 
-            PaymentWay: this.dataForm.PaymentWay,
-            Remark: this.dataForm.PaymentWay
+            RegisterStatus: 2, // 上面两个费用的支付状态，（默）1未支付 2已支付； 这儿的页面是前台挂号的嘛，99.99%都是已支付才挂号的所以直接一个2
+            Remark: this.dataForm.RegisterPaymentWay
           }
           console.log(params)
           API.register.registerSubmit(params).then(result => {
