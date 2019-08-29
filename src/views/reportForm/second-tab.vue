@@ -10,7 +10,7 @@
       style="width: 100%;">
       <el-table-column prop="DoctorName" header-align="center" align="center" label="医生" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="RegisterMemberCount" header-align="center" align="center" label="挂号" min-width="60"></el-table-column>
-      <el-table-column prop="RegisterSumAmout" header-align="center" align="center" label="挂号费" min-width="80"></el-table-column>
+      <el-table-column prop="RegisterSumAmount" header-align="center" align="center" label="挂号费" min-width="80"></el-table-column>
       <el-table-column prop="ConsultationMemberCount" header-align="center" align="center" label="就诊" min-width="60"></el-table-column>
       <el-table-column prop="KFMemberCount" header-align="center" align="center" label="开方" min-width="60"></el-table-column>
 
