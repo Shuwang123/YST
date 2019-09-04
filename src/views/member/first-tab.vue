@@ -13,10 +13,21 @@
         }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.UserName" placeholder="姓名" clearable @clear="getDataList()" style="width: 150px"></el-input>
+        <el-select v-model="dataForm.Source" style="width: 110px" placeholder="选择来源"
+                   @change="getDataList()" clearable @clear="getDataList()">
+          <el-option v-for="item in memberOrigin" :key="item.lab"
+                     :label="item.lab" :value="item.val">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item>
-        <el-input v-model="dataForm.MobilePhone" placeholder="电话" clearable @clear="getDataList()" style="width: 150px"></el-input>
+        <el-input v-model="dataForm.UserName" placeholder="患者姓名" clearable @clear="getDataList()" style="width: 110px"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="dataForm.MobilePhone" placeholder="患者电话" clearable @clear="getDataList()" style="width: 140px"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-input v-model="dataForm.UsersIntroducePeople" placeholder="患者介绍人" clearable @clear="getDataList()" style="width: 110px"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button icon="el-icon-search" @click="getDataList()">查询</el-button>
@@ -44,16 +55,19 @@
       <el-table-column prop="Points" header-align="center" align="center" min-width="100" label="当前积分"></el-table-column>
       <el-table-column prop="Address" header-align="center" align="center" label="地址" min-width="130" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="AllergyHistory" header-align="left" align="left" label="过敏史" width="" :show-overflow-tooltip="true"></el-table-column>-->
+
+      <el-table-column prop="UsersIntroducePeople" header-align="center" align="center" label="介绍人" min-width="100" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column header-align="center" align="center" label="创建时间 / 创建人" min-width="170">
         <template slot-scope="scope">
           <span>{{scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}} / {{scope.row.UpdatedBy}}</span>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" align="center" label="更新时间 / 操作人" min-width="170">
-        <template slot-scope="scope">
-          <span>{{scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}} / {{scope.row.CreatedBy}}</span>
-        </template>
-      </el-table-column>
+      <!--<el-table-column header-align="center" align="center" label="更新时间 / 操作人" min-width="170">-->
+        <!--<template slot-scope="scope">-->
+          <!--<span>{{scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}} / {{scope.row.CreatedBy}}</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
+
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="text" @click="addOrUpdateHandle(scope.row.Id, 'Basics')">会员</el-button>
@@ -96,8 +110,19 @@ export default {
       isPaging: true,
       dataForm: {
         UserName: '',
-        MobilePhone: ''
+        MobilePhone: '',
+        Source: '', // 患者来源
+        UsersIntroducePeople: '' // 患者介绍人，查询
       },
+      memberOrigin: [
+        {lab: '医生介绍', val: '1'},
+        {lab: '广告', val: '2'},
+        {lab: '宣传单', val: '3'},
+        {lab: '网络渠道', val: '4'},
+        {lab: '美团', val: '5'},
+        {lab: '熟人介绍', val: '6'},
+        {lab: '其他', val: '20'}
+      ],
       totalPage: 1,
       dataList: []
     }
@@ -128,8 +153,10 @@ export default {
           PageIndex: this.pageIndex,
           PageSize: this.pageSize,
           IsPaging: this.isPaging,
+          Source: this.dataForm.Source, // 患者来源
           UserName: this.dataForm.UserName,
           MobilePhone: this.dataForm.MobilePhone,
+          UsersIntroducePeople: this.dataForm.UsersIntroducePeople, // 患者介绍人
           Code: this.dataForm.Code
         }
         // console.log(params)

@@ -123,13 +123,13 @@
 
             <!--状态1：表示挂号费没有支付-->
             <tr v-if="registerAllData.RegisterStatus === 1">
-              <td>药品费</td>
+              <td>{{registerAllData.CategoryOne === 41 ? '理疗费' : '药品费'}}</td>
               <!--<td colspan="2"><p>￥{{(registerAllData.TotalAmount - registerAllData.RegisterAmount).toFixed(2)}}-->
               <td colspan="2"><p>￥{{Number(myFutureAmount - registerAllData.RegisterAmount).toFixed(2)}}
                 <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
             </tr>
             <tr v-else>
-              <td>药品费</td>
+              <td>{{registerAllData.CategoryOne === 41 ? '理疗费' : '药品费'}}</td>
               <!--<td colspan="2"><p>￥{{(registerAllData.TotalAmount - registerAllData.RegisterAmount).toFixed(2)}}-->
               <td colspan="2"><p>￥{{Number(myFutureAmount).toFixed(2)}}
                 <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>

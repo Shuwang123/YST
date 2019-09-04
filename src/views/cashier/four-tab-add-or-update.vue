@@ -226,7 +226,7 @@
               <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
           </tr>
           <tr>
-            <td>{{registerAllData.CategoryOne === 41 ? '理疗费' : '药品费'}}</td>
+            <td>药品费</td>
             <td colspan="2"><p>￥{{Number(registerAllData.TotalAmount - registerAllData.RegisterAmount).toFixed(2)}}
               <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
           </tr>
@@ -311,9 +311,9 @@
 
     <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="chenxiPrint('printRecipel')">药方</el-button>
-        <el-button type="primary" @click="chenxiPrint('printCashier')">收银小票补打</el-button>
-        <el-button type="primary" @click="chenxiPrint('printOutStock')">出库单(财务)</el-button>
+        <!--<el-button type="primary" @click="chenxiPrint('printRecipel')">药方</el-button>-->
+        <!--<el-button type="primary" @click="chenxiPrint('printCashier')">收银小票补打</el-button>-->
+        <!--<el-button type="primary" @click="chenxiPrint('printOutStock')">出库单(财务)</el-button>-->
         <el-button @click="visible = false">关闭</el-button>
       </span>
     </div>

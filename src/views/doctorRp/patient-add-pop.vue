@@ -35,6 +35,9 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="介绍人" prop="UsersIntroducePeople">
+        <el-input v-model="dataForm.UsersIntroducePeople" placeholder="请输入介绍人" style="width: 160px"></el-input>
+      </el-form-item>
 
       <el-form-item label="病例史" prop="AllergyHistory" style="margin-top: 15px">
         <el-input v-model="dataForm.AllergyHistory" placeholder="请输入病例史" style="width: 413px"></el-input>
@@ -73,6 +76,7 @@ export default {
         MobilePhone: '',
         AllergyHistory: '', // 病例史
         Source: '20', // 患者来源
+        UsersIntroducePeople: '', // 介绍人
         Address: ''
       },
       memberOrigin: [
@@ -146,7 +150,8 @@ export default {
         MobilePhone: '',
         AllergyHistory: '', // 病例史
         Address: '',
-        Source: '20' // 患者来源
+        Source: '20', // 患者来源
+        UsersIntroducePeople: '' // 介绍人
       }
       this.isOKClick = false
     },
@@ -162,7 +167,8 @@ export default {
             MobilePhone: this.dataForm.MobilePhone,
             AllergyHistory: this.dataForm.AllergyHistory,
             Address: this.dataForm.Address,
-            Source: this.dataForm.Source
+            Source: this.dataForm.Source,
+            UsersIntroducePeople: this.dataForm.UsersIntroducePeople
           }
           console.log(paramsAdd)
           API.member.addMemberSubmit(paramsAdd).then((data) => {

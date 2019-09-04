@@ -2,7 +2,7 @@ import request from '../../request'
 import requestUrl from '../../requestUrl'
 import requestParam from '../../requestParam'
 
-// 获取医生list (这个接口没使用，原因：网址蹦了，后端写的新接口本身又还没写完的时候蹦的，干脆回去调用崩掉之前的另一个旧的)
+// 获取医生list (这个接口没使用，原因：网址蹦了，后端写的新接口本身又还没写完的时候蹦的，之后回去调用崩掉之前的另一个旧的)
 export function getDoctors (params) {
   return request({
     url: requestUrl('/YstApiAccount/LoadData'),
@@ -81,6 +81,15 @@ export function cashierSubmit (params) {
 export function saleOrderSubmit (params) {
   return request({
     url: requestUrl('/YstApiSaleOrder/StockSaleOrder'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 已开方已收银未出库：处方收银后退费功能———————————（出了库的不能退费了，是新的逻辑流程）
+export function cashierRevoke (params) {
+  return request({
+    url: requestUrl('/YstApiSaleOrder/SeeDoctorCancel'),
     method: 'post',
     data: requestParam(params)
   })

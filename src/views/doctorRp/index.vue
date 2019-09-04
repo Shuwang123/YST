@@ -184,11 +184,12 @@
             <ul v-show="rightIsFocus && dataForm.SpellName !== ''"
                 class="own-methods"
                 ref="ownMethods">
-              <li v-for="(item, index) in rightUlData" :key="item.Id"
+              <li v-for="(item, index) in rightUlData" :key="item.Id" :title="item.ShowName"
                   :class="[index === keyCode_40Count ? 'isLi' : '']" @click="addDrugs(item)">
                 <span style="display: inline-block; vertical-align: middle; width: 60px;overflow: hidden; white-space: nowrap;text-overflow: ellipsis">{{ item.ShowName }}</span>
                 <span style="color: #e4393c;">{{item.CategoryId === '1002' ? '精品' : ''}}{{item.CategoryId === '1005' ? '贵细' : ''}}</span>
                 余<span style="color: red">{{ item.Quantity }}</span>
+                <span style="float: right;width: 60px">{{ item.StoreSalePrice.toFixed(2) }}</span>
               </li>
             </ul>
           </div>
@@ -342,9 +343,10 @@
               </el-tooltip>
               <!--3-->
               <el-tooltip placement="top">
-                <div slot="content">医生直接开方时：<br/><br/>需填写挂号费</div>
-                <span v-if="$route.query.MobilePhone === '0'">
-                  + <el-input-number v-model="dataForm.ConsultationAmount" :min="0" :max="1000" style="width: 100px" size="mini"></el-input-number>
+                <div slot="content">医生填写挂号费</div>
+                <span v-if="$route.query.MobilePhone === '0' || $route.params.row !== undefined">
+                  + <el-input-number v-model="dataForm.ConsultationAmount"
+                        :min="0" :max="1000" style="width: 100px" size="mini"></el-input-number>
                 </span>
               </el-tooltip>
 
@@ -1178,7 +1180,7 @@ export default {
           // 可能想利用一级药态和二级药态的原始模版去重新计算展现出正确的二级药态子模版的时候，二级药态原始模版那玩意可能还没弄的出来呢，就导致二级药态一直是1002,1003,1004这种情况，最后出bug
           // // ①说明是历史患者处方调用！！！！！！！！！！
           if (this.$route.params.row !== undefined) { // 已就诊列表 调用历史开方
-            // console.log(this.$route.params.row, this.$route.params.doctorId)
+            console.log(this.$route.params.row, this.$route.params.doctorId)
             let row = this.$route.params.row
             // ① 先处理患者信息
             // 利用旧的患者电话，更新出最新的患者信息（因为患者信息存在更改的情况，所以最好刷新一下）
@@ -1365,7 +1367,7 @@ export default {
         if (result.code === '0000' && result.data.length > 0) {
           this.rightUlData = result.data
           this.totalPage = result.total
-          // console.log(result.data)
+          console.log(result.data)
         } else {
           this.rightUlData = []
           this.totalPage = 0
@@ -1629,19 +1631,20 @@ export default {
           }).then(() => {
             this.isSubmit = true // 提交之后的退出，不用保存处方了（退出保存控制）
 
-            // 此为普通流程的开方参数，常规流程的开方的参数应该传给edit接口
+            // ① 就诊 开方——参数，传给edit接口覆盖
             var paramsEdit = {
               id: this.$route.query.registerFormId, //
               DiagnosisType: this.dataForm.DiagnosisType, // 出诊、复诊
               RegisterStatus: '2', // 已支付（在编辑 追加的情况下，理论上是肯定收费了就不需要传递这个字段了的，但是后端有其他考虑，所以这儿还需要把这个字段传递到后端）
+
               Remark: '', // 备注
               FamilyIllness: '', // 家族史????
               DepartmentType: '1', // 科室???????
               PersonalIllness: '', // 个人史?????????
               AgoIllness: '', // 既往史?????????????????
-
               // NowIllness: this.dataForm.NowIllness, // 现病史
               // DiseaseTime: this.dataForm.DiseaseTime, // 发病时间
+
               MainSuit: this.dataForm.MainSuit, // 主诉
               DiseaseInfo: this.dataForm.DiseaseInfo.join('，'), // 诊断信息
               DrugRate: this.DrugRate, // 用药频率
@@ -1664,7 +1667,7 @@ export default {
               CategoryOne: this.dataForm.CategoryOne,
               WorkAmount: this.dataForm.WorkAmount // 加工费
             }
-            // ‘直接开方’参数，直接开方的参数应该传给create接口
+            // ② 直接开方 开方——参数，传给create接口新建
             var paramsCreate = {
               StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
               AccountId: this.$route.query.DoctorId, // 医生
@@ -1673,7 +1676,7 @@ export default {
               DiagnosisType: this.dataForm.DiagnosisType,
 
               RegisterStatus: '1', // 未支付
-              RegisterAmount: this.dataForm.ConsultationAmount,
+              RegisterAmount: this.dataForm.ConsultationAmount, // 挂号费
               ConsultationAmount: 0,
               PaymentWay: '',
               Remark: '',
@@ -1705,7 +1708,7 @@ export default {
               CategoryOne: this.dataForm.CategoryOne,
               WorkAmount: this.dataForm.WorkAmount // 加工费
             }
-            // ‘已就诊历史调用’：create接口
+            // ③ 医生已就诊列表：点 历史调用 开方——参数，传给create接口新建
             var paramsCreateHistory = {
               StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店
               AccountId: this.$route.params.doctorId, // 医生
@@ -1714,14 +1717,14 @@ export default {
               DiagnosisType: this.dataForm.DiagnosisType,
 
               RegisterStatus: '1', // 未支付
-              RegisterAmount: this.dataForm.ConsultationAmount,
+              RegisterAmount: this.dataForm.ConsultationAmount, // 挂号费
               ConsultationAmount: 0,
               PaymentWay: '',
               Remark: '',
               DepartmentType: '',
               AgoIllness: '',
 
-              MainSuit: this.dataForm.MainSuit,
+              MainSuit: this.dataForm.MainSuit, // 主诉
               DiseaseInfo: this.dataForm.DiseaseInfo.join('，'), // 诊断结果
 
               // NowIllness: this.dataForm.NowIllness,
@@ -1746,15 +1749,55 @@ export default {
               CategoryOne: this.dataForm.CategoryOne,
               WorkAmount: this.dataForm.WorkAmount // 加工费
             }
-            console.log(paramsEdit) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
-            console.log(paramsCreate) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
-            console.log(paramsCreateHistory) //
+            // ④ 收银 未收费前台人员重新编辑处方 开方——参数，传给edit接口覆盖
+            var paramsEditHistory = {
+              id: this.$route.params.registerFormId, //
+              DiagnosisType: this.dataForm.DiagnosisType, // 出诊、复诊（好像进来时固定的2复诊）
+
+              // 挂号费就这问题最大，收费了来这，没收费来着，都变成已收费，，，标记一下!!!
+              RegisterStatus: '2', // 2已支付,1未支付??? 开方页挂号费逻辑重新写
+
+              Remark: '', // 备注??????
+              FamilyIllness: '', // 家族史????
+              DepartmentType: '1', // 科室???????
+              PersonalIllness: '', // 个人史?????????
+              AgoIllness: '', // 既往史?????????????????
+              // NowIllness: this.dataForm.NowIllness, // 现病史
+              // DiseaseTime: this.dataForm.DiseaseTime, // 发病时间
+
+              MainSuit: this.dataForm.MainSuit, // 主诉
+              DiseaseInfo: this.dataForm.DiseaseInfo.join('，'), // 诊断信息
+              DrugRate: this.DrugRate, // 用药频率
+              DoctorAdvice: this.dataForm.DoctorAdvice.join('， '), // 医嘱
+              Total: this.Total, // 总剂数
+              ItemsJson: JSON.stringify(this.leftTableData.map(item => {
+                var obj = {
+                  ProductId: item.Id,
+                  ProductCode: item.Code,
+                  ProductName: item.ShowName,
+                  CostPrice: item.CostPrice,
+                  SalePrice: item.StoreSalePrice,
+                  RealPrice: item.StoreSalePrice,
+                  Quantity: item.myNum,
+                  SupplierId: 0,
+                  SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
+                }
+                return obj
+              })),
+              CategoryOne: this.dataForm.CategoryOne,
+              WorkAmount: this.dataForm.WorkAmount // 加工费(重新算价后，也会重新算加工费并更新出加工费的值)
+            }
+            // console.log(paramsEdit) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
+            // console.log(paramsCreate) // 电话为0表示直接开方模式应该提交费create接口、如果有正常的电话那应该是正常的开方模式应该提交到edit接口
+            // console.log(paramsCreateHistory)
+            // console.log(paramsEditHistory)
+
             var tick
             if (this.$route.params.row !== undefined) {
-              console.log('流程？')
-              tick = API.register.registerSubmit(paramsCreateHistory)
+              // console.log('后加流程？')
+              tick = this.$route.params.registerFormId === undefined ? API.register.registerSubmit(paramsCreateHistory): API.register.sendRecipelToEdit(paramsEditHistory)
             } else {
-              console.log('旧的？')
+              // console.log('旧的？')
               tick = this.$route.query.MobilePhone === '0' ? API.register.registerSubmit(paramsCreate) : API.register.sendRecipelToEdit(paramsEdit)
             }
             console.log(tick)

@@ -66,6 +66,12 @@
           <three-tab v-if="isVisible[2].child" ref="threeTab" :fatherDataForm="dataForm"></three-tab>
         </transition>
       </el-tab-pane>
+      <el-tab-pane label="" name="four">
+        <span slot="label"><i class=""></i> 已退费(收银后退费)</span>
+        <transition name="chenxi">
+          <four-tab v-if="isVisible[3].child" ref="fourTab" :fatherDataForm="dataForm"></four-tab>
+        </transition>
+      </el-tab-pane>
 
     </el-tabs>
   </div>
@@ -75,6 +81,7 @@ import API from '@/api'
 import FirstTab from './first-tab'
 import SecondTab from './second-tab'
 import ThreeTab from './three-tab'
+import FourTab from './four-tab'
 import ComStore from '../common/com-store'
 
 export default {
@@ -82,7 +89,8 @@ export default {
     ComStore,
     FirstTab,
     SecondTab,
-    ThreeTab
+    ThreeTab,
+    FourTab
   },
   watch: {
     'dataForm.patientNameOrMobilePhone': function (val, oldval) {
@@ -120,6 +128,7 @@ export default {
       },
       isVisible: [
         {child: true},
+        {child: false},
         {child: false},
         {child: false}
       ],
@@ -201,6 +210,8 @@ export default {
           this.$refs.secondTab.getDataList()
         } else if (this.isVisible[2].child === true) {
           this.$refs.threeTab.getDataList()
+        } else if (this.isVisible[3].child === true) {
+          this.$refs.fourTab.getDataList()
         }
       })
     },
@@ -244,6 +255,11 @@ export default {
         case 'three':
           this.isVisible = this.isVisible.map((item, index) => {
             return index === 2 ? {child: true} : {child: false}
+          })
+          break
+        case 'four':
+          this.isVisible = this.isVisible.map((item, index) => {
+            return index === 3 ? {child: true} : {child: false}
           })
           break
       }

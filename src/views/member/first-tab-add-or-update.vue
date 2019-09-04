@@ -39,6 +39,9 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="介绍人" prop="UsersIntroducePeople">
+        <el-input v-model="dataForm.UsersIntroducePeople" placeholder="请输入介绍人" style="width: 160px"></el-input>
+      </el-form-item>
 
       <el-form-item label="病例史" prop="AllergyHistory">
         <el-input v-model="dataForm.AllergyHistory" placeholder="请输入病例史" style="width: 413px"></el-input>
@@ -76,6 +79,7 @@ export default {
         BirthDateUnit: '1', // 必须是str类型的
         MobilePhone: '',
         Source: '20', // 患者来源
+        UsersIntroducePeople: '', // 介绍人，可以为空
         AllergyHistory: '', // 病例史
         Address: ''
       },
@@ -169,6 +173,7 @@ export default {
               this.dataForm.AllergyHistory = result.data.AllergyHistory
               this.dataForm.Address = result.data.Address
               this.dataForm.Source = String(result.data.Source)
+              this.dataForm.UsersIntroducePeople = result.data.UsersIntroducePeople
               // console.log(result.data)
               // console.log(this.dataForm)
               this.memberId = result.data.Id
@@ -189,7 +194,8 @@ export default {
         MobilePhone: '',
         AllergyHistory: '', // 病例史
         Address: '',
-        Source: '20' // 患者来源
+        Source: '20', // 患者来源
+        UsersIntroducePeople: '' // 介绍人
       }
       this.isOKClick = false
       this.$refs['dataForm'].clearValidate()
@@ -210,7 +216,8 @@ export default {
             MobilePhone: this.dataForm.MobilePhone,
             AllergyHistory: this.dataForm.AllergyHistory,
             Address: this.dataForm.Address,
-            Source: this.dataForm.Source
+            Source: this.dataForm.Source,
+            UsersIntroducePeople: this.dataForm.UsersIntroducePeople
           }
           var paramsEdit = {
             StoreId: this.$store.getters.getAccountCurrentHandleStore,
@@ -221,6 +228,7 @@ export default {
             AllergyHistory: this.dataForm.AllergyHistory,
             Address: this.dataForm.Address,
             Source: this.dataForm.Source,
+            UsersIntroducePeople: this.dataForm.UsersIntroducePeople,
             Id: this.memberId
           }
           // console.log(paramsAdd)
