@@ -35,6 +35,10 @@
                   <!--<el-input v-model="dataForm.MobilePhone" placeholder="患者电话" clearable style="width: 119px"></el-input>-->
                 <!--</el-form-item>-->
                 <el-form-item>
+                  <el-input v-model="dataForm.Code" placeholder="请输入单据编号"
+                            @clear="comBranch()" clearable style="width: 119px"></el-input>
+                </el-form-item>
+                <el-form-item>
                   <el-date-picker
                     size="mini"
                     v-model="valueTime" @change="comBranch()"
@@ -126,6 +130,7 @@ export default {
         patientNameOrMobilePhone: '', // 合一
         patientName: '', // 患者
         MobilePhone: '', // 电话 这几个信息只是父组件传递给子组件的查询字段而已
+        Code: '',
         StartDate: '',
         EndDate: '',
 

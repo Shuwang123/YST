@@ -35,6 +35,23 @@
           </el-form-item>
 
           <el-form-item>
+            <el-input v-model="dataForm.Code" placeholder="请输入单据编号"
+                      @clear="doctorHandle()" clearable style="width: 119px"></el-input>
+          </el-form-item>
+          <el-form-item>
+            <el-date-picker
+                    size="mini"
+                    v-model="valueTime" @change="doctorHandle()"
+                    type="daterange"
+                    range-separator="至"
+                    start-placeholder="开始日期"
+                    end-placeholder="结束日期"
+                    value-format="yyyy-MM-dd"
+                    style="width: 260px"
+                    :picker-options="pickerOptions">
+            </el-date-picker>
+          </el-form-item>
+          <el-form-item>
             <el-button @click="doctorHandle()">查询</el-button>
             <!--<el-button v-if="$store.getters.getAccountIsDoctor" :disabled="dataForm.AccountI=d= === '' ? true : false"-->
             <el-button :disabled="dataForm.AccountId === '' ? true : false"
@@ -89,6 +106,7 @@ export default {
 
         PatientName: '', // 患者姓名查询
         PatientPhone: '', // 患者电话查询
+        Code: '',
         StartDate: '',
         EndDate: ''
       },
@@ -102,7 +120,48 @@ export default {
       storeDoctorArr: [], // 医生根模版
       loading: false, // 加载
 
-      value6: [],
+      valueTime: [],
+      pickerOptions: { // 报表时间范围查询，快速选择
+        shortcuts: [{
+          text: '今天',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            end.setTime(end.getTime() + 3600 * 1000 * 24 * 0)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '昨天',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 1)
+            end.setTime(end.getTime() - 3600 * 1000 * 24 * 1)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '前天',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 2)
+            end.setTime(end.getTime() - 3600 * 1000 * 24 * 2)
+            picker.$emit('pick', [start, end])
+          }
+        }, {
+          text: '最近一周',
+          onClick (picker) {
+            const end = new Date()
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 6)
+            end.setTime(end.getTime() - 3600 * 1000 * 24 * 0)
+            picker.$emit('pick', [start, end])
+          }
+        }],
+        disabledDate (time) {
+          return time.getTime() > Date.now() + 3600 * 24 * 0 * 1000
+        }
+      },
       isDoctor: false
     }
   },
@@ -112,12 +171,10 @@ export default {
     ComStore
   },
   watch: {
-    'value6': function () {
-      // console.log(this.value6)
-      if (this.value6 !== [] && this.value6 !== null) {
-        this.dataForm.StartDate = this.value6[0]
-        this.dataForm.EndDate = this.value6[1]
-        // console.log(this.dataForm.StartDate) // console.log(this.dataForm.EndDate)
+    'valueTime': function () {
+      if (this.valueTime !== [] && this.valueTime !== null) {
+        this.dataForm.StartDate = this.valueTime[0]
+        this.dataForm.EndDate = this.valueTime[1]
       } else {
         this.dataForm.StartDate = ''
         this.dataForm.EndDate = ''
@@ -133,10 +190,24 @@ export default {
     }
   },
   methods: {
+    choseCurrentDay () { // 默选当天的时间
+      function myFormat (s) {
+        var y = s.getFullYear()
+        var m = s.getMonth() + 1 < 10 ? '0' + (s.getMonth() + 1) : s.getMonth() + 1
+        var d = s.getDate() < 10 ? '0' + s.getDate() : s.getDate()
+        return `${y}-${m}-${d}`
+      }
+      var curDate = myFormat(new Date())
+      var nextDate = myFormat(new Date(new Date().getTime() + 3600 * 24 * 1000 * 0))
+      this.valueTime = [curDate, nextDate]
+    },
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
         this.dataForm.AccountId = ''
         this.dataForm.currentDoctorName = ''
+
+        this.valueTime = null
+        this.choseCurrentDay() // 门店切换时，重置默选当天的时间
         this.getStoreAllDoctor() // 切换门店后，更新头部下拉option的选项 在这触发 初始化，不要崇拜…代替pageInit方法
       }
     },

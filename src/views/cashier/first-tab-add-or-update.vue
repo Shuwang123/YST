@@ -293,11 +293,11 @@
                 <el-input v-model="dataForm.give" style="width: 100px" disabled></el-input>
               </el-form-item>
             </el-col>
-            <el-col :span="7" style="text-align: right">
-              <el-form-item label="推荐人">
-                <el-input v-model="dataForm.PrescriptionName" style="width: 70px"></el-input>
-              </el-form-item>
-            </el-col>
+            <!--<el-col :span="7" style="text-align: right">-->
+              <!--<el-form-item label="推荐人">-->
+                <!--<el-input v-model="dataForm.PrescriptionName" style="width: 70px"></el-input>-->
+              <!--</el-form-item>-->
+            <!--</el-col>-->
           </el-row>
         </el-form>
       </el-main>
@@ -343,7 +343,7 @@ export default {
         OnlinePayAmount: 0, // 支付金额_1
 
         give: '', // 找零
-        PrescriptionName: '无' // 介绍人
+        PrescriptionName: '' // 介绍人
       },
       dataRule: {
         percentage: Currency(' '),

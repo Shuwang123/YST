@@ -22,335 +22,338 @@
           </el-badge>
         </div>
 
-        <table border="1" cellspacing="0" style="border-collapse: collapse;text-align: center" width="600px">
-          <caption style="height: 30px;line-height: 30px;font-weight: 700;text-align: left;font-size: 16px">账目核对：</caption>
-          <tr height="30">
-            <td width="100">总金额</td>
-            <td colspan="5" align="left" style="padding-left: 15px">{{dataList.OrderAmount}}</td>
-          </tr>
-          <tr height="30">
-            <td width="100">应收金额</td>
-            <td width="100" align="center">{{dataList.OrderAmount}}</td>
-            <td width="100">实收金额</td>
-            <td width="100" align="center">{{dataList.OrderAmount}}</td>
-            <td width="100" bgcolor="#f1f2f7">挂账金额</td>
-            <td width="100" v-if="!isEditing" align="center">{{dataList.OnAccountAmount}}</td>
-            <td width="100" v-else align="center">
-              <el-form-item prop="OnAccountAmount" :rules="numRules">
-                <el-input v-model.number="dataList.OnAccountAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-          </tr>
-        </table>
+        <div id="dayReportForm">
+          <div v-show="timeShow">时间：{{fatherDataForm.StartDate}} 到 {{fatherDataForm.EndDate}}</div>
+          <table border="1" cellspacing="0" style="border-collapse: collapse;text-align: center" width="600px">
+            <caption style="height: 30px;line-height: 30px;font-weight: 700;text-align: left;font-size: 16px">账目核对：</caption>
+            <tr height="30">
+              <td width="100">总金额</td>
+              <td colspan="5" align="left" style="padding-left: 15px">{{dataList.OrderAmount}}</td>
+            </tr>
+            <tr height="30">
+              <td width="100">应收金额</td>
+              <td width="100" align="center">{{dataList.OrderAmount}}</td>
+              <td width="100">实收金额</td>
+              <td width="100" align="center">{{dataList.OrderAmount}}</td>
+              <td width="100" bgcolor="#f1f2f7">挂账金额</td>
+              <td width="100" v-if="!isEditing" align="center">{{dataList.OnAccountAmount}}</td>
+              <td width="100" v-else align="center">
+                <el-form-item prop="OnAccountAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.OnAccountAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+            </tr>
+          </table>
 
-        <table border="1" cellspacing="0" style="border-collapse: collapse;text-align: center" width="600px">
-          <caption style="height: 30px;line-height: 30px;font-weight: 700;text-align: left;font-size: 16px">收费方式：</caption>
-          <tr height="30">
-            <td width="100">现金</td>
-            <td width="100" align="left">{{dataList.Cash}}</td>
-            <td width="100">支付宝</td>
-            <td width="100" align="left">{{dataList.AliPay}}</td>
-            <td width="100">微信扫码</td>
-            <td width="100" align="left">{{dataList.WechatPay}}</td>
-            <td width="100">银行卡</td>
-            <td width="100" align="left">{{dataList.UnionPay}}</td>
-          </tr>
-          <tr height="30">
-            <td width="100">医保</td>
-            <td width="100" align="left">{{dataList.MedicalPay}}</td>
-            <td width="100">客服手机</td>
-            <td width="100" align="left">{{dataList.WechatPhonePay}}</td>
-            <td width="100">代金券</td>
-            <td width="100" align="left">{{dataList.CouponPay}}</td>
-            <td width="100">会员卡</td>
-            <td width="100" align="left">{{dataList.MemberPay}}</td>
-          </tr>
-        </table>
+          <table border="1" cellspacing="0" style="border-collapse: collapse;text-align: center" width="600px">
+            <caption style="height: 30px;line-height: 30px;font-weight: 700;text-align: left;font-size: 16px">收费方式：</caption>
+            <tr height="30">
+              <td width="100">现金</td>
+              <td width="100" align="left">{{dataList.Cash}}</td>
+              <td width="100">支付宝</td>
+              <td width="100" align="left">{{dataList.AliPay}}</td>
+              <td width="100">微信扫码</td>
+              <td width="100" align="left">{{dataList.WechatPay}}</td>
+              <td width="100">银行卡</td>
+              <td width="100" align="left">{{dataList.UnionPay}}</td>
+            </tr>
+            <tr height="30">
+              <td width="100">医保</td>
+              <td width="100" align="left">{{dataList.MedicalPay}}</td>
+              <td width="100">客服手机</td>
+              <td width="100" align="left">{{dataList.WechatPhonePay}}</td>
+              <td width="100">代金券</td>
+              <td width="100" align="left">{{dataList.CouponPay}}</td>
+              <td width="100">会员卡</td>
+              <td width="100" align="left">{{dataList.MemberPay}}</td>
+            </tr>
+          </table>
 
-        <table border="1" cellspacing="0" style="border-collapse: collapse;text-align: center" width="600px">
-          <caption style="height: 30px;line-height: 30px;font-weight: 700;text-align: left;font-size: 16px">收费明细：</caption>
-          <tr height="30">
-            <th width="100">收费项目</th>
-            <th width="100">总金额</th>
-            <th width="100">医保金额</th>
-            <th width="100">自费金额</th>
-            <th width="100">人次</th>
-          </tr>
-          <tr height="25">
-            <td width="100">挂号费</td>
-            <td width="100">{{dataList.RegisterAmount}}</td>
-            <td width="100">{{dataList.YBRegisterAmount}}</td>
-            <td width="100">{{dataList.ZFRegisterAmount}}</td>
-            <td width="100">{{dataList.RegisterMemberCount}}</td>
-          </tr>
-          <tr height="25">
-            <td width="100">中药费</td>
-            <td width="100">{{dataList.CNDrugAmount}}</td>
-            <td width="100">{{dataList.YBCNDrugAmount}}</td>
-            <td width="100">{{dataList.ZFCNDrugAmount}}</td>
-            <td width="100">{{dataList.CNDrugMemberCount}}</td>
-          </tr>
-          <tr height="25">
-            <td width="100">饮片</td>
-            <td width="100">{{dataList.CNDrugYPAmount}}</td>
-            <td width="100">{{dataList.YBCNDrugYPAmount}}</td>
-            <td width="100">{{dataList.ZFCNDrugYPAmount}}</td>
-            <td width="100">{{dataList.CNDrugYPMemberCount}}</td>
-          </tr>
-          <tr height="25">
-            <td width="100">精品饮片</td>
-            <td width="100">{{dataList.CNDrugJBYPAmount}}</td>
-            <td width="100">{{dataList.YBCNDrugJBYPAmount}}</td>
-            <td width="100">{{dataList.ZFCNDrugJBYPAmount}}</td>
-            <td width="100">{{dataList.CNDrugJBYPMemberCount}}</td>
-          </tr>
-          <tr height="25">
-            <td width="100">饮片3</td>
-            <td width="100">{{dataList.CNDrugYP3Amount}}</td>
-            <td width="100">{{dataList.YBCNDrugYP3Amount}}</td>
-            <td width="100">{{dataList.ZFCNDrugYP3Amount}}</td>
-            <td width="100">{{dataList.CNDrugYP3MemberCount}}</td>
-          </tr>
-          <tr height="25">
-            <td width="100">贵细</td>
-            <td width="100">{{dataList.CNDrugGXAmount}}</td>
-            <td width="100">{{dataList.YBCNDrugGXAmount}}</td>
-            <td width="100">{{dataList.ZFCNDrugGXAmount}}</td>
-            <td width="100">{{dataList.CNDrugGXMemberCount}}</td>
-          </tr>
-          <tr height="25">
-            <td width="100">理疗</td>
-            <td width="100">{{dataList.LLFAmount}}</td>
-            <td width="100">{{dataList.YBLLFAmount}}</td>
-            <td width="100">{{dataList.ZFLLFAmount}}</td>
-            <td width="100">{{dataList.LLFMemberCount}}</td>
-          </tr>
+          <table border="1" cellspacing="0" style="border-collapse: collapse;text-align: center" width="600px">
+            <caption style="height: 30px;line-height: 30px;font-weight: 700;text-align: left;font-size: 16px">收费明细：</caption>
+            <tr height="30">
+              <th width="100">收费项目</th>
+              <th width="100">总金额</th>
+              <th width="100">医保金额</th>
+              <th width="100">自费金额</th>
+              <th width="100">人次</th>
+            </tr>
+            <tr height="25">
+              <td width="100">挂号费</td>
+              <td width="100">{{dataList.RegisterAmount}}</td>
+              <td width="100">{{dataList.YBRegisterAmount}}</td>
+              <td width="100">{{dataList.ZFRegisterAmount}}</td>
+              <td width="100">{{dataList.RegisterMemberCount}}</td>
+            </tr>
+            <tr height="25">
+              <td width="100">中药费</td>
+              <td width="100">{{dataList.CNDrugAmount}}</td>
+              <td width="100">{{dataList.YBCNDrugAmount}}</td>
+              <td width="100">{{dataList.ZFCNDrugAmount}}</td>
+              <td width="100">{{dataList.CNDrugMemberCount}}</td>
+            </tr>
+            <tr height="25">
+              <td width="100">饮片</td>
+              <td width="100">{{dataList.CNDrugYPAmount}}</td>
+              <td width="100">{{dataList.YBCNDrugYPAmount}}</td>
+              <td width="100">{{dataList.ZFCNDrugYPAmount}}</td>
+              <td width="100">{{dataList.CNDrugYPMemberCount}}</td>
+            </tr>
+            <tr height="25">
+              <td width="100">精品饮片</td>
+              <td width="100">{{dataList.CNDrugJBYPAmount}}</td>
+              <td width="100">{{dataList.YBCNDrugJBYPAmount}}</td>
+              <td width="100">{{dataList.ZFCNDrugJBYPAmount}}</td>
+              <td width="100">{{dataList.CNDrugJBYPMemberCount}}</td>
+            </tr>
+            <tr height="25">
+              <td width="100">饮片3</td>
+              <td width="100">{{dataList.CNDrugYP3Amount}}</td>
+              <td width="100">{{dataList.YBCNDrugYP3Amount}}</td>
+              <td width="100">{{dataList.ZFCNDrugYP3Amount}}</td>
+              <td width="100">{{dataList.CNDrugYP3MemberCount}}</td>
+            </tr>
+            <tr height="25">
+              <td width="100">贵细</td>
+              <td width="100">{{dataList.CNDrugGXAmount}}</td>
+              <td width="100">{{dataList.YBCNDrugGXAmount}}</td>
+              <td width="100">{{dataList.ZFCNDrugGXAmount}}</td>
+              <td width="100">{{dataList.CNDrugGXMemberCount}}</td>
+            </tr>
+            <tr height="25">
+              <td width="100">理疗</td>
+              <td width="100">{{dataList.LLFAmount}}</td>
+              <td width="100">{{dataList.YBLLFAmount}}</td>
+              <td width="100">{{dataList.ZFLLFAmount}}</td>
+              <td width="100">{{dataList.LLFMemberCount}}</td>
+            </tr>
 
-          <tr height="25">
-            <td width="100">西药费</td>
-            <td width="100">{{dataList.ENDrugAmount}}</td>
-            <td width="100">{{dataList.YBENDrugAmount}}</td>
-            <td width="100">{{dataList.ZFENDrugAmount}}</td>
-            <td width="100">{{dataList.ENDrugMemberCount}}</td>
-          </tr>
-          <tr height="25">
-            <td width="100">加工费</td>
-            <td width="100">{{dataList.WorkAmount}}</td>
-            <td width="100">{{dataList.YBWorkAmount}}</td>
-            <td width="100">{{dataList.ZFWorkAmount}}</td>
-            <td width="100">{{dataList.WorkMemberCount}}</td>
-          </tr>
-          <tr height="25">
-            <td width="100">代煎</td>
-            <td width="100">{{dataList.DJAmount}}</td>
-            <td width="100">{{dataList.YBDJAmount}}</td>
-            <td width="100">{{dataList.ZFDJAmount}}</td>
-            <td width="100">{{dataList.DJMemberCount}}</td>
-          </tr>
-          <tr height="25">
-            <td width="100">快递</td>
-            <td width="100">{{dataList.ExpressAmount}}</td>
-            <td width="100">{{dataList.YBExpressAmount}}</td>
-            <td width="100">{{dataList.ZFExpressAmount}}</td>
-            <td width="100">{{dataList.ExpressMemberCount}}</td>
-          </tr>
-          <tr height="25">
-            <td width="100">产品</td>
-            <td width="100">{{dataList.ProductAmount}}</td>
-            <td width="100">{{dataList.YBProductAmount}}</td>
-            <td width="100">{{dataList.ZFProductAmount}}</td>
-            <td width="100">{{dataList.ProductMemberCount}}</td>
-          </tr>
-          <tr height="25">
-            <td width="100" bgcolor="#f1f2f7">理疗科（本部）</td>
-            <td width="100" v-if="!isEditing">{{dataList.LLAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.YBLLAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.ZFLLAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.LLMemberCount}}</td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="LLAmount" :rules="numRules">
-                <el-input v-model.number="dataList.LLAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="YBLLAmount" :rules="numRules">
-                <el-input v-model.number="dataList.YBLLAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="ZFLLAmount" :rules="numRules">
-                <el-input v-model.number="dataList.ZFLLAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="LLMemberCount" :rules="numRules">
-                <el-input v-model.number="dataList.LLMemberCount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-          </tr>
-          <tr height="25">
-            <td width="100" bgcolor="#f1f2f7">小儿推拿（本部）</td>
-            <td width="100" v-if="!isEditing">{{dataList.ChildAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.YBChildAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.ZFChildAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.ChildMemberCount}}</td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="ChildAmount" :rules="numRules">
-                <el-input v-model.number="dataList.ChildAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="YBChildAmount" :rules="numRules">
-                <el-input v-model.number="dataList.YBChildAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="ZFChildAmount" :rules="numRules">
-                <el-input v-model.number="dataList.ZFChildAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="ChildMemberCount" :rules="numRules">
-                <el-input v-model.number="dataList.ChildMemberCount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-          </tr>
-          <tr height="25">
-            <td width="100" bgcolor="#f1f2f7">美容科（本部）</td>
-            <td width="100" v-if="!isEditing">{{dataList.CosmetologyAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.YBCosmetologyAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.ZFCosmetologyAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.CosmetologyMemberCount}}</td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="CosmetologyAmount" :rules="numRules">
-                <el-input v-model.number="dataList.CosmetologyAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="YBCosmetologyAmount" :rules="numRules">
-                <el-input v-model.number="dataList.YBCosmetologyAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="ZFCosmetologyAmount" :rules="numRules">
-                <el-input v-model.number="dataList.ZFCosmetologyAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="CosmetologyMemberCount" :rules="numRules">
-                <el-input v-model.number="dataList.CosmetologyMemberCount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-          </tr>
-          <tr height="25">
-            <td width="100" bgcolor="#f1f2f7">康复科（陈国正）</td>
-            <td width="100" v-if="!isEditing">{{dataList.Recovered1Amount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.YBRecovered1Amount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.ZFRecovered1Amount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.Recovered1MemberCount}}</td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="Recovered1Amount" :rules="numRules">
-                <el-input v-model.number="dataList.Recovered1Amount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="YBRecovered1Amount" :rules="numRules">
-                <el-input v-model.number="dataList.YBRecovered1Amount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="ZFRecovered1Amount" :rules="numRules">
-                <el-input v-model.number="dataList.ZFRecovered1Amount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="Recovered1MemberCount" :rules="numRules">
-                <el-input v-model.number="dataList.Recovered1MemberCount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-          </tr>
-          <tr height="25">
-            <td width="100" bgcolor="#f1f2f7">康复科1（毛泰）</td>
-            <td width="100" v-if="!isEditing">{{dataList.Recovered2Amount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.YBRecovered2Amount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.ZFRecovered2Amount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.Recovered2MemberCount}}</td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="Recovered2Amount" :rules="numRules">
-                <el-input v-model.number="dataList.Recovered2Amount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="YBRecovered2Amount" :rules="numRules">
-                <el-input v-model.number="dataList.YBRecovered2Amount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="ZFRecovered2Amount" :rules="numRules">
-                <el-input v-model.number="dataList.ZFRecovered2Amount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="Recovered2MemberCount" :rules="numRules">
-                <el-input v-model.number="dataList.Recovered2MemberCount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-          </tr>
-          <tr height="25">
-            <td width="100" bgcolor="#f1f2f7">线上</td>
-            <td width="100" v-if="!isEditing">{{dataList.OnlineAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.YBOnlineAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.ZFOnlineAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.OnlineMemberCount}}</td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="OnlineAmount" :rules="numRules">
-                <el-input v-model.number="dataList.OnlineAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="YBOnlineAmount" :rules="numRules">
-                <el-input v-model.number="dataList.YBOnlineAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="ZFOnlineAmount" :rules="numRules">
-                <el-input v-model.number="dataList.ZFOnlineAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="OnlineMemberCount" :rules="numRules">
-                <el-input v-model.number="dataList.OnlineMemberCount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-          </tr>
-          <tr height="25">
-            <td width="100" bgcolor="#f1f2f7">美团</td>
-            <td width="100" v-if="!isEditing">{{dataList.MeiTuanAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.YBMeiTuanAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.ZFMeiTuanAmount}}</td>
-            <td width="100" v-if="!isEditing">{{dataList.MeiTuanMemberCount}}</td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="MeiTuanAmount" :rules="numRules">
-                <el-input v-model.number="dataList.MeiTuanAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="YBMeiTuanAmount" :rules="numRules">
-                <el-input v-model.number="dataList.YBMeiTuanAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="ZFMeiTuanAmount" :rules="numRules">
-                <el-input v-model.number="dataList.ZFMeiTuanAmount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-            <td width="100" v-if="isEditing" align="center">
-              <el-form-item prop="MeiTuanMemberCount" :rules="numRules">
-                <el-input v-model.number="dataList.MeiTuanMemberCount" style="width: 100px" size="mini"></el-input>
-              </el-form-item>
-            </td>
-          </tr>
-        </table>
+            <tr height="25">
+              <td width="100">西药费</td>
+              <td width="100">{{dataList.ENDrugAmount}}</td>
+              <td width="100">{{dataList.YBENDrugAmount}}</td>
+              <td width="100">{{dataList.ZFENDrugAmount}}</td>
+              <td width="100">{{dataList.ENDrugMemberCount}}</td>
+            </tr>
+            <tr height="25">
+              <td width="100">加工费</td>
+              <td width="100">{{dataList.WorkAmount}}</td>
+              <td width="100">{{dataList.YBWorkAmount}}</td>
+              <td width="100">{{dataList.ZFWorkAmount}}</td>
+              <td width="100">{{dataList.WorkMemberCount}}</td>
+            </tr>
+            <tr height="25">
+              <td width="100">代煎</td>
+              <td width="100">{{dataList.DJAmount}}</td>
+              <td width="100">{{dataList.YBDJAmount}}</td>
+              <td width="100">{{dataList.ZFDJAmount}}</td>
+              <td width="100">{{dataList.DJMemberCount}}</td>
+            </tr>
+            <tr height="25">
+              <td width="100">快递</td>
+              <td width="100">{{dataList.ExpressAmount}}</td>
+              <td width="100">{{dataList.YBExpressAmount}}</td>
+              <td width="100">{{dataList.ZFExpressAmount}}</td>
+              <td width="100">{{dataList.ExpressMemberCount}}</td>
+            </tr>
+            <tr height="25">
+              <td width="100">产品</td>
+              <td width="100">{{dataList.ProductAmount}}</td>
+              <td width="100">{{dataList.YBProductAmount}}</td>
+              <td width="100">{{dataList.ZFProductAmount}}</td>
+              <td width="100">{{dataList.ProductMemberCount}}</td>
+            </tr>
+            <tr height="25">
+              <td width="100" bgcolor="#f1f2f7">理疗科（本部）</td>
+              <td width="100" v-if="!isEditing">{{dataList.LLAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.YBLLAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.ZFLLAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.LLMemberCount}}</td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="LLAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.LLAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="YBLLAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.YBLLAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="ZFLLAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.ZFLLAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="LLMemberCount" :rules="numRules">
+                  <el-input v-model.number="dataList.LLMemberCount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+            </tr>
+            <tr height="25">
+              <td width="100" bgcolor="#f1f2f7">小儿推拿（本部）</td>
+              <td width="100" v-if="!isEditing">{{dataList.ChildAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.YBChildAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.ZFChildAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.ChildMemberCount}}</td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="ChildAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.ChildAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="YBChildAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.YBChildAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="ZFChildAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.ZFChildAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="ChildMemberCount" :rules="numRules">
+                  <el-input v-model.number="dataList.ChildMemberCount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+            </tr>
+            <tr height="25">
+              <td width="100" bgcolor="#f1f2f7">美容科（本部）</td>
+              <td width="100" v-if="!isEditing">{{dataList.CosmetologyAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.YBCosmetologyAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.ZFCosmetologyAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.CosmetologyMemberCount}}</td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="CosmetologyAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.CosmetologyAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="YBCosmetologyAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.YBCosmetologyAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="ZFCosmetologyAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.ZFCosmetologyAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="CosmetologyMemberCount" :rules="numRules">
+                  <el-input v-model.number="dataList.CosmetologyMemberCount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+            </tr>
+            <tr height="25">
+              <td width="100" bgcolor="#f1f2f7">康复科（陈国正）</td>
+              <td width="100" v-if="!isEditing">{{dataList.Recovered1Amount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.YBRecovered1Amount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.ZFRecovered1Amount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.Recovered1MemberCount}}</td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="Recovered1Amount" :rules="numRules">
+                  <el-input v-model.number="dataList.Recovered1Amount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="YBRecovered1Amount" :rules="numRules">
+                  <el-input v-model.number="dataList.YBRecovered1Amount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="ZFRecovered1Amount" :rules="numRules">
+                  <el-input v-model.number="dataList.ZFRecovered1Amount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="Recovered1MemberCount" :rules="numRules">
+                  <el-input v-model.number="dataList.Recovered1MemberCount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+            </tr>
+            <tr height="25">
+              <td width="100" bgcolor="#f1f2f7">康复科1（毛泰）</td>
+              <td width="100" v-if="!isEditing">{{dataList.Recovered2Amount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.YBRecovered2Amount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.ZFRecovered2Amount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.Recovered2MemberCount}}</td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="Recovered2Amount" :rules="numRules">
+                  <el-input v-model.number="dataList.Recovered2Amount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="YBRecovered2Amount" :rules="numRules">
+                  <el-input v-model.number="dataList.YBRecovered2Amount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="ZFRecovered2Amount" :rules="numRules">
+                  <el-input v-model.number="dataList.ZFRecovered2Amount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="Recovered2MemberCount" :rules="numRules">
+                  <el-input v-model.number="dataList.Recovered2MemberCount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+            </tr>
+            <tr height="25">
+              <td width="100" bgcolor="#f1f2f7">线上</td>
+              <td width="100" v-if="!isEditing">{{dataList.OnlineAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.YBOnlineAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.ZFOnlineAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.OnlineMemberCount}}</td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="OnlineAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.OnlineAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="YBOnlineAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.YBOnlineAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="ZFOnlineAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.ZFOnlineAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="OnlineMemberCount" :rules="numRules">
+                  <el-input v-model.number="dataList.OnlineMemberCount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+            </tr>
+            <tr height="25">
+              <td width="100" bgcolor="#f1f2f7">美团</td>
+              <td width="100" v-if="!isEditing">{{dataList.MeiTuanAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.YBMeiTuanAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.ZFMeiTuanAmount}}</td>
+              <td width="100" v-if="!isEditing">{{dataList.MeiTuanMemberCount}}</td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="MeiTuanAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.MeiTuanAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="YBMeiTuanAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.YBMeiTuanAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="ZFMeiTuanAmount" :rules="numRules">
+                  <el-input v-model.number="dataList.ZFMeiTuanAmount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+              <td width="100" v-if="isEditing" align="center">
+                <el-form-item prop="MeiTuanMemberCount" :rules="numRules">
+                  <el-input v-model.number="dataList.MeiTuanMemberCount" style="width: 100px" size="mini"></el-input>
+                </el-form-item>
+              </td>
+            </tr>
+          </table>
+        </div>
       </el-form>
     </el-aside>
 
@@ -360,8 +363,14 @@
         <el-col :span="24">
           <div ref="container" style="width: 100%;min-width:650px; max-width: 750px;height: 400px;"></div>
         </el-col>
-        <el-col :span="24">
+        <el-col :span="6" :offset="18">
           <el-button size="mini" @click="editSubmit()">确认修改</el-button>
+        </el-col>
+        <el-col :span="24">
+          <div style="height: 200px"></div>
+        </el-col>
+        <el-col :span="24">
+          <el-button size="mini" @click="chenxiPrint()">打印当前报表</el-button>
         </el-col>
       </el-row>
     </el-main>
@@ -381,6 +390,7 @@ export default {
       chenxiHeight: document.documentElement['clientHeight'] - 303, // 心累，不要动
       addOrUpdateVisible: false,
       dataListLoading: false, // 加载
+      timeShow: false,
 
       isEditing: false, // 编辑
       // 输入验证
@@ -601,7 +611,27 @@ export default {
           })
         }
       })
-    }
+    },
+
+    // 打印功能
+    chenxiPrint () {
+      this.timeShow = true
+      this.$nextTick(() => {
+        var printHTML = document.getElementById("dayReportForm").innerHTML // 获取要打印的内容
+        var page = window.open('', '_blank') // 打开一个新窗口，用于打印
+        page.document.write(printHTML) // 写入打印页面的内容
+        page.print() // 打印
+        var userAgent = navigator.userAgent
+        if ((userAgent.indexOf('compatible') > -1 && userAgent.indexOf('MSIE') > -1) || (userAgent.indexOf('Edge') > -1) || (userAgent.indexOf('Trident') > -1 && userAgent.indexOf('rv:11.0') > -1)) {
+          // IE浏览器
+          page.document.execCommand('print')
+        } else {
+          console.log('not IE')
+        }
+        this.timeShow = false
+        page.close() // 关闭打印窗口
+      })
+    },
   }
 }
 </script>

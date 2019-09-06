@@ -110,12 +110,12 @@ export default {
           PageSize: this.pageSize,
           IsPaging: this.IsPaging,
           StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店Id（必须）
-          Code: '', // 挂号单
+          Code: this.fatherDataForm.Code, // 挂号单
           UserName: this.fatherDataForm.PatientName, // 患者姓名
           MobilePhone: this.fatherDataForm.PatientPhone, // 患者电话
           AccountId: this.fatherDataForm.AccountId, // 账户Id,医生Id
-          WrokFrom: '', // 开始时间
-          WrokTo: '', // 结束时间
+          WrokFrom: this.fatherDataForm.StartDate, // 开始时间
+          WrokTo: this.fatherDataForm.EndDate, // 结束时间
           Status: '3,5,6', // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部
           OrderType: '1', // 40表示协定方
           CategoryOne: '-2'

@@ -328,7 +328,7 @@
             <!--{{$route.query.DoctorId}}{{$route.params.doctorId}}-->
             <div style="width: 540px; overflow: hidden;text-align: center">
               总金额：<span style="display: inline-block;color: #e4393c;font-weight: 700">￥
-              {{(Number(allMoney) + dataForm.WorkAmount + dataForm.ConsultationAmount).toFixed(2)}} =</span>
+              {{(Number(allMoney) + dataForm.WorkAmount + dataForm.RegisterAmount).toFixed(2)}} =</span>
               <!--1-->
               <el-tooltip placement="top">
                 <div slot="content">当前药费</div>
@@ -344,9 +344,10 @@
               <!--3-->
               <el-tooltip placement="top">
                 <div slot="content">医生填写挂号费</div>
-                <span v-if="$route.query.MobilePhone === '0' || $route.params.row !== undefined">
-                  + <el-input-number v-model="dataForm.ConsultationAmount"
-                        :min="0" :max="1000" style="width: 100px" size="mini"></el-input-number>
+                <!--<span v-if="$route.query.MobilePhone === '0' || $route.params.row !== undefined">-->
+                <span>
+                  + <el-input-number v-model="dataForm.RegisterAmount" :disabled="dataForm.RegisterStatus === 2 ? true : false"
+                        :min="0" :max="1000" size="mini" style="width: 100px"></el-input-number>
                 </span>
               </el-tooltip>
 
@@ -414,7 +415,10 @@ export default {
           recipelItems: this.leftTableData, // 处方明细
           agent: this.Total, // 剂
           uses: [this.dataForm.DrugRate_0, this.dataForm.DrugRate_1, this.dataForm.DrugRate_2, this.dataForm.DrugRate_3], // 用法
-          yizhu: this.dataForm.DoctorAdvice}
+          yizhu: this.dataForm.DoctorAdvice,
+          RegisterAmount: this.dataForm.RegisterAmount,
+          RegisterStatus: this.dataForm.RegisterStatus // 保存挂号费状态
+      }
         this.$store.commit('setRecipelSaveFiles', arr)
         next()
       }).catch(() => {
@@ -468,6 +472,8 @@ export default {
                 vm.dataForm.DrugRate_3 = sessionRecipel[index].uses[3]
                 vm.dataForm.DoctorAdvice = sessionRecipel[index].yizhu
 
+                vm.dataForm.RegisterStatus = sessionRecipel[index].RegisterStatus
+                vm.dataForm.RegisterAmount = sessionRecipel[index].RegisterAmount
                 vm.$store.commit('delRecipelSaveFiles', index)
                 return false
               }
@@ -853,7 +859,8 @@ export default {
         DrugRate_3: '饭后1小时', // 饭前服、饭后服、睡前服...
         DoctorAdvice: [], // 医嘱
         RegisterAmount: 0, // 挂号费
-        ConsultationAmount: 0, // 诊疗费
+        RegisterStatus: 1, // 1未支付，2已支付
+        // ConsultationAmount: 0, // 诊疗费
         WorkAmount: 0 // 加工费 （只有一级药态为制膏、制丸的情况下才有）
       },
       dataRule: {
@@ -958,8 +965,7 @@ export default {
       this.dataForm.Address = row.Address
       this.dataForm.UserId = row.Id
       this.dataForm.Code = row.Code
-      // this.dataForm.RegisterAmount = 0 // 这两个没用，就只是提交的时候直接提交
-      // this.dataForm.ConsultationAmount = 0
+      // this.dataForm.RegisterAmount = 0 // * * * * * * * * * * * * * * * * * * * * * * * * * * *
 
       // 调用历史处方
       if (this.$store.getters.getRecipelSaveFiles.some(item => {
@@ -995,6 +1001,8 @@ export default {
               this.dataForm.DrugRate_3 = sessionRecipel[index].uses[3]
               this.dataForm.DoctorAdvice = sessionRecipel[index].yizhu
 
+              this.dataForm.RegisterStatus = sessionRecipel[index].RegisterStatus
+              this.dataForm.RegisterAmount = sessionRecipel[index].RegisterAmount
               this.$store.commit('delRecipelSaveFiles', index)
               return false
             }
@@ -1288,7 +1296,13 @@ export default {
             // this.dataForm.DrugRate_2 = row.split('，')[0]
             // this.dataForm.DrugRate_3 = row.split('，')[0]
             this.dataForm.DoctorAdvice = row.DoctorAdvice === null ?  ['1'] : row.DoctorAdvice.split('，') // ?
-            return false // 如果是历史开方记录调用，那调用完毕后，就直接中断后面的那些没必要的程序
+
+            this.dataForm.RegisterAmount = row.RegisterAmount
+            if (this.$route.params.registerFormId !== undefined) {
+              this.dataForm.RegisterStatus = row.RegisterStatus // 1未支付，2已支付 （来源收银时：那边记录的的啥状态就用啥状态）
+            } else {
+              this.dataForm.RegisterStatus = 1 // 1未支付，2已支付 （来源于再次调用历史时，肯定要全改为1未支付）
+            }
           } else {
             // 如果是直接开方、就诊进来的，就执行这个分支，必须要要请求一次药材库存初始化页面
             this.getStoreCategorytypeStock() // 初始化请求页面右上角药材列表
@@ -1299,7 +1313,7 @@ export default {
 
 
       // ==> 如果是直接开方进来的，那就在这终止程序，传递的电话就是0了，还请求屁的患者信息，因为请求结果肯定是[]！
-      if (this.$route.query.MobilePhone === '0') {
+      if (this.$route.query.MobilePhone === '0' || this.$route.params.row !== undefined) {
         return false
       }
       // ==> 如果是就诊进来的，那就利用患者信息和医生信息
@@ -1331,11 +1345,33 @@ export default {
           this.dataForm.UserId = result.data[0].Id
           this.dataForm.Code = result.data[0].Code
           this.dataForm.RegisterAmount = 0 // 这两个没用，就只是提交的时候直接提交
-          this.dataForm.ConsultationAmount = 0
         } else {
           this.$message.error(result.message)
         }
         this.dataListLoading = false
+      })
+
+      var params = {
+        PageIndex: this.pageIndex,
+        PageSize: this.pageSize,
+        IsPaging: this.IsPaging,
+        StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店Id（必须）
+        Code: '', // 挂号单编号？？？？？？？？？？
+        Id: this.$route.query.registerFormId, // 挂号单Id？？？？？？？？？？
+        UserName: '', // 患者姓名
+        MobilePhone: this.$route.query.MobilePhone, // 患者电话
+        AccountId: this.$route.query.DoctorId, // 账户Id,医生Id
+        WrokFrom: '', // 开始时间
+        WrokTo: '', // 结束时间
+        Status: '2', // -1作废1初始 2只支付挂号费 待就诊（候诊）3已就诊-待收费 5已收费6已发货  -2全部
+        OrderType: '1' // 40表示协定方
+      }
+      API.register.getRegisterList(params).then(result => { // 获取就诊患者的挂号状态
+        if (result.code === '0000') {
+          console.log(result.data)
+          this.dataForm.RegisterAmount = result.data[0].RegisterAmount
+          this.dataForm.RegisterStatus = result.data[0].RegisterStatus // 1未支付，2已支付 （这的正常全是 2已支付）
+        }
       })
     },
 
@@ -1367,7 +1403,7 @@ export default {
         if (result.code === '0000' && result.data.length > 0) {
           this.rightUlData = result.data
           this.totalPage = result.total
-          console.log(result.data)
+          // console.log(result.data)
         } else {
           this.rightUlData = []
           this.totalPage = 0
@@ -1635,7 +1671,8 @@ export default {
             var paramsEdit = {
               id: this.$route.query.registerFormId, //
               DiagnosisType: this.dataForm.DiagnosisType, // 出诊、复诊
-              RegisterStatus: '2', // 已支付（在编辑 追加的情况下，理论上是肯定收费了就不需要传递这个字段了的，但是后端有其他考虑，所以这儿还需要把这个字段传递到后端）
+              RegisterStatus: this.dataForm.RegisterStatus, // 正常就诊 都是2已支付
+              RegisterAmount: this.dataForm.RegisterAmount, // 挂号费
 
               Remark: '', // 备注
               FamilyIllness: '', // 家族史????
@@ -1675,8 +1712,8 @@ export default {
               OrderType: '1',
               DiagnosisType: this.dataForm.DiagnosisType,
 
-              RegisterStatus: '1', // 未支付
-              RegisterAmount: this.dataForm.ConsultationAmount, // 挂号费
+              RegisterStatus: this.dataForm.RegisterStatus, // 直接就诊都是 1未支付
+              RegisterAmount: this.dataForm.RegisterAmount, // 挂号费
               ConsultationAmount: 0,
               PaymentWay: '',
               Remark: '',
@@ -1716,8 +1753,8 @@ export default {
               OrderType: '1',
               DiagnosisType: this.dataForm.DiagnosisType,
 
-              RegisterStatus: '1', // 未支付
-              RegisterAmount: this.dataForm.ConsultationAmount, // 挂号费
+              RegisterStatus: this.dataForm.RegisterStatus, // 再次调用历史处方都是 1未支付
+              RegisterAmount: this.dataForm.RegisterAmount, // 挂号费 （并且存有n年前的挂号费）
               ConsultationAmount: 0,
               PaymentWay: '',
               Remark: '',
@@ -1755,7 +1792,8 @@ export default {
               DiagnosisType: this.dataForm.DiagnosisType, // 出诊、复诊（好像进来时固定的2复诊）
 
               // 挂号费就这问题最大，收费了来这，没收费来着，都变成已收费，，，标记一下!!!
-              RegisterStatus: '2', // 2已支付,1未支付??? 开方页挂号费逻辑重新写
+              RegisterStatus: this.dataForm.RegisterStatus, // 收银那的：收银记录的啥状态就用啥状态
+              RegisterAmount: this.dataForm.RegisterAmount, // 挂号费
 
               Remark: '', // 备注??????
               FamilyIllness: '', // 家族史????

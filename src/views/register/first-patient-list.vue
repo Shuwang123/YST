@@ -54,7 +54,7 @@
       :page-sizes="[10, 20, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
-      layout="prev, pager, next, jumper, sizes, total" background>
+      layout="prev, pager, next, jumper, sizes, total" :pager-count="5" background>
     </el-pagination>
   </div>
   <div v-else-if="!show3">

@@ -26,6 +26,11 @@
                 <el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="患者/患者电话"
                           @clear="comTabFunction()" clearable style="width: 119px"></el-input>
               </el-form-item>
+
+              <el-form-item>
+                <el-input v-model="dataForm.Code" placeholder="请输入单据编号"
+                          @clear="comTabFunction()" clearable style="width: 119px"></el-input>
+              </el-form-item>
               <el-form-item>
                 <el-date-picker
                   size="mini"
@@ -123,6 +128,7 @@ export default {
         patientNameOrMobilePhone: '', // 合一
         patientName: '', // 患者
         MobilePhone: '', // 电话 这几个信息只是父组件传递给子组件的查询字段而已
+        Code: '',
         StartDate: '',
         EndDate: ''
       },
@@ -178,7 +184,7 @@ export default {
     }
   },
   // create() {
-  //   this.choseCurrentDay()
+  //   this.choseCurrentDy()
   // },
   methods: {
     choseCurrentDay () { // 默选当天的时间

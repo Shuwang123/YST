@@ -42,7 +42,7 @@
             </el-select>
           </el-form-item>
           <el-form-item label="介绍人" prop="UsersIntroducePeople">
-            <el-input v-model="dataForm.UsersIntroducePeople" placeholder="请输入介绍人" style="width: 160px"></el-input>
+            <el-input v-model="dataForm.UsersIntroducePeople" disabled placeholder="请输入介绍人" style="width: 160px"></el-input>
           </el-form-item>
 
           <el-form-item label="病例史" prop="AllergyHistory">
