@@ -343,7 +343,7 @@
               </el-tooltip>
               <!--3-->
               <el-tooltip placement="top">
-                <div slot="content">医生填写挂号费</div>
+                <div slot="content">医生可填写挂号费<br/><br/>挂号费已支付时禁用</div>
                 <!--<span v-if="$route.query.MobilePhone === '0' || $route.params.row !== undefined">-->
                 <span>
                   + <el-input-number v-model="dataForm.RegisterAmount" :disabled="dataForm.RegisterStatus === 2 ? true : false"

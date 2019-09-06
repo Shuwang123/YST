@@ -629,7 +629,7 @@ export default {
   }
   .el-form-item {
     position: relative;
-    top: 6px;
+    top: 3px;
   }
 }
 
