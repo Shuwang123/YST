@@ -14,20 +14,21 @@
                 'must_5': true,
                 'isTrigger': true
               }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
+              <el-form-item>
+                <el-select v-model="dataForm.CategoryId" placeholder="药品种类" @change="comTabFunction()"
+                           clearable @clear="comTabFunction()" style="width: 110px" size="mini">
+                  <el-option v-for="item in drugsCategoryList" :key="item.id" :label="item.text" :value="item.id"></el-option>
+                </el-select>
+              </el-form-item>
 
-              <!--<el-form-item>-->
-                <!--<el-select v-model="dataForm.AccountId" placeholder="医生"-->
-                           <!--@change="comTabunction()" @clear="comTabunction()" clearable style="width: 100px">-->
-                  <!--<el-option v-for="item in storeDoctorArr" :key="item.Id"-->
-                             <!--:label="`${item.Id} ${item.NickName}`" :value="item.Id">-->
-                  <!--</el-option>-->
-                <!--</el-select>-->
-              <!--</el-form-item>-->
-              <!--<el-form-item>-->
-                <!--<el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="患者/患者电话"-->
-                          <!--@clear="comTabunction()" clearable style="width: 119px"></el-input>-->
-              <!--</el-form-item>-->
-
+              <el-form-item>
+                <el-input v-model="dataForm.ProductCodeOrBarCode" placeholder="商品编码"
+                          clearable @clear="comTabFunction()" style="width: 110px" size="mini"></el-input>
+              </el-form-item>
+              <el-form-item>
+                <el-input v-model="dataForm.ProductName" placeholder="商品名字"
+                          clearable @clear="comTabFunction()" style="width: 110px" size="mini"></el-input>
+              </el-form-item>
               <el-form-item>
                 <el-date-picker
                   size="mini"
@@ -44,8 +45,6 @@
               </el-form-item>
               <el-form-item>
                 <el-button @click="comTabFunction()" size="mini">查询</el-button>
-                <el-button v-show="isVisible[0].child" @click="$refs.firstTab.isEditing = !$refs.firstTab.isEditing"
-                           size="mini" :disabled="buttonIsDisabled">编辑日报表</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -53,21 +52,9 @@
       </div>
 
       <el-tab-pane label="" name="first" style="margin-top: 1px">
-        <span slot="label"><i class="el-icon-document"></i> 日期报表</span>
+        <span slot="label"><i class="el-icon-document"></i> 药品使用统计</span>
         <transition name="chenxi">
           <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
-        </transition>
-      </el-tab-pane>
-      <el-tab-pane label="" name="second">
-        <span slot="label"><i class=""></i> 医生报表</span>
-        <transition name="chenxi">
-          <second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>
-        </transition>
-      </el-tab-pane>
-      <el-tab-pane label="" name="three">
-        <span slot="label"><i class=""></i> ---</span>
-        <transition name="chenxi">
-          <three-tab v-if="isVisible[2].child" ref="threeTab" :fatherDataForm="dataForm"></three-tab>
         </transition>
       </el-tab-pane>
 
@@ -77,38 +64,29 @@
 <script type="text/ecmascript-6">
 import API from '@/api'
 import FirstTab from './first-tab'
-import SecondTab from './second-tab'
-import ThreeTab from './three-tab'
 import ComStore from '../common/com-store'
 
 export default {
   components: {
     ComStore,
-    FirstTab,
-    SecondTab,
-    ThreeTab
+    FirstTab
   },
   data () {
     return {
       activeName: 'first',
-      drugsCategoryList: [],
-      dataForm: { // 三个子组件共有的查询条件：门店，商品编码、商品名称、商品拼音
-        AccountId: '', // 医生Id
-        patientNameOrMobilePhone: '', // 合一
-        patientName: '', // 患者
-        MobilePhone: '', // 电话 这几个信息只是父组件传递给子组件的查询字段而已
+      drugsCategoryList: [], // 先请求药品种类
 
+      dataForm: {
+        CategoryId: '',
+        ProductCodeOrBarCode: '',
+        ProductName: '',
         StartDate: '',
         EndDate: ''
       },
       isVisible: [
-        {child: true},
-        {child: false},
-        {child: false}
+        {child: true}
       ],
       valueTime: [],
-      timeGap: undefined,
-      buttonIsDisabled: true,
       pickerOptions: { // 报表时间范围查询，快速选择
         shortcuts: [{
           text: '今天',
@@ -140,21 +118,10 @@ export default {
         disabledDate (time) {
           return time.getTime() > Date.now() + 3600 * 24 * 0 * 1000
         }
-      },
-      storeDoctorArr: []
+      }
     }
   },
   watch: {
-    'dataForm.patientNameOrMobilePhone': function (val, oldval) {
-      var reg = /\d{11}/ig
-      if (reg.test(val) === true && val.length === 11) { // 验证通过表示 输入的 手机号
-        this.dataForm.patientName = ''
-        this.dataForm.MobilePhone = val
-      } else {
-        this.dataForm.patientName = val
-        this.dataForm.MobilePhone = ''
-      }
-    },
     valueTime (arr, oldarr) {
       this.dataForm.StartDate = arr[0]
       this.dataForm.EndDate = arr[1]
@@ -162,9 +129,20 @@ export default {
   },
   created () {
     this.choseCurrentDay()
+    this.getDrugsCategory()
   },
   methods: {
-    choseCurrentDay () { // 默选当天的时间
+    // 先请求药品种类提供给下拉列表
+    getDrugsCategory () {
+      API.drugs.getDrugsCategory().then(result => {
+        if (result.code === '0000') {
+          this.drugsCategoryList = result.data.slice(1)
+        }
+      })
+    },
+
+    // 默选当天的时间
+    choseCurrentDay () {
       function myFormat (s) {
         var y = s.getFullYear()
         var m = s.getMonth() + 1 < 10 ? '0' + (s.getMonth() + 1) : s.getMonth() + 1
@@ -175,72 +153,18 @@ export default {
       var nextDate = myFormat(new Date(new Date().getTime() + 3600 * 24 * 1000 * 0))
       this.valueTime = [curDate, nextDate]
     },
+
     changeStoreData (choseStoreId, isMultiple) { // 任何账号唯一的归属门店
       if (isMultiple === false) {
-        this.dataForm.AccountId = '' // 门店切换时，选择的医生筛选条件当然也清空
-        this.dataForm.patientNameOrMobilePhone = ''
         this.choseCurrentDay()
-        this.getStoreAllDoctor() // 门店切换时，获取对应门店下所有医生
         this.comTabFunction()
       }
     },
     comTabFunction () {
-      // 不管啥时候，先判断当前时期是否只相差一天（要判断就先要计算当前的两个时间戳相隔的天数）
-      let s1 = new Date(this.dataForm.StartDate)
-      let s2 = new Date(this.dataForm.EndDate)
-      let runTime = parseInt((s2.getTime() - s1.getTime()) / 1000)
-      let year = Math.floor(runTime / 86400 / 365)
-      runTime = runTime % (86400 * 365)
-      let month = Math.floor(runTime / 86400 / 30)
-      runTime = runTime % (86400 * 30)
-      let day = Math.floor(runTime / 86400)
-      runTime = runTime % 86400
-      let hour = Math.floor(runTime / 3600)
-      runTime = runTime % 3600
-      let minute = Math.floor(runTime / 60)
-      runTime = runTime % 60
-      let second = runTime
-      // console.log(year + ',' + month + ',' + day + ',' + hour + ',' + minute + ',' + second)
-      this.timeGap = day
-      if (this.timeGap === 0 && this.isVisible[0].child) {
-        this.buttonIsDisabled = false
-      } else {
-        this.buttonIsDisabled = true
-      }
-      // console.log(this.buttonIsDisabled, this.timeGap)
-
       // 后刷新页面
       this.$nextTick(() => { // 等待watch那计算完毕才执行查询
         if (this.isVisible[0].child === true) {
           this.$refs.firstTab.getDataList()
-        } else if (this.isVisible[1].child === true) {
-          this.$refs.secondTab.getDataList()
-        } else if (this.isVisible[2].child === true) {
-          this.$refs.threeTab.getDataList()
-        }
-      })
-    },
-    // 当门店改变时，获取门店下所有医生（只是给表头的查询下拉option赋初始值而已）
-    getStoreAllDoctor () { // 给 option 的
-      var params = {
-        PageIndex: 1,
-        PageSize: 10000,
-        IsPaging: true,
-        id: '',
-        userName: '',
-        nickName: '',
-        roleId: this.$store.getters.getAllDoctorIdArr.join(),
-        canViewStores: this.$store.getters.getAccountCurrentHandleStore // 门店ID// storeId: this.dataForm.StoreId
-      }
-      API.adminUser.adminUserList(params).then(response => {
-        if (response.code === '0000') {
-          if (response.data) {
-            this.storeDoctorArr = response.data.map(item => {
-              return {Id: item.Id, NickName: item.NickName}
-            })
-          }
-        } else {
-          this.$message.error(response.message)
         }
       })
     },
@@ -250,16 +174,6 @@ export default {
         case 'first':
           this.isVisible = this.isVisible.map((item, index) => {
             return index === 0 ? {child: true} : {child: false}
-          })
-          break
-        case 'second':
-          this.isVisible = this.isVisible.map((item, index) => {
-            return index === 1 ? {child: true} : {child: false}
-          })
-          break
-        case 'three':
-          this.isVisible = this.isVisible.map((item, index) => {
-            return index === 2 ? {child: true} : {child: false}
           })
           break
       }

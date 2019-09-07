@@ -257,6 +257,7 @@
           </el-col>
           <el-col :span="16">
             <el-form-item label="用法：" prop="DrugRate_0">
+              <!--这个代表的是：内服、外服等-->
               <span v-if="!unitIsG">
                 每日
                 <el-select v-model="dataForm.DrugRate_0" style="width: 70px">
@@ -270,6 +271,7 @@
                 </el-select>
                 次，
               </span>
+              <!--这个代表的是：丸-->
               <span v-else>
                 每日
                 <el-select v-model="dataForm.DrugRate_0" style="width: 70px">
@@ -1061,19 +1063,19 @@ export default {
         case '41':
           this.filterCategory(['1006']) // 理疗只有 理疗
           this.dataForm.oldCategoryOneName = '理疗'
-          this.unitIsG = true // 理疗的情况，这还需特殊处理，不过影响不是太大，可以直接先放这
+          this.unitIsG = false // 理疗的情况，这还需特殊处理，不过影响不是太大，可以直接先放这
           this.dataForm.DrugRate_0 = '1' // 理疗的情况这个值没有意义
           break
         case '11':
           this.filterCategory(['1008']) //
           this.dataForm.oldCategoryOneName = '西药'
-          this.unitIsG = true //
+          this.unitIsG = false //
           this.dataForm.DrugRate_0 = '1' //
           break
         case '21':
           this.filterCategory(['1007']) //
           this.dataForm.oldCategoryOneName = '产品'
-          this.unitIsG = true //
+          this.unitIsG = false //
           this.dataForm.DrugRate_0 = '1' //
           break
       }
@@ -1290,19 +1292,26 @@ export default {
             this.dataForm.DiagnosisType = '2'
             this.dataForm.MainSuit = row.MainSuit
             this.dataForm.DiseaseInfo = row.DiseaseInfo === null ? ['1'] : row.DiseaseInfo.split('，') // ?
-            this.Total = row.Total
-            // this.dataForm.DrugRate_0 = row.split('，')[0]
-            // this.dataForm.DrugRate_1 = row.split('，')[0]
-            // this.dataForm.DrugRate_2 = row.split('，')[0]
-            // this.dataForm.DrugRate_3 = row.split('，')[0]
             this.dataForm.DoctorAdvice = row.DoctorAdvice === null ?  ['1'] : row.DoctorAdvice.split('，') // ?
+            this.Total = row.Total
 
-            this.dataForm.RegisterAmount = row.RegisterAmount
-            if (this.$route.params.registerFormId !== undefined) {
-              this.dataForm.RegisterStatus = row.RegisterStatus // 1未支付，2已支付 （来源收银时：那边记录的的啥状态就用啥状态）
+            // 处理这个用法，脑壳大
+            var valArr =row.DrugRate.match(/\d+/g) // 这的有两个细节必须提醒：
+                        // ① 内服时有特殊值0.5，这个会被切成0, 5 而不是 0.5，最后导致程序漏洞，写的时候注意下
+                        // ② 丸剂类型的特殊值>=10时：50会被且为5, 0，而不是5.0，最后也导致程序漏洞，写的时候也注意下，\d+
+            var val3 = row.DrugRate.split('，')[2] // 获得 饭前、饭后
+
+            this.dataForm.DrugRate_3 = val3.substring(0, val3.length - 1) // 获得 饭前、饭后
+            this.dataForm.DrugRate_0 = valArr[0] === "0" ? "0.5" : valArr[0] // 特殊值0.5 会被切磋0, 5 而不是 0.5，最后导致程序漏洞，写的时候注意下
+            if (row.CategoryOne !== 4 && row.CategoryOne !== 5) {
+              this.dataForm.DrugRate_1 = valArr[1]// 内服外服：服次数，剂
             } else {
-              this.dataForm.RegisterStatus = 1 // 1未支付，2已支付 （来源于再次调用历史时，肯定要全改为1未支付）
+              this.dataForm.DrugRate_2 = valArr[1] // 丸：服克数
             }
+
+            // 1未支付，2已支付 （来源收银时是edit会提供挂号单Id：那边记录啥就用啥状态；来源历史时属于create，永远都是1未支付）
+            this.dataForm.RegisterStatus = this.$route.params.registerFormId !== undefined ? row.RegisterStatus : 1
+            this.dataForm.RegisterAmount = row.RegisterAmount
           } else {
             // 如果是直接开方、就诊进来的，就执行这个分支，必须要要请求一次药材库存初始化页面
             this.getStoreCategorytypeStock() // 初始化请求页面右上角药材列表
@@ -1356,8 +1365,8 @@ export default {
         PageSize: this.pageSize,
         IsPaging: this.IsPaging,
         StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店Id（必须）
-        Code: '', // 挂号单编号？？？？？？？？？？
-        Id: this.$route.query.registerFormId, // 挂号单Id？？？？？？？？？？
+        Code: '', // 挂号单编号
+        Id: this.$route.query.registerFormId, // 挂号单Id
         UserName: '', // 患者姓名
         MobilePhone: this.$route.query.MobilePhone, // 患者电话
         AccountId: this.$route.query.DoctorId, // 账户Id,医生Id

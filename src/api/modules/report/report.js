@@ -27,3 +27,12 @@ export function getDoctorReport (params) {
     data: requestParam(params)
   })
 }
+
+// 获取药品使用报表
+export function getDrugsUseReport (params) {
+  return request({
+    url: requestUrl('/YstReport/GetSaleOrderSummaryList'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}

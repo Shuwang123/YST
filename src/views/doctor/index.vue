@@ -40,15 +40,15 @@
           </el-form-item>
           <el-form-item>
             <el-date-picker
-                    size="mini"
-                    v-model="valueTime" @change="doctorHandle()"
-                    type="daterange"
-                    range-separator="至"
-                    start-placeholder="开始日期"
-                    end-placeholder="结束日期"
-                    value-format="yyyy-MM-dd"
-                    style="width: 260px"
-                    :picker-options="pickerOptions">
+              size="mini"
+              v-model="valueTime" @change="doctorHandle()"
+              type="daterange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              value-format="yyyy-MM-dd"
+              style="width: 260px"
+              :picker-options="pickerOptions">
             </el-date-picker>
           </el-form-item>
           <el-form-item>

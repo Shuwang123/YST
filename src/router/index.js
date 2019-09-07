@@ -63,7 +63,8 @@ var router = new Router({
         /* 柜台模块End */
 
         /* 门诊报表 start */
-        {path: '/store/report', component: _import('reportForm/index'), name: 'reportForm', meta: {title: '门诊报表', keepAlive: false}}
+        {path: '/store/report', component: _import('reportDayForm/index'), name: 'reportDayForm', meta: {title: '门诊报表', keepAlive: false}},
+        {path: '/store/drugsReport', component: _import('reportDrugsForm/index'), name: 'reportDrugsForm', meta: {title: '药品使用报表', keepAlive: false}}
         /* 门诊报表 end */
       ]
     },
