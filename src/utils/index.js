@@ -51,6 +51,24 @@ export function removeAccountData (name) {
   window.sessionStorage.removeItem(name)
 }
 
+/** ③ chenxi 陈希start 导出 EXCEL 封装
+ *     用的时候必须先：import {myExportExcel} from '@/utils'
+ */
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
+export function myExportExcel (data, name) {
+  // core
+  // generate workbook object from table
+  var wb = XLSX.utils.table_to_book(data)
+  // get binary string as output
+  var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+  try {
+    FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), (name === null ? 'sheet' : name) + '.xlsx')
+  } catch (e) {
+    if (typeof console !== 'undefined') console.log(e, wbout)
+  }
+  return wbout
+}
 
 
 

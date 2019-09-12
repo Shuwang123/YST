@@ -67,9 +67,7 @@ import API from '@/api'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import { mapGetters } from 'vuex'
 import {calcAge} from '@/utils/validate'
-
-import FileSaver from 'file-saver'
-import XLSX from 'xlsx'
+import {myExportExcel} from '@/utils'
 
 export default {
   components: { FirstTabAddOrUpdate },
@@ -112,20 +110,8 @@ export default {
         inputPattern: /.*/,
         inputErrorMessage: '未输入表名'
       }).then(({ value }) => {
-
-        // core
-        // generate workbook object from table
-        var wb = XLSX.utils.table_to_book(this.$refs.myExportExcel)
-        // get binary string as output
-        var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
-        try {
-          FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), (value === null ? 'sheet' : value) + '.xlsx')
-        } catch (e) {
-          if (typeof console !== 'undefined') console.log(e, wbout)
-        }
-        return wbout
-        // core
-
+        // console.log(value) 这有点懵逼，为什么value变量换成name，得到undefined，脑壳痛啥子哟？？？
+        myExportExcel(this.$refs.myExportExcel, value) // 需要传入两个参数，一个table的dom节点，还有表格名称
       }).catch(() => {
         this.$message({
           type: 'info',

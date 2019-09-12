@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'采购单详情'" :width="isAddActive === false ? '1000px' : '85%'"
+    :title="'采购单详情'" :width="isAddActive === false ? '1005px' : '85%'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <!--<el-col><div style="border-top: 1px dashed #ccc;padding-top: 10px;font-weight: 900">别名（选填）</div></el-col>-->
@@ -52,7 +52,7 @@
                      style="width: 100%;">
             <!--<el-table-column prop="Id" align="center" label="ID" width="50"></el-table-column>-->
             <el-table-column type="index" align="center" label="序号" fixed width="50"></el-table-column>
-            <el-table-column prop="ProductId" align="center" label="商品" fixed min-width="50"></el-table-column>
+            <el-table-column prop="ProductCode" align="center" label="商品编码" fixed min-width="85" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="CategoryName" header-align="center" align="center" label="药态" fixed min-width="70" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称" fixed min-width="80" :show-overflow-tooltip="true"></el-table-column>
 
@@ -201,6 +201,39 @@
           </div>
         </div>
 
+        <!--导出excel功能-->
+        <table ref="myExportExcelPurchase" style="display: none">
+          <tr>
+            <th v-for="val in thPurchaseArr" v-text="val"></th>
+          </tr>
+          <tr v-if="dataList !== null" :data="dataList.Items"
+              v-for="(item, index) in dataList.Items">
+            <td v-text="index"></td>
+            <td v-text="item.ProductCode"></td>
+            <td v-text="item.CategoryName"></td>
+            <td v-text="item.ProductName"></td>
+            <td v-text="item.Quantity"></td>
+            <td v-text="item.CostPrice"></td>
+          </tr>
+        </table>
+        <!--<table ref="myExportExcelCaiwu" style="display: none">-->
+        <!--<tr>-->
+        <!--<th v-for="val in thCaiwuArr" v-text="val"></th>-->
+        <!--</tr>-->
+        <!--<tr v-for="item in dataList">-->
+        <!--&lt;!&ndash;<td v-for="val in item">{{val}}</td>&ndash;&gt;-->
+        <!--<td v-text="item.StoreName"></td>-->
+        <!--<td v-text="item.ProductId"></td>-->
+        <!--<td v-text="item.ProductCode"></td>-->
+        <!--<td v-text="item.ProductName"></td>-->
+        <!--<td v-text="item.CategoryId"></td>-->
+        <!--<td v-text="item.CategoryName"></td>-->
+        <!--<td v-text="item.Quantity"></td>-->
+        <!--<td v-text="item.YBQuantity"></td>-->
+        <!--<td v-text="item.ZFQuantity"></td>-->
+        <!--<td v-text="item.StoreSalePrice"></td>-->
+        <!--</tr>-->
+        <!--</table>-->
       </el-aside>
 
       <!--右侧：追加药材-->
@@ -264,6 +297,8 @@
 import API from '@/api'
 import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
 // import {treeDataTranslate} from '@/utils'
+import {myExportExcel} from '@/utils'
+
 export default {
   components: {
   },
@@ -285,7 +320,10 @@ export default {
         SpellName: ''
       },
       dataList: null,
-      editType: '', // 这个状态A表示待收货的编辑、B表示未入库的编辑、其他的表示查看
+      thPurchaseArr: ['序号','商品编码','商品种类','商品名称','采购量','采购价'],
+      // thCaiwuArr: ['门店','商品Id','商品编码','商品名称','分类编码'],
+
+      editType: '', // 状态A表示待收货编辑、B表示未入库编辑、其他的表示查看
       categoryName: '',
       categoryId: '',
 
@@ -549,86 +587,31 @@ export default {
         })
       }
     },
+    // 导出功能
     excelExports (excelType) {
-      var str = '' // 列标题
-      var jsonData = []
-      if (excelType === 'purchase') { // 药房采购单导出，发给厂商用的
-        str = `<tr>
-                <th colspan="4"><h3>重庆渝北一善堂中医门诊部(采购单)</h3></th>
-              </tr>
-              <tr>
-                <th height="20" width="100">药态</th> <th width="100" height="20">编码</th>
-                <th height="20" width="100">药名</th> <th width="100" height="20">采购量</th>
-              </tr>`
-        // <!--<td height="20">采购价</td> <td height="20">库存余量</td>-->
-        jsonData = this.dataList.Items.map(item => {
-          return {
-            dCategory: item.CategoryName,
-            dCode: item.ProductCode,
-            dName: item.ProductName,
-            dNumber: item.Quantity
-            // dStoreSalePrice: item.StoreSalePrice,
-            // dInventoryQuantity: item.InventoryQuantity
-          }
+      var domTick
+      switch (excelType) {
+        case 'purchase': // 药房 采购单导出，发厂商用
+          domTick = this.$refs.myExportExcelPurchase
+          break
+        case 'caiwu': // 财务 导出
+          domTick = this.$refs.myExportExcelCaiwu
+          break
+      }
+      this.$prompt('请输入Excel表名（不填默认为sheet）', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /.*/,
+        inputErrorMessage: '未输入表名'
+      }).then(({ value }) => {
+        myExportExcel(domTick, value) // 需要传入两个参数，一个table的dom节点，还有表格名称
+        // 上面这个方法执行失败的话也会触发后面的catch，取消时也触发，如果有这方面的需求，要重新优化细节
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消导出Excel操作'
         })
-      }
-      else if (excelType === 'caiwu')
-      { // 财务入库后入库单导出，给财务拿去算账的
-        str = `<tr>
-                <th colspan="8"><h3>重庆渝北一善堂中医门诊部(入库单)</h3></th>
-              </tr>
-              <tr>
-                <td height="20">编号</td> <td height="20">药材名</td>
-                <td height="20">规格</td> <td height="20">生产厂家</td>
-                <td height="20">单位</td> <td height="20">数  量</td>
-                <td height="20">单价</td> <td height="20">金   额</td>
-              </tr>`
-        jsonData = this.dataList.Items.map(item => {
-          return {
-            dCode: item.ProductCode, // 商品编码
-            dName: item.ProductName, // 药品名称
-            dSpecification: item.Specification, // 规格
-            dSupplierName: this.dataList.SupplierName, // 供应商 （生成厂家）// dProductBatchNo: item.ProductBatchNo, // 批号??? BatchNo
-
-            dUnit: item.Unit, // 单位
-            dQuantity: item.Quantity, // 数量
-            dCostPrice: item.CostPrice, // 单价
-            dActualShipAmount: item.ActualShipAmount // 金额
-            // dCreatedTime: this.dataList.CreatedTime | this.myDateFilter('yyyy-MM-dd hh:mm:ss'), // 生成时间
-            // dTimeTo: this.dataList.CreatedTime | this.myDateFilter('yyyy-MM-dd hh:mm:ss'), // 有效期至
-            // dZhijian: '合格' // 质检情况
-          }
-        })
-      }
-
-      // 循环遍历，每行加入tr标签，每个单元格加td标签
-      for (let i = 0; i < jsonData.length; i++) {
-        str += '<tr>'
-        for (let item in jsonData[i]) {
-          // 增加\t为了不让表格显示科学计数法或者其他格式
-          str += `<td align="left" height="20">${jsonData[i][item] + '\t'}</td>`
-        }
-        str += '</tr>'
-      }
-
-      // Worksheet名
-      let worksheet = 'Sheet1'
-      let uri = 'data:application/vnd.ms-excel;base64,' // 使用浏览器的功能
-      // 下载的表格模板数据
-      let template = `<html xmlns:o="urn:schemas-microsoft-com:office:office"
-      xmlns:x="urn:schemas-microsoft-com:office:excel"
-      xmlns="http://www.w3.org/TR/REC-html40">
-           <head><!--[if gte mso 9]><xml><x:ExcelWorkbook><x:ExcelWorksheets><x:ExcelWorksheet>
-           <x:Name>${worksheet}</x:Name>
-           <x:WorksheetOptions><x:DisplayGridlines/></x:WorksheetOptions></x:ExcelWorksheet>
-           </x:ExcelWorksheets></x:ExcelWorkbook></xml><![endif]-->
-           </head>
-           <body><table align="left" border="1">${str}</table></body>
-      </html>`
-
-      // 下载模板
-      // btoa()方法用于创建一base-64编码的字符串。该方法使用 "A-Z", "a-z", "0-9", "+", "/" 和 "=" 字符来编码字符串
-      window.location.href = uri + window.btoa(unescape(encodeURIComponent(template)))
+      })
     },
     // 打印功能
     chenxiPrint () {
