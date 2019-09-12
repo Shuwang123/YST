@@ -22,12 +22,20 @@
       </el-form-item>
 
       <el-form-item label="单位" prop="Unit">
-        <el-select v-model="dataForm.Unit" placeholder="请选择药品单位" style="width: 184px">
-          <el-option label="克" value="g"></el-option>
-          <el-option label="条" value="条"></el-option>
-          <el-option label="毫升" value="ML"></el-option>
-        </el-select>
+        <el-autocomplete popper-class="my-autocomplete" placeholder="请输入或选择单位" style="width: 184px"
+          v-model="dataForm.Unit" :fetch-suggestions="querySearch" :popper-append-to-body="false"
+          @select="handleSelect">
+          <template slot-scope="{ item }">
+            <div>
+              <el-row>
+                <el-col :span="6">{{ item.key }}</el-col>
+                <el-col :span="18"><span style="font-size: 12px; color: #b4b4b4;">{{ item.val }}</span></el-col>
+              </el-row>
+            </div>
+          </template>
+        </el-autocomplete>
       </el-form-item>
+
       <el-form-item label="规格" prop="Specification">
         <el-input v-model="dataForm.Specification" placeholder="x*x/g"></el-input>
       </el-form-item>
@@ -108,7 +116,7 @@ export default {
 
         ShowName: '', // 自己药库的名
         SpellName: '',
-        Unit: 'g',
+        Unit: '',
         Specification: '',
         SalePrice: '',
         RedLine: 0,
@@ -132,10 +140,32 @@ export default {
         Keywords3: Letter(),
         Keywords5: Letter()
       },
+      unitArr: [
+        { key: 'g', val: 'g' }, // key作用在搜索，val作用在取值
+        { key: '条', val: '条' },
+        { key: 'ML', val: 'ML' }
+      ],
       isOKClick: false
     }
   },
   methods: {
+    querySearch(str, cb) {
+      var unitArr = this.unitArr
+      var unitArr = str ? unitArr.filter(this.createFilter(str)) : unitArr
+      // 调用 callback 返回建议列表的数据
+      cb(unitArr)
+    },
+    createFilter(str) {
+      return (item) => {
+        return (item.key.toLowerCase().indexOf(str.toLowerCase()) === 0)
+      }
+    },
+
+    handleSelect(item) {
+      console.log(item)
+      this.dataForm.Unit = item.val
+    },
+
     // 新增，编辑时获取单行详情info
     init (id) {
       this.visible = true
@@ -187,7 +217,7 @@ export default {
         CategoryName: '饮片',
         ShowName: '', // 自己药库的名
         SpellName: '',
-        Unit: 'g',
+        Unit: '',
         Specification: '',
         SalePrice: '',
         RedLine: 0,
@@ -234,6 +264,7 @@ export default {
               this.dataForm.Keywords4, this.dataForm.Keywords5
             ].join()
           }
+          console.log(params)
           var tick = !this.Id ? API.drugs.createDrugs(params) : API.drugs.submitEdit(params)
           tick.then((data) => {
             if (data.code === '0000') {
@@ -257,3 +288,7 @@ export default {
   }
 }
 </script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+
+</style>
