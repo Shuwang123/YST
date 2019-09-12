@@ -40,6 +40,26 @@
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
     <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></first-tab-add-or-update>
+
+    <!--导出excel功能-->
+    <table ref="myExportExcel" style="display: none">
+      <tr>
+        <th v-for="val in thArr" v-text="val"></th>
+      </tr>
+      <tr v-for="item in dataList">
+        <!--<td v-for="val in item">{{val}}</td>-->
+        <td v-text="item.StoreName"></td>
+        <td v-text="item.ProductId"></td>
+        <td v-text="item.ProductCode"></td>
+        <td v-text="item.ProductName"></td>
+        <td v-text="item.CategoryId"></td>
+        <td v-text="item.CategoryName"></td>
+        <td v-text="item.Quantity"></td>
+        <td v-text="item.YBQuantity"></td>
+        <td v-text="item.ZFQuantity"></td>
+        <td v-text="item.StoreSalePrice"></td>
+      </tr>
+    </table>
   </div>
 </template>
 <script type="text/ecmascript-6">
@@ -47,6 +67,9 @@ import API from '@/api'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import { mapGetters } from 'vuex'
 import {calcAge} from '@/utils/validate'
+
+import FileSaver from 'file-saver'
+import XLSX from 'xlsx'
 
 export default {
   components: { FirstTabAddOrUpdate },
@@ -64,7 +87,8 @@ export default {
       value6: [],
 
       dataList: [],
-      totalPage: 1
+      totalPage: 1,
+      thArr: ['门店','商品Id','商品编码','商品名称','分类编码','分类名称','销售总量','医保数量','自费数量','门店价格']
     }
   },
   mounted () {
@@ -73,6 +97,57 @@ export default {
     }
   },
   methods: {
+    handleDownload() {
+      if (!this.dataList.length) {
+        this.$alert('没有任何数据，无法导出! ', '提示', {
+          confirmButtonText: '确定'
+        })
+        return false
+      }
+
+      // 先输入表格名称
+      this.$prompt('请输入Excel表名（不填默认为sheet）', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /.*/,
+        inputErrorMessage: '未输入表名'
+      }).then(({ value }) => {
+
+        // core
+        // generate workbook object from table
+        var wb = XLSX.utils.table_to_book(this.$refs.myExportExcel)
+        // get binary string as output
+        var wbout = XLSX.write(wb, { bookType: 'xlsx', bookSST: true, type: 'array' })
+        try {
+          FileSaver.saveAs(new Blob([wbout], { type: 'application/octet-stream' }), (value === null ? 'sheet' : value) + '.xlsx')
+        } catch (e) {
+          if (typeof console !== 'undefined') console.log(e, wbout)
+        }
+        return wbout
+        // core
+
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消导出Excel操作'
+        })
+      })
+
+      // 别的实现方法
+      // import('@/vendor/Export2Excel').then(excel => {
+      //   const tHeader = ['Id', 'Title', 'Author', 'Readings', 'Date']
+      //   // const filterVal = ['id', 'title', 'author', 'pageviews', 'display_time']
+      //   const list = this.list
+      //   // const data = this.formatJson(filterVal, list)
+      //   excel.export_json_to_excel({
+      //     header: tHeader,
+      //     list,
+      //     filename: this.filename,
+      //     autoWidth: this.autoWidth,
+      //     bookType: this.bookType
+      //   })
+      // })
+    },
     // 这个是查询某门店当日的：患者全部挂号列表
     getDataList () {
       this.dataListLoading = true
@@ -92,7 +167,7 @@ export default {
       // console.log(params)
       API.report.getDrugsUseReport(params).then(result => {
         if (result.code === '0000') {
-          // console.log(result.data)
+          console.log(result.data)
           this.dataList = result.data
           this.totalPage = result.total
         } else {

@@ -45,6 +45,7 @@
               </el-form-item>
               <el-form-item>
                 <el-button @click="comTabFunction()" size="mini">查询</el-button>
+                <el-button icon="el-icon-document" @click="handleDownload" size="mini">Export Excel</el-button>
               </el-form-item>
             </el-col>
           </el-row>
@@ -167,6 +168,12 @@ export default {
           this.$refs.firstTab.getDataList()
         }
       })
+    },
+    // 导出excel
+    handleDownload () {
+      if (this.isVisible[0].child === true) {
+        this.$refs.firstTab.handleDownload()
+      }
     },
     // 且换tabs标签页时
     handleClick (tab, event) {
