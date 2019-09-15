@@ -58,7 +58,8 @@
       <el-table-column header-align="center" :align="$store.state.common.align" label="采购量" min-width="110">
         <template slot-scope="scope">
           <el-input-number v-model="scope.row.myNum" :precision="2" :step="1"
-                           @change="handleChange" :min="1" :max="50000" size="mini"></el-input-number>
+                           @change="handleChange" :min="1" :max="50000" size="mini"
+                           @keyup.enter.native="searchNextCodeInput(scope.row.Code)" :ref="scope.row.Code"></el-input-number>
         </template>
       </el-table-column>
       <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->
@@ -340,6 +341,17 @@ export default {
       // console.log(id1)
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(id0, id1)
+      })
+    },
+    // 在本行的采购量enter时，传入本行的code，在整个采购列表找出此code挨着的下一个code，
+    // 由于之前code作为自己行的ref使用过，所以能利用这个玩意实现下一行聚焦
+    searchNextCodeInput (Code) {
+      this.dataList.forEach((item, index) => {
+        if (Code === item.Code) {
+          this.$refs[this.dataList[index + 1].Code].focus()
+          // this.$refs[this.dataList[index + 1].Code].select() ???
+          return false
+        }
       })
     },
     // 删除

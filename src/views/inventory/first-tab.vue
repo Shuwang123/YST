@@ -24,7 +24,9 @@
         </el-form-item>
       </el-form>
     </div>
+
     <!-- :default-sort = "{prop: 'RedLine', order: 'ascending'}-->
+    <!--<el-form :inline="true" @keyup.enter.native="getDataList()">-->
     <el-table
       @selection-change="selectionChangeHandle"
       :height="chenxiHeight"

@@ -92,7 +92,8 @@
                   align="right"
                   type="date" size="mini"
                   placeholder="生产日期"
-                  :picker-options="pickerOptions_0" style="width: 128px">
+                  :picker-options="pickerOptions_0" style="width: 128px"
+                  @change="autoInput(`${scope.row.ProductCode}_pre`)" :ref="`${scope.row.ProductCode}_pre`">
                 </el-date-picker>
               </template>
             </el-table-column>
@@ -111,7 +112,8 @@
                   align="right"
                   type="date" size="mini"
                   placeholder="有效期"
-                  :picker-options="pickerOptions_1" style="width: 128px">
+                  :picker-options="pickerOptions_1" style="width: 128px"
+                  @change="autoInput(`${scope.row.ProductCode}_mid`)" :ref="`${scope.row.ProductCode}_mid`">
                 </el-date-picker>
               </template>
             </el-table-column>
@@ -126,7 +128,8 @@
             <!--<el-table-column prop="Amount" header-align="center" align="center" label="总价"></el-table-column>-->
             <el-table-column v-if="editType === 'B'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="批号填写" width="150">
               <template slot-scope="scope">
-                <el-input v-model="scope.row.lll" placeholder="批号录入" size="mini"></el-input>
+                <el-input v-model="scope.row.lll" placeholder="批号录入" size="mini"
+                          @keyup.enter.native="autoInput(`${scope.row.ProductCode}_end`)" :ref="`${scope.row.ProductCode}_end`"></el-input>
               </template>
             </el-table-column>
             <el-table-column v-if="dataList.Status === 10" prop="ProductBatchNo" header-align="center" align="center" label="批号"></el-table-column>
@@ -446,6 +449,27 @@ export default {
             picker.$emit('pick', date)
           }
         }]
+      }
+    },
+    // 编辑2弹窗的自动聚焦功能
+    autoInput (strRef) {
+      var strRefArr = strRef.split('_') // 0是本行ProductCode 1是自己写的标记字符
+      console.log(strRef, strRefArr)
+      switch (strRefArr[1]) {
+        case 'pre':
+          this.$refs[`${strRefArr[0]}_mid`].focus()
+          break
+        case 'mid':
+          this.$refs[`${strRefArr[0]}_end`].focus()
+          break
+        case 'end':
+          this.dataList.Items.forEach((item, index) => {
+            if (strRefArr[0] === item.ProductCode) {
+              this.$refs[`${this.dataList.Items[index + 1].ProductCode}_pre`].focus()
+              return false
+            }
+          })
+          break
       }
     },
 
