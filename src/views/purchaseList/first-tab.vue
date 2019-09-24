@@ -83,7 +83,7 @@ export default {
     },
     getDataList (status) {
       this.status = status
-      var params = { // 对应采购单状态status 1 4 10
+      var params = { // 对应采购单状态status 1 4 10 -1
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: true,
@@ -92,7 +92,8 @@ export default {
         code: this.fatherDataForm.code, // 单据号
         StartDate: this.fatherDataForm.StartDate,
         EndDate: this.fatherDataForm.EndDate,
-        Status: status === 0 ? '' : this.status // 单据号状态传0表示获取所有状态类型
+        OrderType: '1',
+        Status: status === 0 ? '1,4,10,-1' : this.status // 单据号状态传0表示获取所有状态类型
       }
       // console.log(params)
       this.dataListLoading = true

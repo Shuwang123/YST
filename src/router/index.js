@@ -64,8 +64,11 @@ var router = new Router({
 
         /* 门诊报表 start */
         {path: '/store/report', component: _import('reportDayForm/index'), name: 'reportDayForm', meta: {title: '门诊报表', keepAlive: false}},
-        {path: '/store/drugsReport', component: _import('reportDrugsForm/index'), name: 'reportDrugsForm', meta: {title: '药品使用报表', keepAlive: false}}
+        {path: '/store/drugsReport', component: _import('reportDrugsForm/index'), name: 'reportDrugsForm', meta: {title: '药品使用报表', keepAlive: false}},
         /* 门诊报表 end */
+
+        {path: '/retreat', component: _import('purchaseRetreat/index'), name: 'retreat', meta: {title: '采购退单', keepAlive: false}},
+        {path: '/retreatList', component: _import('purchaseRetreatList/index'), name: 'retreatList', meta: {title: '退单列表', keepAlive: false}}
       ]
     },
     {path: '*', name: 'error401', component: _import('errorPage401/error401')}

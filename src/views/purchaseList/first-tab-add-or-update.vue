@@ -4,12 +4,9 @@
     :title="'采购单详情'" :width="isAddActive === false ? '1005px' : '85%'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
-    <!--<el-col><div style="border-top: 1px dashed #ccc;padding-top: 10px;font-weight: 900">别名（选填）</div></el-col>-->
     <el-container v-loading="dataListLoading"><!-- display: none -->
       <el-aside :width="isAddActive === false ? '100%' : '60%'">
-        <div class="ownScrollbar" ref="ownOnscroll" @scroll="scroll"
-             style="min-height: 500px;max-height: 500px;overflow-y: scroll;">
-
+        <div class="ownScrollbar" ref="ownOnscroll" @scroll="scroll" style="min-height: 500px;max-height: 500px;overflow-y: scroll;">
           <!--头部状态-->
           <el-row>
             <el-col style="padding: 0 50px">
@@ -43,14 +40,11 @@
             <el-col><div style="padding-top: 5px;font-weight: 900;color: #1CA579">药品：<b v-text="categoryName"></b></div></el-col>
           </el-row>
 
-          <!--主体：列表展示-->
+          <!--主体：列表展示 Id-->
           <el-table  v-if="dataList !== null" :key="Math.random()"
-                     :data="dataList.Items"
-                     stripe
-                     row-class-name="purchaseListRow"
-                     :header-cell-style="$cxObj.tableHeaderStyle40px"
+                     :data="dataList.Items" stripe
+                     :header-cell-style="$cxObj.tableHeaderStyle40px" row-class-name="purchaseListRow"
                      style="width: 100%;">
-            <!--<el-table-column prop="Id" align="center" label="ID" width="50"></el-table-column>-->
             <el-table-column type="index" align="center" label="序号" fixed width="50"></el-table-column>
             <el-table-column prop="ProductCode" align="center" label="商品编码" fixed min-width="85" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="CategoryName" header-align="center" align="center" label="药态" fixed min-width="70" :show-overflow-tooltip="true"></el-table-column>
@@ -59,8 +53,9 @@
             <!--采购数量-->
             <el-table-column v-if="editType === 'A'" :key="Math.random()" label="采购数量" header-align="center" :align="$store.state.common.align" width="115">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.Quantity"
-                                 :step="1" :min="1" :max="50000" size="mini" controls-position="right" style="width: 105px"></el-input-number>
+                <el-input-number v-model="scope.row.editNum"
+                                 :step="1" :min="1" :max="50000" size="mini" controls-position="right" style="width: 105px"
+                                 @keyup.enter.native="autoInput(`${scope.row.ProductCode}_editNum`)" :ref="`${scope.row.ProductCode}_editNum`"></el-input-number>
               </template>
             </el-table-column>
             <el-table-column v-else prop="Quantity" :key="Math.random()" label="采购数量" header-align="center" align="center"></el-table-column>
@@ -71,7 +66,8 @@
             <!--现采购价：就是进价!!!-->
             <el-table-column v-if="editType === 'A'" :key="Math.random()" label="现采购价" header-align="center" :align="$store.state.common.align" width="115">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.CostPrice" :precision="4" :step="0.01" :min="0.001" :max="1000" size="mini" controls-position="right" style="width: 105px"></el-input-number>
+                <el-input-number v-model="scope.row.editPrice" :precision="4" :step="0.01" :min="0.001" :max="1000" size="mini" controls-position="right" style="width: 105px"
+                                 @keyup.enter.native="autoInput(`${scope.row.ProductCode}_editPrice`)" :ref="`${scope.row.ProductCode}_editPrice`"></el-input-number>
               </template>
             </el-table-column>
             <el-table-column v-else prop="CostPrice" header-align="center" label="现采购价" align="center"></el-table-column>
@@ -124,8 +120,7 @@
               </template>
             </el-table-column>
 
-            <!--翻页：批号录入-->
-            <!--<el-table-column prop="Amount" header-align="center" align="center" label="总价"></el-table-column>-->
+            <!--翻页：批号录入 Amount-->
             <el-table-column v-if="editType === 'B'" :key="Math.random()" prop="" header-align="center" :align="$store.state.common.align" label="批号填写" width="150">
               <template slot-scope="scope">
                 <el-input v-model="scope.row.lll" placeholder="批号录入" size="mini"
@@ -377,7 +372,9 @@ export default {
       // console.log('scroll', event.target.scrollTop)
     },
     scrollFun () {
-      this.$refs.ownOnscroll.scrollTo(0, this.lastPosition)
+      var $ownScrollbar = this.$refs.ownOnscroll
+      if ($ownScrollbar)
+        $ownScrollbar.scrollTo(0, this.lastPosition)
     },
 
     // 打印页，每页的合计金额
@@ -453,9 +450,10 @@ export default {
     },
     // 编辑2弹窗的自动聚焦功能
     autoInput (strRef) {
-      var strRefArr = strRef.split('_') // 0是本行ProductCode 1是自己写的标记字符
+      var strRefArr = strRef.split('_') // [0] 是本行ProductCode [1] 是自己写的标记字符
       console.log(strRef, strRefArr)
       switch (strRefArr[1]) {
+        // 属于后一个弹窗的enter逻辑
         case 'pre':
           this.$refs[`${strRefArr[0]}_mid`].focus()
           break
@@ -466,6 +464,19 @@ export default {
           this.dataList.Items.forEach((item, index) => {
             if (strRefArr[0] === item.ProductCode) {
               this.$refs[`${this.dataList.Items[index + 1].ProductCode}_pre`].focus()
+              return false
+            }
+          })
+          break
+
+        // 又新增一些: 属于edit1弹窗的enter逻辑
+        case 'editNum':
+          this.$refs[`${strRefArr[0]}_editPrice`].focus()
+          break
+        case 'editPrice':
+          this.dataList.Items.forEach((item, index) => {
+            if (strRefArr[0] === item.ProductCode) {
+              this.$refs[`${this.dataList.Items[index + 1].ProductCode}_editNum`].focus()
               return false
             }
           })
@@ -579,7 +590,9 @@ export default {
         API.purchase.getPurchaseInfo({id: id}).then(result => {
           if (result.code === '0000') {
             result.data.Items.map(item => {
-              item.lll = '' // 这个lll本来就是ProductBatchNo，但不晓得为嘛子就是要在输入的时候光标强行失去焦点，脑壳真的大，换个字段就行（为啥突然冒出个lll的原因），真不晓得这是啥子chicken的bug
+              item.editNum = item.Quantity // 处理input的数据改变后，输入框无辜失去焦点的奇葩问题，这个地方有点特别
+              item.editPrice = item.CostPrice
+              item.lll = '' // 这个lll本来就是ProductBatchNo，但不晓得为嘛子就是输入的时候光标自动的失去了焦点，脑壳大，换个字段就行（这就是突然冒出个lll的原因），真不晓得这是啥子chicken的bug
               return item
             })
             this.dataList = result.data
@@ -678,11 +691,10 @@ export default {
           return {
             ProductId: item.ProductId,
 
-            LastCostPirce: item.LastCostPrice, // 瞄一下，有点点小用
-
-            CostPrice: item.CostPrice, // 进价售价：
+            Quantity: item.editNum, // 采购g数
+            CostPrice: item.editPrice, // 本次进价
+            LastCostPirce: item.LastCostPrice, // 上一次进价
             // StoreSalePrice: item.StoreSalePrice, // 门店售价：这三个值，直接来源于添加药材那，用来作为初始值在创建采购单的时候直接传递给后端
-            Quantity: item.Quantity, // 采购量手填
 
             SapProductCode: item.SapProductCode,
             SupplierId: this.dataList.SupplierId,

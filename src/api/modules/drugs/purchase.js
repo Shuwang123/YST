@@ -2,7 +2,7 @@ import request from '../../request'
 import requestUrl from '../../requestUrl'
 import requestParam from '../../requestParam'
 
-// 获取当前页面操作人的登陆详情，判断是管理员还是只有一个门店的账号类型
+// 获取当前页面操作人的登陆详情，判断是管理员还是只有一个门店权限的账号类型
 export function getLoginInfo () {
   return request({
     url: requestUrl('/YstApiPurchaseOrder/GetAccountInfo'),
@@ -69,3 +69,44 @@ export function editBatchNo (params) {
     data: requestParam(params)
   })
 }
+
+
+
+// 20190930新增需求：采购退单相关逻辑
+// 创建 采购退单 // 初始为待审
+export function createRetreat (params) {
+  return request({
+    url: requestUrl('/YstApiPurchaseOrder/Refund'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 退单待审 -> 报废
+export function retreatCancel (params) {
+  return request({
+    url: requestUrl('/YstApiPurchaseOrder/CancelRefund'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 退单待审 -> 已审
+export function retreatAuditedOK (params) {
+  return request({
+    url: requestUrl('/YstApiPurchaseOrder/AuditRefund'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+// 退单已审 -> 出库 (完结状态)
+export function retreatSuccess (params) {
+  return request({
+    url: requestUrl('/YstApiPurchaseOrder/StockOut'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
+
