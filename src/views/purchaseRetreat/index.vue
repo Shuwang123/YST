@@ -64,7 +64,7 @@
 
             <!--<el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="进价" :show-overflow-tooltip="true"></el-table-column>-->
             <!--<el-table-column prop="CostPrice SalePrice Unit" header-align="center" :align="$store.state.common.align" label="上一次的进价" :show-overflow-tooltip="true"></el-table-column>-->
-            <el-table-column header-align="center" :align="$store.state.common.align" label="退货量" min-width="110">
+            <el-table-column header-align="center" :align="$store.state.common.align" label="退货量" min-width="159">
                 <template slot-scope="scope">
                     <el-input-number v-model="scope.row.myNum" :precision="2" :step="1"
                                      @change="handleChange" :min="0" :max="scope.row.UsableQuantity" size="mini"

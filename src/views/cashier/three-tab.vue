@@ -40,6 +40,7 @@
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
+          <el-button type="text" size="mini" @click="jumpOffsetPage(scope.row)">退单</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -117,6 +118,7 @@ export default {
             item.BirthDate = calcAge(item.BirthDate)
             return item
           })
+          console.log(this.dataList)
           this.totalPage = result.total
         } else {
           this.$message.error(result.message)
@@ -139,6 +141,21 @@ export default {
       this.addOrUpdateVisible = true
       this.$nextTick(() => {
         this.$refs.addOrUpdate.init(formId)
+      })
+    },
+    jumpOffsetPage (row) {
+      this.$confirm('确定利用旧单据建立退单吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$router.push({
+          name: 'offsetPage',
+          params: {
+            type: 'edit',
+            row: row
+          }})
+      }).catch(() => {
       })
     }
   }

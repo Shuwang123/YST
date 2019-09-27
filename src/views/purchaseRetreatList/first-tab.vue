@@ -88,7 +88,7 @@
           code: this.fatherDataForm.code, // 单据号
           StartDate: this.fatherDataForm.StartDate,
           EndDate: this.fatherDataForm.EndDate,
-          OrderType: '2',
+          OrderType: 2,
           Status: status === 0 ? '-1,6,7,8' : this.status // 单据号状态传0表示获取所有状态类型
         }
         // console.log(params)

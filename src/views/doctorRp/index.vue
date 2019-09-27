@@ -18,7 +18,7 @@
                   <el-input v-model="dataForm.UserName" placeholder="选择患者" style="width: 94px" disabled></el-input>
                   <!--{{$route.query.patientId}}-->
                   <span v-if="$route.query.MobilePhone === '0'"
-                        class="iconfont icon-renwu-zengjia" style="display: inline-block;width: 40px;height: 30px;font-size: 26px;font-weight: 900;color: #1EA57B; margin-left: 7px; vertical-align: top"
+                        class="iconfont icon-renwu-zengjia" style="display: inline-block;width: 40px;height: 30px;font-size: 26px;font-weight: 900;color: #1EA57B; margin-left: 7px; vertical-align: top;cursor: pointer"
                         @click="openPatientList(); $store.commit('setRegisterStep', 2)">
                   </span>
                 </el-form-item>
@@ -252,7 +252,7 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="总剂数">
-              <el-input-number v-model="Total" @change="countTotalPrice(leftTableData)" :min="1" :step="1" :max="30" style="width: 95px"></el-input-number> 剂
+              <el-input-number v-model="Total" @change="countTotalPrice(leftTableData)" :min="1" :step="1" :max="100" style="width: 95px"></el-input-number> 剂
             </el-form-item>
           </el-col>
           <el-col :span="16">

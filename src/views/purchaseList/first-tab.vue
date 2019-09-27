@@ -92,7 +92,7 @@ export default {
         code: this.fatherDataForm.code, // 单据号
         StartDate: this.fatherDataForm.StartDate,
         EndDate: this.fatherDataForm.EndDate,
-        OrderType: '1',
+        OrderType: 1,
         Status: status === 0 ? '1,4,10,-1' : this.status // 单据号状态传0表示获取所有状态类型
       }
       // console.log(params)

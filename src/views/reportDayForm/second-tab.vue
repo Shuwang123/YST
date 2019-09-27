@@ -87,6 +87,7 @@ export default {
       this.dataListLoading = true
       var params = {
         StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店Id（必须）
+        OrderType: 1, // 1表示销售单 2表示销售退单
         StartDay: this.fatherDataForm.StartDate, // 开始时间
         EndDay: this.fatherDataForm.EndDate // 结束时间
       }

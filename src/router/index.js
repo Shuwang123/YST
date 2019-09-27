@@ -67,8 +67,14 @@ var router = new Router({
         {path: '/store/drugsReport', component: _import('reportDrugsForm/index'), name: 'reportDrugsForm', meta: {title: '药品使用报表', keepAlive: false}},
         /* 门诊报表 end */
 
+        /*采购退单：2019.09.30新增需求*/
         {path: '/retreat', component: _import('purchaseRetreat/index'), name: 'retreat', meta: {title: '采购退单', keepAlive: false}},
-        {path: '/retreatList', component: _import('purchaseRetreatList/index'), name: 'retreatList', meta: {title: '退单列表', keepAlive: false}}
+        {path: '/retreatList', component: _import('purchaseRetreatList/index'), name: 'retreatList', meta: {title: '退单列表', keepAlive: false}},
+
+        /*开方对应的退单功能，也是新增需求，和收银后退费不同，前者还没有出库只是退费；*/
+        /*而这个是退单，包括了药材入库和收银扣除，使用退单得根据实际情况来用这个功能*/
+        {path: '/offsetList', component: _import('doctorRpOffsetList/index'), name: 'offsetList', meta: {title: '开方退单列表', keepAlive: false}},
+        {path: '/offsetPage', component: _import('doctorRpOffsetPage/index'), name: 'offsetPage', meta: {title: '开方退单', keepAlive: false}}
       ]
     },
     {path: '*', name: 'error401', component: _import('errorPage401/error401')}
