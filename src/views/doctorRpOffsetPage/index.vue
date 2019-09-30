@@ -840,20 +840,20 @@
               }
               var tick = API.offset.createOffset(params)
               console.log(params, tick)
-              // tick.then((data) => {
-              //   if (data.code === '0000') {
-              //     this.$message({
-              //       message: `${'发送成功'}`,
-              //       type: 'success',
-              //       duration: 1500,
-              //       onClose: () => {
-              //         this.$router.push({path: '/offsetList'})
-              //       }
-              //     })
-              //   } else {
-              //     this.$message.error(data.message)
-              //   }
-              // })
+              tick.then((data) => {
+                if (data.code === '0000') {
+                  this.$message({
+                    message: `${'发送成功'}`,
+                    type: 'success',
+                    duration: 1500,
+                    onClose: () => {
+                      this.$router.push({path: '/offsetList'})
+                    }
+                  })
+                } else {
+                  this.$message.error(data.message)
+                }
+              })
             }).catch(() => {
             })
           }

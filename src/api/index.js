@@ -40,5 +40,5 @@ export default {
   member,
 
   report,
-  offset,
+  offset
 }
