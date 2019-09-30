@@ -20,11 +20,11 @@
       </el-table-column>
       <el-table-column header-align="center" align="center" label="总价/折扣" min-width="119">
         <template slot-scope="scope">
-          <span>{{ scope.row.TotalAmount.toFixed(2) }}￥ / {{ scope.row.Discount * 100 }}</span>
+          <span>{{ scope.row.TotalAmount.toFixed(2) }}￥ / {{ parseInt(scope.row.Discount * 100) }}%</span>
         </template>
       </el-table-column>
       <el-table-column prop="PaymentWayName" header-align="center" align="center" label="退费方式" min-width="100" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="RoStatus" header-align="center" align="center" label="状态" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+      <!--<el-table-column prop="RoStatus" header-align="center" align="center" label="状态" min-width="100" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="RoStatusName" header-align="center" align="center" label="状态" min-width="100" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Remark" header-align="center" align="center" min-width="110" label="备注" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column header-align="center" align="center" label="时间" min-width="119">

@@ -28,7 +28,9 @@
             <caption style="height: 30px;line-height: 30px;font-weight: 700;text-align: left;font-size: 16px">账目核对：</caption>
             <tr height="30">
               <td width="100">总金额</td>
-              <td colspan="5" align="left" style="padding-left: 15px">{{dataList.OrderAmount}}</td>
+              <td colspan="2" align="left" style="padding-left: 15px">{{dataList.OrderAmount}}</td>
+              <td width="100">退单总金额</td>
+              <td colspan="2" align="left" style="padding-left: 15px">{{offsetAllAmount.toFixed(2)}}</td>
             </tr>
             <tr height="30">
               <td width="100">应收金额</td>
@@ -398,6 +400,7 @@ export default {
         {type: 'number', message: '输入必须为数字值'}],
 
       dataList: {},
+      offsetAllAmount: 0, // 退单总金额
       // charts参数
       echartsOption: {
         title: {
@@ -517,34 +520,45 @@ export default {
     // 这个是查询某门店当日的：患者全部挂号列表
     getDataList () {
       this.dataListLoading = true
-      var params = {
+      var paramsOffset = {
+        StoreId: this.$store.getters.getAccountCurrentHandleStore,
+        OrderType: 2,
+        StartDay: this.fatherDataForm.StartDate,
+        EndDay: this.fatherDataForm.EndDate }
+      var paramsDayReport = {
         StoreId: this.$store.getters.getAccountCurrentHandleStore, // 当前门店
         OrderType: 1, // 1表示销售单 2表示销售退单
         StartDay: this.fatherDataForm.StartDate, // 开始时间
-        EndDay: this.fatherDataForm.EndDate // 结束时间
-      }
-      // 获取挂号列表
-      console.log(params)
-      API.report.getDayReport(params).then(result => {
-        if (result.code === '0000') {
-          this.dataList = result.data
-          console.log(result.data)
+        EndDay: this.fatherDataForm.EndDate } // 结束时间
+      function funOffsetReport () { return API.report.getOffsetReport(paramsOffset) }
+      function funDayReport () { return API.report.getDayReport(paramsDayReport) }
+      this.$ios.all([funOffsetReport(), funDayReport()]).then(
+        this.$ios.spread((response, result) => {
+          if (response.code === '0000' && result.code === '0000') {
+            this.dataList = result.data
+            console.log(result.data, response.data)
 
-          this.echartsOption.series[0].data = [
-            {value: result.data.Cash, name: '现金'},
-            {value: result.data.AliPay, name: '支付宝'},
-            {value: result.data.WechatPay, name: '微信扫码'},
-            {value: result.data.UnionPay, name: '银行卡'},
-            {value: result.data.MedicalPay, name: '医保'},
-            {value: result.data.WechatPhonePay, name: '客服手机'},
-            {value: result.data.CouponPay, name: '代金券'},
-            {value: result.data.MemberPay, name: '会员卡'}]
-        } else {
-          this.$message.error(result.message)
-        }
-        this.dataListLoading = false
-        this.showEcharts()
-      })
+            this.offsetAllAmount = 0
+            response.data.forEach(item => {
+              this.offsetAllAmount += item.Amount
+            })
+            this.echartsOption.series[0].data = [
+              {value: result.data.Cash, name: '现金'},
+              {value: result.data.AliPay, name: '支付宝'},
+              {value: result.data.WechatPay, name: '微信扫码'},
+              {value: result.data.UnionPay, name: '银行卡'},
+              {value: result.data.MedicalPay, name: '医保'},
+              {value: result.data.WechatPhonePay, name: '客服手机'},
+              {value: result.data.CouponPay, name: '代金券'},
+              {value: result.data.MemberPay, name: '会员卡'}
+            ]
+            this.showEcharts()
+            this.dataListLoading = false
+          } else {
+            this.$message.error(result.message)
+          }
+        })
+      )
     },
 
     // 编辑提交

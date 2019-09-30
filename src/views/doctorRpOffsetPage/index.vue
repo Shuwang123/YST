@@ -813,8 +813,9 @@
               type: 'warning'
             }).then(() => {
               // edit create 参数合并
+              // console.log(this.$route.params.row)
               var params = {
-                SourceSaleOrderCode: this.$route.params.type === 'create' ? '' : this.$route.params.row.Id, // 白手起家新建就没有单据Id传''，利用就单据生成退单的那种就有就单据的Id信息
+                SourceSaleOrderCode: this.$route.params.type === 'create' ? '' : this.$route.params.row.Code, // 白手起家新建就没有单据Id传''，利用就单据生成退单的那种就有就单据的Id信息
                 StoreId: this.$store.getters.getAccountCurrentHandleStore,
                 OrderType: 2, // 退单
                 PaymentWay: this.dataForm.PaymentWay, // 支付方式
@@ -839,20 +840,20 @@
               }
               var tick = API.offset.createOffset(params)
               console.log(params, tick)
-              tick.then((data) => {
-                if (data.code === '0000') {
-                  this.$message({
-                    message: `${'发送成功'}`,
-                    type: 'success',
-                    duration: 1500,
-                    onClose: () => {
-                      this.$router.push({path: '/offsetList'})
-                    }
-                  })
-                } else {
-                  this.$message.error(data.message)
-                }
-              })
+              // tick.then((data) => {
+              //   if (data.code === '0000') {
+              //     this.$message({
+              //       message: `${'发送成功'}`,
+              //       type: 'success',
+              //       duration: 1500,
+              //       onClose: () => {
+              //         this.$router.push({path: '/offsetList'})
+              //       }
+              //     })
+              //   } else {
+              //     this.$message.error(data.message)
+              //   }
+              // })
             }).catch(() => {
             })
           }
