@@ -108,7 +108,7 @@ export default {
         WrokTo: this.fatherDataForm.EndDate, // 结束时间
 
 
-
+        Status: '7', // -1作废1初始 2只支付挂号费 待就诊（候诊）3 已就诊-(待收费) 5已收费6已发货 出库  -2全部
         // -2全部 7表示退费的
         OrderType: '1', // 40表示协定方
         CategoryOne: '-2'

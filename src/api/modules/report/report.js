@@ -36,3 +36,12 @@ export function getDrugsUseReport (params) {
     data: requestParam(params)
   })
 }
+
+// 获取退单报表 新增
+export function getOffsetReport (params) {
+  return request({
+    url: requestUrl('/YstApiSaleOrder/RoDayReport'),
+    method: 'POST',
+    data: requestParam(params)
+  })
+}
