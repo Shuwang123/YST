@@ -96,45 +96,45 @@
             </tr>
             <tr height="25">
               <td width="100">饮片</td>
-              <td width="100">{{dataList.CNDrugYPAmount}}</td>
-              <td width="100">{{dataList.YBCNDrugYPAmount}}</td>
-              <td width="100">{{dataList.ZFCNDrugYPAmount}}</td>
+              <td width="100">{{dataList.CNDrugYPAmount.toFixed(2)}}</td>
+              <td width="100">{{dataList.YBCNDrugYPAmount.toFixed(2)}}</td>
+              <td width="100">{{dataList.ZFCNDrugYPAmount.toFixed(2)}}</td>
               <td width="100">{{dataList.CNDrugYPMemberCount}}</td>
             </tr>
             <tr height="25">
               <td width="100">精品饮片</td>
-              <td width="100">{{dataList.CNDrugJBYPAmount}}</td>
-              <td width="100">{{dataList.YBCNDrugJBYPAmount}}</td>
-              <td width="100">{{dataList.ZFCNDrugJBYPAmount}}</td>
+              <td width="100">{{dataList.CNDrugJBYPAmount.toFixed(2)}}</td>
+              <td width="100">{{dataList.YBCNDrugJBYPAmount.toFixed(2)}}</td>
+              <td width="100">{{dataList.ZFCNDrugJBYPAmount.toFixed(2)}}</td>
               <td width="100">{{dataList.CNDrugJBYPMemberCount}}</td>
             </tr>
             <tr height="25">
               <td width="100">饮片3</td>
-              <td width="100">{{dataList.CNDrugYP3Amount}}</td>
-              <td width="100">{{dataList.YBCNDrugYP3Amount}}</td>
-              <td width="100">{{dataList.ZFCNDrugYP3Amount}}</td>
+              <td width="100">{{dataList.CNDrugYP3Amount.toFixed(2)}}</td>
+              <td width="100">{{dataList.YBCNDrugYP3Amount.toFixed(2)}}</td>
+              <td width="100">{{dataList.ZFCNDrugYP3Amount.toFixed(2)}}</td>
               <td width="100">{{dataList.CNDrugYP3MemberCount}}</td>
             </tr>
             <tr height="25">
               <td width="100">贵细</td>
-              <td width="100">{{dataList.CNDrugGXAmount}}</td>
-              <td width="100">{{dataList.YBCNDrugGXAmount}}</td>
-              <td width="100">{{dataList.ZFCNDrugGXAmount}}</td>
+              <td width="100">{{dataList.CNDrugGXAmount.toFixed(2)}}</td>
+              <td width="100">{{dataList.YBCNDrugGXAmount.toFixed(2)}}</td>
+              <td width="100">{{dataList.ZFCNDrugGXAmount.toFixed(2)}}</td>
               <td width="100">{{dataList.CNDrugGXMemberCount}}</td>
             </tr>
             <tr height="25">
               <td width="100">理疗</td>
-              <td width="100">{{dataList.LLFAmount}}</td>
-              <td width="100">{{dataList.YBLLFAmount}}</td>
-              <td width="100">{{dataList.ZFLLFAmount}}</td>
+              <td width="100">{{dataList.LLFAmount.toFixed(2)}}</td>
+              <td width="100">{{dataList.YBLLFAmount.toFixed(2)}}</td>
+              <td width="100">{{dataList.ZFLLFAmount.toFixed(2)}}</td>
               <td width="100">{{dataList.LLFMemberCount}}</td>
             </tr>
 
             <tr height="25">
               <td width="100">西药费</td>
-              <td width="100">{{dataList.ENDrugAmount}}</td>
-              <td width="100">{{dataList.YBENDrugAmount}}</td>
-              <td width="100">{{dataList.ZFENDrugAmount}}</td>
+              <td width="100">{{dataList.ENDrugAmount.toFixed(2)}}</td>
+              <td width="100">{{dataList.YBENDrugAmount.toFixed(2)}}</td>
+              <td width="100">{{dataList.ZFENDrugAmount.toFixed(2)}}</td>
               <td width="100">{{dataList.ENDrugMemberCount}}</td>
             </tr>
             <tr height="25">
@@ -160,9 +160,9 @@
             </tr>
             <tr height="25">
               <td width="100">产品</td>
-              <td width="100">{{dataList.ProductAmount}}</td>
-              <td width="100">{{dataList.YBProductAmount}}</td>
-              <td width="100">{{dataList.ZFProductAmount}}</td>
+              <td width="100">{{dataList.ProductAmount.toFixed(2)}}</td>
+              <td width="100">{{dataList.YBProductAmount.toFixed(2)}}</td>
+              <td width="100">{{dataList.ZFProductAmount.toFixed(2)}}</td>
               <td width="100">{{dataList.ProductMemberCount}}</td>
             </tr>
             <tr height="25">

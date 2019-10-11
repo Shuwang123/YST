@@ -180,7 +180,7 @@
           </el-col>
           <el-col :span="6">
             <el-form-item label="折扣" prop="Discount">
-              <el-input-number v-model="dataForm.Discount" @change="countTotalPrice()" :min="0" :step="1" :max="100" style="width: 95px"></el-input-number> %
+              <el-input-number v-model="dataForm.Discount" @change="countTotalPrice()" :min="0" :step="1" :max="200" style="width: 120px"></el-input-number> %
             </el-form-item>
           </el-col>
           <el-col :span="6">

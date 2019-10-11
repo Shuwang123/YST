@@ -193,10 +193,10 @@
                   <el-input v-model="registerAllData.DrugTotalAmount" style="width: 100px" disabled></el-input>
                 </el-form-item>
               </el-col>
-              <el-col :span="8">{{registerAllData.StatusName ? registerAllData.StatusName : '无'}}</el-col>
-              <el-col :span="8">
-                <el-form-item label="折扣" prop="percentage">
-                  <el-input-number @change="myComputedAttr" v-model="dataForm.percentage" :min="0" :max="100" style="width: 95px"></el-input-number>
+              <el-col :span="6">{{registerAllData.StatusName ? registerAllData.StatusName : '无'}}</el-col>
+              <el-col :span="10">
+                <el-form-item label="折扣" prop="percentage" >
+                  <el-input-number @change="myComputedAttr" v-model="dataForm.percentage" :min="0" :max="200" style="width:110px"></el-input-number>
                 </el-form-item>%
               </el-col>
             </el-row>
@@ -554,7 +554,7 @@ export default {
             PayAmount: this.dataForm.PayAmount, // 实收金额
             OnlinePayAmount: this.dataForm.OnlinePayAmount, // 实收金额
 
-            Discount: (this.dataForm.percentage / 100).toFixed(2), // 折扣 保留两位小数
+            Discount: (this.dataForm.percentage / 100).toFixed(4), // 折扣 保留两位小数
             WorkAmount: this.dataForm.WorkAmount, // 加工费
             DJAmount: this.dataForm.DJAmount, // 代煎费用
             ExpressAmount: this.dataForm.ExpressAmount, // 快递费
