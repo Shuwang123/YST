@@ -51,10 +51,10 @@
             <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称" fixed min-width="80" :show-overflow-tooltip="true"></el-table-column>
 
             <!--采购数量-->
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="采购数量" header-align="center" :align="$store.state.common.align" width="115">
+            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="采购数量" header-align="center" :align="$store.state.common.align" width="125">
               <template slot-scope="scope">
                 <el-input-number v-model="scope.row.editNum"
-                                 :step="1" :min="1" :max="50000" size="mini" controls-position="right" style="width: 105px"
+                                 :step="1" :min="1" :max="900000" size="mini" controls-position="right" style="width: 105px"
                                  @keyup.enter.native="autoInput(`${scope.row.ProductCode}_editNum`)" :ref="`${scope.row.ProductCode}_editNum`"></el-input-number>
               </template>
             </el-table-column>
@@ -64,9 +64,9 @@
             <el-table-column prop="LastCostPirce" header-align="center" align="center" label="前采购价"></el-table-column>
 
             <!--现采购价：就是进价!!!-->
-            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="现采购价" header-align="center" :align="$store.state.common.align" width="115">
+            <el-table-column v-if="editType === 'A'" :key="Math.random()" label="现采购价" header-align="center" :align="$store.state.common.align" width="125">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.editPrice" :precision="4" :step="0.01" :min="0.001" :max="1000" size="mini" controls-position="right" style="width: 105px"
+                <el-input-number v-model="scope.row.editPrice" :precision="4" :step="0.01" :min="0.001" :max="90000" size="mini" controls-position="right" style="width: 105px"
                                  @keyup.enter.native="autoInput(`${scope.row.ProductCode}_editPrice`)" :ref="`${scope.row.ProductCode}_editPrice`"></el-input-number>
               </template>
             </el-table-column>
