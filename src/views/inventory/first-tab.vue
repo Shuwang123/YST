@@ -76,9 +76,9 @@
       <el-table-column prop="OccupyQuantity" header-align="center" align="center" label="锁定" min-width="80"></el-table-column>
       <el-table-column prop="UsableQuantity" header-align="center" align="center" label="可用" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="AvgCostPrice" header-align="center" align="center" label="成本 (avg)" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="成本 (avg)" width="120" :show-overflow-tooltip="true">
+      <el-table-column header-align="center" align="center" label="最近成本价" width="120" :show-overflow-tooltip="true">
         <template slot-scope="scope">
-          <span>{{scope.row.AvgCostPrice.toFixed(4)}}</span>
+          <span>{{scope.row.LastCostPrice.toFixed(4)}}</span>
         </template>
       </el-table-column>
       <!--<el-table-column prop="Amount" header-align="center" align="center" label="成本总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
