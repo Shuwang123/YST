@@ -135,22 +135,22 @@
               <td colspan="2"><p>￥{{Number(registerAllData.DrugTotalAmount).toFixed(2)}}
                 <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
             </tr>
-            <tr v-show="dataForm.WorkAmount > 0">
+            <tr v-show="dataForm.WorkAmount !== 0">
               <td>加工费</td>
               <td colspan="2"><p>￥{{Number(dataForm.WorkAmount).toFixed(2)}}
                 <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
             </tr>
-            <tr v-show="dataForm.DJAmount > 0">
+            <tr v-show="dataForm.DJAmount !== 0">
               <td>代煎费</td>
               <td colspan="2"><p>￥{{Number(dataForm.DJAmount).toFixed(2)}}
                 <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
             </tr>
-            <tr v-show="dataForm.ExpressAmount > 0">
+            <tr v-show="dataForm.ExpressAmount !== 0">
               <td>快递费</td>
               <td colspan="2"><p>￥{{Number(dataForm.ExpressAmount).toFixed(2)}}
                 <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
             </tr>
-            <tr v-show="dataForm.OtherAmount > 0">
+            <tr v-show="dataForm.OtherAmount !== 0">
               <td>其他费</td>
               <td colspan="2"><p>￥{{Number(dataForm.OtherAmount).toFixed(2)}}
                 <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>

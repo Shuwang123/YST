@@ -230,22 +230,22 @@
             <td colspan="2"><p>￥{{Number(registerAllData.DrugTotalAmount*registerAllData.Discount).toFixed(2)}}
               <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
           </tr>
-          <tr v-show="registerAllData.WorkAmount > 0">
+          <tr v-show="registerAllData.WorkAmount !== 0">
             <td>加工费</td>
             <td colspan="2"><p>￥{{Number(registerAllData.WorkAmount).toFixed(2)}}
               <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
           </tr>
-          <tr v-show="registerAllData.DJAmount > 0">
+          <tr v-show="registerAllData.DJAmount !== 0">
             <td>代煎费</td>
             <td colspan="2"><p>￥{{Number(registerAllData.DJAmount).toFixed(2)}}
               <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
           </tr>
-          <tr v-show="registerAllData.ExpressAmount > 0">
+          <tr v-show="registerAllData.ExpressAmount !== 0">
             <td>快递费</td>
             <td colspan="2"><p>￥{{Number(registerAllData.ExpressAmount).toFixed(2)}}
               <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
           </tr>
-          <tr v-show="registerAllData.OtherAmount > 0">
+          <tr v-show="registerAllData.OtherAmount !== 0">
             <td>其他费</td>
             <td colspan="2"><p>￥{{Number(registerAllData.OtherAmount).toFixed(2)}}
               <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
