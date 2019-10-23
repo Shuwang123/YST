@@ -200,7 +200,10 @@
       <div id="printCashier" style="display: none">
         <table width="100%" style="font-size: 12px;padding-right: 55px">
           <tbody>
-          <tr>
+          <tr v-if="registerAllData.storeId === 706">
+            <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆颐善堂中医诊所收据</h3></td>
+          </tr>
+          <tr v-else>
             <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆一善堂中医门诊部收据</h3></td>
           </tr>
           <tr>

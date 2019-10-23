@@ -61,12 +61,12 @@
             <el-table-column v-else prop="Quantity" :key="Math.random()" label="采购数量" header-align="center" align="center"></el-table-column>
 
             <!--前采购价-->
-            <el-table-column prop="LastCostPirce" header-align="center" align="center" label="前采购价"></el-table-column>
+44444444444444444444444444444444444            <el-table-column prop="LastCostPirce"  header-align="center" align="center" label="前采购价"></el-table-column>
 
             <!--现采购价：就是进价!!!-->
             <el-table-column v-if="editType === 'A'" :key="Math.random()" label="现采购价" header-align="center" :align="$store.state.common.align" width="125">
               <template slot-scope="scope">
-                <el-input-number v-model="scope.row.editPrice" :precision="4" :step="0.01" :min="0.001" :max="90000" size="mini" controls-position="right" style="width: 105px"
+                <el-input-number v-model="scope.row.editPrice" :precision="4" :step="0.01" :min="0" :max="90000" size="mini" controls-position="right" style="width: 105px"
                                  @keyup.enter.native="autoInput(`${scope.row.ProductCode}_editPrice`)" :ref="`${scope.row.ProductCode}_editPrice`"></el-input-number>
               </template>
             </el-table-column>
@@ -318,7 +318,7 @@ export default {
         SpellName: ''
       },
       dataList: null,
-      thPurchaseArr: ['序号','商品编码','商品种类','商品名称','采购量','采购价'],
+      thPurchaseArr: ['序号', '商品编码', '商品种类', '商品名称', '采购量', '采购价'],
       // thCaiwuArr: ['门店','商品Id','商品编码','商品名称','分类编码'],
 
       editType: '', // 状态A表示待收货编辑、B表示未入库编辑、其他的表示查看
@@ -373,8 +373,7 @@ export default {
     },
     scrollFun () {
       var $ownScrollbar = this.$refs.ownOnscroll
-      if ($ownScrollbar)
-        $ownScrollbar.scrollTo(0, this.lastPosition)
+      if ($ownScrollbar) { $ownScrollbar.scrollTo(0, this.lastPosition) }
     },
 
     // 打印页，每页的合计金额
@@ -674,53 +673,77 @@ export default {
       this.OrderTotalPrice = 0
       this.rukuIsDisabled = false
     },
-    dataFormSubmitA () { // 编辑的提交 采购数量和价格
+    dataFormSubmitA: function () { // 编辑的提交 采购数量和价格
       this.rukuIsDisabled = true
-      var params = {
-        Address: this.dataList.Address,
-        Buyer: this.dataList.Buyer,
-        Phone: this.dataList.Phone,
-        OrderType: this.dataList.OrderType,
-        Remark: this.dataList.Remark,
-        StoreId: this.dataList.StoreId,
-        StoreCode: this.dataList.StoreCode,
-        Id: this.dataList.Id,
-        SupplierId: this.dataList.SupplierId,
-        SupplierCode: this.dataList.SupplierCode,
-        Items: JSON.stringify(this.dataList.Items.map(item => {
-          return {
-            ProductId: item.ProductId,
-
-            Quantity: item.editNum, // 采购g数
-            CostPrice: item.editPrice, // 本次进价
-            LastCostPirce: item.LastCostPrice, // 上一次进价
-            // StoreSalePrice: item.StoreSalePrice, // 门店售价：这三个值，直接来源于添加药材那，用来作为初始值在创建采购单的时候直接传递给后端
-
-            SapProductCode: item.SapProductCode,
-            SupplierId: this.dataList.SupplierId,
-            SupplierCode: this.dataList.SupplierCode // 这儿接口9返回的item.SupplierId用为零，导致不得不去获取总表的那个返回值
-          }
-        }))
+      // 新增进价必填选项并且和上一次进价对比
+      if (this.dataList.Items.some(item => item.editPrice === 0 || item.editPrice === '' || item.editPrice === null || item.editPrice === undefined)) {
+        this.$alert('检测有商品的进价未填写!', '提示', {
+          confirmButtonText: '确定'
+        })
+        this.rukuIsDisabled = false
+        return false
       }
-      console.log(params)
-      API.purchase.editNumberAndPrice(params).then(result => {
-        if (result.code === '0000') {
-          this.$message({
-            type: 'success',
-            message: `编辑${result.message}`,
-            duration: 1000
-          })
-          this.$emit('refreshDataList')
-          this.visible = false
-        } else {
-          this.rukuIsDisabled = false
-          this.$message({
-            type: 'error',
-            message: `${result.message}`,
-            duration: 1000
-          })
+      var error = ''
+      this.dataList.Items.forEach(item => {
+        if (item.editPrice > item.LastCostPirce) {
+          error += item.SapProductCode + '-'
         }
       })
+      if (error !== '') {
+        this.$confirm('药材' + error + '---现采购价大于前采购价是否继续保存', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          var params = {
+            Address: this.dataList.Address,
+            Buyer: this.dataList.Buyer,
+            Phone: this.dataList.Phone,
+            OrderType: this.dataList.OrderType,
+            Remark: this.dataList.Remark,
+            StoreId: this.dataList.StoreId,
+            StoreCode: this.dataList.StoreCode,
+            Id: this.dataList.Id,
+            SupplierId: this.dataList.SupplierId,
+            SupplierCode: this.dataList.SupplierCode,
+            Items: JSON.stringify(this.dataList.Items.map(item => {
+              return {
+                ProductId: item.ProductId,
+
+                Quantity: item.editNum, // 采购g数
+                CostPrice: item.editPrice, // 本次进价
+                LastCostPirce: item.LastCostPrice, // 上一次进价
+                // StoreSalePrice: item.StoreSalePrice, // 门店售价：这三个值，直接来源于添加药材那，用来作为初始值在创建采购单的时候直接传递给后端
+
+                SapProductCode: item.SapProductCode,
+                SupplierId: this.dataList.SupplierId,
+                SupplierCode: this.dataList.SupplierCode // 这儿接口9返回的item.SupplierId用为零，导致不得不去获取总表的那个返回值
+              }
+            }))
+          }
+          console.log(params)
+          API.purchase.editNumberAndPrice(params).then(result => {
+            if (result.code === '0000') {
+              this.$message({
+                type: 'success',
+                message: `编辑${result.message}`,
+                duration: 1000
+              })
+              this.$emit('refreshDataList')
+              this.visible = false
+            } else {
+              this.rukuIsDisabled = false
+              this.$message({
+                type: 'error',
+                message: `${result.message}`,
+                duration: 1000
+              })
+            }
+          })
+        }).catch(() => {
+          this.rukuIsDisabled = false
+        })
+      }
     },
     dataFormSubmitB () { // 入库的提交 批次号
       this.rukuIsDisabled = true
