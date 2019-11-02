@@ -199,6 +199,9 @@
                 <el-option label="微信客服手机" value="6"></el-option>
                 <el-option label="代金券" value="7"></el-option>
                 <el-option label="会员卡" value="8"></el-option>
+                <el-option label="白露" value="9"></el-option>
+                <el-option label="万科" value="10"></el-option>
+                <el-option label="善郎中" value="11"></el-option>
               </el-select>
             </el-form-item>
           </el-col>

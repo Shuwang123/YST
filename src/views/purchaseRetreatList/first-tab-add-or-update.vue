@@ -177,9 +177,10 @@
             id: this.formId,
             Items: JSON.stringify(this.dataList.Items.map(item => {
               return {
+                Id: item.Id,
                 ProductBatchNo: item.ProductCode,
                 ActualQuantity: item.Quantity, // 这是详情id，上面那个A的是药材ID
-                ProductionDate: '', // new Date()
+                ProductionDate: '', // new D ate()
                 ShelfLife: 1, //
                 ExpiryDate: ''}
             }))

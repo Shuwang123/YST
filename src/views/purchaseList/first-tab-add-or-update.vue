@@ -61,7 +61,7 @@
             <el-table-column v-else prop="Quantity" :key="Math.random()" label="采购数量" header-align="center" align="center"></el-table-column>
 
             <!--前采购价-->
-44444444444444444444444444444444444            <el-table-column prop="LastCostPirce"  header-align="center" align="center" label="前采购价"></el-table-column>
+          <el-table-column prop="LastCostPirce"  header-align="center" align="center" label="前采购价"></el-table-column>
 
             <!--现采购价：就是进价!!!-->
             <el-table-column v-if="editType === 'A'" :key="Math.random()" label="现采购价" header-align="center" :align="$store.state.common.align" width="125">
@@ -712,7 +712,7 @@ export default {
 
                 Quantity: item.editNum, // 采购g数
                 CostPrice: item.editPrice, // 本次进价
-                LastCostPirce: item.LastCostPrice, // 上一次进价
+                LastCostPirce: item.LastCostPirce, // 上一次进价
                 // StoreSalePrice: item.StoreSalePrice, // 门店售价：这三个值，直接来源于添加药材那，用来作为初始值在创建采购单的时候直接传递给后端
 
                 SapProductCode: item.SapProductCode,
@@ -742,6 +742,52 @@ export default {
           })
         }).catch(() => {
           this.rukuIsDisabled = false
+        })
+      } else {
+        var params = {
+          Address: this.dataList.Address,
+          Buyer: this.dataList.Buyer,
+          Phone: this.dataList.Phone,
+          OrderType: this.dataList.OrderType,
+          Remark: this.dataList.Remark,
+          StoreId: this.dataList.StoreId,
+          StoreCode: this.dataList.StoreCode,
+          Id: this.dataList.Id,
+          SupplierId: this.dataList.SupplierId,
+          SupplierCode: this.dataList.SupplierCode,
+          Items: JSON.stringify(this.dataList.Items.map(item => {
+            return {
+              ProductId: item.ProductId,
+
+              Quantity: item.editNum, // 采购g数
+              CostPrice: item.editPrice, // 本次进价
+              LastCostPirce: item.LastCostPirce, // 上一次进价
+              // StoreSalePrice: item.StoreSalePrice, // 门店售价：这三个值，直接来源于添加药材那，用来作为初始值在创建采购单的时候直接传递给后端
+
+              SapProductCode: item.SapProductCode,
+              SupplierId: this.dataList.SupplierId,
+              SupplierCode: this.dataList.SupplierCode // 这儿接口9返回的item.SupplierId用为零，导致不得不去获取总表的那个返回值
+            }
+          }))
+        }
+        console.log(params)
+        API.purchase.editNumberAndPrice(params).then(result => {
+          if (result.code === '0000') {
+            this.$message({
+              type: 'success',
+              message: `编辑${result.message}`,
+              duration: 1000
+            })
+            this.$emit('refreshDataList')
+            this.visible = false
+          } else {
+            this.rukuIsDisabled = false
+            this.$message({
+              type: 'error',
+              message: `${result.message}`,
+              duration: 1000
+            })
+          }
         })
       }
     },

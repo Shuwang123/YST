@@ -387,7 +387,10 @@ export default {
         {label: '医保', value: 5},
         {label: '微信客服手机', value: 6},
         {label: '代金券', value: 7},
-        {label: '会员卡', value: 8}
+        {label: '会员卡', value: 8},
+        {label: '白露', value: 9},
+        {label: '万科', value: 10},
+        {label: '善郎中', value: 11}
       ],
       isOKClick: false
     }

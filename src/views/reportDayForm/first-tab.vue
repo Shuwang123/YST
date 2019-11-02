@@ -69,6 +69,16 @@
               <td width="100">会员卡</td>
               <td width="100" align="left">{{dataList.MemberPay}}</td>
             </tr>
+            <tr height="30">
+              <td width="100">白露</td>
+              <td width="100" align="left">{{dataList.BaiLu}}</td>
+              <td width="100">万科</td>
+              <td width="100" align="left">{{dataList.WangKe}}</td>
+              <td width="100">善郎中</td>
+              <td width="100" align="left">{{dataList.SLZ}}</td>
+              <td width="100"></td>
+              <td width="100" align="left"></td>
+            </tr>
           </table>
 
           <table border="1" cellspacing="0" style="border-collapse: collapse;text-align: center" width="600px">
@@ -550,7 +560,10 @@ export default {
               {value: result.data.MedicalPay, name: '医保'},
               {value: result.data.WechatPhonePay, name: '客服手机'},
               {value: result.data.CouponPay, name: '代金券'},
-              {value: result.data.MemberPay, name: '会员卡'}
+              {value: result.data.MemberPay, name: '会员卡'},
+              {value: result.data.BaiLu, name: '白露'},
+              {value: result.data.WangKe, name: '万科'},
+              {value: result.data.SLZ, name: '善郎中'}
             ]
             this.showEcharts()
             this.dataListLoading = false
