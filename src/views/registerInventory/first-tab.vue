@@ -21,7 +21,6 @@
         </el-form-item>
         <el-form-item>
           <el-button icon="el-icon-search" @click="pageIndex = 1; getDataList()" size="mini">查询</el-button>
-          <el-button icon="el-icon-document" @click="handleDownload" size="mini">Export Excel</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -52,7 +51,7 @@
         </template>
       </el-table-column>
       <el-table-column type="selection" align="center" width="50"></el-table-column>
-      <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="StoreName" header-align="left" align="left" label="门店" min-width="80" :show-overflow-tooltip="true"></el-table-column>
 
       <!--20190901 使用者觉得这的药态查询不显眼，改成头部的下拉了选药态了-->
       <!--<el-table-column prop="CategoryName" header-align="center" align="center"-->
@@ -63,11 +62,11 @@
                        <!--&lt;!&ndash;:filter-method="filterHandler"&ndash;&gt;-->
       <!--</el-table-column>-->
       <el-table-column prop="CategoryName" header-align="center" align="center"
-                       label="药态" width="70" :show-overflow-tooltip="true"></el-table-column>
+                       label="药态" min-width="80" :show-overflow-tooltip="true"></el-table-column>
 
-      <el-table-column prop="ProductCode" header-align="center" align="center" label="药品编码" width="90"></el-table-column>
+      <el-table-column prop="ProductCode" header-align="center" align="center" label="药品编码" min-width="100"></el-table-column>
       <!--<el-table-column prop="ProductName" header-align="center" align="center" label="药名" min-width="80"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="药名" min-width="80">
+      <el-table-column header-align="center" align="center" label="药名" min-width="120">
         <template slot-scope="scope">
           <span :style="{color: scope.row.Quantity - scope.row.RedLine <= 0 ? '#e4393c' : ''}">{{scope.row.ProductName}}</span>
         </template>
@@ -79,25 +78,24 @@
       <el-table-column prop="OccupyQuantity" header-align="center" align="center" label="锁定" min-width="80"></el-table-column>
       <el-table-column prop="UsableQuantity" header-align="center" align="center" label="可用" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="AvgCostPrice" header-align="center" align="center" label="成本 (avg)" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="最近成本价" width="120" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <span>{{scope.row.LastCostPrice.toFixed(4)}}</span>
-        </template>
-      </el-table-column>
+      <!--<el-table-column header-align="center" align="center" label="最近成本价" width="120" :show-overflow-tooltip="true">-->
+        <!--<template slot-scope="scope">-->
+          <!--<span>{{scope.row.LastCostPrice.toFixed(4)}}</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
       <!--<el-table-column prop="Amount" header-align="center" align="center" label="成本总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
 
-      <!--<el-table-column prop="StoreSalePrice" header-align="center" align="center" label="门店售价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="门店售价" min-width="139" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <el-input-number v-if="scope.row.isDblclick===true"
-                           @blur="tableInputBlur(scope.row)"
-                           v-model="scope.row.StoreSalePrice" :precision="2"
-                           :min="0.01" :step="0.10" :max="10000" size="mini"></el-input-number>
-          <span v-else>{{Number(scope.row.StoreSalePrice).toFixed(2)}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column prop="ProfitAmount" header-align="center" align="center" label="毛利额" min-width="120"></el-table-column>
-      <el-table-column prop="ProfitPercent" header-align="center" align="center" label="毛利率" min-width="120"></el-table-column>
+      <el-table-column prop="StoreSalePrice" header-align="center" align="center" label="门店售价" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <!--<el-table-column header-align="center" align="center" label="门店售价" min-width="139" :show-overflow-tooltip="true">-->
+        <!--<template slot-scope="scope">-->
+          <!--<el-input-number v-if="scope.row.isDblclick===true"-->
+                           <!--@blur="tableInputBlur(scope.row)"-->
+                           <!--v-model="scope.row.StoreSalePrice" :precision="2"-->
+                           <!--:min="0.01" :step="0.10" :max="10000" size="mini"></el-input-number>-->
+          <!--<span v-else>{{Number(scope.row.StoreSalePrice).toFixed(2)}}</span>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
+
       <!--<el-table-column prop="SaleAmount" header-align="center" align="center" label="售价总价" min-width="80" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column header-align="center" align="center" label="库存(余量)" width="120" :show-overflow-tooltip="true">
         <template slot-scope="scope">
@@ -106,47 +104,27 @@
       </el-table-column>
       <el-table-column prop="RedLine" header-align="center" align="center" label="预警值" width="100" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="ProfitPercent" header-align="center" align="center" label="毛利" width="100" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column header-align="center" align="center" label="操作" min-width="80" :show-overflow-tooltip="true">
-        <template slot-scope="scope">
-          <el-button type="text" @click="addOrUpdateHandle(scope.row)">编辑</el-button>
-        </template>
-      </el-table-column>
+      <!--<el-table-column header-align="center" align="center" label="操作" min-width="80" :show-overflow-tooltip="true">-->
+        <!--<template slot-scope="scope">-->
+          <!--<el-button type="text" @click="addOrUpdateHandle(scope.row)">编辑</el-button>-->
+        <!--</template>-->
+      <!--</el-table-column>-->
     </el-table>
     <el-pagination
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[20, 50, 100,10000]"
+      :page-sizes="[20, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
     </el-pagination>
     <first-tab-add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataListChild"></first-tab-add-or-update>
-    <!--导出excel功能-->
-    <table ref="myExportExcel" style="display: none">
-      <tr>
-        <th v-for="val in thArr" v-text="val"></th>
-      </tr>
-      <tr v-for="item in dataList">
-        <td v-text="item.StoreName"></td>
-        <td v-text="item.CategoryName"></td>
-        <td v-text="item.ProductCode"></td>
-        <td v-text="item.ProductName"></td>
-        <td v-text="item.Specification"></td>
-        <td v-text="item.Unit"></td>
-        <td v-text="item.LastCostPrice"></td>
-        <td v-text="item.StoreSalePrice"></td>
-        <td v-text="item.ProfitPercent"></td>
-        <td v-text="item.ProfitAmount"></td>
-        <td v-text="item.Quantity"></td>
-      </tr>
-    </table>
   </div>
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
-import {myExportExcel} from '@/utils'
 import { mapGetters } from 'vuex'
 export default {
   name: 'stockFirst',
@@ -177,8 +155,7 @@ export default {
       dataList: [],
       totalPage: 1,
       dataListSelections: [],
-      categoryTypeArr: [],
-      thArr: ['门店','药态','药品编码','药名','规格','单位','最近一次进货价','门店售价','毛利率','毛利额','库存(余量)']
+      categoryTypeArr: []
     }
   },
   mounted () {
@@ -187,30 +164,6 @@ export default {
     }
   },
   methods: {
-    handleDownload() {
-      if (!this.dataList.length) {
-        this.$alert('没有任何数据，无法导出! ', '提示', {
-          confirmButtonText: '确定'
-        })
-        return false
-      }
-
-      // 先输入表格名称
-      this.$prompt('请输入Excel表名（不填默认为sheet）', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /.*/,
-        inputErrorMessage: '未输入表名'
-      }).then(({ value }) => {
-        // console.log(value) 这有点懵逼，为什么value变量换成name，得到undefined，脑壳痛啥子哟？？？
-        myExportExcel(this.$refs.myExportExcel, value) // 需要传入两个参数，一个table的dom节点，还有表格名称
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消导出Excel操作'
-        })
-      })
-    },
     selectionChangeHandle (val) {
       this.dataListSelections = val
     },

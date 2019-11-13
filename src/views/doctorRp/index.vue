@@ -1353,7 +1353,7 @@ export default {
           this.dataForm.Address = result.data[0].Address
           this.dataForm.UserId = result.data[0].Id
           this.dataForm.Code = result.data[0].Code
-          this.dataForm.RegisterAmount = 0 // 这两个没用，就只是提交的时候直接提交
+          // this.dataForm.RegisterAmount = 0 // 这两个没用，就只是提交的时候直接提交
         } else {
           this.$message.error(result.message)
         }

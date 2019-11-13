@@ -54,6 +54,7 @@ var router = new Router({
         {path: '/register/cashier', component: _import('cashier/index'), name: 'cashier', meta: {title: '收银', keepAlive: false}},
         {path: '/register/member', component: _import('member/index'), name: 'member', meta: {title: '会员管理', keepAlive: false}},
         {path: '/register/scheduling', component: _import('scheduling/index'), name: 'scheduling', meta: {title: '医生排班', keepAlive: false}},
+        {path: '/register/inventoryList', component: _import('registerInventory/index'), name: 'registerInventoryList', meta: {title: '前台库存详情', keepAlive: false}},
         /* 柜台模块End */
 
         /* 医生模块：待就诊Begin treatment、recipel */
