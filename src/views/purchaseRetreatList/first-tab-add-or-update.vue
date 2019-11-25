@@ -94,7 +94,7 @@
         categoryId: '',
 
         dataListAdd: [],
-        OrderTotalPrice: 0, // 采购单总价显示
+        OrderTotalPrice: 0, // 入库单总价显示
 
         rukuIsDisabled: false, // 入库时防止双击带来一些bug
         lastPosition: 0
@@ -124,7 +124,7 @@
               })
 
               this.categoryId = this.dataList.Items[0].CategoryId
-              this.categoryName = this.dataList.Items[0].CategoryName // 返回的采购单详情里每个药材对象中都包含药态，所以这儿取下巧
+              this.categoryName = this.dataList.Items[0].CategoryName // 返回的入库单详情里每个药材对象中都包含药态，所以这儿取下巧
 
               this.dataListLoading = false
             }

@@ -10,7 +10,7 @@ export function getLoginInfo () {
     params: requestParam('get')
   })
 }
-// 正式提交采购单(创建采购单)
+// 正式提交入库单(创建入库单)
 export function submitPurchase (params) {
   return request({
     url: requestUrl('/YstApiPurchaseOrder/Create'),
@@ -19,7 +19,7 @@ export function submitPurchase (params) {
   })
 }
 
-// 上面的接口创建采购单后，会生成很多历史采购列表
+// 上面的接口创建入库单后，会生成很多历史采购列表
 export function getPurchaseList (params) {
   return request({
     url: requestUrl('/YstApiPurchaseOrder/LoadData'),
@@ -27,7 +27,7 @@ export function getPurchaseList (params) {
     data: requestParam(params)
   })
 }
-// 有整个历史采购单的列表后，当然要有查看某条采购单的info了
+// 有整个历史入库单的列表后，当然要有查看某条入库单的info了
 export function getPurchaseInfo (params) {
   return request({
     url: requestUrl('/YstApiPurchaseOrder/Detail'),
@@ -44,7 +44,7 @@ export function deletePurchase (params) {
   })
 }
 
-// 修改purchase采购单为 已收货未入库状态
+// 修改purchase入库单为 已收货未入库状态
 export function handleStatus4 (params) {
   return request({
     url: requestUrl('/YstApiPurchaseOrder/FactoryDelivery'),
@@ -53,7 +53,7 @@ export function handleStatus4 (params) {
   })
 }
 
-// 待收货：采购单编辑数量和价格后的保存
+// 待收货：入库单编辑数量和价格后的保存
 export function editNumberAndPrice (params) {
   return request({
     url: requestUrl('/YstApiPurchaseOrder/Edit'),
@@ -61,7 +61,7 @@ export function editNumberAndPrice (params) {
     data: requestParam(params)
   })
 }
-// 已到货未入库：采购单编辑批号后的入库保存,同时采购单状态更新为10已入库
+// 已到货未入库：入库单编辑批号后的入库保存,同时入库单状态更新为10已入库
 export function editBatchNo (params) {
   return request({
     url: requestUrl('/YstApiPurchaseOrder/StockIn'),
@@ -72,8 +72,8 @@ export function editBatchNo (params) {
 
 
 
-// 20190930新增需求：采购退单相关逻辑
-// 创建 采购退单 // 初始为待审
+// 20190930新增需求：退货单相关逻辑
+// 创建 退货单 // 初始为待审
 export function createRetreat (params) {
   return request({
     url: requestUrl('/YstApiPurchaseOrder/Refund'),

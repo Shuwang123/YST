@@ -202,6 +202,7 @@
                 <el-option label="白露" value="9"></el-option>
                 <el-option label="万科" value="10"></el-option>
                 <el-option label="善郎中" value="11"></el-option>
+                <el-option label="美团" value="12"></el-option>
               </el-select>
             </el-form-item>
           </el-col>

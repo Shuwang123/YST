@@ -116,7 +116,7 @@
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
-      :page-sizes="[20, 50, 100,10000]"
+      :page-sizes="[20, 50, 100]"
       :page-size="pageSize"
       :total="totalPage"
       layout="prev, pager, next, jumper, sizes, total" background>
@@ -145,6 +145,7 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
+import request from '../../api/request'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import {myExportExcel} from '@/utils'
 import { mapGetters } from 'vuex'
@@ -187,29 +188,54 @@ export default {
     }
   },
   methods: {
-    handleDownload() {
-      if (!this.dataList.length) {
-        this.$alert('没有任何数据，无法导出! ', '提示', {
-          confirmButtonText: '确定'
-        })
-        return false
-      }
+    handleDownload () {
+      var params = {
+        PageIndex: this.pageIndex,
+        PageSize: this.pageSize,
+        IsPaging: this.IsPaging,
+        StoreId: this.fatherDataForm.StoreId, // 门店ID
+        ProductCodeOrBarCode: this.fatherDataForm.ProductCodeOrBarCode, // 产品编码
+        ProductName: this.fatherDataForm.ProductName, // 产品名称
+        SpellName: this.fatherDataForm.SpellName,
 
-      // 先输入表格名称
-      this.$prompt('请输入Excel表名（不填默认为sheet）', '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        inputPattern: /.*/,
-        inputErrorMessage: '未输入表名'
-      }).then(({ value }) => {
-        // console.log(value) 这有点懵逼，为什么value变量换成name，得到undefined，脑壳痛啥子哟？？？
-        myExportExcel(this.$refs.myExportExcel, value) // 需要传入两个参数，一个table的dom节点，还有表格名称
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '取消导出Excel操作'
-        })
-      })
+        // SupplierId: this.dataForm.SupplierId, // 供应商
+        RedLine: this.dataForm.RedLine,
+        BrandId: this.dataForm.BrandId,
+
+        // CategoryId: this.dataForm.CategoryId,
+        CategoryId: this.fatherDataForm.CategoryId,
+        Order: this.dataForm.Order
+      }
+      var url = request.downUrl + '/YstStoreInventory/LoadDataInventory'
+      // 附加参数
+      var href = url + '?toExcel=true'
+      var parameters = params
+      for (var name in parameters) {
+        href += '&' + name + '=' + encodeURIComponent(parameters[name])
+      }
+      window.location.href = href
+      // if (!this.dataList.length) {
+      //   this.$alert('没有任何数据，无法导出! ', '提示', {
+      //     confirmButtonText: '确定'
+      //   })
+      //   return false
+      // }
+      //
+      // // 先输入表格名称
+      // this.$prompt('请输入Excel表名（不填默认为sheet）', '提示', {
+      //   confirmButtonText: '确定',
+      //   cancelButtonText: '取消',
+      //   inputPattern: /.*/,
+      //   inputErrorMessage: '未输入表名'
+      // }).then(({ value }) => {
+      //   // console.log(value) 这有点懵逼，为什么value变量换成name，得到undefined，脑壳痛啥子哟？？？
+      //   myExportExcel(this.$refs.myExportExcel, value) // 需要传入两个参数，一个table的dom节点，还有表格名称
+      // }).catch(() => {
+      //   this.$message({
+      //     type: 'info',
+      //     message: '取消导出Excel操作'
+      //   })
+      // })
     },
     selectionChangeHandle (val) {
       this.dataListSelections = val

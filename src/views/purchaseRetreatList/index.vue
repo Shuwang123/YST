@@ -19,6 +19,13 @@
                             <el-option v-for="item in SupplierIdArr" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>
                         </el-select>
                     </el-form-item>
+                  <el-form-item label="" v-show="isShow">
+                    <el-select v-model="num" placeholder="入库单状态" @change="getChildDataList()" clearable @clear="getChildDataList"
+                               size="mini"
+                               style="width: 160px">
+                      <el-option v-for="item in purchaseStatus" :key="item.text" :label="item.text" :value="item.val"></el-option>
+                    </el-select>
+                  </el-form-item>
                     <el-form-item>
                         <el-input v-model="dataForm.code" placeholder="退单单号" size="mini" style="width: 140px"
                                   @keyup.enter.native="getChildDataList" @clear="getChildDataList" clearable></el-input>
@@ -100,7 +107,24 @@
           {child: false},
           {child: false}
         ],
+        purchaseStatus: [{
+          text: '全部',
+          val: 0
+        }, {
+          text: '作废',
+          val: -1
+        }, {
+          text: '待审',
+          val: 6
+        }, {
+          text: '已审',
+          val: 7
+        }, {
+          text: '已出库（已退货）',
+          val: 8
+        }],
         num: 0,
+        isShow: true,
         value6: []
       }
     },
@@ -177,19 +201,19 @@
           this.isVisible.forEach((item, index) => {
             if (item.child === true) {
               if (index === 0) {
-                this.num = 0
+                this.num = 0; this.isShow = true
                 this.$refs.firstTab.getDataList(this.num) // 全部 -1 6,7,8 采购那边的全部是-1 1，4，10 // 都是-1时通过单据类型1，2区别
               } else if (index === 1) {
-                this.num = 6
+                this.num = 6; this.isShow = false
                 this.$refs.firstTab.getDataList(this.num) // 6 待审
               } else if (index === 2) {
-                this.num = 7
+                this.num = 7; this.isShow = false
                 this.$refs.firstTab.getDataList(this.num) // 7 已审
               } else if (index === 3) {
-                this.num = 8
+                this.num = 8; this.isShow = false
                 this.$refs.firstTab.getDataList(this.num) // 8 已入库（已完成）
               } else if (index === 4) {
-                this.num = -1
+                this.num = -1; this.isShow = false
                 this.$refs.firstTab.getDataList(this.num) // -1 作废
               }
             }

@@ -13,7 +13,7 @@
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50"></el-table-column>
       <el-table-column prop="StoreName" header-align="center" align="center" label="采购门店" width="100"></el-table-column>
-      <el-table-column prop="Code" header-align="center" align="center" label="采购单号" width="100"></el-table-column>
+      <el-table-column prop="Code" header-align="center" align="center" label="入库单号" width="100"></el-table-column>
       <el-table-column prop="SupplierName" header-align="center" align="center" label="供应商" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column header-align="center" align="center" label="采购时间" min-width="110">
         <template slot-scope="scope">
@@ -22,6 +22,7 @@
       </el-table-column>
 
       <el-table-column prop="Quantity" header-align="center" align="center" label="采购总量" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Amount" header-align="center" align="center" label="采购金额(元)" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="CreatedByName" header-align="center" align="center" label="操作人" width="" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="PurchaseOrderStatus" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>
@@ -68,7 +69,7 @@ export default {
       dataList: [],
       dataListSelections: [],
 
-      status: 0 // 采购单的状态、1 4 10 -1
+      status: 0 // 入库单的状态、1 4 10 -1
     }
   },
   components: { FirstTabAddOrUpdate },
@@ -83,7 +84,7 @@ export default {
     },
     getDataList (status) {
       this.status = status
-      var params = { // 对应采购单状态status 1 4 10 -1
+      var params = { // 对应入库单状态status 1 4 10 -1
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: true,
@@ -136,7 +137,7 @@ export default {
       })
     },
     handelDelete (id) {
-      this.$confirm(`确定对[id=${id}]的采购单进行 '删除' 操作?`, '提示', {
+      this.$confirm(`确定对[id=${id}]的入库单进行 '删除' 操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
@@ -158,7 +159,7 @@ export default {
       })
     },
     handelStatus4 (id) {
-      this.$confirm(`确定对[id=${id}]的采购单进行 '添加到未入库列表' 操作?`, '提示', {
+      this.$confirm(`确定对[id=${id}]的入库单进行 '添加到未入库列表' 操作?`, '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'

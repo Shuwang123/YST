@@ -41,10 +41,10 @@ var router = new Router({
         /* 供应商模块：供应商Begin */
         {path: '/drugs/supplierList', component: _import('supplier/index'), name: 'supplierList', meta: {title: '供应商列表', keepAlive: false}},
         /* 供应商模块End */
-        /* 采购单模块：采购单Begin 创建采购单、之后生成采购单列表 */
-        {path: '/drugs/purchase', component: _import('purchase/index'), name: 'purchaseList', meta: {title: '采购单', keepAlive: false}},
-        {path: '/drugs/purchaseList', component: _import('purchaseList/index'), name: 'purchaseListAll', meta: {title: '采购单列表', keepAlive: false}},
-        /* 采购单模块End */
+        /* 入库单模块：入库单Begin 创建入库单、之后生成入库单列表 */
+        {path: '/drugs/purchase', component: _import('purchase/index'), name: 'purchaseList', meta: {title: '入库单', keepAlive: false}},
+        {path: '/drugs/purchaseList', component: _import('purchaseList/index'), name: 'purchaseListAll', meta: {title: '入库单列表', keepAlive: false}},
+        /* 入库单模块End */
         /* 库存管理模块：Begin */
         {path: '/drugs/inventoryList', component: _import('inventory/index'), name: 'inventoryList', meta: {title: '库存详情', keepAlive: false}},
         /* 库存管理模块End */
@@ -68,12 +68,12 @@ var router = new Router({
         {path: '/store/drugsReport', component: _import('reportDrugsForm/index'), name: 'reportDrugsForm', meta: {title: '药品使用报表', keepAlive: false}},
         /* 门诊报表 end */
 
-        /*采购退单：2019.09.30新增需求*/
-        {path: '/retreat', component: _import('purchaseRetreat/index'), name: 'retreat', meta: {title: '采购退单', keepAlive: false}},
+        /*退货单：2019.09.30新增需求*/
+        {path: '/retreat', component: _import('purchaseRetreat/index'), name: 'retreat', meta: {title: '退货单', keepAlive: false}},
         {path: '/retreatList', component: _import('purchaseRetreatList/index'), name: 'retreatList', meta: {title: '退单列表', keepAlive: false}},
 
         /*开方对应的退单功能，也是新增需求，和收银后退费不同，前者还没有出库只是退费；*/
-        /*而这个是退单，包括了药材入库和收银扣除，使用退单得根据实际情况来用这个功能*/
+        /* 而这个是退单，包括了药材入库和收银扣除，使用退单得根据实际情况来用这个功能 */
         {path: '/offsetList', component: _import('doctorRpOffsetList/index'), name: 'offsetList', meta: {title: '开方退单列表', keepAlive: false}},
         {path: '/offsetPage', component: _import('doctorRpOffsetPage/index'), name: 'offsetPage', meta: {title: '开方退单', keepAlive: false}}
       ]

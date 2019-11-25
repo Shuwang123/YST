@@ -11,9 +11,9 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/proxyApi': {
-        // target: 'http://192.168.1.101:8080/mall',//http://joewee.mynatapp.cc
-        //target: 'http://api.slzzyy.com:8080', // http://joewee.mynatapp.cc
-         target: 'http://api.dev.slzzyy.com:8080', // http://joewee.mynatapp.cc
+       // target: 'http://mj.slzzyy.com:8080',//替换域名同时修改图标文字一善堂&nbsp;MJ
+        target: 'http://api.slzzyy.com:8080',
+        // target: 'http://api.dev.slzzyy.com:8080',
         changeOrigin: true,
         pathRewrite: {'^/proxyApi' : ''},
         onProxyReq (proxyReq, req, res) {

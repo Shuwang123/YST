@@ -77,7 +77,7 @@ export default {
       value6: [],
       dataForm: {
         BillCode: '', // 单据编码
-        BillType: '', // 单据类型 是采购单加还是开方减这个意思吗？
+        BillType: '', // 单据类型 是入库单加还是开方减这个意思吗？
         StartDate: '',
         EndDate: ''
       },

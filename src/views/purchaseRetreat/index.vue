@@ -303,7 +303,7 @@
       handleChange () {
         this.dataList.push() // this.purchaseFormal 正式购买
       },
-      // 创建采购退单
+      // 创建退货单
       createRetreat () {
         this.isDisable = true
         setTimeout(() => {

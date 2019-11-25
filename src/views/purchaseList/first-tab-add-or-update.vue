@@ -1,23 +1,23 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'采购单详情'" :width="isAddActive === false ? '1005px' : '85%'"
+    :title="'入库单详情'" :width="isAddActive === false ? '1105px' : '89%'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <el-container v-loading="dataListLoading"><!-- display: none -->
-      <el-aside :width="isAddActive === false ? '100%' : '60%'">
+      <el-aside :width="isAddActive === false ? '100%' : '75%'">
         <div class="ownScrollbar" ref="ownOnscroll" @scroll="scroll" style="min-height: 500px;max-height: 500px;overflow-y: scroll;">
           <!--头部状态-->
           <el-row>
             <el-col style="padding: 0 50px">
               <el-steps :active="stepActive" process-status="success" finish-status="success" align-center>
-                <el-step title="待收货(已创建采购单)" description="药房还未录入实际到货量、采购价、门店售价"></el-step>
+                <el-step title="待收货(已创建入库单)" description="药房还未录入实际到货量、采购价、门店售价"></el-step>
                 <el-step title="未入库" description="药房还未录入商品批次号"></el-step>
                 <el-step title="已入库" description="整个采购计划已完毕"></el-step>
               </el-steps>
             </el-col>
           </el-row>
-          <!--头部采购单其他信息-->
+          <!--头部入库单其他信息-->
           <el-row>
             <el-col :span="8"><p>采购人：<span v-if="dataList !== null">{{dataList.CreatedByName}}</span></p></el-col>
             <el-col :span="8"><p>供应商：<span v-if="dataList !== null">{{dataList.SupplierName}}</span></p></el-col>
@@ -49,6 +49,8 @@
             <el-table-column prop="ProductCode" align="center" label="商品编码" fixed min-width="85" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="CategoryName" header-align="center" align="center" label="药态" fixed min-width="70" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称" fixed min-width="80" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="Specification" header-align="center" align="center" label="规格" fixed min-width="50" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="Unit" header-align="center" align="center" label="单位" fixed min-width="50" :show-overflow-tooltip="true"></el-table-column>
 
             <!--采购数量-->
             <el-table-column v-if="editType === 'A'" :key="Math.random()" label="采购数量" header-align="center" :align="$store.state.common.align" width="125">
@@ -71,6 +73,9 @@
               </template>
             </el-table-column>
             <el-table-column v-else prop="CostPrice" header-align="center" label="现采购价" align="center"></el-table-column>
+            <el-table-column prop="StoreSalePrice"  header-align="center" align="center" label="门店售价"></el-table-column>
+            <el-table-column prop="ProfitAmount"  header-align="center" align="center" label="毛利额"></el-table-column>
+            <el-table-column prop="ProfitPercent"  header-align="center" align="center" label="毛利率"></el-table-column>
 
             <!--门店售价填写-->
             <!--<el-table-column v-if="editType === 'B'" :key="Math.random()" label="售价填写" prop="" header-align="center" :align="$store.state.common.align" width="110">-->
@@ -135,7 +140,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <p style="font-size: 16px;height: 40px;line-height: 40px">采购单总金额：￥
+          <p style="font-size: 16px;height: 40px;line-height: 40px">入库单总金额：￥
             <span style="color: #e4393c">{{OrderTotalPrice.toFixed(2)}}</span>
           </p>
         </div>
@@ -283,7 +288,7 @@
       </el-button>
     </span>
     <span v-else-if="stepActive === 0" slot="footer" class="dialog-footer">
-      <el-button @click="excelExports('purchase')">导出Excel(采购单)</el-button>
+      <el-button @click="excelExports('purchase')">导出Excel(入库单)</el-button>
     </span>
     <span v-else-if="stepActive === 2" slot="footer" class="dialog-footer">
       <el-button @click="chenxiPrint()">打印入库单</el-button>
@@ -327,7 +332,7 @@ export default {
 
       isAddActive: false,
       dataListAdd: [],
-      OrderTotalPrice: 0, // 采购单总价显示
+      OrderTotalPrice: 0, // 入库单总价显示
       pickerOptions_0: {
         disabledDate (time) {
           return time.getTime() > Date.now()
@@ -580,7 +585,7 @@ export default {
     //     }
     //   })
     // },
-    // 获取某个采购单详情info
+    // 获取某个入库单详情info
     init (id, type) {
       this.visible = true
       this.dataListLoading = true
@@ -597,13 +602,13 @@ export default {
             this.dataList = result.data
             console.log(result.data.Items)
 
-            // 2019.06.01 展示采购单总价
+            // 2019.06.01 展示入库单总价
             this.dataList.Items.forEach(item => {
               this.OrderTotalPrice += item.Quantity * item.CostPrice
             })
 
             this.categoryId = this.dataList.Items[0].CategoryId
-            this.categoryName = this.dataList.Items[0].CategoryName // 返回的采购单详情里每个药材对象中都包含药态，所以这儿取下巧
+            this.categoryName = this.dataList.Items[0].CategoryName // 返回的入库单详情里每个药材对象中都包含药态，所以这儿取下巧
             switch (result.data.Status) {
               case -1:
                 this.stepActive = -1
@@ -627,7 +632,7 @@ export default {
     excelExports (excelType) {
       var domTick
       switch (excelType) {
-        case 'purchase': // 药房 采购单导出，发厂商用
+        case 'purchase': // 药房 入库单导出，发厂商用
           domTick = this.$refs.myExportExcelPurchase
           break
         case 'caiwu': // 财务 导出
@@ -713,7 +718,7 @@ export default {
                 Quantity: item.editNum, // 采购g数
                 CostPrice: item.editPrice, // 本次进价
                 LastCostPirce: item.LastCostPirce, // 上一次进价
-                // StoreSalePrice: item.StoreSalePrice, // 门店售价：这三个值，直接来源于添加药材那，用来作为初始值在创建采购单的时候直接传递给后端
+                // StoreSalePrice: item.StoreSalePrice, // 门店售价：这三个值，直接来源于添加药材那，用来作为初始值在创建入库单的时候直接传递给后端
 
                 SapProductCode: item.SapProductCode,
                 SupplierId: this.dataList.SupplierId,
@@ -762,7 +767,7 @@ export default {
               Quantity: item.editNum, // 采购g数
               CostPrice: item.editPrice, // 本次进价
               LastCostPirce: item.LastCostPirce, // 上一次进价
-              // StoreSalePrice: item.StoreSalePrice, // 门店售价：这三个值，直接来源于添加药材那，用来作为初始值在创建采购单的时候直接传递给后端
+              // StoreSalePrice: item.StoreSalePrice, // 门店售价：这三个值，直接来源于添加药材那，用来作为初始值在创建入库单的时候直接传递给后端
 
               SapProductCode: item.SapProductCode,
               SupplierId: this.dataList.SupplierId,

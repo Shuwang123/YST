@@ -306,6 +306,10 @@ export default {
         {
           label: '善郎中',
           value: 11
+        },
+        {
+          label: '美团',
+          value: 12
         }
       ],
       registerAllData: {},
@@ -326,7 +330,7 @@ export default {
       this.dataForm.UserId = row.Id
       this.dataForm.Code = row.Code
     },
-    // 获取某个采购单详情info
+    // 获取某个入库单详情info
     init (row) {
       this.outerVisible = true
       this.dataListLoading = true

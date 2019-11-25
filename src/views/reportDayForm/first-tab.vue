@@ -28,9 +28,9 @@
             <caption style="height: 30px;line-height: 30px;font-weight: 700;text-align: left;font-size: 16px">账目核对：</caption>
             <tr height="30">
               <td width="100">总金额</td>
-              <td colspan="2" align="left" style="padding-left: 15px">{{dataList.OrderAmount}}</td>
+              <td colspan="2" align="left" style="padding-left: 15px">{{Number(dataList.OrderAmount-offsetAllAmount).toFixed(2)}}</td>
               <td width="100">退单总金额</td>
-              <td colspan="2" align="left" style="padding-left: 15px">{{offsetAllAmount.toFixed(2)}}</td>
+              <td colspan="2" align="left" style="padding-left: 15px">{{Number(offsetAllAmount).toFixed(2)}}</td>
             </tr>
             <tr height="30">
               <td width="100">应收金额</td>
@@ -76,8 +76,8 @@
               <td width="100" align="left">{{dataList.WangKe}}</td>
               <td width="100">善郎中</td>
               <td width="100" align="left">{{dataList.SLZ}}</td>
-              <td width="100"></td>
-              <td width="100" align="left"></td>
+              <td width="100">美团</td>
+              <td width="100" align="left">{{dataList.MT}}</td>
             </tr>
           </table>
 
@@ -97,54 +97,54 @@
               <td width="100">{{dataList.ZFRegisterAmount}}</td>
               <td width="100">{{dataList.RegisterMemberCount}}</td>
             </tr>
-            <tr height="25">
-              <td width="100">中药费</td>
-              <td width="100">{{dataList.CNDrugAmount}}</td>
-              <td width="100">{{dataList.YBCNDrugAmount}}</td>
-              <td width="100">{{dataList.ZFCNDrugAmount}}</td>
-              <td width="100">{{dataList.CNDrugMemberCount}}</td>
-            </tr>
+            <!--<tr height="25">-->
+              <!--<td width="100">中药费</td>-->
+              <!--<td width="100">{{dataList.CNDrugAmount}}</td>-->
+              <!--<td width="100">{{dataList.YBCNDrugAmount}}</td>-->
+              <!--<td width="100">{{dataList.ZFCNDrugAmount}}</td>-->
+              <!--<td width="100">{{dataList.CNDrugMemberCount}}</td>-->
+            <!--</tr>-->
             <tr height="25">
               <td width="100">饮片</td>
-              <td width="100">{{dataList.CNDrugYPAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.YBCNDrugYPAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.ZFCNDrugYPAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.CNDrugYPMemberCount}}</td>
+              <td width="100">{{Number(dataList.CNDrugYPAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.YBCNDrugYPAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.ZFCNDrugYPAmount).toFixed(2)}}</td>
+              <td rowspan="4" width="100">{{dataList.CNDrugMemberCount}}</td>
             </tr>
             <tr height="25">
               <td width="100">精品饮片</td>
-              <td width="100">{{dataList.CNDrugJBYPAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.YBCNDrugJBYPAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.ZFCNDrugJBYPAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.CNDrugJBYPMemberCount}}</td>
+              <td width="100">{{Number(dataList.CNDrugJBYPAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.YBCNDrugJBYPAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.ZFCNDrugJBYPAmount).toFixed(2)}}</td>
+              <!--<td width="100">{{dataList.CNDrugJBYPMemberCount}}</td>-->
             </tr>
             <tr height="25">
               <td width="100">饮片3</td>
-              <td width="100">{{dataList.CNDrugYP3Amount.toFixed(2)}}</td>
-              <td width="100">{{dataList.YBCNDrugYP3Amount.toFixed(2)}}</td>
-              <td width="100">{{dataList.ZFCNDrugYP3Amount.toFixed(2)}}</td>
-              <td width="100">{{dataList.CNDrugYP3MemberCount}}</td>
+              <td width="100">{{Number(dataList.CNDrugYP3Amount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.YBCNDrugYP3Amount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.ZFCNDrugYP3Amount).toFixed(2)}}</td>
+              <!--<td width="100">{{dataList.CNDrugYP3MemberCount}}</td>-->
             </tr>
             <tr height="25">
               <td width="100">贵细</td>
-              <td width="100">{{dataList.CNDrugGXAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.YBCNDrugGXAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.ZFCNDrugGXAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.CNDrugGXMemberCount}}</td>
+              <td width="100">{{Number(dataList.CNDrugGXAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.YBCNDrugGXAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.ZFCNDrugGXAmount).toFixed(2)}}</td>
+              <!--<td width="100">{{dataList.CNDrugGXMemberCount}}</td>-->
             </tr>
             <tr height="25">
               <td width="100">理疗</td>
-              <td width="100">{{dataList.LLFAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.YBLLFAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.ZFLLFAmount.toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.LLFAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.YBLLFAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.ZFLLFAmount).toFixed(2)}}</td>
               <td width="100">{{dataList.LLFMemberCount}}</td>
             </tr>
 
             <tr height="25">
               <td width="100">西药费</td>
-              <td width="100">{{dataList.ENDrugAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.YBENDrugAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.ZFENDrugAmount.toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.ENDrugAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.YBENDrugAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.ZFENDrugAmount).toFixed(2)}}</td>
               <td width="100">{{dataList.ENDrugMemberCount}}</td>
             </tr>
             <tr height="25">
@@ -170,12 +170,12 @@
             </tr>
             <tr height="25">
               <td width="100">产品</td>
-              <td width="100">{{dataList.ProductAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.YBProductAmount.toFixed(2)}}</td>
-              <td width="100">{{dataList.ZFProductAmount.toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.ProductAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.YBProductAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.ZFProductAmount).toFixed(2)}}</td>
               <td width="100">{{dataList.ProductMemberCount}}</td>
             </tr>
-            <tr height="25">
+            <tr height="25" v-show="false">
               <td width="100" bgcolor="#f1f2f7">理疗科（本部）</td>
               <td width="100" v-if="!isEditing">{{dataList.LLAmount}}</td>
               <td width="100" v-if="!isEditing">{{dataList.YBLLAmount}}</td>
@@ -202,7 +202,7 @@
                 </el-form-item>
               </td>
             </tr>
-            <tr height="25">
+            <tr height="25" v-show="false">
               <td width="100" bgcolor="#f1f2f7">小儿推拿（本部）</td>
               <td width="100" v-if="!isEditing">{{dataList.ChildAmount}}</td>
               <td width="100" v-if="!isEditing">{{dataList.YBChildAmount}}</td>
@@ -229,7 +229,7 @@
                 </el-form-item>
               </td>
             </tr>
-            <tr height="25">
+            <tr height="25" v-show="false">
               <td width="100" bgcolor="#f1f2f7">美容科（本部）</td>
               <td width="100" v-if="!isEditing">{{dataList.CosmetologyAmount}}</td>
               <td width="100" v-if="!isEditing">{{dataList.YBCosmetologyAmount}}</td>
@@ -256,7 +256,7 @@
                 </el-form-item>
               </td>
             </tr>
-            <tr height="25">
+            <tr height="25" v-show="false">
               <td width="100" bgcolor="#f1f2f7">康复科（陈国正）</td>
               <td width="100" v-if="!isEditing">{{dataList.Recovered1Amount}}</td>
               <td width="100" v-if="!isEditing">{{dataList.YBRecovered1Amount}}</td>
@@ -283,7 +283,7 @@
                 </el-form-item>
               </td>
             </tr>
-            <tr height="25">
+            <tr height="25" v-show="false">
               <td width="100" bgcolor="#f1f2f7">康复科1（毛泰）</td>
               <td width="100" v-if="!isEditing">{{dataList.Recovered2Amount}}</td>
               <td width="100" v-if="!isEditing">{{dataList.YBRecovered2Amount}}</td>
@@ -310,7 +310,7 @@
                 </el-form-item>
               </td>
             </tr>
-            <tr height="25">
+            <tr height="25" v-show="false">
               <td width="100" bgcolor="#f1f2f7">线上</td>
               <td width="100" v-if="!isEditing">{{dataList.OnlineAmount}}</td>
               <td width="100" v-if="!isEditing">{{dataList.YBOnlineAmount}}</td>
@@ -337,7 +337,7 @@
                 </el-form-item>
               </td>
             </tr>
-            <tr height="25">
+            <tr height="25" v-show="false">
               <td width="100" bgcolor="#f1f2f7">美团</td>
               <td width="100" v-if="!isEditing">{{dataList.MeiTuanAmount}}</td>
               <td width="100" v-if="!isEditing">{{dataList.YBMeiTuanAmount}}</td>
@@ -374,12 +374,13 @@
       <el-row>
         <el-col :span="24">
           <div ref="container" style="width: 100%;min-width:650px; max-width: 750px;height: 400px;"></div>
+          <div ref="container1" style="width: 100%;min-width:650px; max-width: 750px;height: 400px;"></div>
         </el-col>
         <el-col :span="6" :offset="18">
           <el-button size="mini" @click="editSubmit()">确认修改</el-button>
         </el-col>
         <el-col :span="24">
-          <div style="height: 200px"></div>
+          <div style=""></div>
         </el-col>
         <el-col :span="24">
           <el-button size="mini" @click="chenxiPrint()">打印当前报表</el-button>
@@ -508,6 +509,103 @@ export default {
             {value: 0, name: '会员卡'}
           ]
         } ]
+      },
+      echartsOption1: {
+        title: {
+          text: '收费明细占比',
+          subtext: '饼图展示',
+          formatter: '{b}<br/> {c} ({d}%)'
+        },
+        legend: {
+          orient: 'vertical',
+          x: 'right',
+          y: 'middle',
+          data: ['挂号费', '饮片', '精品饮片', '饮片3', '贵细', '理疗', '西药费', '产品']
+        },
+        toolbox: {
+          show: true,
+          // orient: 'vertical',
+          feature: {
+            dataView: {show: true, readOnly: false},
+            magicType: {show: true, type: ['line', 'bar']},
+            restore: {show: true},
+            saveAsImage: {show: true}
+          }
+        },
+        tooltip: {
+          trigger: 'item',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          padding: [0, 10],
+          textStyle: {
+            color: '#fff',
+            fontSize: 14,
+            lineHeight: '14px'
+          },
+          position: function (point, params, dom, rect, size) {
+            return [point[0] + 10, point[1] - dom.offsetHeight - 10]
+          },
+          formatter: function (params) {
+            var res = ''
+            res += params.name + ' <br/> ' + params.value + '&nbsp;元<br/>' + '占比&nbsp;' + params.percent + '%'
+            // console.log(params)
+            return res
+          }
+        },
+
+        series: [{
+          name: '',
+          type: 'pie',
+          // center: ['79%', '19%'],
+          radius: ['0%', '55%'],
+          itemStyle: {
+            emphasis: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: 'rgba(0, 0, 0, 0.8)'
+            }
+          },
+          labelLine: {
+
+          },
+          label: {
+            normal: {
+              formatter: '{b|{b}}：\n {c}￥{per|{d}%}',
+              backgroundColor: '#f1f2f7',
+              borderColor: '#eee',
+              borderWidth: 1,
+              borderRadius: 4,
+              shadowBlur: 1, // 水玉度
+              shadowOffsetX: 1,
+              shadowOffsetY: 1,
+              shadowColor: '#999',
+              padding: [0, 7],
+              rich: {
+                b: {
+                  color: '#999',
+                  lineHeight: 22,
+                  align: 'center'
+                },
+                per: {
+                  color: '#eee',
+                  backgroundColor: '#334455',
+                  align: 'right',
+                  padding: [2, 4],
+                  borderRadius: 2
+                }
+              }
+            }
+          },
+          data: [
+            {value: 0, name: '挂号费'},
+            {value: 0, name: '饮片'},
+            {value: 0, name: '精品饮片'},
+            {value: 0, name: '饮片3'},
+            {value: 0, name: '贵细'},
+            {value: 0, name: '理疗'},
+            {value: 0, name: '西药费'},
+            {value: 0, name: '产品'}
+          ]
+        } ]
       }
 
     }
@@ -521,10 +619,16 @@ export default {
   methods: {
     showEcharts () {
       var dom = this.$refs.container
+      var dom1 = this.$refs.container1
       var myChart = echarts.init(dom)
+      var myChart1 = echarts.init(dom1)
       if (this.echartsOption && typeof this.echartsOption === 'object') {
         myChart.resize()
         myChart.setOption(this.echartsOption, true)
+      }
+      if (this.echartsOption1 && typeof this.echartsOption1 === 'object') {
+        myChart1.resize()
+        myChart1.setOption(this.echartsOption1, true)
       }
     },
     // 这个是查询某门店当日的：患者全部挂号列表
@@ -563,7 +667,18 @@ export default {
               {value: result.data.MemberPay, name: '会员卡'},
               {value: result.data.BaiLu, name: '白露'},
               {value: result.data.WangKe, name: '万科'},
-              {value: result.data.SLZ, name: '善郎中'}
+              {value: result.data.SLZ, name: '善郎中'},
+              {value: result.data.MT, name: '美团'}
+            ]
+            this.echartsOption1.series[0].data = [
+              {value: result.data.RegisterAmount, name: '挂号费'},
+              {value: result.data.CNDrugYPAmount, name: '饮片'},
+              {value: result.data.CNDrugJBYPAmount, name: '精品饮片'},
+              {value: result.data.CNDrugYP3Amount, name: '饮片3'},
+              {value: result.data.CNDrugGXAmount, name: '贵细'},
+              {value: result.data.LLFAmount, name: '理疗'},
+              {value: result.data.ENDrugAmount, name: '西药费'},
+              {value: result.data.ProductAmount, name: '产品'}
             ]
             this.showEcharts()
             this.dataListLoading = false
@@ -645,7 +760,7 @@ export default {
     chenxiPrint () {
       this.timeShow = true
       this.$nextTick(() => {
-        var printHTML = document.getElementById("dayReportForm").innerHTML // 获取要打印的内容
+        var printHTML = document.getElementById('dayReportForm').innerHTML // 获取要打印的内容
         var page = window.open('', '_blank') // 打开一个新窗口，用于打印
         page.document.write(printHTML) // 写入打印页面的内容
         page.print() // 打印
@@ -659,7 +774,7 @@ export default {
         this.timeShow = false
         page.close() // 关闭打印窗口
       })
-    },
+    }
   }
 }
 </script>

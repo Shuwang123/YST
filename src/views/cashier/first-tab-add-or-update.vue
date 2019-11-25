@@ -390,7 +390,8 @@ export default {
         {label: '会员卡', value: 8},
         {label: '白露', value: 9},
         {label: '万科', value: 10},
-        {label: '善郎中', value: 11}
+        {label: '善郎中', value: 11},
+        {label: '美团', value: 12}
       ],
       isOKClick: false
     }

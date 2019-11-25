@@ -15,11 +15,17 @@ const service = axios.create({
   },
   // baseURL: process.env.NODE_ENV !== 'production' && process.env.OPEN_PROXY ? '/proxyApi/' :  process.env.API_URL
   // 为什么一直报错：POST https://www.easy-mock.com/mock/5c6a25ab218aad2259a06bc7/example/YstApiMenu/LoadData 404 (Not Found)
-  baseURL: '/proxyApi'
+  baseURL: process.env.NODE_ENV === 'development' ? '/proxyApi' : '/'
+ // baseURL: '/proxyApi'
   // baseURL: '/'
 })
- service.baseURL = '/proxyApi'
-// service.baseURL = ''
+// service.baseURL = '/proxyApi'
+// service.baseURL
+ service.baseURL = process.env.NODE_ENV === 'development' ? '/proxyApi' : ''
+
+ //  service.downUrl = 'http://api.dev.slzzyy.com:8080'
+  service.downUrl = 'http://api.slzzyy.com:8080'
+ //   service.downUrl = 'http://mj.slzzyy.com:8080'
 
 // request拦截器
 service.interceptors.request.use(config => {

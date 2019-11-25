@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'采购单详情'" :width="isAddActive === false ? '60%' : '85%'"
+    :title="'入库单详情'" :width="isAddActive === false ? '60%' : '85%'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose">
     <!--<el-col><div style="border-top: 1px dashed #ccc;padding-top: 10px;font-weight: 900">别名（选填）</div></el-col>-->
@@ -11,7 +11,7 @@
           <el-row>
             <el-col style="padding: 0 50px">
               <el-steps :active="stepActive" process-status="success" finish-status="success" align-center>
-                <el-step title="待收货(已创建采购单)" description="录入实际到货量和采购价格"></el-step>
+                <el-step title="待收货(已创建入库单)" description="录入实际到货量和采购价格"></el-step>
                 <el-step title="未入库" description="药房录入商品批次号"></el-step>
                 <el-step title="已入库" description="整个采购计划已完毕"></el-step>
               </el-steps>
@@ -261,7 +261,7 @@ export default {
         }
       })
     },
-    // 获取某个采购单详情info
+    // 获取某个入库单详情info
     init (id, type) {
       this.visible = true
       this.dataListLoading = true
@@ -271,7 +271,7 @@ export default {
           if (result.code === '0000') {
             this.dataList = result.data
             this.categoryId = this.dataList.Items[0].CategoryId
-            this.categoryName = this.dataList.Items[0].CategoryName // 返回的采购单详情里每个药材对象中都包含药态，所以这儿取下巧
+            this.categoryName = this.dataList.Items[0].CategoryName // 返回的入库单详情里每个药材对象中都包含药态，所以这儿取下巧
             switch (result.data.Status) {
               case -1:
                 this.stepActive = -1
