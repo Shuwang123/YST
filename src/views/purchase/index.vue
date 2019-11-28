@@ -48,6 +48,7 @@
       <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="100" label="商品编码"></el-table-column>
       <el-table-column prop="ShowName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
       <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Dosage" header-align="center" :align="$store.state.common.align" label="剂型"></el-table-column>
       <el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>
       <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="进价" min-width="110">-->
         <!--<template slot-scope="scope">-->

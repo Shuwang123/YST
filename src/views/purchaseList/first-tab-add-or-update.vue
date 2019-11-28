@@ -50,6 +50,7 @@
             <el-table-column prop="CategoryName" header-align="center" align="center" label="药态" fixed min-width="70" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称" fixed min-width="80" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="Specification" header-align="center" align="center" label="规格" fixed min-width="50" :show-overflow-tooltip="true"></el-table-column>
+            <el-table-column prop="Dosage" header-align="center" align="center" label="剂型" fixed min-width="50" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column prop="Unit" header-align="center" align="center" label="单位" fixed min-width="50" :show-overflow-tooltip="true"></el-table-column>
 
             <!--采购数量-->
@@ -166,9 +167,9 @@
                 <td>商品编码</td>
                 <td>商品名称</td>
                 <td>规格</td>
-                <td>生成厂家</td>
-
+                <td>剂型</td>
                 <td>单位</td>
+                <td>生成厂家</td>
                 <td>数量</td>
                 <td>进价</td>
                 <td>金额</td>
@@ -179,9 +180,9 @@
                 <td width="70">{{item.ProductCode}}</td>
                 <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.ProductName}}</p></td>
                 <td width="70" align="center"><p style="width: 70px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.Specification}}</p></td>
-                <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{dataList.SupplierName}}</p></td>
-
+                <td width="70" align="center"><p style="width: 70px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.Dosage}}</p></td>
                 <td width="50">{{item.Unit}}</td>
+                <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{dataList.SupplierName}}</p></td>
                 <td width="70">{{item.Quantity}}</td>
                 <td width="70">{{item.CostPrice.toFixed(4)}}</td>
                 <td width="70">{{(item.Quantity * item.CostPrice).toFixed(2)}}</td>

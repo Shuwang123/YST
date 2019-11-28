@@ -56,6 +56,7 @@
 
       <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="50" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Specification" header-align="center" align="center" label="规格" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Dosage" header-align="center" align="center" label="剂型" width="" :show-overflow-tooltip="true"></el-table-column>
 
       <!--<el-table-column header-align="center" align="center" label="进货价" min-width="70" :show-overflow-tooltip="true">-->
         <!--<template slot-scope="scope">-->

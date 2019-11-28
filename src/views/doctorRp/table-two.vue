@@ -16,7 +16,9 @@
       </template>
     </el-table-column>
     <!--<el-table-column prop="Id" header-align="center" align="center" label="Id标识" width="70"></el-table-column>-->
-    <!--<el-table-column prop="Quantity" header-align="center" align="center" label="余量" :show-overflow-tooltip="true"></el-table-column>-->
+    <el-table-column prop="Specification" header-align="center" align="center" min-width="100" label="规格" :show-overflow-tooltip="true"></el-table-column>
+    <el-table-column prop="Dosage" header-align="center" align="center" label="剂型" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+    <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="100" :show-overflow-tooltip="true"></el-table-column>
     <el-table-column header-align="center" align="center" label="单价" min-width="100">
       <template slot-scope="scope">
         {{Number(scope.row.StoreSalePrice).toFixed(2)}}

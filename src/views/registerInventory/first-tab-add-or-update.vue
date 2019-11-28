@@ -19,6 +19,8 @@
         </el-row>
         <el-row style="height: 35px;line-height: 35px">
           <el-col :span="8"><p><span>规格：</span>{{dataList[0].Specification}}</p></el-col>
+          <el-col :span="8"><p><span>剂型：</span>{{dataList[0].Dosage}}</p></el-col>
+          <el-col :span="8"><p><span>单位：</span>{{dataList[0].Unit}}</p></el-col>
           <el-col :span="8"><p><span>预警值：</span>{{dataList[0].RedLine}}</p></el-col>
           <el-col :span="8"><p><span>售价：</span>{{dataList[0].StoreSalePrice}}</p></el-col>
           <el-col :span="8" :offset="16">修改售价：

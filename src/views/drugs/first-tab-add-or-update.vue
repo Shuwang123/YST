@@ -39,6 +39,9 @@
       <el-form-item label="规格" prop="Specification">
         <el-input v-model="dataForm.Specification" placeholder="x*x/g"></el-input>
       </el-form-item>
+      <el-form-item label="剂型" prop="Dosage">
+        <el-input v-model="dataForm.Dosage" placeholder="请输入剂型"></el-input>
+      </el-form-item>
       <!--<el-form-item label="建议售价" prop="SalePrice">-->
         <!--<el-input v-model="dataForm.SalePrice" placeholder="小数点后只能必须写2位"></el-input>-->
       <!--</el-form-item>-->
@@ -118,6 +121,7 @@ export default {
         SpellName: '',
         Unit: '',
         Specification: '',
+        Dosage: '',
         SalePrice: '',
         RedLine: 0,
 
@@ -187,6 +191,7 @@ export default {
                     SpellName: result.data.SpellName,
                     Unit: result.data.Unit,
                     Specification: result.data.Specification,
+                    Dosage: result.data.Dosage,
                     SalePrice: '',
                     RedLine: result.data.RedLine,
                     Keywords0: result.data.Keywords.split(',')[0],
@@ -219,6 +224,7 @@ export default {
         SpellName: '',
         Unit: '',
         Specification: '',
+        Dosage: '',
         SalePrice: '',
         RedLine: 0,
         Keywords0: '',
@@ -256,6 +262,7 @@ export default {
             SpellName: this.dataForm.SpellName.replace(/\s/g, ''), // 全部都要去空格
             Unit: this.dataForm.Unit,
             Specification: this.dataForm.Specification,
+            Dosage: this.dataForm.Dosage,
             SalePrice: '',
             RedLine: this.dataForm.RedLine,
             Keywords: [

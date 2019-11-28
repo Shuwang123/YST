@@ -5,7 +5,6 @@
         <el-button type="text" @click="addOrUpdateHandle(scope.row)">删除</el-button>
       </template>
     </el-table-column>
-
     <el-table-column type="index" align="center" width="70" label="序号"></el-table-column>
     <!--<el-table-column prop="Code" header-align="center" align="center" label="编码" width="100"></el-table-column>-->
     <!--<el-table-column prop="CategoryName" header-align="center" align="center" label="药态" width="70" :show-overflow-tooltip="true"></el-table-column>-->
@@ -18,6 +17,9 @@
         {{Number(scope.row.StoreSalePrice).toFixed(2)}}
       </template>
     </el-table-column>
+    <el-table-column prop="Specification" header-align="center" align="center" min-width="100" label="规格" :show-overflow-tooltip="true"></el-table-column>
+    <el-table-column prop="Dosage" header-align="center" align="center" label="剂型" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+    <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="100" :show-overflow-tooltip="true"></el-table-column>
     <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="数量" min-width="150">
       <template slot-scope="scope">
         <!--<el-input-number v-model="scope.row.myNum" :step="1" @change="handleChange" :min="1" :max="scope.row.Quantity" size="mini"></el-input-number>-->

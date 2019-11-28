@@ -73,6 +73,7 @@
         </template>
       </el-table-column>
       <el-table-column prop="Specification" header-align="center" align="center" label="规格" min-width="80"></el-table-column>
+      <el-table-column prop="Dosage" header-align="center" align="center" label="剂型" min-width="80"></el-table-column>
       <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="80"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧，所有厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
 
@@ -133,6 +134,7 @@
         <td v-text="item.ProductCode"></td>
         <td v-text="item.ProductName"></td>
         <td v-text="item.Specification"></td>
+        <td v-text="item.Dosage"></td>
         <td v-text="item.Unit"></td>
         <td v-text="item.LastCostPrice"></td>
         <td v-text="item.StoreSalePrice"></td>
