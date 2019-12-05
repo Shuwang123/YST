@@ -18,8 +18,15 @@
               <el-option v-for="item in SupplierIdArr" :key="item.Id" :label="item.Name" :value="item.Id"></el-option>
             </el-select>
           </el-form-item>
+          <el-form-item label="" v-show="isShow">
+            <el-select v-model="num" placeholder="入库单状态" @change="getChildDataList()" clearable @clear="getChildDataList"
+                       size="mini"
+                       style="width: 160px">
+              <el-option v-for="item in purchaseStatus" :key="item.text" :label="item.text" :value="item.val"></el-option>
+            </el-select>
+          </el-form-item>
           <el-form-item>
-            <el-input v-model="dataForm.code" placeholder="采购单号" size="mini" style="width: 140px"
+            <el-input v-model="dataForm.code" placeholder="入库单号" size="mini" style="width: 140px"
                       @keyup.enter.native="getChildDataList" @clear="getChildDataList" clearable></el-input>
           </el-form-item>
           <el-form-item>
@@ -82,7 +89,7 @@ export default {
       dataForm: {
         SupplierId: '',
         StoreId: '',
-        code: '', // 采购单批号
+        code: '', // 入库单批号
         StartDate: '',
         EndDate: ''
       },
@@ -92,7 +99,24 @@ export default {
         {child: false},
         {child: false}
       ],
+      purchaseStatus: [{
+        text: '全部',
+        val: 0
+      }, {
+        text: '作废',
+        val: -1
+      }, {
+        text: '待收货（初始）',
+        val: 1
+      }, {
+        text: '已到货未入库（已发货）',
+        val: 4
+      }, {
+        text: '已入库（已完成）',
+        val: 10
+      }],
       num: 0,
+      isShow: true,
       value6: []
     }
   },
@@ -166,16 +190,16 @@ export default {
         this.isVisible.forEach((item, index) => {
           if (item.child === true) {
             if (index === 0) {
-              this.num = 0
+              this.num = 0; this.isShow = true
               this.$refs.firstTab.getDataList(this.num)
             } else if (index === 1) {
-              this.num = 1
+              this.num = 1; this.isShow = false
               this.$refs.firstTab.getDataList(this.num) // 待收货
             } else if (index === 2) {
-              this.num = 4
+              this.num = 4; this.isShow = false
               this.$refs.firstTab.getDataList(this.num) // 已到货未入库
             } else if (index === 3) {
-              this.num = 10
+              this.num = 10; this.isShow = false
               this.$refs.firstTab.getDataList(this.num) // 已入库（已完成）
             }
           }

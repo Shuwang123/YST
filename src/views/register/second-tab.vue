@@ -8,6 +8,7 @@
       row-class-name="storeStockListRow"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
+      <el-table-column type="index" align="center" width="70" label="序号"></el-table-column>
       <el-table-column header-align="center" align="center" label="门店 / 医生" min-width="110" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{scope.row.StoreName}} / {{scope.row.DoctorName}}</span>
@@ -77,7 +78,7 @@ export default {
       value6: [],
       dataForm: {
         BillCode: '', // 单据编码
-        BillType: '', // 单据类型 是采购单加还是开方减这个意思吗？
+        BillType: '', // 单据类型 是入库单加还是开方减这个意思吗？
         StartDate: '',
         EndDate: ''
       },

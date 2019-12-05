@@ -48,7 +48,7 @@ export default {
   watch: {
     StoreId (val, oldval) { // 第二个参数true和false判断返回是多选,还是单选值
       console.log(val)
-      // 当前手选门店时，这个也是true的话，就会更新全局的当前选中门店字段【这个字段是在采购单列表往后开始出现的】(先存给Vuex，后在Vuex的commit中存给store，同时转存给session)
+      // 当前手选门店时，这个也是true的话，就会更新全局的当前选中门店字段【这个字段是在入库单列表往后开始出现的】(先存给Vuex，后在Vuex的commit中存给store，同时转存给session)
       if (this.paramsFather.isTrigger === true) {
         this.$store.commit('setAccountCurrentHandleStore', val)
       }

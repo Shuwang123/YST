@@ -35,7 +35,9 @@
                         <el-table-column prop="ProductCode" align="center" label="商品编码" fixed min-width="85" :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column prop="CategoryName" header-align="center" align="center" label="药态" fixed min-width="70" :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称" fixed min-width="80" :show-overflow-tooltip="true"></el-table-column>
-
+                        <el-table-column prop="Dosage" header-align="center" align="center" label="剂型" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+                      <el-table-column prop="Specification" header-align="center" align="center" label="规格" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+                        <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="80" :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column prop="Quantity" :key="Math.random()" label="退货量" header-align="center" align="center"></el-table-column>
                         <!--<el-table-column prop="LastCostPirce" header-align="center" align="center" label="前采购价"></el-table-column>-->
                         <el-table-column prop="CostPrice" header-align="center" label="进价" align="center"></el-table-column>
@@ -94,7 +96,7 @@
         categoryId: '',
 
         dataListAdd: [],
-        OrderTotalPrice: 0, // 采购单总价显示
+        OrderTotalPrice: 0, // 入库单总价显示
 
         rukuIsDisabled: false, // 入库时防止双击带来一些bug
         lastPosition: 0
@@ -124,7 +126,7 @@
               })
 
               this.categoryId = this.dataList.Items[0].CategoryId
-              this.categoryName = this.dataList.Items[0].CategoryName // 返回的采购单详情里每个药材对象中都包含药态，所以这儿取下巧
+              this.categoryName = this.dataList.Items[0].CategoryName // 返回的入库单详情里每个药材对象中都包含药态，所以这儿取下巧
 
               this.dataListLoading = false
             }
@@ -177,9 +179,10 @@
             id: this.formId,
             Items: JSON.stringify(this.dataList.Items.map(item => {
               return {
+                Id: item.Id,
                 ProductBatchNo: item.ProductCode,
                 ActualQuantity: item.Quantity, // 这是详情id，上面那个A的是药材ID
-                ProductionDate: '', // new Date()
+                ProductionDate: '', // new D ate()
                 ShelfLife: 1, //
                 ExpiryDate: ''}
             }))

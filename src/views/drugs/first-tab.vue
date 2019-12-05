@@ -5,6 +5,9 @@
         <el-input v-model="dataForm.drugsName" placeholder="药材名称" clearable @clear="getDataList()" style="width: 150px"></el-input>
       </el-form-item>
       <el-form-item>
+        <el-input v-model="dataForm.CodeOrBarCode" placeholder="药材编码" clearable @clear="getDataList()" style="width: 150px"></el-input>
+      </el-form-item>
+      <el-form-item>
         <el-input v-model="dataForm.drugsSpell" placeholder="拼音首字母" clearable @clear="getDataList()" style="width: 150px"></el-input>
       </el-form-item>
       <el-form-item>
@@ -54,8 +57,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="50" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Dosage" header-align="center" align="center" label="剂型" width="" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Specification" header-align="center" align="center" label="规格" width="" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="50" :show-overflow-tooltip="true"></el-table-column>
 
       <!--<el-table-column header-align="center" align="center" label="进货价" min-width="70" :show-overflow-tooltip="true">-->
         <!--<template slot-scope="scope">-->
@@ -122,6 +126,7 @@ export default {
       totalPage: 1,
       dataForm: {
         drugsName: '',
+        CodeOrBarCode: '',
         drugsSpell: '',
         CategoryId: '' // 中草药全部、只饮片、只颗粒、只精品
       },
@@ -156,6 +161,7 @@ export default {
     getDataList () {
       var params = {
         name: this.dataForm.drugsName,
+        CodeOrBarCode: this.dataForm.CodeOrBarCode,
         SpellName: this.dataForm.drugsSpell,
         PageIndex: this.pageIndex,
         PageSize: this.pageSize,

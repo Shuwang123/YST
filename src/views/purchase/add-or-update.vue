@@ -38,7 +38,9 @@
               <span :style="{color: scope.row.Quantity < scope.row.RedLine ? '#e4393c' : '#333'}">{{ scope.row.ShowName }}</span>
             </template>
           </el-table-column>
+          <el-table-column prop="Dosage" header-align="center" :align="$store.state.common.align" label="剂型" :show-overflow-tooltip="true"></el-table-column>
           <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位" :show-overflow-tooltip="true"></el-table-column>
           <!--<el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>-->
           <el-table-column header-align="center" :align="$store.state.common.align" label="库存 (余量)" :show-overflow-tooltip="true">
             <template slot-scope="scope">
@@ -103,7 +105,7 @@ export default {
       },
       dataList: [],
       dataListSelections: [],
-      // purchaseRegistered: [], // 采购单注册记名列表
+      // purchaseRegistered: [], // 入库单注册记名列表
       isInit: true
     }
   },

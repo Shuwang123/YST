@@ -94,7 +94,7 @@ export default {
                   this.$store.commit('setAccountLoginInfoAll', result.data) // ①当前账号的 门店所有详情(先存给Vuex，后在Vuex的commit中存给store，同时转存给session)
                   var isDoctor = result.data.RoleName.includes('医生') // es6返回true或false
                   this.$store.commit('setIsDoctor', isDoctor) // ②判断是否是医生
-                  // setAccountData('accountCurrentHandleStore', '') // ③当前的手动选择门店，这个后来感觉应该在采购单等往后的模块处理就放弃了
+                  // setAccountData('accountCurrentHandleStore', '') // ③当前的手动选择门店，这个后来感觉应该在入库单等往后的模块处理就放弃了
 
                   // 2019.5.20 又tm新增了一个，存储角色类型为医生时所对应的全部医生类型的Id 角色：只针对医生类型：[医生Aid，医生Bid，医生Cid]
                   var doctorArr = []

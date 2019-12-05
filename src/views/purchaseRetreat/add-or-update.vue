@@ -31,7 +31,9 @@
                     <el-table-column prop="ProductCode" header-align="center" :align="$store.state.common.align" width="100" label="商品编码" :show-overflow-tooltip="true"></el-table-column>
                     <el-table-column prop="ProductName" header-align="center" :align="$store.state.common.align" width="100" label="名称" :show-overflow-tooltip="true"></el-table-column>
 
-                    <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column prop="Dosage" header-align="center" :align="$store.state.common.align" label="剂型" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
+                  <el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位" :show-overflow-tooltip="true"></el-table-column>
                     <el-table-column prop="Quantity" header-align="center" :align="$store.state.common.align" label="库存" :show-overflow-tooltip="true"></el-table-column>
                     <el-table-column prop="OccupyQuantity" header-align="center" :align="$store.state.common.align" label="锁定" :show-overflow-tooltip="true"></el-table-column>
                     <!--<el-table-column prop="UsableQuantity" header-align="center" :align="$store.state.common.align" label="可用" :show-overflow-tooltip="true"></el-table-column>-->

@@ -9,6 +9,7 @@
       row-class-name="storeStockListRow"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
+      <el-table-column type="index" align="center" width="70" label="序号"></el-table-column>
       <el-table-column prop="StoreName" header-align="center" align="center" label="门店" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="RoleName" header-align="center" align="center" label="角色" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="NickName" header-align="center" align="center" label="医生昵称" width="100"></el-table-column>

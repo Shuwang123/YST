@@ -48,7 +48,9 @@
             <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
             <el-table-column prop="ProductCode" header-align="center" :align="$store.state.common.align" width="100" label="商品编码"></el-table-column>
             <el-table-column prop="ProductName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
-            <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="Dosage" header-align="center" :align="$store.state.common.align" label="剂型" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
+          <el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位" :show-overflow-tooltip="true"></el-table-column>
             <el-table-column header-align="center" :align="$store.state.common.align" label="售价">
                 <template slot-scope="scope">
                     <span v-text="scope.row.StoreSalePrice.toFixed(2)"></span>
@@ -303,7 +305,7 @@
       handleChange () {
         this.dataList.push() // this.purchaseFormal 正式购买
       },
-      // 创建采购退单
+      // 创建退货单
       createRetreat () {
         this.isDisable = true
         setTimeout(() => {

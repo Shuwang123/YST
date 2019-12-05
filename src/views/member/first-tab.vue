@@ -43,7 +43,7 @@
       v-loading="dataListLoading"
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
-      <el-table-column prop="Id" header-align="center" align="center" label="ID" width="50" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column type="index" align="center" width="70" label="序号"></el-table-column>
       <el-table-column prop="StoreName" header-align="center" align="center" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Code" header-align="center" align="center" label="病历号" width="100" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column header-align="center" align="center" label="姓名" min-width="150">

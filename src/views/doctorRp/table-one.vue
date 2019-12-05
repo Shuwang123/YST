@@ -10,6 +10,7 @@
     <!--<el-table-column prop="Code" header-align="center" align="center" label="编码" width="100"></el-table-column>-->
     <!--<el-table-column prop="CategoryName" header-align="center" align="center" label="药态" width="70" :show-overflow-tooltip="true"></el-table-column>-->
     <el-table-column prop="ShowName" header-align="center" align="center" label="药名" min-width="100"></el-table-column>
+    <el-table-column prop="Specification" header-align="center" align="center" label="规格" :show-overflow-tooltip="true"></el-table-column>
 
     <!--<el-table-column prop="Id" header-align="center" align="center" label="Id标识" width="70"></el-table-column>-->
     <!--<el-table-column prop="Quantity" header-align="center" align="center" label="余量" :show-overflow-tooltip="true"></el-table-column>-->

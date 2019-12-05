@@ -138,7 +138,7 @@ export default {
     child () {
       this.$emit('childEven')
     },
-    // 获取某个采购单详情info
+    // 获取某个入库单详情info
     init () {},
     handleClose () {
       this.dataForm = {

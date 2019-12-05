@@ -1,6 +1,15 @@
 <template>
   <div class="storeStock-first-tab">
+    <div style="background-color: #F5F7FA;border-radius: 0 0 0 0;padding: 1px 3px">
+      <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
+        <el-form-item>
+          <el-button icon="el-icon-document" @click="handleDownload" size="mini">Export Excel</el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <el-table
+      show-summary
+      :summary-method="getSummaries"
       :height="chenxiHeight"
       :data="dataList"
       border stripe
@@ -9,7 +18,7 @@
       :header-cell-style="$cxObj.tableHeaderStyle40px"
       style="width: 100%;">
       <el-table-column type="index" align="center" width="70" label="序号"></el-table-column>
-      <el-table-column header-align="center" align="center" label="门店 / 医生" min-width="114" :show-overflow-tooltip="true">
+      <el-table-column header-align="center" align="center" label="门店 / 医生"  min-width="114" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{scope.row.StoreName}} / {{scope.row.DoctorName}}</span>
         </template>
@@ -28,9 +37,24 @@
         </template>
       </el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
-      <el-table-column header-align="center" align="left" label="订单总价" min-width="147">
+      <el-table-column header-align="center" align="left" label="订单总价" class-name="TotalOrderAmount" min-width="147">
         <template slot-scope="scope">
           <p><span style="display: inline-block;width: 45%;text-align: right;padding-right: 7px">￥</span>{{scope.row.OrderAmount.toFixed(2)}}</p>
+        </template>
+      </el-table-column>
+      <el-table-column header-align="center" align="center" label="进价" class-name="TotalOrderItemCostAmount" min-width="147">
+        <template slot-scope="scope">
+          <p><span style="">￥</span>{{Number(scope.row.OrderItemCostAmount).toFixed(2)}}</p>
+        </template>
+      </el-table-column>
+      <el-table-column header-align="center" align="center" label="毛利润" class-name="SaleOrderProfitAmount"  min-width="147">
+        <template slot-scope="scope">
+          <p><span style=""></span>{{Number(scope.row.ProfitAmount).toFixed(2)}}</p>
+        </template>
+      </el-table-column>
+      <el-table-column header-align="center" align="center" label="毛利率" class-name="SaleOrderRateOfProfitAmount" min-width="147">
+        <template slot-scope="scope">
+          <p><span style=""></span>{{scope.row.ProfitPercent}}</p>
         </template>
       </el-table-column>
       <el-table-column header-align="center" align="center" label="折扣" min-width="119">
@@ -61,7 +85,6 @@
       <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
-          <el-button type="text" size="mini" @click="jumpOffsetPage(scope.row)">退单</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -79,6 +102,7 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
+import request from '../../api/request'
 import ThreeTabAddOrUpdate from './three-tab-add-or-update'
 import { mapGetters } from 'vuex'
 import {calcAge} from '@/utils/validate'
@@ -104,7 +128,8 @@ export default {
         EndDate: ''
       },
       dataList: [],
-      totalPage: 1
+      totalPage: 1,
+      SumColumns: []
     }
   },
   mounted () {
@@ -113,6 +138,31 @@ export default {
     }
   },
   methods: {
+    handleDownload () {
+      var params = {
+        PageIndex: this.pageIndex,
+        PageSize: this.pageSize,
+        IsPaging: this.IsPaging,
+        StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店Id（必须）
+        AccountId: this.fatherDataForm.AccountId, // 账户Id,医生Id
+        Code: this.fatherDataForm.Code, // 挂号单
+        UserName: this.fatherDataForm.patientName, // 患者姓名
+        MobilePhone: this.fatherDataForm.MobilePhone, // 患者电话
+        WrokFrom: this.fatherDataForm.StartDate, // 开始时间
+        WrokTo: this.fatherDataForm.EndDate, // 结束时间
+        Status: '6', // -1作废1初始 2只支付挂号费 待就诊（候诊）3 已就诊-(待收费) 5已收费6已发货 出库  -2全部
+        OrderType: '1', // 40表示协定方
+        CategoryOne: this.fatherDataForm.CategoryOne
+      }
+      var url = request.downUrl + '/YstApiSaleOrder/LoadData'
+      // 附加参数
+      var href = url + '?toExcel=true'
+      var parameters = params
+      for (var name in parameters) {
+        href += '&' + name + '=' + encodeURIComponent(parameters[name])
+      }
+      window.location.href = href
+    },
     // 这个是查询某门店当日的：患者全部挂号列表
     getDataList () {
       this.dataListLoading = true
@@ -141,11 +191,30 @@ export default {
           })
           console.log(this.dataList)
           this.totalPage = result.total
+          this.SumColumns = result.SumColumns
         } else {
           this.$message.error(result.message)
         }
         this.dataListLoading = false
       })
+    },
+    getSummaries: function (param) {
+      const { columns } = param
+      const sums = []
+      const SumColumns = this.SumColumns
+      columns.forEach(function (column, index) {
+        SumColumns.forEach(function (column1, index1) {
+          if (index === 0) {
+            sums[index] = '合计'
+            return
+          }
+          if (column.className === column1.Column) {
+            sums[index] = column1.Value
+          }
+        })
+      })
+
+      return sums
     },
     // 每页数
     sizeChangeHandle (val) {

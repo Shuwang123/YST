@@ -11,11 +11,14 @@
                  style="border-radius: 100%;background-color: rgba(84,92,100,.85);vertical-align: bottom">
           </div>
         </div>
+        <!--<p>MJ&nbsp;</p>-->
         <p>一善堂&nbsp;</p>
       </div>
     </div>
     <div class="site-sidebar__inner">
       <el-menu
+        :unique-opened=true
+        :collapse-transition=true
         :default-active="menuNavActive"
         :collapse="$store.state.sidebarCollapse"
         class="site-sidebar__menu"

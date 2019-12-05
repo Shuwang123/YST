@@ -92,7 +92,7 @@ export default {
       IsPaging: 10,
       totalPage: 1,
       dataList: [],
-      status: 0 // 采购单的状态、1 4 10 -1
+      status: 0 // 入库单的状态、1 4 10 -1
     }
   },
   components: { SecondTabAddOrUpdate },

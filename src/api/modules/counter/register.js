@@ -11,6 +11,15 @@ export function getDoctors (params) {
   })
 }
 
+// 获取一级分类
+  export function CategoryOneType (params) {
+    return request({
+      url: requestUrl('/YstApiSaleOrder/CategoryOneType'),
+      method: 'post',
+      data: requestParam(params)
+    })
+  }
+
 // 柜台挂号提交按钮
 export function registerSubmit (params) {
   return request({

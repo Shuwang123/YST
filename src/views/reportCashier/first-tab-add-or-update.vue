@@ -93,7 +93,7 @@
         <div id="chenxiPrint" style="display: none">
           <table width="100%" style="font-size: 12px;padding-right: 55px">
             <tbody>
-            <tr v-if="registerAllData.StoreId === 706">
+            <tr v-if="registerAllData.storeId === 706">
               <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆颐善堂中医诊所收据</h3></td>
             </tr>
             <tr v-else>
