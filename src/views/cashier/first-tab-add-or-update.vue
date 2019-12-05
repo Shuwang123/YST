@@ -338,6 +338,10 @@
 import API from '@/api'
 import '../common/icon/iconfont.css'
 import {calcAge, Currency} from '@/utils/validate'
+//
+// Number.prototype.toFixed = function (exponent) {
+//     return parseInt(this * Math.pow(10, exponent) + 0.5) / Math.pow(10, exponent);
+// }
 
 export default {
   data () {
@@ -399,7 +403,7 @@ export default {
   watch: {
     // 折扣监听
     'dataForm.percentage': function (val, oldval) {
-      this.registerAllData.DrugTotalAmount = Number(this.oldDrugTotalAmount * val / 100).toFixed(2)
+      this.registerAllData.DrugTotalAmount = Number(this.oldDrugTotalAmount * val / 100).toFixed(4)
     },
     // 支付方式监听
     'dataForm.PaymentWay': function (val, oldval) {
@@ -481,12 +485,12 @@ export default {
       // 患者总消费
       this.mySumAmount = (this.registerAllData.RegisterAmount +
                           this.oldDrugTotalAmount * this.dataForm.percentage / 100 +
-                          this.dataForm.WorkAmount + this.dataForm.DJAmount + this.dataForm.ExpressAmount + this.dataForm.OtherAmount).toFixed(2)
+                          this.dataForm.WorkAmount + this.dataForm.DJAmount + this.dataForm.ExpressAmount + this.dataForm.OtherAmount).toFixed(4)
       // 待收金额
       if (this.registerAllData.RegisterStatus === 1) { // 挂号费未支付（直接开方）：待收金额就 + 挂号费
         this.myFutureAmount = this.mySumAmount
       } else if (this.registerAllData.RegisterStatus === 2) { // 挂号费已支付：待收金额就不加挂号费
-        this.myFutureAmount = Number(this.mySumAmount - this.registerAllData.RegisterAmount).toFixed(2)
+        this.myFutureAmount = Number(this.mySumAmount - this.registerAllData.RegisterAmount).toFixed(4)
       }
       this.dataForm.PayAmount = ''
       this.dataForm.OnlinePayAmount = 0
@@ -559,7 +563,7 @@ export default {
               this.dataForm.OnlinePayAmount = 0
             } else {
               this.dataForm.PayAmount = this.dataForm.PayAmount
-              this.dataForm.OnlinePayAmount = Number(this.myFutureAmount - this.dataForm.PayAmount).toFixed(2)
+              this.dataForm.OnlinePayAmount = Number(this.myFutureAmount - this.dataForm.PayAmount).toFixed(4)
             }
           } else { // 表示单种支付方式
             if (Number(this.dataForm.PayAmount) < Number(this.myFutureAmount)) {
