@@ -200,7 +200,7 @@
       <div id="printCashier" style="display: none">
         <table width="100%" style="font-size: 12px;padding-right: 55px">
           <tbody>
-          <tr v-if="registerAllData.storeId === 706">
+          <tr v-if="registerAllData.StoreId === 706">
             <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆颐善堂中医诊所收据</h3></td>
           </tr>
           <tr v-else>
@@ -384,6 +384,7 @@ export default {
         API.register.getRegisterInfo({id: formId}).then(result => {
           if (result.code === '0000') {
             result.data.BirthDate = calcAge(result.data.BirthDate)
+              debugger;
             this.registerAllData = result.data
             this.dataListLoading = false
             console.log('查看', result.data)
