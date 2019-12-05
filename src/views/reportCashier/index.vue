@@ -61,13 +61,13 @@
         </el-form>
       </div>
 
-      <el-tab-pane label="" name="first">
+      <el-tab-pane label="" name="first" v-if="isVisible[0].child">
         <span slot="label"><i class="el-icon-document"></i> 待收费</span>
         <transition name="chenxi">
           <first-tab v-if="isVisible[0].child" ref="firstTab" :fatherDataForm="dataForm"></first-tab>
         </transition>
       </el-tab-pane>
-      <el-tab-pane label="" name="second">
+      <el-tab-pane label="" name="second" v-if="isVisible[0].child">
         <span slot="label"><i class=""></i> 已收费（库存不足未出库）</span>
         <transition name="chenxi">
           <second-tab v-if="isVisible[1].child" ref="secondTab" :fatherDataForm="dataForm"></second-tab>
@@ -79,7 +79,7 @@
           <three-tab v-if="isVisible[2].child" ref="threeTab" :fatherDataForm="dataForm"></three-tab>
         </transition>
       </el-tab-pane>
-      <el-tab-pane label="" name="four">
+      <el-tab-pane label="" name="four" v-if="isVisible[0].child">
         <span slot="label"><i class=""></i> 已退费(收银后退费)</span>
         <transition name="chenxi">
           <four-tab v-if="isVisible[3].child" ref="fourTab" :fatherDataForm="dataForm"></four-tab>
@@ -129,7 +129,7 @@ export default {
   },
   data () {
     return {
-      activeName: 'first',
+      activeName: 'three',
       drugsCategoryList: [],
       dataForm: { // 三个子组件共有的查询条件：门店，商品编码、商品名称、商品拼音
         AccountId: '', // 医生Id
@@ -142,9 +142,9 @@ export default {
         EndDate: ''
       },
       isVisible: [
+        {child: false},
+        {child: false},
         {child: true},
-        {child: false},
-        {child: false},
         {child: false}
       ],
       valueTime: [],

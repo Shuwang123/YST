@@ -1,7 +1,7 @@
 /**
  * Created by dx on 18/3/19.
  */
-// 手机盘点相关接口
+// yst相关接口
 import * as common from './modules/common' // 登录退出
 import * as store from './modules/store' // 门店管理
 import * as role from './modules/role' // 角色管理
@@ -22,7 +22,7 @@ import * as report from './modules/report/report' // 报表模块
 import * as offset from './modules/counter/offset' // 药材退单模块
 
 export default {
-  // 手机盘点及相关接口
+  // yst及相关接口
   common,
   store,
   role,

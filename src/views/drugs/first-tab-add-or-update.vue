@@ -21,6 +21,12 @@
           <el-input v-model="dataForm.SpellName" placeholder="首字母拼音缩写"></el-input>
       </el-form-item>
 
+      <el-form-item label="剂型" prop="Dosage">
+        <el-input v-model="dataForm.Dosage" placeholder="请输入剂型"></el-input>
+      </el-form-item>
+      <el-form-item label="规格" prop="Specification">
+        <el-input v-model="dataForm.Specification" placeholder="x*x/g"></el-input>
+      </el-form-item>
       <el-form-item label="单位" prop="Unit">
         <el-autocomplete popper-class="my-autocomplete" placeholder="请输入或选择单位" style="width: 184px"
           v-model="dataForm.Unit" :fetch-suggestions="querySearch" :popper-append-to-body="false"
@@ -36,12 +42,6 @@
         </el-autocomplete>
       </el-form-item>
 
-      <el-form-item label="规格" prop="Specification">
-        <el-input v-model="dataForm.Specification" placeholder="x*x/g"></el-input>
-      </el-form-item>
-      <el-form-item label="剂型" prop="Dosage">
-        <el-input v-model="dataForm.Dosage" placeholder="请输入剂型"></el-input>
-      </el-form-item>
       <!--<el-form-item label="建议售价" prop="SalePrice">-->
         <!--<el-input v-model="dataForm.SalePrice" placeholder="小数点后只能必须写2位"></el-input>-->
       <!--</el-form-item>-->

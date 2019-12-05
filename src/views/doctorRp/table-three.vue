@@ -17,8 +17,8 @@
         {{Number(scope.row.StoreSalePrice).toFixed(2)}}
       </template>
     </el-table-column>
-    <el-table-column prop="Specification" header-align="center" align="center" min-width="100" label="规格" :show-overflow-tooltip="true"></el-table-column>
     <el-table-column prop="Dosage" header-align="center" align="center" label="剂型" min-width="100" :show-overflow-tooltip="true"></el-table-column>
+    <el-table-column prop="Specification" header-align="center" align="center" min-width="100" label="规格" :show-overflow-tooltip="true"></el-table-column>
     <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="100" :show-overflow-tooltip="true"></el-table-column>
     <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="数量" min-width="150">
       <template slot-scope="scope">

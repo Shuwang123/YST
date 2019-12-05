@@ -35,8 +35,8 @@
                         <el-table-column prop="ProductCode" align="center" label="商品编码" fixed min-width="85" :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column prop="CategoryName" header-align="center" align="center" label="药态" fixed min-width="70" :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column prop="ProductName" header-align="center" align="center" label="药品名称" fixed min-width="80" :show-overflow-tooltip="true"></el-table-column>
-                        <el-table-column prop="Specification" header-align="center" align="center" label="规格" min-width="80" :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column prop="Dosage" header-align="center" align="center" label="剂型" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+                      <el-table-column prop="Specification" header-align="center" align="center" label="规格" min-width="80" :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="80" :show-overflow-tooltip="true"></el-table-column>
                         <el-table-column prop="Quantity" :key="Math.random()" label="退货量" header-align="center" align="center"></el-table-column>
                         <!--<el-table-column prop="LastCostPirce" header-align="center" align="center" label="前采购价"></el-table-column>-->

@@ -47,8 +47,8 @@
       <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
       <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="100" label="商品编码"></el-table-column>
       <el-table-column prop="ShowName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
-      <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Dosage" header-align="center" :align="$store.state.common.align" label="剂型"></el-table-column>
+      <el-table-column prop="Specification" header-align="center" :align="$store.state.common.align" label="规格" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Unit" header-align="center" :align="$store.state.common.align" label="单位"></el-table-column>
       <!--<el-table-column prop="" header-align="center" :align="$store.state.common.align" label="进价" min-width="110">-->
         <!--<template slot-scope="scope">-->
@@ -59,7 +59,7 @@
       <!--<el-table-column prop="CostPrice" header-align="center" :align="$store.state.common.align" label="上一次的进价" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column header-align="center" :align="$store.state.common.align" label="采购量" min-width="110">
         <template slot-scope="scope">
-          <el-input-number v-model="scope.row.myNum" :precision="2" :step="1"
+          <el-input-number v-model="scope.row.myNum" :precision="0" :step="1"
                            @change="handleChange" :min="1" :max="50000" size="mini"
                            @keyup.enter.native="searchNextCodeInput(scope.row.Code)" :ref="scope.row.Code"></el-input-number>
         </template>

@@ -71,8 +71,8 @@
           <span :style="{color: scope.row.Quantity - scope.row.RedLine <= 0 ? '#e4393c' : ''}">{{scope.row.ProductName}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="Specification" header-align="center" align="center" label="规格" min-width="80"></el-table-column>
       <el-table-column prop="Dosage" header-align="center" align="center" label="剂型" min-width="80"></el-table-column>
+      <el-table-column prop="Specification" header-align="center" align="center" label="规格" min-width="80"></el-table-column>
       <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="80"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧，所有厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
 
