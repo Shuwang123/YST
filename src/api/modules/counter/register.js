@@ -20,6 +20,15 @@ export function getDoctors (params) {
     })
   }
 
+  // 获取单据来源
+  export function SaleOrderSource (params) {
+  return request({
+    url: requestUrl('/YstApiSaleOrder/SaleOrderSource'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}
+
 // 柜台挂号提交按钮
 export function registerSubmit (params) {
   return request({

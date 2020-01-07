@@ -42,6 +42,7 @@
         <template slot-scope="scope">
           <el-form label-position="left" inline class="demo-table-expand">
             <el-form-item label="门店："><span>{{ scope.row.StoreName }}</span></el-form-item>
+            <el-form-item label="供应商："><span>{{ scope.row.SupplierName }}</span></el-form-item>
             <el-form-item label="药品编码："><span>{{ scope.row.ProductCode }}</span></el-form-item>
             <el-form-item label="药名："><span>{{ scope.row.ProductName }}</span></el-form-item>
             <el-form-item label="余量："><span>{{ scope.row.Quantity }}</span></el-form-item>
@@ -53,6 +54,7 @@
       </el-table-column>
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="SupplierName" header-align="left" align="left" label="供应商" width="140" :show-overflow-tooltip="true"></el-table-column>
 
       <!--20190901 使用者觉得这的药态查询不显眼，改成头部的下拉了选药态了-->
       <!--<el-table-column prop="CategoryName" header-align="center" align="center"-->
@@ -130,6 +132,7 @@
       </tr>
       <tr v-for="item in dataList">
         <td v-text="item.StoreName"></td>
+        <td v-text="item.SupplierName"></td>
         <td v-text="item.CategoryName"></td>
         <td v-text="item.ProductCode"></td>
         <td v-text="item.ProductName"></td>
@@ -181,7 +184,7 @@ export default {
       totalPage: 1,
       dataListSelections: [],
       categoryTypeArr: [],
-      thArr: ['门店','药态','药品编码','药名','规格','单位','最近一次进货价','门店售价','毛利率','毛利额','库存(余量)']
+      thArr: ['门店','供应商','药态','药品编码','药名','规格','单位','最近一次进货价','门店售价','毛利率','毛利额','库存(余量)']
     }
   },
   mounted () {

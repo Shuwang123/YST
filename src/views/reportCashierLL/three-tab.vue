@@ -165,7 +165,7 @@ export default {
         Status: '6', // -1作废1初始 2只支付挂号费 待就诊（候诊）3 已就诊-(待收费) 5已收费6已发货 出库  -2全部
         OrderType: '1', // 40表示协定方
         CategoryOne: this.fatherDataForm.CategoryOne,
-        CategoryOneStatus: 1,
+        CategoryOneStatus: 2,
         Source: this.fatherDataForm.Source
       }
       var url = request.downUrl + '/YstApiSaleOrder/LoadData'
@@ -194,7 +194,7 @@ export default {
         Status: '6', // -1作废1初始 2只支付挂号费 待就诊（候诊）3 已就诊-(待收费) 5已收费6已发货 出库  -2全部
         OrderType: '1', // 40表示协定方
         CategoryOne: this.fatherDataForm.CategoryOne,
-        CategoryOneStatus: 1,
+        CategoryOneStatus: 2,
         Source: this.fatherDataForm.Source
       }
       // 获取挂号列表

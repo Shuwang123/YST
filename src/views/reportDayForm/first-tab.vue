@@ -638,12 +638,15 @@ export default {
         StoreId: this.$store.getters.getAccountCurrentHandleStore,
         OrderType: 2,
         StartDay: this.fatherDataForm.StartDate,
-        EndDay: this.fatherDataForm.EndDate }
+        EndDay: this.fatherDataForm.EndDate,
+        Source: this.fatherDataForm.Source
+      }
       var paramsDayReport = {
         StoreId: this.$store.getters.getAccountCurrentHandleStore, // 当前门店
         OrderType: 1, // 1表示销售单 2表示销售退单
         StartDay: this.fatherDataForm.StartDate, // 开始时间
-        EndDay: this.fatherDataForm.EndDate } // 结束时间
+        EndDay: this.fatherDataForm.EndDate,
+        Source: this.fatherDataForm.Source} // 结束时间
       function funOffsetReport () { return API.report.getOffsetReport(paramsOffset) }
       function funDayReport () { return API.report.getDayReport(paramsDayReport) }
       this.$ios.all([funOffsetReport(), funDayReport()]).then(

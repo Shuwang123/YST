@@ -195,13 +195,13 @@
           </div>
 
           <el-tabs v-model="activeName" @tab-click="handleClick">
-            <el-tab-pane v-for="item in drugsCategoryArr" :key="item.id" :label="item.text" :name="item.id"></el-tab-pane>
+            <el-tab-pane v-for="item in drugsCategoryArr" :key="item.id" :label="item.text==='精品饮片'?'饮片':item.text" :name="item.id"></el-tab-pane>
           </el-tabs>
           <div class="rightUlStyle">
             <ul class="ul-true">
               <li v-for="item in rightUlData" :key="item.Id">
                 <el-tooltip class="item" effect="light"
-                            :content="`${item.ShowName} [余量${item.Quantity}]${item.CategoryId === '1002' ? '精' : ''}${item.CategoryId === '1005' ? '贵' : ''}`" placement="left">
+                            :content="`${item.ShowName}-${item.Dosage}-${item.Specification}-${item.Unit}-[余量${item.Quantity}]${item.CategoryId === '1002' ? '精' : ''}${item.CategoryId === '1005' ? '贵' : ''}`" placement="left">
                   <el-row style="clear: both">
 
                     <!--药材名+剩余量+操作-->
@@ -320,9 +320,9 @@
           <el-col :span="6">
             <el-form-item label="开方医生" style="margin-top: 11px">
               <el-input v-if="$route.query.DoctorName === undefined"
-                        v-model="$route.params.row.DoctorName" placeholder="onlyReady" style="width: 110px" :disabled="true"></el-input>
+                        v-model="$route.params.row.DoctorName" placeholder="onlyReady" style="width: 110px;font-size: 14px;font-weight: 800;" :disabled="true"></el-input>
               <el-input v-else
-                        v-model="$route.query.DoctorName" placeholder="onlyReady" style="width: 110px" :disabled="true"></el-input>
+                        v-model="$route.query.DoctorName" placeholder="onlyReady" style="width: 110px;font-size: 14px;font-weight: 800;" :disabled="true"></el-input>
             </el-form-item>
           </el-col>
           <el-col :span="14" style="font-weight: 500; font-size: 16px;cursor: pointer;">
@@ -523,7 +523,7 @@ export default {
     },
     'dataForm.SpellName': function (val, oldval) {
       // console.log(val)
-      var isEmpty = val === '' ? true : false // 右上角输入
+      var isEmpty = val === '' // 右上角输入
       if (isEmpty) {
         this.litterArr.forEach(item => { // 重置 ABC 按钮
           item.isActive = false
@@ -545,14 +545,12 @@ export default {
 
       // 999颗粒制膏：加工费 <=2000g全算100元,之后每增加200g算10元，零头100<=x<200算5元
       var limit2000g = drugWeight <= 2000
-      if (!limit2000g)
-        var percent200 = (drugWeight - 2000) % 200 >= 100 ? 1 : 0
+      if (!limit2000g) { var percent200 = (drugWeight - 2000) % 200 >= 100 ? 1 : 0 }
 
       // 饮片制水泛丸：加工费 <=1000g全算80元,之后每增加100g算8元，零头50<=x<100算4元
       // 饮片制水蜜丸：加工费 <=1000g全算100元,之后每增加100g算10元，零头50<=x<100算5元
       var limit1000g = drugWeight <= 1000
-      if (!limit1000g)
-        var percent100 = (drugWeight - 1000) % 100 >= 50 ? 1 : 0
+      if (!limit1000g) { var percent100 = (drugWeight - 1000) % 100 >= 50 ? 1 : 0 }
 
       // console.log(drugWeight, limit2000g, percent200, limit1000g, percent100)
       if (this.dataForm.CategoryOne === '3') { // 999颗粒：制膏
@@ -1043,7 +1041,7 @@ export default {
           this.dataForm.DrugRate_0 = '1'
           break
         case '3':
-          this.filterCategory(['1003']) // 制膏只有 三九
+          this.filterCategory(['1002', '1003']) // 制膏只有 三九
           this.dataForm.oldCategoryOneName = '制膏'
           this.unitIsG = false
           this.dataForm.DrugRate_0 = '1'
@@ -1103,7 +1101,7 @@ export default {
           // 1、把协定方里保存的药材克数存下来
           this.leftTableData = result.data.SaleOrderItems.map(item => {
             item.myNum = item.Quantity
-
+            item.Remark = item.Remark
             item.Id = item.ProductId
             item.Code = item.ProductCode
             item.ShowName = item.ProductName
@@ -1179,11 +1177,10 @@ export default {
           this.drugsCategoryArrCopy = result.data.filter((item, ind) => {
             return ind > 0 // 不需要10中草药
           }).slice(1, 8)// 不需要饮片1001
-          this.drugsCategoryArrCopy.splice(3,1)  // 这一步去除1005贵细 最后变成 [1002,1003,1004,1006] 1007产 1008西
+          this.drugsCategoryArrCopy.splice(3, 1) // 这一步去除1005贵细 最后变成 [1002,1003,1004,1006] 1007产 1008西
           console.log(this.drugsCategoryArrCopy)
           this.filterCategory(['1002', '1003', '1004']) // console.log(result.data, this.drugsCategoryArrCopy, this.drugsCategoryArr)
           // 在filterCategory方法中会给this.drugsCategoryArr赋值，所以就不在这赋值了
-
 
           // 如果是医生已就诊列表再次开方进来的，会执行后面的分支，这个if不要放到上面的API的平级去了
           // 因为此分支内部利用一级药态重新计算二级药态的时候，如果这个分支是放在外面的，那在执行下面的② 的那步的时候
@@ -1246,7 +1243,7 @@ export default {
             // 然后历史处方里的开方g数可以直接使用
             this.leftTableData = row.SaleOrderItems.map(item => {
               item.myNum = item.Quantity
-
+              item.Remark = item.Remark
               item.Id = item.ProductId
               item.Code = item.ProductCode
               item.ShowName = item.ProductName
@@ -1292,17 +1289,17 @@ export default {
             this.dataForm.DiagnosisType = '2'
             this.dataForm.MainSuit = row.MainSuit
             this.dataForm.DiseaseInfo = row.DiseaseInfo === null ? ['1'] : row.DiseaseInfo.split('，') // ?
-            this.dataForm.DoctorAdvice = row.DoctorAdvice === null ?  ['1'] : row.DoctorAdvice.split('，') // ?
+            this.dataForm.DoctorAdvice = row.DoctorAdvice === null ? ['1'] : row.DoctorAdvice.split('，') // ?
             this.Total = row.Total
 
             // 处理这个用法，脑壳大
-            var valArr =row.DrugRate.match(/\d+/g) // 这的有两个细节必须提醒：
+            var valArr = row.DrugRate.match(/\d+/g) // 这的有两个细节必须提醒：
                         // ① 内服时有特殊值0.5，这个会被切成0, 5 而不是 0.5，最后导致程序漏洞，写的时候注意下
                         // ② 丸剂类型的特殊值>=10时：50会被且为5, 0，而不是5.0，最后也导致程序漏洞，写的时候也注意下，\d+
             var val3 = row.DrugRate.split('，')[2] // 获得 饭前、饭后
 
             this.dataForm.DrugRate_3 = val3.substring(0, val3.length - 1) // 获得 饭前、饭后
-            this.dataForm.DrugRate_0 = valArr[0] === "0" ? "0.5" : valArr[0] // 特殊值0.5 会被切磋0, 5 而不是 0.5，最后导致程序漏洞，写的时候注意下
+            this.dataForm.DrugRate_0 = valArr[0] === '0' ? '0.5' : valArr[0] // 特殊值0.5 会被切磋0, 5 而不是 0.5，最后导致程序漏洞，写的时候注意下
             if (row.CategoryOne !== 4 && row.CategoryOne !== 5) {
               this.dataForm.DrugRate_1 = valArr[1]// 内服外服：服次数，剂
             } else {
@@ -1319,7 +1316,6 @@ export default {
         }
       })
       // 这往上的代码都必须执行，不能写在下面的代码的后面，以免被return false影响
-
 
       // ==> 如果是直接开方进来的，那就在这终止程序，传递的电话就是0了，还请求屁的患者信息，因为请求结果肯定是[]！
       if (this.$route.query.MobilePhone === '0' || this.$route.params.row !== undefined) {
@@ -1405,7 +1401,7 @@ export default {
       console.log(request.baseURL)
       // API.drugs.getDrugsList(params, {cancelToken: this.source.token}).then(result => {
       this.$ios.post(request.baseURL + '/YstApiProduct/LoadData', qs.stringify(params), {
-        headers: {'Content-Type':'application/x-www-form-urlencoded; charset=UTF-8'},
+        headers: {'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'},
         cancelToken: this.source.token
       }).then(result => {
         result = result.data
@@ -1424,7 +1420,6 @@ export default {
         console.log(res) // 取消上一次请求，成功提示
       })
     },
-
 
     // querySearch (keyWord, callback) { // 右上角的下拉options展示
     //   if (keyWord === '') {
@@ -1705,6 +1700,7 @@ export default {
                   SalePrice: item.StoreSalePrice,
                   RealPrice: item.StoreSalePrice,
                   Quantity: item.myNum,
+                  Remark: item.Remark,
                   SupplierId: 0,
                   SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
                 }
@@ -1746,9 +1742,11 @@ export default {
                   SalePrice: item.StoreSalePrice,
                   RealPrice: item.StoreSalePrice,
                   Quantity: item.myNum,
+                  Remark: item.Remark,
                   SupplierId: 0,
                   SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
                 }
+                debugger
                 return obj
               })),
               CategoryOne: this.dataForm.CategoryOne,
@@ -1787,6 +1785,7 @@ export default {
                   SalePrice: item.StoreSalePrice,
                   RealPrice: item.StoreSalePrice,
                   Quantity: item.myNum,
+                  Remark: item.Remark,
                   SupplierId: 0,
                   SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
                 }
@@ -1826,6 +1825,7 @@ export default {
                   SalePrice: item.StoreSalePrice,
                   RealPrice: item.StoreSalePrice,
                   Quantity: item.myNum,
+                  Remark: item.Remark,
                   SupplierId: 0,
                   SupplierCode: 0 // 库存的药材不是合并了的嘛，哪还能确定供应商啊
                 }
@@ -1842,7 +1842,7 @@ export default {
             var tick
             if (this.$route.params.row !== undefined) {
               // console.log('后加流程？')
-              tick = this.$route.params.registerFormId === undefined ? API.register.registerSubmit(paramsCreateHistory): API.register.sendRecipelToEdit(paramsEditHistory)
+              tick = this.$route.params.registerFormId === undefined ? API.register.registerSubmit(paramsCreateHistory) : API.register.sendRecipelToEdit(paramsEditHistory)
             } else {
               // console.log('旧的？')
               tick = this.$route.query.MobilePhone === '0' ? API.register.registerSubmit(paramsCreate) : API.register.sendRecipelToEdit(paramsEdit)

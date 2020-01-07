@@ -7,7 +7,14 @@
           <el-input v-model="dataForm.BillCode" placeholder="单据编码" size="mini" clearable style="width: 120px"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-input v-model="dataForm.BillType" placeholder="单据类型" size="mini" clearable style="width: 120px"></el-input>
+          <el-select v-model="dataForm.BillType" placeholder="单据类型" size="mini" clearable>
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
         <el-form-item>
           <!--:default-time="['12:00:00']"-->
@@ -95,7 +102,20 @@ export default {
       },
       dataList: [],
       totalPage: 1,
-      dataListSelections: []
+      dataListSelections: [],
+      options: [{
+        value: '1',
+        label: '销售单'
+      }, {
+        value: '2',
+        label: '销售退单'
+      }, {
+        value: '11',
+        label: '采购订单'
+      }, {
+        value: '12',
+        label: '采购退单'
+      }]
     }
   },
   watch: {

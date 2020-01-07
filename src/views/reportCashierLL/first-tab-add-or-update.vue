@@ -43,11 +43,11 @@
         </el-row>
         <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;">
           <el-col :span="8" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
-            <span style="display: inline-block;width:100px;text-align: right;
+            <span style="display: inline-block;width: 70px;text-align: right;
                   overflow: hidden;white-space: nowrap; text-overflow: ellipsis;vertical-align: bottom">
               {{item.ProductName}}
             </span>
-            <span style="display: inline-block;width: 65px;text-align: left">
+            <span style="display: inline-block;width: 70px;text-align: left">
               {{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}{{item.CategoryId === 1005 ? '[贵]' : ''}}
             </span>
           </el-col>
@@ -93,7 +93,7 @@
         <div id="chenxiPrint" style="display: none">
           <table width="100%" style="font-size: 12px;padding-right: 55px">
             <tbody>
-            <tr v-if="registerAllData.StoreId === 706">
+            <tr v-if="registerAllData.storeId === 706">
               <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆颐善堂中医诊所收据</h3></td>
             </tr>
             <tr v-else>
@@ -219,7 +219,7 @@
               <el-col :span="6">{{registerAllData.StatusName ? registerAllData.StatusName : '无'}}</el-col>
               <el-col :span="10">
                 <el-form-item label="折扣" prop="percentage" >
-                  <el-input-number @change="myComputedAttr" v-model="dataForm.percentage" :min="0" :max="200" :precision="4"   style="width:110px"></el-input-number>
+                  <el-input-number @change="myComputedAttr" v-model="dataForm.percentage" :min="0" :max="200" style="width:110px"></el-input-number>
                 </el-form-item>%
               </el-col>
             </el-row>
@@ -271,17 +271,6 @@
               患者总消费：￥{{mySumAmount}}，
               已支付：￥{{registerAllData.RegisterStatus === 2 ? registerAllData.RegisterAmount : '0'}}，
               <b style="color: #e4393c">待支付：￥{{myFutureAmount}}</b>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="9" style="margin-bottom: 10px">
-              <el-form-item label="订单来源"><!--订单来源-->
-                <el-select v-model="dataForm.Source" placeholder="订单来源"  style="width: 100px">
-                  <el-option v-for="item in DicSaleOrderSource" :key="item.Key"
-                             :label="`${item.Value}`" :value="item.Key">
-                  </el-option>
-                </el-select>
-              </el-form-item>
             </el-col>
           </el-row>
           <!--支付方式0-->
@@ -349,10 +338,6 @@
 import API from '@/api'
 import '../common/icon/iconfont.css'
 import {calcAge, Currency} from '@/utils/validate'
-//
-// Number.prototype.toFixed = function (exponent) {
-//     return parseInt(this * Math.pow(10, exponent) + 0.5) / Math.pow(10, exponent);
-// }
 
 export default {
   data () {
@@ -377,7 +362,6 @@ export default {
 
         PaymentWay: 1, // 支付方式
         OnlinePaymentWay: '', // 支付方式
-        Source: 1, // 订单来源
         PayAmount: '', // 支付金额_0
         OnlinePayAmount: 0, // 支付金额_1
 
@@ -409,19 +393,8 @@ export default {
         {label: '善郎中', value: 11},
         {label: '美团', value: 12}
       ],
-      isOKClick: false,
-      DicSaleOrderSource: []
+      isOKClick: false
     }
-  },
-  created () {
-    // 获取单据来源
-    API.register.SaleOrderSource().then(result => {
-      if (result.code === '0000') {
-        this.DicSaleOrderSource = result.data
-      } else {
-        this.$message.error(result.message)
-      }
-    })
   },
   watch: {
     // 折扣监听
@@ -528,7 +501,6 @@ export default {
           if (result.code === '0000') {
             result.data.BirthDate = calcAge(result.data.BirthDate)
             this.registerAllData = result.data
-            this.dataForm.Source = result.data.Source
             this.oldDrugTotalAmount = result.data.DrugTotalAmount
             this.dataForm.WorkAmount = result.data.WorkAmount
             this.dataListLoading = false
@@ -552,7 +524,7 @@ export default {
         DJAmount: 0, // 代煎费用
         ExpressAmount: 0, // 快递费
         OtherAmount: 0, // 其他
-        Source: 1, // 订单来源
+
         PaymentWay: 1, // 支付方式
         OnlinePaymentWay: '', // 支付方式
         PayAmount: '', // 支付金额_0
@@ -608,8 +580,8 @@ export default {
             OnlinePaymentWay: this.dataForm.OnlinePaymentWay, // 支付方式
             PayAmount: this.dataForm.PayAmount, // 实收金额
             OnlinePayAmount: this.dataForm.OnlinePayAmount, // 实收金额
-            Source: this.dataForm.Source, // 单据来源
-            Discount: (this.dataForm.percentage / 100).toFixed(6), // 折扣 保留两位小数
+
+            Discount: (this.dataForm.percentage / 100).toFixed(4), // 折扣 保留两位小数
             WorkAmount: this.dataForm.WorkAmount, // 加工费
             DJAmount: this.dataForm.DJAmount, // 代煎费用
             ExpressAmount: this.dataForm.ExpressAmount, // 快递费

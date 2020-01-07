@@ -11,10 +11,10 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/proxyApi': {
-      //  target: 'http://mj.slzzyy.com:8080',//替换域名同时修改图标文字一善堂&nbsp;MJ，修改头顶文字
-       // target: 'http://api.slzzyy.com:8080',
-        // target: 'http://api.dev.slzzyy.com:8080',
-        target: 'http://localhost:12099/',
+       // target: 'http://mj.slzzyy.com:8080',//替换域名同时修改图标文字一善堂&nbsp;MJ，修改头顶文字
+        target: 'http://api.slzzyy.com:8080',
+       // target: 'http://api.dev.slzzyy.com:8080',
+       //  target: 'http://localhost:12099/',
         changeOrigin: true,
         pathRewrite: {'^/proxyApi' : ''},
         onProxyReq (proxyReq, req, res) {

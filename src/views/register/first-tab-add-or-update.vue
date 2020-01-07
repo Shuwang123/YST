@@ -78,6 +78,17 @@
             </el-row>
             <!--第二行-->
             <el-row>
+              <el-col :span="12" >
+                <el-form-item label="订单来源"><!--订单来源-->
+                  <el-select v-model="dataForm.Source" placeholder="订单来源"  style="width: 100px">
+                    <el-option v-for="item in DicSaleOrderSource" :key="item.Key"
+                               :label="`${item.Value}`" :value="item.Key">
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <el-row>
               <el-col :span="12">
                 <el-form-item label="收费类型"><!--柜台收费类型-->
                   <el-select v-model="dataForm.chargeType" style="width: 100px"
@@ -240,7 +251,7 @@ export default {
         Address: '',
         UserId: '',
         Code: '',
-
+        Source: 1, // 订单来源
         RegisterPaymentWay: 1, // 支付方式
         DiagnosisType: '1', // 看诊类型
         chargeType: '只挂号', // 收费类型（药房）
@@ -313,11 +324,20 @@ export default {
         }
       ],
       registerAllData: {},
-      isOKClick: false
+      isOKClick: false,
+      DicSaleOrderSource: []
     }
   },
   created () {
     this.$store.commit('setRegisterStep', 1)
+    // 获取单据来源
+    API.register.SaleOrderSource().then(result => {
+      if (result.code === '0000') {
+        this.DicSaleOrderSource = result.data
+      } else {
+        this.$message.error(result.message)
+      }
+    })
   },
   methods: {
     patientListFun (row) { // 患者列表，子层点击‘载入’时触发
@@ -368,7 +388,7 @@ export default {
         Address: '',
         UserId: '',
         Code: '',
-
+        Source: 1, // 订单来源
         RegisterPaymentWay: 1, // 支付方式
         DiagnosisType: '1', // 看诊类型
         chargeType: '只挂号', // 收费类型（药房）
@@ -394,7 +414,7 @@ export default {
             UserId: this.dataForm.UserId, // 患者id
             OrderType: 1, // 1挂号 2退号
             DiagnosisType: this.dataForm.DiagnosisType, // 初诊 复诊
-
+            Source: this.dataForm.Source, // 单据来源
             RegisterAmount: this.dataForm.RegisterAmount, // 挂号费
             ConsultationAmount: this.dataForm.ConsultationAmount, // 诊疗费
             RegisterPaymentWay: this.dataForm.RegisterPaymentWay,

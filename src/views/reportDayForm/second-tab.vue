@@ -89,7 +89,8 @@ export default {
         StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店Id（必须）
         OrderType: 1, // 1表示销售单 2表示销售退单
         StartDay: this.fatherDataForm.StartDate, // 开始时间
-        EndDay: this.fatherDataForm.EndDate // 结束时间
+        EndDay: this.fatherDataForm.EndDate, // 结束时间
+        Source: this.fatherDataForm.Source
       }
       // 获取挂号列表
       console.log(params)

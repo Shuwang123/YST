@@ -42,8 +42,8 @@
               <el-form-item>
                 <el-select v-model="dataForm.CategoryOne" placeholder="一级药态"
                            @change="comTabFunction()" @clear="comTabFunction()" clearable style="width: 100px">
-                  <el-option v-for="item in DicCategoryOneType"  :key="item.Key"
-                             :label="`${item.Value}`" :value="item.Key" v-show="item.Key!=41">
+                  <el-option v-for="item in DicCategoryOneType" :key="item.Key"
+                             :label="`${item.Value}`" :value="item.Key" v-show="item.Key==41">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -82,7 +82,7 @@
         </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="three">
-        <span slot="label"><i class=""></i> 出库药品报表</span>
+        <span slot="label"><i class=""></i>出库理疗报表</span>
         <transition name="chenxi">
           <three-tab v-if="isVisible[2].child" ref="threeTab" :fatherDataForm="dataForm"></three-tab>
         </transition>
@@ -309,7 +309,6 @@ export default {
       }
       this.comTabFunction()
     }
-
   }
 }
 </script>

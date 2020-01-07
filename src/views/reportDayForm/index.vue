@@ -27,7 +27,14 @@
                 <!--<el-input v-model="dataForm.patientNameOrMobilePhone" placeholder="患者/患者电话"-->
                           <!--@clear="comTabunction()" clearable style="width: 119px"></el-input>-->
               <!--</el-form-item>-->
-
+              <el-form-item>
+                <el-select v-model="dataForm.Source" placeholder="订单来源"
+                           @change="comTabFunction()" @clear="comTabFunction()" clearable style="width: 100px">
+                  <el-option v-for="item in DicSaleOrderSource" :key="item.Key"
+                             :label="`${item.Value}`" :value="item.Key">
+                  </el-option>
+                </el-select>
+              </el-form-item>
               <el-form-item>
                 <el-date-picker
                   size="mini"
@@ -90,7 +97,8 @@ export default {
         MobilePhone: '', // 电话 这几个信息只是父组件传递给子组件的查询字段而已
 
         StartDate: '',
-        EndDate: ''
+        EndDate: '',
+        Source: ''
       },
       isVisible: [
         {child: true},
@@ -131,7 +139,8 @@ export default {
           return time.getTime() > Date.now() + 3600 * 24 * 0 * 1000
         }
       },
-      storeDoctorArr: []
+      storeDoctorArr: [],
+      DicSaleOrderSource: []
     }
   },
   watch: {
@@ -217,6 +226,7 @@ export default {
         id: '',
         userName: '',
         nickName: '',
+        Source: '',
         roleId: this.$store.getters.getAllDoctorIdArr.join(),
         canViewStores: this.$store.getters.getAccountCurrentHandleStore // 门店ID// storeId: this.dataForm.StoreId
       }
@@ -229,6 +239,14 @@ export default {
           }
         } else {
           this.$message.error(response.message)
+        }
+      })
+      // 获取单据来源
+      API.register.SaleOrderSource(params).then(result => {
+        if (result.code === '0000') {
+          this.DicSaleOrderSource = result.data
+        } else {
+          this.$message.error(result.message)
         }
       })
     },

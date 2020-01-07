@@ -1,10 +1,10 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'划价收费'" :width="'700px'"
+    :title="'划价收费'" :width="'615px'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose" class="charge-info">
-    <div style="width: 650px" v-loading="dataListLoading">
+    <div style="width: 580px" v-loading="dataListLoading">
       <el-row>
         <el-col :span="12">
           <!-- style="border-bottom: 1px solid #333;"-->
@@ -41,14 +41,13 @@
       </el-row>
       <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;position: relative">
         <el-col :span="8" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
-          <span style="display: inline-block;width:100px;text-align: right;
-                  overflow: hidden;white-space: nowrap; text-overflow: ellipsis;vertical-align: bottom">
-              {{item.ProductName}}
-            </span>
-          <span style="display: inline-block;width: 65px;text-align: left">
-              {{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}{{item.CategoryId === 1005 ? '[贵]' : ''}}
-            </span>
-
+          <span style="display: inline-block;width: 70px;text-align: right;
+            overflow: hidden;white-space: nowrap; text-overflow: ellipsis;vertical-align: bottom">
+            {{item.ProductName}}
+          </span>
+          <span style="display: inline-block;width: 70px;text-align: left">
+            {{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}{{item.CategoryId === 1005 ? '[贵]' : ''}}
+          </span>
         </el-col>
       </el-row>
 
@@ -130,14 +129,13 @@
               <ul style="list-style-type: none;padding: 0;margin: 0;min-height: 260px;border-bottom: 1px solid #333;">
                 <li v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId"
                     style="float: left;width: 33%;text-align: center;height: 24px;line-height: 24px">
-                  <span style="display: inline-block;width:100px;text-align: right;
-                  overflow: hidden;white-space: nowrap; text-overflow: ellipsis;vertical-align: bottom">
-              {{item.ProductName}}
-            </span>
-                  <span style="display: inline-block;width: 65px;text-align: left">
-              {{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}{{item.CategoryId === 1005 ? '[贵]' : ''}}
-            </span>
-
+                  <span style="display: inline-block;width: 70px;text-align: right;
+                    overflow: hidden;white-space: nowrap; text-overflow: ellipsis;vertical-align: bottom">
+                    {{item.ProductName}}
+                  </span>
+                  <span style="display: inline-block;width: 70px;text-align: left">
+                    {{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}{{item.CategoryId === 1005 ? '[贵]' : ''}}
+                  </span>
                 </li>
               </ul>
             </td>
@@ -202,10 +200,7 @@
       <div id="printCashier" style="display: none">
         <table width="100%" style="font-size: 12px;padding-right: 55px">
           <tbody>
-          <tr v-if="registerAllData.StoreId === 706">
-            <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆颐善堂中医诊所收据</h3></td>
-          </tr>
-          <tr v-else>
+          <tr>
             <td colspan="3" align="center" height="24" style="margin-bottom: 20px;font-weight: 600"><h3>重庆一善堂中医门诊部收据</h3></td>
           </tr>
           <tr>
@@ -231,28 +226,8 @@
               <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
           </tr>
           <tr>
-            <td>{{registerAllData.CategoryOne === 41 ? '理疗费' : '药品费'}}</td>
-            <td colspan="2"><p>￥{{Number(registerAllData.DrugTotalAmount*registerAllData.Discount).toFixed(2)}}
-              <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
-          </tr>
-          <tr v-show="registerAllData.WorkAmount !== 0">
-            <td>加工费</td>
-            <td colspan="2"><p>￥{{Number(registerAllData.WorkAmount).toFixed(2)}}
-              <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
-          </tr>
-          <tr v-show="registerAllData.DJAmount !== 0">
-            <td>代煎费</td>
-            <td colspan="2"><p>￥{{Number(registerAllData.DJAmount).toFixed(2)}}
-              <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
-          </tr>
-          <tr v-show="registerAllData.ExpressAmount !== 0">
-            <td>快递费</td>
-            <td colspan="2"><p>￥{{Number(registerAllData.ExpressAmount).toFixed(2)}}
-              <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
-          </tr>
-          <tr v-show="registerAllData.OtherAmount !== 0">
-            <td>其他费</td>
-            <td colspan="2"><p>￥{{Number(registerAllData.OtherAmount).toFixed(2)}}
+            <td>药品费</td>
+            <td colspan="2"><p>￥{{Number(registerAllData.TotalAmount - registerAllData.RegisterAmount).toFixed(2)}}
               <span style="display: inline-block;width: 200px;text-align: right"></span></p></td>
           </tr>
           <tr valign="bottom">
@@ -269,7 +244,7 @@
             <td colspan="3">药品为特殊商品，一经售出概不退换 </td>
           </tr>
           <tr>
-            <td colspan="3">收费人员：{{registerAllData.CreateNickName}}</td>
+            <td colspan="3">收费人员：xx</td>
           </tr>
           </tbody>
         </table>
@@ -336,9 +311,9 @@
 
     <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="chenxiPrint('printRecipel')">药方</el-button>
-        <el-button type="primary" @click="chenxiPrint('printCashier')">收银小票补打</el-button>
-        <el-button type="primary" @click="chenxiPrint('printOutStock')">出库单(财务)</el-button>
+        <!--<el-button type="primary" @click="chenxiPrint('printRecipel')">药方</el-button>-->
+        <!--<el-button type="primary" @click="chenxiPrint('printCashier')">收银小票补打</el-button>-->
+        <!--<el-button type="primary" @click="chenxiPrint('printOutStock')">出库单(财务)</el-button>-->
         <el-button @click="visible = false">关闭</el-button>
       </span>
     </div>
@@ -386,7 +361,6 @@ export default {
         API.register.getRegisterInfo({id: formId}).then(result => {
           if (result.code === '0000') {
             result.data.BirthDate = calcAge(result.data.BirthDate)
-              debugger;
             this.registerAllData = result.data
             this.dataListLoading = false
             console.log('查看', result.data)

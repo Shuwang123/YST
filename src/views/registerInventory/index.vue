@@ -47,7 +47,7 @@
         </transition>
       </el-tab-pane>
       <el-tab-pane label="" name="third">
-        <span slot="label"><i class=""></i> 库存批次流水</span>
+        <span slot="label"><i class=""></i> 库存批次</span>
         <transition name="chenxi">
           <third-tab v-if="isVisible[2].child" ref="thridTab" :fatherDataForm="dataForm"></third-tab>
         </transition>

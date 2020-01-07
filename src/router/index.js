@@ -66,7 +66,8 @@ var router = new Router({
         /* 门诊报表 start */
         {path: '/store/report', component: _import('reportDayForm/index'), name: 'reportDayForm', meta: {title: '门诊报表', keepAlive: false}},
         {path: '/store/drugsReport', component: _import('reportDrugsForm/index'), name: 'reportDrugsForm', meta: {title: '药品使用报表', keepAlive: false}},
-        {path: '/store/reportCashier', component: _import('reportCashier/index'), name: 'reportCashier', meta: {title: '收银报表', keepAlive: false}},
+        {path: '/store/reportCashier', component: _import('reportCashier/index'), name: 'reportCashier', meta: {title: '收银报表药品', keepAlive: false}},
+        {path: '/store/reportCashierLL', component: _import('reportCashierLL/index'), name: 'reportCashierLL', meta: {title: '收银报表理疗', keepAlive: false}},
         /* 门诊报表 end */
 
         /* 退货单：2019.09.30新增需求 */

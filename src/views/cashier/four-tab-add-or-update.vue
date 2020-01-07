@@ -1,10 +1,10 @@
 <template>
   <el-dialog
     v-dialogDrag
-    :title="'划价收费'" :width="'615px'"
+    :title="'划价收费'" :width="'700px'"
     :close-on-click-modal="false"
     :visible.sync="visible" @close="handleClose" class="charge-info">
-    <div style="width: 580px" v-loading="dataListLoading">
+    <div style="width: 650px" v-loading="dataListLoading">
       <el-row>
         <el-col :span="12">
           <!-- style="border-bottom: 1px solid #333;"-->
@@ -41,13 +41,14 @@
       </el-row>
       <el-row style="text-align: center;min-height: 260px;border-bottom: 1px solid #333;position: relative">
         <el-col :span="8" v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId">
-          <span style="display: inline-block;width: 70px;text-align: right;
-            overflow: hidden;white-space: nowrap; text-overflow: ellipsis;vertical-align: bottom">
-            {{item.ProductName}}
-          </span>
-          <span style="display: inline-block;width: 70px;text-align: left">
-            {{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}{{item.CategoryId === 1005 ? '[贵]' : ''}}
-          </span>
+          <span style="display: inline-block;width:100px;text-align: right;
+                  overflow: hidden;white-space: nowrap; text-overflow: ellipsis;vertical-align: bottom">
+              {{item.ProductName}}
+            </span>
+          <span style="display: inline-block;width: 65px;text-align: left">
+              {{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}{{item.CategoryId === 1005 ? '[贵]' : ''}}
+            </span>
+
         </el-col>
       </el-row>
 
@@ -129,13 +130,14 @@
               <ul style="list-style-type: none;padding: 0;margin: 0;min-height: 260px;border-bottom: 1px solid #333;">
                 <li v-for="item in registerAllData.SaleOrderItems" :key="item.ProductId"
                     style="float: left;width: 33%;text-align: center;height: 24px;line-height: 24px">
-                  <span style="display: inline-block;width: 70px;text-align: right;
-                    overflow: hidden;white-space: nowrap; text-overflow: ellipsis;vertical-align: bottom">
-                    {{item.ProductName}}
-                  </span>
-                  <span style="display: inline-block;width: 70px;text-align: left">
-                    {{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}{{item.CategoryId === 1005 ? '[贵]' : ''}}
-                  </span>
+                  <span style="display: inline-block;width:100px;text-align: right;
+                  overflow: hidden;white-space: nowrap; text-overflow: ellipsis;vertical-align: bottom">
+              {{item.ProductName}}
+            </span>
+                  <span style="display: inline-block;width: 65px;text-align: left">
+              {{item.RefundableQty}} {{item.Unit}} {{item.CategoryId === 1002 ? '[精]' : ''}}{{item.CategoryId === 1005 ? '[贵]' : ''}}
+            </span>
+
                 </li>
               </ul>
             </td>

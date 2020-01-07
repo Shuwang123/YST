@@ -40,6 +40,18 @@
         {{Number(scope.row.StoreSalePrice * scope.row.myNum).toFixed(2)}}
       </template>
     </el-table-column>
+    <el-table-column prop="" header-align="center" :align="$store.state.common.align" label="备注" min-width="100">
+      <template slot-scope="scope">
+        <el-select v-model="scope.row.Remark"  size="mini"  placeholder="备注" clearable>
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </template>
+    </el-table-column>
     <!--<el-table-column prop="StoreSalePrice" header-align="center" align="center" label="总价" width="70"></el-table-column>-->
   </div>
 </template>
@@ -50,6 +62,35 @@ export default {
   data () {
     return {
       // categoryUnit: '克'
+      options: [ // 诊断结果的下拉
+        { value: '包煎',
+          label: '包煎'
+        },
+        { value: '另煎',
+          label: '另煎'
+        },
+        { value: '烊化',
+          label: '烊化'
+        },
+        { value: '先煎',
+          label: '先煎'
+        },
+        { value: '后下',
+          label: '后下'
+        },
+        { value: '兑服',
+          label: '兑服'
+        },
+        { value: '另包',
+          label: '另包'
+        },
+        { value: '嚼服',
+          label: '嚼服'
+        },
+        { value: '吐服',
+          label: '吐服'
+        }
+      ]
     }
   },
   methods: {

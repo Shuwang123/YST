@@ -36,10 +36,14 @@
       <el-table-column prop="Dosage" header-align="center" align="center" label="剂型" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Specification" header-align="center" align="center" label="规格" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Quantity" header-align="center" align="center" label="存量" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Price" header-align="center" align="center" label="进价" min-width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="BatchNo" header-align="center" align="center" label="批次号" min-width="110" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column header-align="center" align="center" label="历史时间" min-width="119">
+<el-table-column prop="PurchaseQuantity" header-align="center" align="center" label="入库数" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Quantity" header-align="center" align="center" label="剩余数" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="ProductBatchNo" header-align="center" align="center" label="批次号" min-width="110" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="BatchNo" header-align="center" align="center" label="系统批次号" min-width="110" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="ProductionDateTime" header-align="center" align="center" label="生产日期" min-width="110" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="ExpiryDateTime" header-align="center" align="center" label="失效日期" min-width="110" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column header-align="center" align="center" label="入库时间" min-width="119">
         <template slot-scope="scope">
           <!--<span>{{ scope.row.CreatedOn}}</span>-->
           <span>{{ scope.row.CreatedOn | myDateFilter('yyyy-MM-dd hh:mm')}}</span>

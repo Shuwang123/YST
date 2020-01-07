@@ -13,7 +13,7 @@ import router from './router'
 import axios from '../node_modules/axios/index'
 Vue.prototype.$ios = axios
 
-import cxobj from './views/common/table' // 这个是陈希写的一个自定义的全局的公用的统一的table样式，其中有表头的样式，表体的样式行的高度35px等等（因为elementUI那个50px高度太丑了）
+import cxobj from './views/common/table' // 一个自定义的全局的公用的统一的table样式，其中有表头的样式，表体的样式行的高度35px等等（因为elementUI那个50px高度太丑了）
 import './views/common/table.scss' // 引入公用的table表体样式，需搭配上面js中的tableRowClassName方法
 Vue.prototype.$cxObj = cxobj
 
