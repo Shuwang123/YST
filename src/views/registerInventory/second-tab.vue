@@ -38,21 +38,21 @@
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="BillCode" header-align="center" align="center" label="账单编码" width="100" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="BillId" header-align="center" align="center" label="账单ID" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="BillCode" header-align="center" align="center" label="单据编码" width="100" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="BillId" header-align="center" align="center" label="单据ID" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ProductCode" header-align="center" align="center" label="药品编码" width="90"></el-table-column>
       <el-table-column prop="CategoryName" header-align="center" align="center"
                        label="药态" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ProductName" header-align="center" align="center" label="药名" min-width="80"></el-table-column>
       <!--<el-table-column prop="CategoryName" header-align="center" align="center" label="种类" width="70" :show-overflow-tooltip="true"></el-table-column>-->
 
-      <el-table-column prop="Quantity" header-align="center" align="center" label="改变前" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Quantity" header-align="center" align="center" label="初始库存" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ChangeQuantity" header-align="center" align="center" label="增加 / 扣减" min-width="80"></el-table-column>
-      <el-table-column prop="CurrentQuantity" header-align="center" align="center" label="剩余" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="CurrentQuantity" header-align="center" align="center" label="剩余库存" min-width="80" :show-overflow-tooltip="true"></el-table-column>
 
-      <el-table-column prop="BillTypeName" header-align="center" align="center" label="账单类型" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="BillTypeName" header-align="center" align="center" label="单据类型" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="BatchNo" header-align="center" align="center" label="批次号" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column header-align="center" align="center" label="事件时间" min-width="119">
+      <el-table-column header-align="center" align="center" label="记账日期" min-width="119">
         <template slot-scope="scope">
           <span>{{ scope.row.CreateTime | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
         </template>

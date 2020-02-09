@@ -152,7 +152,7 @@ export default {
   }
   /*不可用input 样式修改*/
   .el-input.is-disabled .el-input__inner {
-    background-color: #ffffff;
+    background-color: #f5f7fa;
     border-color: #e4e7ed;
     color: #606266;
     cursor: not-allowed;

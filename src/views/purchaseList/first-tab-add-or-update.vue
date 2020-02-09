@@ -166,10 +166,11 @@
                 <td height="16"><p>排序</p></td>
                 <td>商品编码</td>
                 <td>商品名称</td>
-                <td>剂型</td>
+                <!--<td>剂型</td>-->
                 <td>规格</td>
                 <td>单位</td>
-                <td>生成厂家</td>
+                <td>生产厂家</td>
+                <td>生产日期</td>
                 <td>数量</td>
                 <td>进价</td>
                 <td>金额</td>
@@ -179,10 +180,11 @@
                 <td width="50" height="16">{{ind + (index - 1) * 10 + 1}}</td>
                 <td width="70">{{item.ProductCode}}</td>
                 <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.ProductName}}</p></td>
-                <td width="70" align="center"><p style="width: 70px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.Dosage}}</p></td>
+                <!--<td width="70" align="center"><p style="width: 70px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.Dosage}}</p></td>-->
                 <td width="70" align="center"><p style="width: 70px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{item.Specification}}</p></td>
                 <td width="50">{{item.Unit}}</td>
-                <td width="100" align="center"><p style="width: 100px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{dataList.SupplierName}}</p></td>
+                <td width="140" align="center"><p style="width: 140px;margin: 0 5px;white-space: nowrap;overflow: hidden;">{{dataList.SupplierName}}</p></td>
+                <td width="70" align="center"><p style="width: 70px;margin: 0 5px;white-space: nowrap;overflow: hidden;"> {{item.ProductionDateTime}}</p></td>
                 <td width="70">{{item.Quantity}}</td>
                 <td width="70">{{item.CostPrice.toFixed(4)}}</td>
                 <td width="70">{{(item.Quantity * item.CostPrice).toFixed(2)}}</td>
@@ -190,7 +192,7 @@
               </tr>
               <tr style="font-size: 12px">
                 <td colspan="2" align="center" height="16">总 {{dataList.Items.length}} 笔</td>
-                <td colspan="6" align="left" style="padding: 0 10px;font-weight: bold">{{index === pages ? '全部总计：￥' + sumCountAll(dataList.Items) +
+                <td colspan="7" align="left" style="padding: 0 10px;font-weight: bold">{{index === pages ? '全部总计：￥' + sumCountAll(dataList.Items) +
                   '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;大写：' + sumCountChinese(sumCountAll(dataList.Items)) : ''}}</td>
                 <td colspan="2" align="center">本页合计：{{sumCount(index)}}</td>
               </tr>

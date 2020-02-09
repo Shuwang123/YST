@@ -2067,4 +2067,10 @@ export default {
   .v-enter-active, .v-leave-active {transition: all 0.4s ease}
   .v-enter-to, .v-leave {opacity: 1}
 }
+.el-input.is-disabled .el-input__inner /deep/{
+  background-color: #f5f7fa;
+  border-color: #e4e7ed;
+  color: #606266;
+  cursor: not-allowed;
+}
 </style>

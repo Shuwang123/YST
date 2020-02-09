@@ -31,6 +31,7 @@
         </el-form-item>
         <el-form-item>
           <el-button icon="el-icon-search" @click="pageIndex = 1; getDataList()" size="mini">查询</el-button>
+          <el-button icon="el-icon-document" @click="handleDownload" size="mini">Export Excel</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -45,21 +46,21 @@
       style="width: 100%;">
       <el-table-column type="selection" align="center" width="50"></el-table-column>
       <el-table-column prop="StoreName" header-align="left" align="left" label="门店" width="70" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="BillCode" header-align="center" align="center" label="账单编码" width="100" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="BillId" header-align="center" align="center" label="账单ID" width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="BillCode" header-align="center" align="center" label="单据编码" width="100" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="BillId" header-align="center" align="center" label="单据ID" width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ProductCode" header-align="center" align="center" label="药品编码" width="90"></el-table-column>
       <el-table-column prop="CategoryName" header-align="center" align="center"
                        label="药态" width="70" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ProductName" header-align="center" align="center" label="药名" min-width="80"></el-table-column>
       <!--<el-table-column prop="CategoryName" header-align="center" align="center" label="种类" width="70" :show-overflow-tooltip="true"></el-table-column>-->
 
-      <el-table-column prop="Quantity" header-align="center" align="center" label="改变前" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Quantity" header-align="center" align="center" label="初始库存" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ChangeQuantity" header-align="center" align="center" label="增加 / 扣减" min-width="80"></el-table-column>
-      <el-table-column prop="CurrentQuantity" header-align="center" align="center" label="剩余" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="CurrentQuantity" header-align="center" align="center" label="剩余库存" min-width="80" :show-overflow-tooltip="true"></el-table-column>
 
-      <el-table-column prop="BillTypeName" header-align="center" align="center" label="账单类型" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="BillTypeName" header-align="center" align="center" label="单据类型" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="BatchNo" header-align="center" align="center" label="批次号" width="" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column header-align="center" align="center" label="事件时间" min-width="119">
+      <el-table-column header-align="center" align="center" label="记账日期" min-width="119">
         <template slot-scope="scope">
           <span>{{ scope.row.CreateTime | myDateFilter('yyyy-MM-dd hh:mm')}}</span>
         </template>
@@ -79,6 +80,7 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
+import request from '../../api/request'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import { mapGetters } from 'vuex'
 export default {
@@ -142,6 +144,33 @@ export default {
     }
   },
   methods: {
+    handleDownload () {
+      var params = {
+        PageIndex: this.pageIndex,
+        PageSize: this.pageSize,
+        IsPaging: this.IsPaging,
+        StoreId: this.fatherDataForm.StoreId, // 门店ID
+        CategoryId: this.fatherDataForm.CategoryId,
+
+        ProductCodeOrBarCode: this.fatherDataForm.ProductCodeOrBarCode, // 产品编码
+        ProductName: this.fatherDataForm.ProductName, // 产品名称
+        // SpellName: this.fatherDataForm.SpellName,
+        // SupplierId: this.dataForm.SupplierId, // 供应商
+
+        BillCode: this.dataForm.BillCode,
+        BillType: this.dataForm.BillType,
+        StartDate: this.dataForm.StartDate,
+        EndDate: this.dataForm.EndDate
+      }
+      var url = request.downUrl + '/YstStoreInventory/LoadDataHistory'
+      // 附加参数
+      var href = url + '?toExcel=true'
+      var parameters = params
+      for (var name in parameters) {
+        href += '&' + name + '=' + encodeURIComponent(parameters[name])
+      }
+      window.location.href = href
+    },
     selectionChangeHandle (val) {
       this.dataListSelections = val
     },

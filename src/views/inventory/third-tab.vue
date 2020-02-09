@@ -13,6 +13,7 @@
         </el-form-item>
         <el-form-item>
           <el-button icon="el-icon-search" @click="getDataList()" size="mini">查询</el-button>
+          <el-button icon="el-icon-document" @click="handleDownload" size="mini">Export Excel</el-button>
         </el-form-item>
       </el-form>
     </div>
@@ -31,14 +32,14 @@
       <el-table-column prop="SupplierName" header-align="center" align="center" label="供应商" min-width=""></el-table-column>
       <el-table-column prop="CategoryName" header-align="center" align="center"
                        label="药态" width="70" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="ProductName" header-align="center" align="center" label="名称" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="ProductName" header-align="center" align="center" label="药名" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="没有厂商吧？所以厂商来货后都合并为一味药" width="" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column prop="Dosage" header-align="center" align="center" label="剂型" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Specification" header-align="center" align="center" label="规格" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Unit" header-align="center" align="center" label="单位" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="Price" header-align="center" align="center" label="进价" min-width="80" :show-overflow-tooltip="true"></el-table-column>
 <el-table-column prop="PurchaseQuantity" header-align="center" align="center" label="入库数" min-width="80" :show-overflow-tooltip="true"></el-table-column>
-      <el-table-column prop="Quantity" header-align="center" align="center" label="剩余数" min-width="80" :show-overflow-tooltip="true"></el-table-column>
+      <el-table-column prop="Quantity" header-align="center" align="center" label="库存数量" min-width="80" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ProductBatchNo" header-align="center" align="center" label="批次号" min-width="110" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="BatchNo" header-align="center" align="center" label="系统批次号" min-width="110" :show-overflow-tooltip="true"></el-table-column>
       <el-table-column prop="ProductionDateTime" header-align="center" align="center" label="生产日期" min-width="110" :show-overflow-tooltip="true"></el-table-column>
@@ -64,6 +65,7 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
+import request from '../../api/request'
 import FirstTabAddOrUpdate from './first-tab-add-or-update'
 import { mapGetters } from 'vuex'
 export default {
@@ -105,6 +107,27 @@ export default {
     })
   },
   methods: {
+    handleDownload () {
+      var params = {
+        PageIndex: this.pageIndex,
+        PageSize: this.pageSize,
+        IsPaging: this.IsPaging,
+        StoreId: this.fatherDataForm.StoreId, // 门店ID
+        CategoryId: this.fatherDataForm.CategoryId,
+        ProductName: this.fatherDataForm.ProductName, // 产品名称
+        SupplierId: this.dataForm.SupplierId, // 供应商
+        ProductCodeOrBarCode: this.fatherDataForm.ProductCodeOrBarCode, // 产品编码 // ProductName: this.fatherDataForm.ProductName, // 产品名称
+        BatchNo: this.dataForm.BatchNo
+      }
+      var url = request.downUrl + '/YstStoreInventory/LoadDataBatch'
+      // 附加参数
+      var href = url + '?toExcel=true'
+      var parameters = params
+      for (var name in parameters) {
+        href += '&' + name + '=' + encodeURIComponent(parameters[name])
+      }
+      window.location.href = href
+    },
     selectionChangeHandle (val) {
       this.dataListSelections = val
     },
@@ -116,7 +139,7 @@ export default {
         IsPaging: this.IsPaging,
         StoreId: this.fatherDataForm.StoreId, // 门店ID
         CategoryId: this.fatherDataForm.CategoryId,
-
+        ProductName: this.fatherDataForm.ProductName, // 产品名称
         SupplierId: this.dataForm.SupplierId, // 供应商
         ProductCodeOrBarCode: this.fatherDataForm.ProductCodeOrBarCode, // 产品编码 // ProductName: this.fatherDataForm.ProductName, // 产品名称
         BatchNo: this.dataForm.BatchNo
