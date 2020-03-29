@@ -252,7 +252,7 @@
         <el-row>
           <el-col :span="6">
             <el-form-item label="总剂数">
-              <el-input-number v-model="Total" @change="countTotalPrice(leftTableData)" :min="1" :step="1" :max="100" style="width: 95px"></el-input-number> 剂
+              <el-input-number v-model="Total" @change="countTotalPrice(leftTableData)" :min="1" :step="1" :max="99999" style="width: 95px"></el-input-number> 剂
             </el-form-item>
           </el-col>
           <el-col :span="16">
