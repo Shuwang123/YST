@@ -43,6 +43,7 @@
           <span>{{ scope.row.CreatedOnTime | myDateFilter('MM-dd hh:mm:ss')}}</span>
         </template>
       </el-table-column>
+      <el-table-column prop="Total" header-align="center" align="center" label="帖数" min-width="70"></el-table-column>
       <!--<el-table-column prop="Status" header-align="center" align="center" label="状态" width="" :show-overflow-tooltip="true"></el-table-column>-->
       <el-table-column header-align="center" align="left" label="订单总价" class-name="TotalOrderAmount" min-width="147">
         <template slot-scope="scope">
