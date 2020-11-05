@@ -165,11 +165,16 @@
                   {{optionsPaymentType.filter(item => { return item.value === dataForm.PaymentWay})[0].label}}</span></p>
               </td>
             </tr>
-
+            <tr v-if="registerAllData.RegisterStatus === 1">
+              <td colspan="3">原价：￥{{oldDrugTotalAmount+registerAllData.RegisterAmount+dataForm.WorkAmount+dataForm.DJAmount+dataForm.ExpressAmount+dataForm.OtherAmount}}</td>
+            </tr>
+            <tr v-else>
+              <td colspan="3">原价：￥{{oldDrugTotalAmount+dataForm.WorkAmount+dataForm.DJAmount+dataForm.ExpressAmount+dataForm.OtherAmount}}</td>
+            </tr>
             <tr>
               <!--<td colspan="1">合计：￥{{registerAllData.TotalAmount}}</td>-->
               <!--<td colspan="2"><p>大写：{{sumChinese(registerAllData.TotalAmount)}}</p></td>-->
-              <td colspan="1">合计：￥{{Number(myFutureAmount).toFixed(2)}}</td>
+              <td colspan="1">折后：￥{{Number(myFutureAmount).toFixed(2)}}</td>
               <td colspan="2"><p>大写：{{sumChinese(Number(myFutureAmount).toFixed(2)) }}</p></td>
             </tr>
             <tr>

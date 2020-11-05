@@ -260,9 +260,11 @@
             <td colspan="2"><p>
               <span style="display: inline-block;width: 210px;text-align: right">{{registerAllData.PaymentWayName}}</span></p></td>
           </tr>
-
           <tr>
-            <td colspan="1">合计：￥{{Number(registerAllData.TotalAmount).toFixed(2)}}</td>
+            <td colspan="3">原价：￥{{Number(registerAllData.TotalAmount+(registerAllData.DrugTotalAmount-registerAllData.DrugTotalAmount*registerAllData.Discount)).toFixed(2)}}</td>
+          </tr>
+          <tr>
+            <td colspan="1">折后：￥{{Number(registerAllData.TotalAmount).toFixed(2)}}</td>
             <td colspan="2"><p>大写：{{sumChinese(Number(registerAllData.TotalAmount).toFixed(2))}}</p></td>
           </tr>
           <tr>
