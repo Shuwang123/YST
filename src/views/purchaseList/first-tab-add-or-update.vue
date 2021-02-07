@@ -295,6 +295,7 @@
     </span>
     <span v-else-if="stepActive === 2" slot="footer" class="dialog-footer">
       <el-button @click="chenxiPrint()">打印入库单</el-button>
+      <el-button icon="el-icon-document" @click="handleDownload" size="mini">Export Excel</el-button>
       <!--<el-button @click="excelExports('caiwu')">导出Excel(财务入库单)</el-button>-->
     </span>
   </el-dialog>
@@ -304,6 +305,7 @@ import API from '@/api'
 import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
 // import {treeDataTranslate} from '@/utils'
 import {myExportExcel} from '@/utils'
+import request from '../../api/request'
 
 export default {
   components: {
@@ -374,6 +376,18 @@ export default {
     this.scrollFun()
   },
   methods: {
+    handleDownload () {
+      var params = {
+        id: this.dataList.Id}
+      var url = request.downUrl + '/YstApiPurchaseOrder/Detail'
+      // 附加参数
+      var href = url + '?toExcel=true'
+      var parameters = params
+      for (var name in parameters) {
+        href += '&' + name + '=' + encodeURIComponent(parameters[name])
+      }
+      window.location.href = href
+    },
     // 处理采购弹窗在input输入值之后，数据变化时滚动上的一些缺陷
     scroll () {
       this.lastPosition = event.target.scrollTop

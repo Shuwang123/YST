@@ -21,8 +21,8 @@ var router = new Router({
         {path: '/dashboard', component: _import('dashboard/testindex'), name: 'dashboard', meta: {title: '商城管理', keepAlive: false}},
 
         /* 菜单管理Begin */
-        {path: '/system/meun', component: _import('meun/index'), name: 'meun', meta: {title: '菜单管理', keepAlive: false}},
-        {path: '/system/role', component: _import('role/index'), name: 'role', meta: {title: '角色管理', keepAlive: false}},
+        {path: '/system/meun', component: _import('meun/index'), name: 'meun', meta: {title: '菜单管理', keepAlive: true}},
+        {path: '/system/role', component: _import('role/index'), name: 'role', meta: {title: '角色管理', keepAlive: true}},
         {path: '/system/user', component: _import('user/index'), name: 'user', meta: {title: '管理员列表', keepAlive: false}},
         /* 菜单管理End */
 

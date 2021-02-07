@@ -391,7 +391,8 @@ export default {
         {label: '白露', value: 9},
         {label: '万科', value: 10},
         {label: '善郎中', value: 11},
-        {label: '美团', value: 12}
+        {label: '美团', value: 12},
+        {label: '经脉宝', value: 13}
       ],
       isOKClick: false
     }

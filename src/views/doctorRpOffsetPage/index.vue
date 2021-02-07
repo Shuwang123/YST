@@ -173,22 +173,22 @@
 
       <el-footer height="126px" style="padding-top: 7px;position: relative">
         <el-row>
-          <el-col :span="6">
+          <el-col :span="4">
             <el-form-item label="总剂数" prop="Total">
               <el-input-number v-model="dataForm.Total" @change="countTotalPrice()" :min="1" :step="1" :max="99999" style="width: 95px"></el-input-number> 剂
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="4">
             <el-form-item label="折扣" prop="Discount">
               <el-input-number v-model="dataForm.Discount" @change="countTotalPrice()" :min="0" :step="1" :max="200" style="width: 120px"></el-input-number> %
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="4">
             <el-form-item label="总金额">
               <el-input v-model="allMoney" style="width: 105px" disabled></el-input> ￥
             </el-form-item>
           </el-col>
-          <el-col :span="6">
+          <el-col :span="4">
             <el-form-item label="支付方式" prop="PaymentWay">
               <el-select v-model="dataForm.PaymentWay" style="width: 95px">
                 <el-option label="现金" value="1"></el-option>
@@ -203,6 +203,16 @@
                 <el-option label="万科" value="10"></el-option>
                 <el-option label="善郎中" value="11"></el-option>
                 <el-option label="美团" value="12"></el-option>
+                <el-option label="经脉宝" value="13"></el-option>
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="4" style="margin-bottom: 10px">
+            <el-form-item label="订单来源"><!--订单来源-->
+              <el-select v-model="dataForm.Source" placeholder="订单来源"  style="width: 100px">
+                <el-option v-for="item in DicSaleOrderSource" :key="item.Key"
+                           :label="`${item.Value}`" :value="item.Key">
+                </el-option>
               </el-select>
             </el-form-item>
           </el-col>
@@ -291,6 +301,7 @@
           Remark: '', // 备注
           Total: 1, // 总剂数
           Discount: 100, // 折扣
+          Source: 1, // 订单来源
           PaymentWay: '1' // 退单支付方法（要退单，那得把钱退给别人，对方返回药，正常逻辑）
         },
         allMoney: 0, // 药材金额 * 百分比
@@ -307,7 +318,8 @@
         isClickRightAddButton: false, // 搭配 updated () {} 聚焦
         rightIsFocus: false, // 判断右上角输入框是否处于聚焦状态
         keyCode_40Count: 0, // 在右上角的输入框中按下‘↓’键，总次数统计
-        source: null // 上一次请求对象
+        source: null, // 上一次请求对象
+        DicSaleOrderSource: []
       }
     },
     watch: {
@@ -350,7 +362,17 @@
         }
       }
     },
-    created () { this.pageInit() }, // 先初始化
+    created () {
+      this.pageInit()
+      // 获取单据来源
+      API.register.SaleOrderSource().then(result => {
+        if (result.code === '0000') {
+          this.DicSaleOrderSource = result.data
+        } else {
+          this.$message.error(result.message)
+        }
+      })
+    }, // 先初始化
     mounted () {
       var youHeight = getComputedStyle(document.getElementsByClassName('el-main')[0]).height
       var zuoHeight = getComputedStyle(document.getElementById('leftHeightPatient')).height
@@ -825,6 +847,7 @@
                 PaymentWay: this.dataForm.PaymentWay, // 支付方式
                 Remark: this.dataForm.Remark, // 备注
                 Total: this.dataForm.Total, // 总剂数
+                Source: this.dataForm.Source, // 单据来源
                 Discount: this.dataForm.Discount / 100, // 折扣 后端吗没自己除100
 
                 UserId: this.dataForm.UserId, // 患者Id 可能有可能没有，看操作人创建时选不选患者，患者选择做的非必填项

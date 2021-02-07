@@ -321,6 +321,10 @@ export default {
         {
           label: '美团',
           value: 12
+        },
+        {
+          label: '经脉宝',
+          value: 13
         }
       ],
       registerAllData: {},

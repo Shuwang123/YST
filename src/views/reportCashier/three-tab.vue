@@ -153,7 +153,7 @@ export default {
   methods: {
     handleDownload () {
       var params = {
-        PageIndex: this.pageIndex,
+        id: this.pageIndex,
         PageSize: this.pageSize,
         IsPaging: this.IsPaging,
         StoreId: this.$store.getters.getAccountCurrentHandleStore, // 门店Id（必须）

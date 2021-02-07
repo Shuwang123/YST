@@ -112,3 +112,11 @@ export function cashierRevoke (params) {
     data: requestParam(params)
   })
 }
+// 设置快递费
+export function setExpressAmount (params) {
+  return request({
+    url: requestUrl('/YstApiSaleOrder/SetExpressAmount'),
+    method: 'post',
+    data: requestParam(params)
+  })
+}

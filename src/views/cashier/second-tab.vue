@@ -43,11 +43,12 @@
           <span>{{scope.row.DiagnosisTypeName}} / {{scope.row.RegisterStatusName ? scope.row.RegisterStatusName : ''}} / {{scope.row.RegisterOrderStatusName}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
+      <el-table-column prop="" label="操作" width="250" header-align="left" align="left">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
           <el-button type="text" size="mini" @click="comfireDispensing(scope.row.Code)">出库</el-button>
           <el-button type="text" size="mini" @click="cashierRevoke(scope.row.Id)">退费</el-button>
+          <el-button type="text" size="mini" @click="setExpressAmount(scope.row.Id)">设置快递费</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -183,6 +184,31 @@ export default {
           remark: value}
           // console.log(obj)
         API.register.cashierRevoke(obj).then(result => {
+          console.log(result)
+          if (result.code === '0000') {
+            this.getDataList()
+            this.$message.success(`退费操作成功`)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消退费操作'
+        })
+      })
+    },
+    setExpressAmount (id) {
+      this.$prompt('请输入快递费金额', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^\d+\.?\d{0,2}$/,
+        inputErrorMessage: '快递费金额'
+      }).then(({ value }) => {
+        var obj = {
+          Id: id,
+          ExpressAmount: value}
+        // console.log(obj)
+        API.register.setExpressAmount(obj).then(result => {
           console.log(result)
           if (result.code === '0000') {
             this.getDataList()

@@ -53,15 +53,16 @@
           <span>{{scope.row.ExpressAmount}}</span>
         </template>
       </el-table-column>
-      <el-table-column header-align="center" align="center" label="收费状态" min-width="260" :show-overflow-tooltip="true">
+      <el-table-column header-align="center" align="center" label="收费状态" min-width="220" :show-overflow-tooltip="true">
         <template slot-scope="scope">
           <span>{{scope.row.DiagnosisTypeName}} / {{scope.row.RegisterStatusName ? scope.row.RegisterStatusName : ''}} / {{scope.row.StatusName}}</span>
         </template>
       </el-table-column>
-      <el-table-column prop="" label="操作" width="150" header-align="center" align="center">
+      <el-table-column prop="" label="操作" width="180" header-align="left" align="left">
         <template slot-scope="scope">
           <el-button type="text" size="mini" @click="addOrUpdateHandle(scope.row.Id)">查看</el-button>
           <el-button type="text" size="mini" @click="jumpOffsetPage(scope.row)">退单</el-button>
+          <el-button type="text" size="mini" @click="setExpressAmount(scope.row.Id)">设置快递费</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -178,8 +179,34 @@ export default {
           }})
       }).catch(() => {
       })
+    },
+    setExpressAmount (id) {
+      this.$prompt('请输入快递费金额', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        inputPattern: /^\d+\.?\d{0,2}$/,
+        inputErrorMessage: '快递费金额'
+      }).then(({ value }) => {
+        var obj = {
+          Id: id,
+          ExpressAmount: value}
+        // console.log(obj)
+        API.register.setExpressAmount(obj).then(result => {
+          console.log(result)
+          if (result.code === '0000') {
+            this.getDataList()
+            this.$message.success(`快递费设置成功`)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '取消快递费操作'
+        })
+      })
     }
   }
+
 }
 </script>
 

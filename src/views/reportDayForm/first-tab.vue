@@ -28,9 +28,9 @@
             <caption style="height: 30px;line-height: 30px;font-weight: 700;text-align: left;font-size: 16px">账目核对：</caption>
             <tr height="30">
               <td width="100">总金额</td>
-              <td colspan="2" align="left" style="padding-left: 15px">{{Number(dataList.OrderAmount-offsetAllAmount).toFixed(2)}}</td>
+              <td colspan="2" align="left" style="padding-left: 15px">{{Number(dataList.OrderAmount-rodataList.OrderAmount).toFixed(2)}}</td>
               <td width="100">退单总金额</td>
-              <td colspan="2" align="left" style="padding-left: 15px">{{Number(offsetAllAmount).toFixed(2)}}</td>
+              <td colspan="2" align="left" style="padding-left: 15px">{{Number(rodataList.OrderAmount).toFixed(2)}}</td>
             </tr>
             <tr height="30">
               <td width="100">应收金额</td>
@@ -79,6 +79,10 @@
               <td width="100">美团</td>
               <td width="100" align="left">{{dataList.MT}}</td>
             </tr>
+            <tr height="30">
+              <td width="100">经脉宝</td>
+              <td width="100" align="left">{{dataList.JMB}}</td>
+            </tr>
           </table>
 
           <table border="1" cellspacing="0" style="border-collapse: collapse;text-align: center" width="600px">
@@ -89,6 +93,7 @@
               <th width="100">医保金额</th>
               <th width="100">自费金额</th>
               <th width="100">人次</th>
+              <th width="100">退费金额</th>
             </tr>
             <tr height="25">
               <td width="100">挂号费</td>
@@ -96,6 +101,7 @@
               <td width="100">{{dataList.YBRegisterAmount}}</td>
               <td width="100">{{dataList.ZFRegisterAmount}}</td>
               <td width="100">{{dataList.RegisterMemberCount}}</td>
+              <td width="100">0</td>
             </tr>
             <!--<tr height="25">-->
               <!--<td width="100">中药费</td>-->
@@ -106,46 +112,52 @@
             <!--</tr>-->
             <tr height="25">
               <td width="100">饮片</td>
-              <td width="100">{{Number(dataList.CNDrugYPAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.CNDrugYPAmount-rodataList.CNDrugYPAmount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.YBCNDrugYPAmount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.ZFCNDrugYPAmount).toFixed(2)}}</td>
               <td rowspan="4" width="100">{{dataList.CNDrugMemberCount}}</td>
+              <td width="100">{{Number(rodataList.CNDrugYPAmount).toFixed(2)}}</td>
             </tr>
             <tr height="25">
               <td width="100">精品饮片</td>
-              <td width="100">{{Number(dataList.CNDrugJBYPAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.CNDrugJBYPAmount-rodataList.CNDrugJBYPAmount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.YBCNDrugJBYPAmount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.ZFCNDrugJBYPAmount).toFixed(2)}}</td>
               <!--<td width="100">{{dataList.CNDrugJBYPMemberCount}}</td>-->
+              <td width="100">{{Number(rodataList.CNDrugJBYPAmount).toFixed(2)}}</td>
             </tr>
             <tr height="25">
               <td width="100">饮片3</td>
-              <td width="100">{{Number(dataList.CNDrugYP3Amount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.CNDrugYP3Amount-rodataList.CNDrugYP3Amount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.YBCNDrugYP3Amount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.ZFCNDrugYP3Amount).toFixed(2)}}</td>
               <!--<td width="100">{{dataList.CNDrugYP3MemberCount}}</td>-->
+              <td width="100">{{Number(rodataList.CNDrugYP3Amount).toFixed(2)}}</td>
             </tr>
             <tr height="25">
               <td width="100">贵细</td>
-              <td width="100">{{Number(dataList.CNDrugGXAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.CNDrugGXAmount-rodataList.CNDrugGXAmount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.YBCNDrugGXAmount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.ZFCNDrugGXAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(rodataList.CNDrugGXAmount).toFixed(2)}}</td>
               <!--<td width="100">{{dataList.CNDrugGXMemberCount}}</td>-->
             </tr>
             <tr height="25">
               <td width="100">理疗</td>
-              <td width="100">{{Number(dataList.LLFAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.LLFAmount-rodataList.LLFAmount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.YBLLFAmount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.ZFLLFAmount).toFixed(2)}}</td>
               <td width="100">{{dataList.LLFMemberCount}}</td>
+              <td width="100">{{Number(rodataList.LLFAmount).toFixed(2)}}</td>
             </tr>
 
             <tr height="25">
               <td width="100">西药费</td>
-              <td width="100">{{Number(dataList.ENDrugAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.ENDrugAmount-rodataList.ENDrugAmount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.YBENDrugAmount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.ZFENDrugAmount).toFixed(2)}}</td>
               <td width="100">{{dataList.ENDrugMemberCount}}</td>
+              <td width="100">{{Number(rodataList.ENDrugAmount).toFixed(2)}}</td>
             </tr>
             <tr height="25">
               <td width="100">加工费</td>
@@ -153,6 +165,7 @@
               <td width="100">{{dataList.YBWorkAmount}}</td>
               <td width="100">{{dataList.ZFWorkAmount}}</td>
               <td width="100">{{dataList.WorkMemberCount}}</td>
+              <td width="100">0</td>
             </tr>
             <tr height="25">
               <td width="100">代煎</td>
@@ -160,6 +173,7 @@
               <td width="100">{{dataList.YBDJAmount}}</td>
               <td width="100">{{dataList.ZFDJAmount}}</td>
               <td width="100">{{dataList.DJMemberCount}}</td>
+              <td width="100">0</td>
             </tr>
             <tr height="25">
               <td width="100">快递</td>
@@ -167,13 +181,22 @@
               <td width="100">{{dataList.YBExpressAmount}}</td>
               <td width="100">{{dataList.ZFExpressAmount}}</td>
               <td width="100">{{dataList.ExpressMemberCount}}</td>
+              <td width="100">0</td>
             </tr>
             <tr height="25">
+              <td width="100">其他费用</td>
+              <td width="100">{{dataList.OtherAmount}}</td>
+              <td width="100">{{dataList.YBOtherAmount}}</td>
+              <td width="100">{{dataList.ZFOtherAmount}}</td>
+              <td width="100">{{dataList.OtherMemberCount}}</td>
+              <td width="100">0</td>
+            <tr height="25">
               <td width="100">产品</td>
-              <td width="100">{{Number(dataList.ProductAmount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.ProductAmount-rodataList.ProductAmount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.YBProductAmount).toFixed(2)}}</td>
               <td width="100">{{Number(dataList.ZFProductAmount).toFixed(2)}}</td>
               <td width="100">{{dataList.ProductMemberCount}}</td>
+              <td width="100">{{Number(rodataList.ProductAmount).toFixed(2)}}</td>
             </tr>
             <tr height="25" v-show="false">
               <td width="100" bgcolor="#f1f2f7">理疗科（本部）</td>
@@ -411,7 +434,7 @@ export default {
         {type: 'number', message: '输入必须为数字值'}],
 
       dataList: {},
-      offsetAllAmount: 0, // 退单总金额
+      rodataList: {}, // 退单总金额
       // charts参数
       echartsOption: {
         title: {
@@ -654,11 +677,7 @@ export default {
           if (response.code === '0000' && result.code === '0000') {
             this.dataList = result.data
             console.log(result.data, response.data)
-
-            this.offsetAllAmount = 0
-            response.data.forEach(item => {
-              this.offsetAllAmount += item.Amount
-            })
+            this.rodataList = response.data
             this.echartsOption.series[0].data = [
               {value: result.data.Cash, name: '现金'},
               {value: result.data.AliPay, name: '支付宝'},

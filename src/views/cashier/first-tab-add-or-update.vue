@@ -412,7 +412,8 @@ export default {
         {label: '白露', value: 9},
         {label: '万科', value: 10},
         {label: '善郎中', value: 11},
-        {label: '美团', value: 12}
+        {label: '美团', value: 12},
+        {label: '经脉宝', value: 13}
       ],
       isOKClick: false,
       DicSaleOrderSource: []
@@ -605,7 +606,7 @@ export default {
               this.dataForm.OnlinePayAmount = 0
             }
           }
-          var  Actual = Number(this.dataForm.PayAmount) + Number(this.dataForm.OnlinePayAmount)
+          var Actual = Number(this.dataForm.PayAmount) + Number(this.dataForm.OnlinePayAmount)
           var params = {
             id: this.registerAllData.Id,
             ActualAmount: Actual, // 实收废弃???
