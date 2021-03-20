@@ -198,6 +198,14 @@
               <td width="100">{{dataList.ProductMemberCount}}</td>
               <td width="100">{{Number(rodataList.ProductAmount).toFixed(2)}}</td>
             </tr>
+            <tr height="25">
+              <td width="100">饮片4（耗材）</td>
+              <td width="100">{{Number(dataList.CNDrugYP4Amount-rodataList.CNDrugYP4Amount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.YBCNDrugYP4Amount).toFixed(2)}}</td>
+              <td width="100">{{Number(dataList.ZFCNDrugYP4Amount).toFixed(2)}}</td>
+              <td width="100">{{dataList.CNDrugYP4MemberCount}}</td>
+              <td width="100">{{Number(rodataList.CNDrugYP4Amount).toFixed(2)}}</td>
+            </tr>
             <tr height="25" v-show="false">
               <td width="100" bgcolor="#f1f2f7">理疗科（本部）</td>
               <td width="100" v-if="!isEditing">{{dataList.LLAmount}}</td>

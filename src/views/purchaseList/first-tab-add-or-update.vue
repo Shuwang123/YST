@@ -477,14 +477,17 @@ export default {
         // 属于后一个弹窗的enter逻辑
         case 'pre':
           this.$refs[`${strRefArr[0]}_mid`].focus()
+          this.$refs[`${strRefArr[0]}_mid`].select()
           break
         case 'mid':
           this.$refs[`${strRefArr[0]}_end`].focus()
+          this.$refs[`${strRefArr[0]}_end`].select()
           break
         case 'end':
           this.dataList.Items.forEach((item, index) => {
             if (strRefArr[0] === item.ProductCode) {
               this.$refs[`${this.dataList.Items[index + 1].ProductCode}_pre`].focus()
+              this.$refs[`${this.dataList.Items[index + 1].ProductCode}_pre`].select()
               return false
             }
           })
@@ -493,11 +496,13 @@ export default {
         // 又新增一些: 属于edit1弹窗的enter逻辑
         case 'editNum':
           this.$refs[`${strRefArr[0]}_editPrice`].focus()
+          this.$refs[`${strRefArr[0]}_editPrice`].select()
           break
         case 'editPrice':
           this.dataList.Items.forEach((item, index) => {
             if (strRefArr[0] === item.ProductCode) {
               this.$refs[`${this.dataList.Items[index + 1].ProductCode}_editNum`].focus()
+              this.$refs[`${this.dataList.Items[index + 1].ProductCode}_editNum`].select()
               return false
             }
           })

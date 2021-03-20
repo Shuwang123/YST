@@ -19,6 +19,13 @@
             <el-option v-for="item in orderArr" :key="item.text" :label="item.text" :value="item.val"></el-option>
           </el-select>
         </el-form-item>
+        <el-form-item label="">
+          <el-select v-model="dataForm.Mark" placeholder="库存余量" @change="getDataList()"
+                     size="mini" clearable
+                     style="width: 120px">
+            <el-option v-for="item in markArr" :key="item.text" :label="item.text" :value="item.val"></el-option>
+          </el-select>
+        </el-form-item>
         <el-form-item>
           <el-button icon="el-icon-search" @click="pageIndex = 1; getDataList()" size="mini">查询</el-button>
           <el-button icon="el-icon-document" @click="handleDownload" size="mini">Export Excel</el-button>
@@ -169,7 +176,9 @@ export default {
         CategoryId: '',
         RedLine: '',
         BrandId: '', // 品牌ID
-        Order: '' // 按照---LeftRedLineDesc  LeftRedLineAsc库存量-警告值 排序
+        Order: '', // 按照---LeftRedLineDesc  LeftRedLineAsc库存量-警告值 排序
+        Mark: '',
+        StoreInventoryQuantity: '0'
       },
       orderArr: [{
         text: '库存减预警（小到大）',
@@ -178,6 +187,14 @@ export default {
         text: '库存减预警（大到小）',
         val: 'LeftRedLineDesc'
       }],
+      markArr: [{
+        text: '库存余量大于0',
+        val: '>'
+      }, {
+        text: '库存余量等于0',
+        val: '='
+      }
+      ],
       dataList: [],
       totalPage: 1,
       dataListSelections: [],
@@ -207,7 +224,9 @@ export default {
 
         // CategoryId: this.dataForm.CategoryId,
         CategoryId: this.fatherDataForm.CategoryId,
-        Order: this.dataForm.Order
+        Order: this.dataForm.Order,
+        Mark: this.dataForm.Mark,
+        StoreInventoryQuantity: this.dataForm.StoreInventoryQuantity
       }
       var url = request.downUrl + '/YstStoreInventory/LoadDataInventory'
       // 附加参数
@@ -260,7 +279,9 @@ export default {
 
         // CategoryId: this.dataForm.CategoryId,
         CategoryId: this.fatherDataForm.CategoryId,
-        Order: this.dataForm.Order
+        Order: this.dataForm.Order,
+        Mark: this.dataForm.Mark,
+        StoreInventoryQuantity: this.dataForm.StoreInventoryQuantity
       }
       console.log(params)
       API.storeStock.getStoreStock(params).then(result => {

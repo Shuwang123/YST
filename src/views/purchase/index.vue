@@ -45,6 +45,13 @@
       style="width: 100%;">
       <el-table-column type="selection" header-align="center" :align="$store.state.common.align" width="50"></el-table-column>
       <el-table-column :align="$store.state.common.align" type="index" label="序号" width="50px"></el-table-column>
+      <el-table-column prop="OrderNumber" header-align="center" :align="$store.state.common.align" min-width="110" label="自定义排序编号">
+        <template slot-scope="scope">
+          <el-input-number v-model="scope.row.orderNumber"   :precision="0" :step="1"
+                           @change="handleChange" :min="1" :max="500" size="mini"
+                           @keyup.enter.native="searchNextCodeInput1(scope.row.Code)" :ref="`${scope.row.Code}_order`" ></el-input-number>
+        </template>
+      </el-table-column>
       <el-table-column prop="Code" header-align="center" :align="$store.state.common.align" width="100" label="商品编码"></el-table-column>
       <el-table-column prop="ShowName" header-align="center" :align="$store.state.common.align" label="药材名称"></el-table-column>
       <el-table-column prop="Dosage" header-align="center" :align="$store.state.common.align" label="剂型"></el-table-column>
@@ -128,7 +135,7 @@ export default {
       dataListSelections: [],
       dataList: [],
       purchaseFormal: [], // 入库单正式列表
-      isDisable: false, // 保存入库单时防止重复点击
+      isDisable: false // 保存入库单时防止重复点击
     }
   },
   components: {
@@ -333,6 +340,7 @@ export default {
       } else {
         arr.forEach(item => {
           item.myNum = '1' // 添加字段myNum为初始采购量，默认最小值1，后来考虑到0.5kg，干脆弄出了最小值0.1得了，不过初始值为1
+          item.orderNumber = '1'
         })
         this.dataList = arr
         this.purchaseFormal = arr
@@ -351,7 +359,16 @@ export default {
       this.dataList.forEach((item, index) => {
         if (Code === item.Code) {
           this.$refs[this.dataList[index + 1].Code].focus()
-          // this.$refs[this.dataList[index + 1].Code].select() ???
+           this.$refs[this.dataList[index + 1].Code].select()
+          return false
+        }
+      })
+    },
+    searchNextCodeInput1 (Code) {
+      this.dataList.forEach((item, index) => {
+        if (Code === item.Code) {
+          this.$refs[`${this.dataList[index + 1].Code}_order`].focus()
+          this.$refs[`${this.dataList[index + 1].Code}_order`].select()
           return false
         }
       })
@@ -408,6 +425,7 @@ export default {
               StoreSalePrice: item.StoreSalePrice, // 只用作之后去初始化值（之后可以继续改门店售价）
 
               Quantity: item.myNum,
+              OrderNumber: item.orderNumber, // 自定义排序
 
               SupplierId: this.dataForm.supplierId,
               SupplierCode: this.dataForm.supplierCode

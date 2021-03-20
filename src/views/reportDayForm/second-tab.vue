@@ -18,8 +18,11 @@
       <el-table-column prop="AgainDiagnosisMemberCount" header-align="center" align="center" label="复诊" min-width="60"></el-table-column>
 
       <el-table-column prop="TJDrugCount" header-align="center" align="center" label="汤剂" min-width="100"></el-table-column>
-      <el-table-column prop="GFDrugCount" header-align="center" align="center" label="膏方" min-width="100"></el-table-column>
+      <el-table-column prop="YPAmount" header-align="center" align="center" label="饮片" min-width="100"></el-table-column>
+      <el-table-column prop="JPYPAmount" header-align="center" align="center" label="精品饮片" min-width="100"></el-table-column>
+      <el-table-column prop="GXAmount" header-align="center" align="center" label="贵系" min-width="100"></el-table-column>
       <el-table-column prop="YP3Amount" header-align="center" align="center" label="饮片3" min-width="100"></el-table-column>
+      <el-table-column prop="GFDrugCount" header-align="center" align="center" label="膏方" min-width="100"></el-table-column>
       <el-table-column prop="WJDrugCount" header-align="center" align="center" label="丸剂" min-width="100"></el-table-column>
       <el-table-column prop="WorkAmount" header-align="center" align="center" label="加工费" min-width="100"></el-table-column>
 

@@ -15,8 +15,8 @@
                 'isTrigger': true
               }" ref="comStoreOne" @eventStore="changeStoreData"></com-store>
               <el-form-item>
-                <el-select v-model="dataForm.AccountId" placeholder="医生"
-                           @change="comTabFunction()" @clear="comTabFunction()" clearable style="width: 100px">
+                <el-select v-model="dataForm.AccountId" filterable  placeholder="请搜索医生"
+                           @change="comTabFunction()" @clear="comTabFunction()" :default-first-option="true" clearable style="width: 123px">
                   <el-option v-for="item in storeDoctorArr" :key="item.Id"
                              :label="`${item.Id} ${item.NickName}`" :value="item.Id">
                   </el-option>
@@ -240,6 +240,7 @@ export default {
         id: '',
         userName: '',
         nickName: '',
+        status: 1,
         roleId: this.$store.getters.getAllDoctorIdArr.join(),
         canViewStores: this.$store.getters.getAccountCurrentHandleStore // 门店ID// storeId: this.dataForm.StoreId
       }
@@ -250,6 +251,7 @@ export default {
               return {Id: item.Id, NickName: item.NickName}
             })
           }
+          // this.dataForm.AccountId = response.data.length === 0 ? '' : response.data[0].Id
         } else {
           this.$message.error(response.message)
         }

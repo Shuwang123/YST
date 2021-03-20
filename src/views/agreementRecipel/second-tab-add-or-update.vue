@@ -77,9 +77,9 @@
           </el-table>
         </el-aside>
 
-        <!--右侧药材：tabs标签页切换引导组件切换-->
+        <!--右侧药材：tabs标签页切换引导组件切换@blur="controlRightTopInputBlur()"-->
         <el-main width="30%" style="padding: 10px 10px 0; border-bottom: 1px solid #DCDFE6;">
-          <el-input v-model="dataForm.SpellName" @blur="controlRightTopInputBlur()" style="min-width: 190px; width: 100%"
+          <el-input v-model="dataForm.SpellName"  style="min-width: 190px; width: 100%"
                     :placeholder="`请输入要查询的药材, 门店：${$store.getters.getAccountCurrentHandleStore}`"
                     size="small" clearable>
             <i slot="prefix" class="el-input__icon el-icon-search"></i>
@@ -368,9 +368,10 @@ export default {
                   return item
                 })
 
-                // console.log(this.leftTableData)// console.log(result.data)
-                // 根据协定方的药态，控制右边药态的初始选中值
-                if (result.data.SaleOrderItems.some(item => String(item.CategoryId) === '1002')) { // 如果是精品类型的协定方，就要避免第一味药就出现普通饮片的可能
+                // 根据协定方的药态，控制右边 子药态 的初始选中值
+                if (result.data.SaleOrderItems.some(item => {
+                  return String(item.CategoryId) === '1002' || String(item.CategoryId) === '1001' || String(item.CategoryId) === '1005'
+                })) { // 如果是精品类型的协定方，就要避免第一味药就出现普通饮片的可能
                   this.oldTabsName = '1002'
                   this.activeName = '1002'
                 } else {
