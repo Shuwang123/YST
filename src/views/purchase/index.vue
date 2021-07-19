@@ -18,7 +18,7 @@
           </el-radio-group>
         </el-form-item>
         <el-form-item label="" prop="">
-          <el-select v-model="dataForm.supplierId" placeholder="供应厂商" style="width: 150px" size="mini" @change="handleSupplier">
+          <el-select v-model="dataForm.supplierId" placeholder="供应厂商"  filterable style="width: 150px" size="mini" @change="handleSupplier">
             <el-option v-for="item in supplierArr" :key="item.Id" :label="item.ShortName" :value="item.Id"></el-option>
           </el-select>
         </el-form-item>
