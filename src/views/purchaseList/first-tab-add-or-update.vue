@@ -306,7 +306,6 @@
 </template>
 <script type="text/ecmascript-6">
 import API from '@/api'
-import {Currency, Letter, NumberInt, NumberFloat} from '../../utils/validate'
 // import {treeDataTranslate} from '@/utils'
 import {myExportExcel} from '@/utils'
 import request from '../../api/request'
@@ -482,17 +481,17 @@ export default {
         // 属于后一个弹窗的enter逻辑
         case 'pre':
           this.$refs[`${strRefArr[0]}_mid`].focus()
-          this.$refs[`${strRefArr[0]}_mid`].select()
+          this.$refs[`${strRefArr[0]}_mid`].$refs.input.select()
           break
         case 'mid':
           this.$refs[`${strRefArr[0]}_end`].focus()
-          this.$refs[`${strRefArr[0]}_end`].select()
+          this.$refs[`${strRefArr[0]}_end`].$refs.input.select()
           break
         case 'end':
           this.dataList.Items.forEach((item, index) => {
             if (strRefArr[0] === item.ProductCode) {
               this.$refs[`${this.dataList.Items[index + 1].ProductCode}_pre`].focus()
-              this.$refs[`${this.dataList.Items[index + 1].ProductCode}_pre`].select()
+              this.$refs[`${this.dataList.Items[index + 1].ProductCode}_pre`].$refs.input.select()
               return false
             }
           })
@@ -501,13 +500,13 @@ export default {
         // 又新增一些: 属于edit1弹窗的enter逻辑
         case 'editNum':
           this.$refs[`${strRefArr[0]}_editPrice`].focus()
-          this.$refs[`${strRefArr[0]}_editPrice`].select()
+          this.$refs[`${strRefArr[0]}_editPrice`].$refs.input.select()
           break
         case 'editPrice':
           this.dataList.Items.forEach((item, index) => {
             if (strRefArr[0] === item.ProductCode) {
               this.$refs[`${this.dataList.Items[index + 1].ProductCode}_editNum`].focus()
-              this.$refs[`${this.dataList.Items[index + 1].ProductCode}_editNum`].select()
+              this.$refs[`${this.dataList.Items[index + 1].ProductCode}_editNum`].$refs.input.select()
               return false
             }
           })
