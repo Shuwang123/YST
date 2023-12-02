@@ -90,8 +90,8 @@ export default {
         { value: '吐服',
           label: '吐服'
         },
-        { value: '打碎',
-          label: '打碎'
+        { value: '捣碎',
+          label: '捣碎'
         }
       ]
     }

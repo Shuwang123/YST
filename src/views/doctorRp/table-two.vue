@@ -93,6 +93,9 @@ export default {
         },
         { value: '吐服',
           label: '吐服'
+        },
+        { value: '捣碎',
+          label: '捣碎'
         }
       ]
     }
