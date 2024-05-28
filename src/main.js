@@ -17,6 +17,9 @@ import cxobj from './views/common/table' // 一个自定义的全局的公用的
 import './views/common/table.scss' // 引入公用的table表体样式，需搭配上面js中的tableRowClassName方法
 Vue.prototype.$cxObj = cxobj
 
+import printJS from 'print-js' // 打印
+Vue.prototype.$printJS = printJS
+
 import VueCookie from 'vue-cookie'
 import '../theme/index.css'
 import '@/element-ui'

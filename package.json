@@ -24,6 +24,7 @@
     "lrz": "^4.9.40",
     "node-sass": "^9.0.0",
     "nprogress": "^0.2.0",
+    "print-js": "^1.6.0",
     "vant": "^1.1.0",
     "vue": "^2.5.2",
     "vue-awesome-swiper": "^3.1.0",

@@ -1,0 +1,63 @@
+// A5纸比列 148 210 毫米 500宽差不多配700高
+.print-container {
+    padding: 10px;
+    border: 1px solid #eee;
+    background-color: #FFFFFF;
+    // 实现思路：打印时的样式styles.js，和此处尽量一致
+    // 目前是这个意思，你得维护两套样式，样式并不多个人能接受
+    // 所以：以后要维护打印的样式，记得两个文件都要改哈
+    .print_page {
+        width: 500px;
+        height: 700px;
+        .view_head {
+            .ibox_hospital {
+                text-align: center;
+                font-size: 18px;
+                font-weight: 900;
+            }
+            .ibox_order {
+                margin-top: 10px;
+                display: flex;
+                align-items: center;
+                .order_no {
+                    flex: 1;
+                }
+            }
+            .ibox_user {
+                margin-top: 10px;
+                display: flex;
+                align-items: center;
+                .user_name {
+                    margin-right: 15px;
+                }
+                .user_cost {
+                    flex: 1;
+                }
+                .user_dept {
+    
+                }
+            }
+        }
+        .view_table {
+            margin-top: 10px;
+            border-collapse: collapse;
+            box-sizing: border-box;
+            tbody {
+                text-align: center;
+                line-height: 16px;
+            }
+        }
+        .view_foot {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            .total_money {
+                margin-right: 15px;
+            }
+            .total_member {
+                flex: 1;
+            }
+            .page_number {}
+        }
+    }
+}
