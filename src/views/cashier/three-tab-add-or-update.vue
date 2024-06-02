@@ -183,8 +183,6 @@
               </div>
             </td>
           </tr>
-          <tr>
-
             <!--签字-->
           <tr>
             <td height="26">医生：<span v-text="registerAllData.DoctorName"></span></td>
@@ -333,14 +331,17 @@
           <div style="page-break-after: always"></div>
         </div>
       </div>
-
+      <!-- 大幅度偏移实现隐藏  -->
+      <section style="position: absolute; top: -10000px">
+          <x-print ref="printRef" idName="printrow" :data="registerAllData"></x-print>
+      </section>
     </div>
-
     <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="chenxiPrint('printRecipel')">药方</el-button>
         <el-button type="primary" @click="chenxiPrint('printCashier')">收银小票补打</el-button>
         <el-button type="primary" @click="chenxiPrint('printOutStock')">出库单(财务)</el-button>
+        <el-button type="primary" @click="handlePrint">门诊收费清单</el-button>
         <el-button @click="visible = false">关闭</el-button>
       </span>
     </div>
@@ -351,6 +352,9 @@ import API from '@/api'
 import '../common/icon/iconfont.css'
 import {calcAge} from '@/utils/validate'
 export default {
+  components: {
+    XPrint: () => import("@/components/x-print"),
+  },
   data () {
     return {
       visible: false,
@@ -360,7 +364,7 @@ export default {
       dataForm: {
         PaymentWay: 1 // 支付方式
       },
-      pages: 1 // 打印循环 相关参数
+      pages: 1, // 打印循环 相关参数
     }
   },
   watch: {
@@ -372,6 +376,10 @@ export default {
     }
   },
   methods: {
+    // 打印功能
+    handlePrint () {
+        this.$refs.printRef.handlePrint()
+    },
     // 打印页，每页的合计金额
     sumCount (n) {
       return this.registerAllData.SaleOrderItems.slice((n - 1) * 10, n * 10).map(item => item.SalePrice * item.Quantity).reduce((pren, nextm) => pren + nextm).toFixed(2)
@@ -388,7 +396,7 @@ export default {
         API.register.getRegisterInfo({id: formId}).then(result => {
           if (result.code === '0000') {
             result.data.BirthDate = calcAge(result.data.BirthDate)
-              debugger;
+              // debugger;
             this.registerAllData = result.data
             this.dataListLoading = false
             console.log('查看', result.data)

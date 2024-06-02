@@ -295,13 +295,6 @@
       </div>
 
     </div>
-
-    <!--打印层：财务出库单--><!--24.10：9.31cm-->
-    <button @click="handlePrint">打印</button>
-    <!-- 大幅度偏移实现隐藏 style="position: absolute; top: -10000px" -->
-    <section>
-        <x-print ref="printRef" idName="printrow" :data="registerAllData1"></x-print>
-    </section>
     <div style="text-align: right">
       <span slot="footer" class="dialog-footer">
         <el-button type="primary" @click="chenxiPrint('printRecipel')">药方</el-button>
@@ -317,9 +310,6 @@ import API from '@/api'
 import '../common/icon/iconfont.css'
 import {calcAge} from '@/utils/validate'
 export default {
-  components: {
-    XPrint: () => import("@/components/x-print"),
-  },
   data () {
     return {
       visible: false,
@@ -330,52 +320,6 @@ export default {
         PaymentWay: 1 // 支付方式
       },
       pages: 1, // 打印循环 相关参数
-
-      registerAllData1: {
-        SaleOrderItems: [
-            {type: "中草药", name: "陈皮", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "当归", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "山药", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "茯苓", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "太子", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "陈皮", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "当归", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "山药", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "茯苓", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "太子", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "陈皮", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "当归", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "山药", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "茯苓", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "太子", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "陈皮", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "当归", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "山药", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "茯苓", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "太子", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            
-            {type: "中草药", name: "陈皮", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "当归", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "山药", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "茯苓", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "太子", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "陈皮", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "当归", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "山药", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "茯苓", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "太子", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "陈皮", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "当归", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "山药", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "茯苓", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "太子", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "陈皮", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "当归", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "山药", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "茯苓", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-            {type: "中草药", name: "太子", Unit: "g", Quantity: "10", Price: "0.00", dept: "中药房" },
-        ]
-      },
     }
   },
   watch: {
@@ -387,10 +331,6 @@ export default {
     }
   },
   methods: {
-        // 打印功能
-        handlePrint () {
-            this.$refs.printRef.handlePrint()
-        },
     // 打印页，每页的合计金额
     sumCount (n) {
       return this.registerAllData.SaleOrderItems.slice((n - 1) * 10, n * 10).map(item => item.SalePrice * item.Quantity).reduce((pren, nextm) => pren + nextm).toFixed(2)

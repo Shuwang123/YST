@@ -190,7 +190,7 @@ export default {
     ComStore,
     FirstTab,
     SecondTab,
-    ThreeTab
+    ThreeTab,
   },
   methods: {
     choseCurrentDay () { // 默选当天的时间

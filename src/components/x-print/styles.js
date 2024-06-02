@@ -35,6 +35,5 @@ export const styles = `@page {}
         align-items: center;
         margin-top: 10px;
     }
-    .view_foot .total_money { margin-right: 15px; }
-    .view_foot .total_member { flex: 1; }
+    .view_foot .total_money { flex: 1; }
 }`
