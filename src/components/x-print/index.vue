@@ -33,15 +33,15 @@
                 <td width="100">{{item.CategoryName}}</td>
                 <td width="120" align="center">{{item.ProductName}}</td>
                 <td width="45" align="center">{{item.Unit}}</td>
-                <td width="45">{{item.Quantity}}</td>
+                <td width="45">{{item.TotalQuantity}}</td>
                 <td width="50" align="right">{{item.SalePrice}}</td>
-                <td width="50" align="right">{{item.Amount}}</td>
+                <td width="50" align="right">{{item.TotalAmount}}</td>
                 <td width="80">{{data.StoreName}}</td>
             </tr>
             </tbody>
         </table>
         <div class="view_foot" style="font-size: 13px;">
-            <div class="total_money">应收合计：{{data.TotalAmount}}元</div>
+            <div class="total_money">应收合计：{{data.DrugTotalAmount}}元</div>
             <div class="total_member">收费员：{{ data.CreateNickName }}</div>
         </div>
         <div style="page-break-after: always"></div>
