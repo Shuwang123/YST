@@ -2,7 +2,7 @@
     <!-- 打印的药方，弄成组件，形成复用 -->
     <section :id="idName" class="print-container box-shadow">
         <div class="view_head">
-            <div class="ibox_hospital">重庆渝北一善堂中医门诊部</div>
+            <div class="ibox_hospital">重庆渝北一善堂中医门诊部（明细清单）</div>
             <div class="ibox_order" style="font-size: 13px;">
                 <div class="order_no">单据号：{{ data.Code }}</div>
                 <div class="order_time">收费时间：{{ data.CreatedOnTime }}</div>

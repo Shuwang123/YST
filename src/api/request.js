@@ -23,11 +23,12 @@ const service = axios.create({
 // service.baseURL
  service.baseURL = process.env.NODE_ENV === 'development' ? '/proxyApi' : ''
 
-  // service.downUrl = 'http://api.dev.slzzyy.com:8080'
-  service.downUrl = 'http://api.slzzyy.com:8080'
-  // service.downUrl = 'http://mj.slzzyy.com:8080'
-  // service.downUrl = 'http://localhost:12099'
-
+// service.downUrl = 'http://api.slzzyy.com:8080'
+// service.downUrl = 'http://mj.slzzyy.com:8080'
+service.downUrl = 'http://yb.slzzyy.com:8080'
+ 
+// service.downUrl = 'http://api.dev.slzzyy.com:8080'
+// service.downUrl = 'http://localhost:12099'
 // request拦截器
 service.interceptors.request.use(config => {
   NProgress.start()
